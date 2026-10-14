@@ -18,7 +18,7 @@
     "cards": "node scripts/render-social-cards.mjs",
     "dev:worker": "npm run build && wrangler dev",
     "check": "npm run check:types && npm run test:unit && npm run build && npm run check:output",
-    "check:types": "astro check && tsc --noEmit -p tsconfig.worker.json",
+    "check:types": "npm run assets && astro check && tsc --noEmit -p tsconfig.worker.json",
     "check:output": "node scripts/check-output.mjs",
     "check:publish": "node scripts/check-publish.mjs",
     "test": "npm run test:unit",
