@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Works Marks — Round 3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Literata:ital,opsz,wght@0,7..72,300..800;1,7..72,300..800&family=DM+Serif+Display&family=Shantell+Sans:wght@400;500&family=Albert+Sans:wght@400..800&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --desk:#1b1a1e; --desk-line:#2a282e; --board:#0f0e11; --label:#a8a2ad; --label-strong:#ece6ef;
+  --note:#f4e9c8; --note-ink:#2d2618; --pin:#db61aa;
+  --text:#f3e8dc; --soft:#d1c0b8; --orange:#eca557; --rose:#ef8ea1; --magenta:#db61aa; --cyan:#73cae3;
+  --paper:#f6efe6; --ink:#22171c; --rule:rgb(243 232 220 / 12%);
+  /* motion — tuned live from the toolbar */
+  --dim:.14; --sweep:2.2s; --ws:.19s; --wl:.26s; --corner:.7s; --stagger:.38s; --after:1.15s;
+}
+*{box-sizing:border-box}
+html{background:var(--desk)}
+body{margin:0;color:var(--label-strong);font-family:'Albert Sans',system-ui,sans-serif;font-size:14px;line-height:1.5;background:var(--desk);background-image:radial-gradient(var(--desk-line) 1px,transparent 1px);background-size:22px 22px}
+.wrap{max-width:1640px;margin:0 auto;padding:40px clamp(16px,3vw,48px) 120px}
+h1,h2,h3{margin:0}
+.top{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px;align-items:start;margin-bottom:28px}
+.top h1{font-family:'Literata',serif;font-weight:400;font-size:clamp(34px,4vw,52px);line-height:1.02;letter-spacing:-.02em;font-variation-settings:'opsz' 72}
+.lede{color:#c9c2cd;max-width:64ch;margin-top:14px;font-size:15.5px}
+.cap{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--label);margin:0 0 8px}
+.note{background:var(--note);color:var(--note-ink);border-radius:3px;padding:16px 18px 18px;box-shadow:0 10px 24px rgb(0 0 0 / 35%);position:relative;font-size:13.5px;line-height:1.5}
+.note::before{content:"";position:absolute;top:-6px;left:22px;width:12px;height:12px;border-radius:50%;background:var(--pin);box-shadow:0 2px 3px rgb(0 0 0 / 40%)}
+.note h4{margin:0 0 6px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;opacity:.75}
+.note p{margin:0 0 8px}.note p:last-child{margin:0}
+.note ul{margin:4px 0 0;padding-left:18px}.note li{margin:3px 0}
+.note q{font-style:italic}
+.tilt{transform:rotate(.6deg)}.tilt-l{transform:rotate(-.6deg)}
+.bar{position:sticky;top:0;z-index:20;display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;padding:10px 14px;margin:0 0 30px;background:rgb(20 19 23 / 92%);backdrop-filter:blur(8px);border:1px solid #2c2930;border-radius:10px}
+.bar label{display:flex;gap:8px;align-items:center;color:var(--label);font-size:12.5px}
+.bar output{font-variant-numeric:tabular-nums;color:var(--label-strong);min-width:3.6em}
+input[type=range]{accent-color:var(--rose);width:120px}
+select,.btn{appearance:none;border:1px solid #3a3640;background:#1a181d;color:var(--label-strong);font:inherit;font-size:12.5px;padding:6px 12px;border-radius:999px;cursor:pointer}
+select{padding-right:28px;background-image:linear-gradient(45deg,transparent 50%,#a8a2ad 50%),linear-gradient(135deg,#a8a2ad 50%,transparent 50%);background-position:calc(100% - 15px) 55%,calc(100% - 10px) 55%;background-size:5px 5px;background-repeat:no-repeat}
+.btn:hover,select:hover{border-color:var(--cyan)}
+.btn:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.btn[aria-pressed=true]{background:var(--label-strong);color:#141216;border-color:var(--label-strong)}
+.sec{margin:60px 0 20px;display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+.sec h2{font-family:'Literata',serif;font-weight:500;font-size:30px;font-variation-settings:'opsz' 48}
+.sec .k{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--label)}
+.board{background:var(--board);border:1px solid #2c2930;border-radius:10px;padding:22px;margin-bottom:30px;position:relative}
+.board-h{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+.board-h .tag{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--label)}
+.board-h h3{font-family:'Literata',serif;font-weight:500;font-size:26px;margin-top:2px;font-variation-settings:'opsz' 48}
+.board-h .one{color:#c9c2cd;margin-top:4px;max-width:78ch}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.three{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.col{display:flex;flex-direction:column;gap:14px;min-width:0}
+.col-h{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.col-h b{font-family:'Literata',serif;font-weight:600;font-size:19px}
+.col-h span{color:var(--label);font-size:13px}
+.panel{border-radius:8px;padding:18px;position:relative;overflow:hidden}
+.pd{background:linear-gradient(160deg,#100b11 0%,#181018 52%,#0c1217 100%);border:1px solid var(--rule)}
+.pl{background:var(--paper);color:var(--ink)}
+.pd .cap{color:#9c8c93}.pl .cap{color:#8a777d}
+.lock{display:block;width:100%;height:auto;overflow:visible}
+.center{display:flex;align-items:center;justify-content:center}
+.row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.sizes{display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.sizes figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:10.5px;color:#9c8c93}
+.tab{display:flex;align-items:center;gap:8px;height:34px;padding:0 14px;border-radius:9px 9px 0 0;font-size:12.5px;width:max-content}
+.tabbar{display:flex;padding:8px 10px 0;border-radius:8px 8px 0 0}
+.tabbar.d{background:#1c1b20}.tabbar.d .tab{background:#2b2a30;color:#e9e6ee}
+.tabbar.l{background:#e7e2db}.tabbar.l .tab{background:#fff;color:#2a2a2a}
+.slot{display:flex;align-items:center;gap:14px;padding:10px 14px;border-radius:8px}
+.slot.d{background:#141016;color:var(--soft);border:1px solid var(--rule)}
+.slot.l{background:#fff;color:#3a2e33;border:1px solid #e3dad1}
+.slot .me{color:var(--text)}.slot.l .me{color:var(--ink)}
+.slot small{font-size:10.5px;opacity:.6;margin-left:auto}
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:18px}
+.ratio{font-variant-numeric:tabular-nums;font-size:12px;color:var(--label)}
+.ratio b{color:var(--label-strong)}
+.hdr{display:flex;align-items:center;gap:26px;padding:12px 18px;border-radius:8px;font-size:13.5px;color:#9c8c93}
+.hdr.d{background:#100b11;border:1px solid var(--rule)}
+.hdr.l{background:var(--paper);color:#7d6a70}
+.hdr .lg{width:auto;flex:none}
+.hdr nav{display:flex;gap:18px;margin-left:auto}
+/* icon comparison guides */
+.cmp figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:8px;font-size:12px;color:#c9c2cd}
+.cmp .g{display:none}.guides .cmp .g{display:inline}
+/* timeline */
+.tl{display:grid;grid-template-columns:140px minmax(0,1fr);gap:8px 14px;align-items:center;font-size:12.5px}
+.tl .track{position:relative;height:18px;background:#17151a;border-radius:4px}
+.tl .seg{position:absolute;top:3px;bottom:3px;border-radius:3px}
+.tl .ticks{position:relative;height:16px;color:var(--label);font-size:10.5px}
+.tl .ticks span{position:absolute;transform:translateX(-50%)}
+/* sponsor */
+.spw{position:relative;container-type:inline-size}
+.sp{position:relative;overflow:hidden;isolation:isolate;min-height:270px;display:flex;align-items:center}
+.sp-art{position:absolute;inset:0 0 0 auto;width:74%;z-index:-2}
+.sp-art svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.sp-veil{position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,var(--veil) 0%,var(--veil) 24%,rgb(from var(--veil) r g b / 70%) 36%,transparent 54%)}
+.sp-c{position:absolute;overflow:visible;pointer-events:none;z-index:2}
+.sp-w{position:absolute;overflow:visible;pointer-events:none;z-index:3;right:calc(var(--s) * 17.9px + 14px);bottom:calc(var(--s) * 4px + 8px)}
+.sp-copy{position:relative;padding:56px clamp(22px,3vw,40px) 52px 56px;max-width:min(520px,60%)}
+.sp h4{margin:0}
+.sp p{margin:10px 0 0}
+.sp .acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.sp .acts a{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;text-decoration:none;font-weight:600;font-size:14px}
+.sp .acts a:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+@container (max-width:600px){
+  .sp-art{width:100%;opacity:.24}
+  .sp-veil{display:none}
+  .sp-copy{max-width:100%;padding:52px 30px 92px 40px}
+  .sp-w{right:calc(var(--s) * 1.5px);bottom:calc(var(--s) * -2.2px)}
+}
+.h-works{--veil:#140d14;background:linear-gradient(160deg,#120c13 0%,#181018 60%,#0d1318 100%);border:1px solid var(--rule);border-radius:10px;color:var(--text);min-height:330px}
+.h-works h4{font-family:'Literata',serif;font-weight:400;font-size:clamp(34px,3.4vw,48px);line-height:1;letter-spacing:-.025em;font-variation-settings:'opsz' 72}
+.h-works p{font-family:'Literata',serif;font-size:16.5px;color:var(--soft);line-height:1.55}
+.h-works .add{color:#e6d8cc}
+.h-works .acts a{border-radius:999px;font-family:'Albert Sans'}
+.h-works .acts a.p{background:var(--text);color:#140d14}.h-works .acts a.s{border:1px solid rgb(243 232 220 / 35%);color:var(--text)}
+.h-dd{--veil:#151922;background:#151922;border:1px solid #484d58;border-radius:0;color:#f0f2f5;font-family:'IBM Plex Sans',sans-serif}
+.h-dd h4{font-weight:600;font-size:24px}
+.h-dd p{color:#aab0bb;font-size:14px}
+.h-dd .acts a{border-radius:6px;font-size:13.5px;min-height:36px}
+.h-dd .acts a.p{background:#f061ba;color:#151922}.h-dd .acts a.s{border:1px solid #484d58;color:#f0f2f5}
+.h-lt{--veil:#fff7ee;background:#fff7ee;color:#2b1d14;border:1px solid #efe1d0;border-radius:24px}
+.h-lt h4{font-family:'Albert Sans';font-weight:800;font-size:28px;letter-spacing:-.03em}
+.h-lt p{color:#6b5446;font-size:14px}
+.h-lt .add{color:#2b1d14;font-weight:600}
+.h-lt .acts a{border-radius:999px;font-size:13.5px;min-height:38px}
+.h-lt .acts a.p{background:#2b1d14;color:#fff7ee}.h-lt .acts a.s{border:1.5px solid #2b1d14;color:#2b1d14}
+.phone{width:380px;max-width:100%;padding:14px;border-radius:26px;background:#09080a;border:1px solid #2c2930}
+/* ---------------- the one motion ---------------- */
+/* 1. corners draw (always). 2. after the corners: the name lights up and WORKS is written, starting together. */
+.dr,.hw,.ul{stroke-dasharray:1 2;stroke-dashoffset:0}
+.dot{transform-box:fill-box;transform-origin:50% 50%}
+.play .dr{stroke-dashoffset:1.001;animation:draw var(--corner) cubic-bezier(.55,0,.2,1) forwards;animation-delay:calc(var(--i,0) * var(--stagger) + .05s)}
+.play .dot{animation:pop .5s cubic-bezier(.3,1.9,.5,1) both calc(var(--after) - .05s)}
+.play .name,.play .art-base{animation:holddim var(--sweep) linear both var(--after)}
+.play .art-glow{animation:glowup var(--sweep) ease-in both var(--after)}
+.play .wipe{animation:wipein var(--sweep) cubic-bezier(.45,.05,.3,1) both var(--after)}
+.play .band{animation:band var(--sweep) cubic-bezier(.45,.05,.3,1) both var(--after)}
+.play .hw{stroke-dashoffset:1.001;animation:draw var(--wl) cubic-bezier(.4,0,.6,1) forwards;animation-delay:calc(var(--after) + var(--i) * var(--ws))}
+.play .ul{stroke-dashoffset:1.001;animation:draw .36s cubic-bezier(.3,0,.2,1) forwards;animation-delay:calc(var(--after) + 5 * var(--ws) + .04s)}
+.play .halo{animation:fade .2s ease both var(--after)}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pop{0%{transform:scale(0)}100%{transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes holddim{0%,99.9%{opacity:var(--dim)}100%{opacity:1}}
+@keyframes glowup{from{opacity:calc(var(--dim) * .25)}}
+@keyframes wipein{from{transform:translateX(calc(-1 * var(--travel)))}to{transform:none}}
+@keyframes band{from{transform:none}to{transform:translateX(var(--travel))}}
+@media (prefers-reduced-motion:reduce){.play *{animation:none!important}}
+@media (max-width:1100px){.two,.top,.three{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div>
+    <div class="cap">Wolfsblvt Works · marks &amp; sponsor · round 3 · Tala</div>
+    <h1>WOLFSBLVT set formal. WORKS written by hand. One motion.</h1>
+    <p class="lede">Everything you picked, in one canvas. The only forks left are the two you asked to test: the lockup in a <b>full</b> and a <b>header</b> version, and the <b>wordmark</b> as WORKS-over-the-corner against simply using the lockup.</p>
+    <p class="lede">One motion everywhere: <b>the corners draw</b>, and when they’re done, <b>the name lights up from dim while WORKS is written</b>. Both start together and don’t end together. The toolbar tunes how dim, how slow the light, and how fast the writing — the timeline below redraws as you drag. Send me the numbers you like.</p>
+  </div>
+  <div class="note tilt">
+    <h4>Your choices, as you said them</h4>
+    <ul>
+      <li>Font: <q>Abril Fatface for the WOLFSBLVT font. Not just because of the name, lol. It looks good.</q></li>
+      <li>Icon: <q>the middle between the two. slightly off-center, so you might not even notice it, but it’s on purpose.</q></li>
+      <li>Lockup: <q>I am a big fan of H2, this is much more personality.</q></li>
+      <li>Sponsor: <q>The Lit edges is great. It’s really unique distinctive.</q> 128px corners, <q>literally drawn over the corner of the border</q>.</li>
+      <li>Motion: corners <q>always “draw &amp; write”</q>; the name lights up from dark, WORKS written in parallel, both after the corners.</li>
+      <li><q>The actual relationship is me being Wolfsblvt, personal, and Works the more serious project we do, but that’s the actual great thing here.</q></li>
+    </ul>
+  </div>
+</header>
+
+<div class="note" style="margin:0 0 26px;max-width:980px">
+  <h4>Final selections (Wolf, round 3 review)</h4>
+  <ul>
+    <li><b>Icon:</b> this in-between dot. <q>The icon off-centre is perfect.</q></li>
+    <li><b>Lockup = wordmark:</b> <q>Lockup as Wordmark works. We use the same.</q> H2 full everywhere; the header version only at 32px. Website: 44px full at the top, easing to the 32px version while scrolling.</li>
+    <li><b>Sponsor:</b> <q>The sponsor panel is literally perfect.</q></li>
+    <li><b>Motion:</b> defaults kept, except the magenta corner now starts noticeably later (0.38s after orange instead of 0.2s); the light and the writing start when both corners are done (1.15s). WORKS stays in Tala’s hand.</li>
+  </ul>
+  <p style="margin-top:8px">Production files: <code>../../</code> (this return).</p>
+</div>
+
+<div class="bar" role="toolbar" aria-label="Motion tuning">
+  <label>Dim before light <input type="range" id="dim" min=".04" max=".45" step=".01" value=".14"><output for="dim">0.14</output></label>
+  <label>Light pass <input type="range" id="sweep" min="1.2" max="3.6" step=".1" value="2.2"><output for="sweep">2.2s</output></label>
+  <label>Writing pace <input type="range" id="ws" min=".1" max=".34" step=".01" value=".19"><output for="ws">0.19s</output></label>
+  <label>Font <select id="font"></select></label>
+  <button class="btn" id="replayAll" style="margin-left:auto">Replay all ↻</button>
+</div>
+
+<section class="board" id="b-tl">
+  <div class="board-h"><div><div class="tag">Timing</div><h3>The one motion, on a timeline</h3><p class="one">Corners take about a second; the rest hangs off that. The light pass is the longest phase, so the writing finishes first and the name is still being lit.</p></div></div>
+  <div class="tl" id="timeline"></div>
+</section>
+
+<div class="sec"><h2>Icon</h2><span class="k">slightly off-centre, on purpose</span></div>
+<div id="iconBoard"></div>
+
+<div class="sec"><h2>Lockup</h2><span class="k">H2 · full and header</span></div>
+<div id="lockBoard"></div>
+
+<div class="sec"><h2>Wordmark</h2><span class="k">WORKS over the corner, or simply the lockup</span></div>
+<div id="wmBoard"></div>
+
+<div class="sec"><h2>Sponsor section</h2><span class="k">Lit edges · corners on the border · 128px</span></div>
+<div id="spBoard"></div>
+
+<div class="sec"><h2>Where this leaves us</h2><span class="k">my read, and the next step</span></div>
+<div class="two">
+  <div class="note" id="takeNote"></div>
+  <div class="note tilt" id="nextNote"></div>
+</div>
+
+</div>
+<script src="system.js"></script>
+<script src="sponsor.js"></script>
+<script src="canvas.js"></script>
+</body>
+</html>

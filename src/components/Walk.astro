@@ -1,0 +1,36 @@
+---
+/**
+ * The Walk's drawing surface. The paths are computed in the browser from the content's real size (src/lib/walk.ts),
+ * so the frame follows the content and never grows the page. Decorative: hidden from assistive technology.
+ */
+interface Props {
+  intensity?: 'quiet' | 'standard' | 'bold';
+  frayEnds?: boolean;
+}
+const { intensity = 'standard', frayEnds = false } = Astro.props;
+---
+
+<div class:list={['walk-bg', { ends: frayEnds }]} aria-hidden="true" data-walk data-intensity={intensity} data-fray={frayEnds ? '' : undefined}>
+  <svg width="100%" height="0" preserveAspectRatio="none">
+    <defs>
+      <filter id="wFill" filterUnits="userSpaceOnUse" x="-400" y="-800" data-walk-filter><feGaussianBlur stdDeviation="30" data-walk-blur></feGaussianBlur></filter>
+      <filter id="wPool" filterUnits="userSpaceOnUse" x="-400" y="-800" data-walk-filter><feGaussianBlur stdDeviation="26"></feGaussianBlur></filter>
+      <filter id="wGlow" filterUnits="userSpaceOnUse" x="-400" y="-800" data-walk-filter><feGaussianBlur stdDeviation="11"></feGaussianBlur></filter>
+      <filter id="wNear" filterUnits="userSpaceOnUse" x="-400" y="-800" data-walk-filter><feGaussianBlur stdDeviation="4"></feGaussianBlur></filter>
+    </defs>
+    <path data-w="fillLeft" fill="#eca557" filter="url(#wFill)"></path>
+    <path data-w="fillRight" fill="#db61aa" filter="url(#wFill)"></path>
+    <path data-w="edgeLeft" fill="none" stroke="#eca557" stroke-width="64" stroke-opacity=".09" filter="url(#wPool)"></path>
+    <path data-w="edgeRight" fill="none" stroke="#db61aa" stroke-width="72" stroke-opacity=".1" filter="url(#wPool)"></path>
+    <path data-w="glowLeft" fill="none" stroke="#eca557" stroke-width="16" stroke-opacity=".15" filter="url(#wGlow)"></path>
+    <path data-w="glowRight" fill="none" stroke="#db61aa" stroke-width="18" stroke-opacity=".16" filter="url(#wGlow)"></path>
+    <path data-w="lineLeft" fill="none" stroke="#eca557" stroke-width="7" stroke-opacity=".18" filter="url(#wNear)"></path>
+    <path data-w="lineRight" fill="none" stroke="#db61aa" stroke-width="7" stroke-opacity=".2" filter="url(#wNear)"></path>
+    <path data-w="lineLeft" fill="none" stroke="#eca557" stroke-width="2.2" stroke-opacity=".62"></path>
+    <path data-w="lineRight" fill="none" stroke="#db61aa" stroke-width="2.3" stroke-opacity=".64"></path>
+    <path data-w="strandLeft0" fill="none" stroke="#eca557" stroke-width=".9" stroke-opacity=".4" stroke-dasharray="190 16 60 28 300 10 90 34"></path>
+    <path data-w="strandLeft1" fill="none" stroke="#eca557" stroke-width=".7" stroke-opacity=".28" stroke-dasharray="70 40 240 18 120 52"></path>
+    <path data-w="strandRight0" fill="none" stroke="#db61aa" stroke-width="1" stroke-opacity=".42" stroke-dasharray="210 14 80 30 260 12 70 40"></path>
+    <path data-w="strandRight1" fill="none" stroke="#db61aa" stroke-width=".7" stroke-opacity=".3" stroke-dasharray="90 36 200 24 150 46"></path>
+  </svg>
+</div>

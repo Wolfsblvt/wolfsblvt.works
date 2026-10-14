@@ -1,0 +1,24 @@
+---
+/**
+ * Hello?: an open invitation. "Write to me" goes to the contact page; the Discord button tries the app first and falls
+ * back to the web profile; "Copy handle" copies the handle. Ends in Wolf's hand.
+ */
+import site from '../../site.config.mjs';
+import Icon from '../components/Icon.astro';
+
+const discordWeb = `https://discord.com/users/${site.discord.userId}`;
+---
+
+<section id="hello" class="frame sec lift" aria-labelledby="ct-h">
+  <h2 id="ct-h" class="ct-h">Arriving with a thought</h2>
+  <p style="margin:22px 0 0;font-size:20px;color:var(--text-soft);max-width:46ch">Whatever’s on your mind, I’d like to hear it.</p>
+  <div class="hello-acts">
+    <a class="btn btn-solid" href={site.contactUrl}><Icon ui="lucide:message-square-text" /> Write to me</a>
+    <a class="btn btn-discord" href={discordWeb} aria-label={`Message @${site.discord.handle} on Discord`} data-discord-app={`discord://-/users/${site.discord.userId}`}><Icon brand="discord" /> Message @{site.discord.handle}</a>
+    <button class="btn btn-line" type="button" aria-label={`Copy the Discord handle @${site.discord.handle}`} data-copy-handle={site.discord.handle}>Copy handle</button>
+  </div>
+  <div class="sign" data-reveal="write" aria-label="contact me, Wolf">
+    <div class="sign-1">contact me <svg class="upside" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.4 7.2c-.1.9 0 1.7.1 2.6"></path><path d="M15.4 7c.1.9.1 1.8 0 2.7"></path><path d="M6.4 13.6c1.4 2.6 3.4 3.7 5.7 3.6 2.4-.1 4.3-1.4 5.6-3.9"></path></svg></div>
+    <div class="sign-2">— Wolf</div>
+  </div>
+</section>

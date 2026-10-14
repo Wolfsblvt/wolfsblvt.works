@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Walk route framing</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Literata:wght@300;400&family=Albert+Sans:wght@400..800&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0b080c;color:#f3e8dc;font-family:'Literata',Georgia,serif}
+a{color:#73cae3}a:hover{color:#9fdcee}
+.lab{font-family:'Albert Sans',sans-serif}
+.pick{appearance:none;cursor:pointer;font:600 12.5px 'Albert Sans',sans-serif;border-radius:999px;padding:0 14px;min-height:32px;border:1px solid rgb(243 232 220 / 22%);background:transparent;color:#d1c0b8}
+.pick.on{background:#f3e8dc;color:#100b11;border-color:#f3e8dc}
+.vp{border-radius:6px;overflow:hidden;border:1px solid rgb(243 232 220 / 12%);background:linear-gradient(160deg,#100b11 0%,#181018 52%,#0c1217 100%)}
+</style>
+</helmet>
+<div style="width:1440px;height:1180px;box-sizing:border-box;padding:44px 56px;display:flex;flex-direction:column;gap:20px">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap">
+<div>
+<div class="lab" style="font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#c0b0b1">The Walk · route v2</div>
+<h1 style="margin:8px 0 0;font-weight:300;font-size:36px;letter-spacing:-.02em">The lines frame the content. The colour lives outside them.</h1>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end" class="lab">
+<div style="display:flex;gap:8px;align-items:center"><span style="font-size:12.5px;color:#9c8c93;width:64px">wind</span><sc-for list="{{windOpts}}" as="o" hint-placeholder-count="2"><button class="pick {{o.cls}}" onClick="{{o.pick}}" aria-pressed="{{o.on}}">{{o.label}}</button></sc-for></div>
+<div style="display:flex;gap:8px;align-items:center"><span style="font-size:12.5px;color:#9c8c93;width:64px">colour</span><sc-for list="{{intOpts}}" as="o" hint-placeholder-count="3"><button class="pick {{o.cls}}" onClick="{{o.pick}}" aria-pressed="{{o.on}}">{{o.label}}</button></sc-for></div>
+</div>
+</div>
+<div style="display:flex;gap:34px;align-items:flex-start">
+<sc-for list="{{views}}" as="v" hint-placeholder-count="3">
+<div style="display:flex;flex-direction:column;gap:10px">
+<div class="vp" style="width:{{v.dw}}px;height:{{v.dh}}px">
+<svg width="{{v.dw}}" height="{{v.dh}}" viewBox="{{v.vb}}" aria-hidden="true" style="display:block">
+<defs>
+<filter id="f-{{v.k}}" filterUnits="userSpaceOnUse" x="-400" y="-800" width="{{v.fW}}" height="{{v.fH}}"><feGaussianBlur stdDeviation="{{v.w.fillBlur}}"></feGaussianBlur></filter>
+<filter id="p-{{v.k}}" filterUnits="userSpaceOnUse" x="-400" y="-800" width="{{v.fW}}" height="{{v.fH}}"><feGaussianBlur stdDeviation="26"></feGaussianBlur></filter>
+<filter id="g-{{v.k}}" filterUnits="userSpaceOnUse" x="-400" y="-800" width="{{v.fW}}" height="{{v.fH}}"><feGaussianBlur stdDeviation="11"></feGaussianBlur></filter>
+<filter id="n-{{v.k}}" filterUnits="userSpaceOnUse" x="-400" y="-800" width="{{v.fW}}" height="{{v.fH}}"><feGaussianBlur stdDeviation="4"></feGaussianBlur></filter>
+</defs>
+<path d="{{v.w.fillL}}" fill="#eca557" fill-opacity="{{v.w.fillOp}}" filter="url(#f-{{v.k}})"></path>
+<path d="{{v.w.fillR}}" fill="#db61aa" fill-opacity="{{v.w.fillOpR}}" filter="url(#f-{{v.k}})"></path>
+<path d="{{v.w.edgeL}}" fill="none" stroke="#eca557" stroke-width="64" stroke-opacity=".09" filter="url(#p-{{v.k}})"></path>
+<path d="{{v.w.edgeR}}" fill="none" stroke="#db61aa" stroke-width="72" stroke-opacity=".1" filter="url(#p-{{v.k}})"></path>
+<path d="{{v.w.glowL}}" fill="none" stroke="#eca557" stroke-width="16" stroke-opacity=".15" filter="url(#g-{{v.k}})"></path>
+<path d="{{v.w.glowR}}" fill="none" stroke="#db61aa" stroke-width="18" stroke-opacity=".16" filter="url(#g-{{v.k}})"></path>
+<path d="{{v.w.lineL}}" fill="none" stroke="#eca557" stroke-width="7" stroke-opacity=".18" filter="url(#n-{{v.k}})"></path>
+<path d="{{v.w.lineR}}" fill="none" stroke="#db61aa" stroke-width="7" stroke-opacity=".2" filter="url(#n-{{v.k}})"></path>
+<path d="{{v.w.lineL}}" fill="none" stroke="#eca557" stroke-width="{{v.lw}}" stroke-opacity=".62"></path>
+<path d="{{v.w.lineR}}" fill="none" stroke="#db61aa" stroke-width="{{v.lw}}" stroke-opacity=".64"></path>
+<path d="{{v.w.strL1}}" fill="none" stroke="#eca557" stroke-width="{{v.sw}}" stroke-opacity=".4" stroke-dasharray="190 16 60 28 300 10 90 34"></path>
+<path d="{{v.w.strR1}}" fill="none" stroke="#db61aa" stroke-width="{{v.sw}}" stroke-opacity=".42" stroke-dasharray="210 14 80 30 260 12 70 40"></path>
+<rect x="{{v.fx}}" y="0" width="{{v.fwid}}" height="{{v.H}}" fill="none" stroke="#73cae3" stroke-opacity=".35" stroke-width="{{v.sw}}" stroke-dasharray="12 10"></rect>
+<sc-for list="{{v.blocks}}" as="b" hint-placeholder-count="0"><rect x="{{b.x}}" y="{{b.y}}" width="{{b.w}}" height="{{b.h}}" rx="{{b.rx}}" fill="{{b.fill}}" fill-opacity="{{b.op}}"></rect></sc-for>
+</svg>
+</div>
+<div class="lab" style="max-width:{{v.dw}}px"><div style="font-weight:700;font-size:15px">{{v.title}}</div><div style="margin-top:4px;font-size:12.5px;line-height:1.5;color:#c0b0b1">{{v.note}}</div></div>
+</div>
+</sc-for>
+</div>
+<p class="lab" style="margin:0;font-size:13px;color:#9c8c93;max-width:110ch">Dashed cyan: the content frame (80rem, gutters per Leitsatz). Grey blocks: stand-in content; the full-width bar is a project strip covering the walk. Both lines share one meander, so every bend has a similar curve, while the road between them breathes narrower and wider. The colour edge mostly sits on the line and sometimes spills past it or stops short.</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1180}}'>
+function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function r1(n) { return Math.round(n * 10) / 10; }
+function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+function smooth(pts) {
+  let d = 'M' + r1(pts[0][0]) + ' ' + r1(pts[0][1]);
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+    d += ' C' + r1(p1[0] + (p2[0] - p0[0]) / 6) + ' ' + r1(p1[1] + (p2[1] - p0[1]) / 6) + ' ' + r1(p2[0] - (p3[0] - p1[0]) / 6) + ' ' + r1(p2[1] - (p3[1] - p1[1]) / 6) + ' ' + r1(p2[0]) + ' ' + r1(p2[1]);
+  }
+  return d;
+}
+// Same generator as Main.dc.html (keep in sync while exploring).
+function buildWalk(W, H, wind, intensity) {
+  const g = clamp(W * 0.025, 16, 32); const fw = Math.min(1280, W - 2 * g); const fx = (W - fw) / 2;
+  const narrow = W < 720; const wide = wind === 'wider';
+  const rnd = mulberry32(0x57414C4B);
+  const step = narrow ? 620 : 980; const n = Math.ceil((H + 1600) / step) + 2;
+  const A = narrow ? 0.028 : (wide ? 0.06 : 0.04), B = narrow ? 0.016 : (wide ? 0.05 : 0.035);
+  const centre0 = narrow ? 0.5 : 0.475, half0 = narrow ? 0.49 : 0.485;
+  const ph = rnd() * 6.28, ph2 = rnd() * 6.28, f1 = 1.25 + rnd() * 0.2, f2 = 0.62 + rnd() * 0.15;
+  const L = [], R = [], GL = [], GR = [], FL = [], FR = [], SL1 = [], SL2 = [], SR1 = [], SR2 = [];
+  const jit = (a) => (rnd() - 0.5) * 2 * fw * a;
+  for (let i = 0; i < n; i++) {
+    const y = -step + i * step + (rnd() - 0.5) * step * 0.18;
+    const c = centre0 + A * Math.sin(i * f1 + ph) + (rnd() - 0.5) * 0.008;
+    const hw = half0 + B * Math.sin(i * f2 + ph2) + (rnd() - 0.5) * 0.006;
+    const lx = fx + (c - hw) * fw + jit(0.004), rx = fx + (c + hw) * fw + jit(0.004);
+    L.push([lx, y]); R.push([rx, y]); GL.push([lx + jit(0.012), y]); GR.push([rx + jit(0.014), y]);
+    const big = rnd() < 0.28 ? 2.4 : 1;
+    FL.push([lx + jit(0.022 * big), y + (rnd() - 0.5) * step * 0.3]); FR.push([rx + jit(0.026 * big), y + (rnd() - 0.5) * step * 0.3]);
+    SL1.push([lx + jit(0.003), y + (rnd() - 0.5) * 40]); SL2.push([lx + jit(0.005), y]); SR1.push([rx + jit(0.003), y + (rnd() - 0.5) * 40]); SR2.push([rx + jit(0.005), y]);
+  }
+  FL.sort((a, b) => a[1] - b[1]); FR.sort((a, b) => a[1] - b[1]);
+  const y0 = FL[0][1], yN = FL[FL.length - 1][1]; const edgeL = smooth(FL), edgeR = smooth(FR);
+  const inten = { quiet: 0.11, standard: 0.16, bold: 0.25 }[intensity] * (narrow ? 0.8 : 1);
+  return {
+    fx, fw, fillBlur: narrow ? 16 : 30,
+    fillL: edgeL + ' L-120 ' + r1(yN) + ' L-120 ' + r1(y0) + ' Z', fillR: edgeR + ' L' + (W + 120) + ' ' + r1(yN) + ' L' + (W + 120) + ' ' + r1(y0) + ' Z',
+    edgeL, edgeR, fillOp: inten, fillOpR: r1(inten * 1.12 * 100) / 100,
+    lineL: smooth(L), lineR: smooth(R), glowL: smooth(GL), glowR: smooth(GR), strL1: smooth(SL1), strR1: smooth(SR1),
+  };
+}
+function blocks(W, H, fx, fw) {
+  const out = []; const prose = Math.min(fw, 680); let y = 120;
+  const bar = (x, w, h, fill, op, rx) => out.push({ x: r1(x), y: r1(y), w: r1(w), h, fill: fill || '#d1c0b8', op: op || 0.16, rx: rx || 4 });
+  bar(fx, Math.min(fw * 0.8, 1100), 130, '#f3e8dc', 0.12); y += 190;
+  bar(fx, prose * 0.7, 26); y += 44; bar(fx, prose * 0.55, 26); y += 140;
+  bar(0, W, 380, '#151922', 0.95, 0); y += 520;
+  bar(fx, prose, 22); y += 36; bar(fx, prose * 0.9, 22); y += 36; bar(fx, prose * 0.6, 22); y += 120;
+  bar(fx + fw * 0.12, Math.min(fw * 0.7, 900), 260, '#eca557', 0.08, 40); y += 380;
+  bar(fx, prose, 22); y += 36; bar(fx, prose * 0.75, 22); y += 160;
+  if (y < H - 200) { bar(fx, fw, 300, '#f3e8dc', 0.05, 8); }
+  return out;
+}
+const WIND = ['gentle', 'wider'], INT = ['quiet', 'standard', 'bold'];
+class Component extends DCLogic {
+  state = { wind: 'gentle', intensity: 'standard' };
+  renderVals() {
+    const specs = [
+      { k: 'a', W: 1920, H: 2600, s: 0.33, title: '1920 · wide desktop', note: 'Content stays capped; the colour takes the extra width outside the lines.' },
+      { k: 'b', W: 1440, H: 2600, s: 0.33, title: '1440 · desktop', note: 'Lines sit at the content edges, bending in and out by a few percent.' },
+      { k: 'c', W: 390, H: 1700, s: 0.5, title: '390 · phone', note: 'A gentle wind in the gutters: still a path, never over the text for long.' },
+    ];
+    const views = specs.map((v) => {
+      const w = buildWalk(v.W, v.H, this.state.wind, this.state.intensity);
+      return {
+        k: v.k, title: v.title, note: v.note, w, H: v.H,
+        dw: Math.round(v.W * v.s), dh: Math.round(v.H * v.s), vb: '0 0 ' + v.W + ' ' + v.H, fW: v.W + 800, fH: v.H + 1600,
+        fx: r1(w.fx), fwid: r1(w.fw), lw: r1(2.2 / v.s * 0.6), sw: r1(1 / v.s * 0.7),
+        blocks: blocks(v.W, v.H, w.fx, w.fw),
+      };
+    });
+    return {
+      views,
+      windOpts: WIND.map((o) => ({ label: o, on: o === this.state.wind, cls: o === this.state.wind ? 'on' : '', pick: () => this.setState({ wind: o }) })),
+      intOpts: INT.map((o) => ({ label: o, on: o === this.state.intensity, cls: o === this.state.intensity ? 'on' : '', pick: () => this.setState({ intensity: o }) })),
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,66 @@
+---
+/**
+ * Impressum (information pursuant to § 5 DDG). The provider card shows the legal operator from the private build-time
+ * projection; source carries the obvious fixture. The shared Works contact form is the additional direct contact.
+ */
+import site from '../../../site.config.mjs';
+import Nap from '../../components/Nap.astro';
+import Base from '../../layouts/Base.astro';
+import { additionalDirectContact, loadLegalOperator } from '../../lib/legal-operator.mjs';
+import '../../styles/rooms.css';
+
+const operator = loadLegalOperator({ requireProduction: process.env.WORKS_PUBLICATION === '1' });
+const address = operator.postalAddress;
+const direct = additionalDirectContact(operator);
+const fixture = operator.fixture === true;
+---
+
+<Base
+  page="Impressum"
+  description="Provider and contact information for wolfsblvt.works."
+  canonical={`${site.url}/impressum/`}
+  indexing="legal"
+  loc="Impressum"
+  footerCurrent="impressum"
+>
+  <main id="main" class:list={['frame lift lg', { fixtures: fixture }]}>
+    <div class="lg-head">
+      <div>
+        <h1 class="lg-h">Impressum</h1>
+        <p class="lg-sub">Information pursuant to § 5 DDG</p>
+        {fixture && <span class="fx-key ui">Highlighted bits are dummy fixtures. The real values come from the private build.</span>}
+      </div>
+      <Nap lines={['yes, a real person', 'is behind this.']} />
+    </div>
+    <div class="lg-grid single">
+      <article class="prose">
+        <h2 id="provider" style="margin-top:8px"><span class="n">01</span>Provider</h2>
+        <div class="card">
+          <span class="tape" aria-hidden="true"></span><span class="tape b" aria-hidden="true"></span>
+          <div class="card-in">
+            <address>
+              <span class:list={['who', { fx: fixture }]}>{operator.legalName}</span><br />
+              <span class:list={{ fx: fixture }}>{address.streetAddress}</span><br />
+              <span class:list={{ fx: fixture }}>{address.postalCode} {address.locality}</span><br />
+              <span class:list={{ fx: fixture }}>{address.countryName}</span>
+            </address>
+          </div>
+        </div>
+        <p>Wolfsblvt Works is the name I make and publish things under. It isn’t a company or a separate legal person.</p>
+
+        <h2 id="contact"><span class="n">02</span>Contact</h2>
+        <dl class="facts">
+          <dt>Email</dt><dd><a href={`mailto:${operator.contacts.impressum}`}>{operator.contacts.impressum}</a></dd>
+          <dt>Direct contact</dt><dd><a href={direct.href} class:list={{ fx: fixture }}>{direct.label}</a></dd>
+        </dl>
+        <p>For privacy questions, see <a href="/privacy/">Privacy and data</a>.</p>
+
+        <div class="next">
+          <p class="next-h">that’s all of it.</p>
+          <a class="lk" href="/">Back to the walk</a>
+          <a class="lk" href="/privacy/">Privacy and data</a>
+        </div>
+      </article>
+    </div>
+  </main>
+</Base>

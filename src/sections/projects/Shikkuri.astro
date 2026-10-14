@@ -1,0 +1,28 @@
+---
+/** Shikkuri's window. Placeholder voice and branding until its own window is authored. */
+const SPINES = ['#5b3a52', '#3f5566', '#6b4a2f', '#2f4d45', '#59405f', '#7a3b3b', '#3e4a6b', '#5e5a34', '#46324f', '#2f5560', '#6a4660'];
+---
+
+<section class="frame sec lift" data-placeholder="project-window" aria-labelledby="shk-h">
+  <div class="shk">
+    <div class="shk-panel">
+      <div class="kicker">Shikkuri</div>
+      <h2 id="shk-h" class="shk-h">An evening to play. Not another evening choosing.</h2>
+      <p style="margin:22px 0 0;font-size:18px;color:var(--text-soft);max-width:46ch">A library full of games can leave you scrolling until the evening is gone. Shikkuri is an idea for finding games that fit you and the time you actually have.</p>
+      <p class="ui" style="margin:16px 0 0;font-size:14px;color:var(--text-quiet)">A larger project, currently paused.</p>
+      <details>
+        <summary>How it started</summary>
+        <div class="det-body">
+          <p style="margin:0 0 12px">It started with a much smaller question: “Can I let an agent read my steam library and the categories I assigned games to inside Steam?”</p>
+          <p style="margin:0">That grew into a detailed game-intelligence concept. I paused it when I realised how much attention doing it properly would take, and that starting with smaller projects might be the better way in.</p>
+        </div>
+      </details>
+    </div>
+    <div data-reveal="shelf" aria-hidden="true">
+      <div class="shk-shelf">
+        {SPINES.map((color, i) => <div class:list={['spine', { pick: i === 6 }]} style={`height:${120 + ((i * 37) % 60)}px;background:${color};transition-delay:${i * 50}ms`}></div>)}
+      </div>
+      <div data-reveal="write" style="margin-top:14px;text-align:right"><div class="scribble" style="font-size:18px;transform:rotate(-2deg);display:inline-block">this one, tonight?</div></div>
+    </div>
+  </div>
+</section>

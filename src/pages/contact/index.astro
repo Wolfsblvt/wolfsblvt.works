@@ -1,0 +1,161 @@
+---
+/**
+ * The Works contact page, served at contact.wolfsblvt.works. One form[data-contact-form]; the Worker prepares it on
+ * each GET (Turnstile site key and a signed issue token) and handles the POST. Field names, categories, products and
+ * limits come from the shared contract. Behaviour: src/features/contact/contact-form.ts.
+ */
+import site from '../../../site.config.mjs';
+import { CATEGORIES, FIELDS, LIMITS } from '../../../shared/contact-contract';
+import Icon from '../../components/Icon.astro';
+import { CONTACT_PRODUCTS } from '../../features/contact/products';
+import Base from '../../layouts/Base.astro';
+import '../../features/contact/contact.css';
+
+const inbox = site.contact.inbox;
+const discordWeb = `https://discord.com/users/${site.discord.userId}`;
+const productsJson = JSON.stringify(Object.fromEntries(CONTACT_PRODUCTS.map((p) => [p.slug, { label: p.label, home: p.home }])));
+---
+
+<Base
+  page="Contact"
+  description="Arriving with a thought? Whatever’s on your mind, I’d like to hear it. Write to Wolf at Wolfsblvt Works."
+  canonical={site.contactUrl}
+  socialImage={{ url: `${site.url}/social/contact.png`, alt: 'Arriving with a thought, between the two Walk lines of Wolfsblvt Works.' }}
+  navOn="hello"
+  loc="Contact"
+  linkOrigin={site.url}
+  footerCurrent="contact"
+>
+  <Fragment slot="loc">Contact<a class="from-back" href="#" hidden data-from-back><span data-from-back-icon></span><span>back to <span data-from-back-label></span></span></a></Fragment>
+  <main id="main" class="frame lift ct">
+    <div class="ct-grid">
+      <div class="ct-head">
+        <h1 class="ct-page-h">Arriving with a thought</h1>
+        <p class="ct-lead">Whatever’s on your mind, I’d like to hear it.</p>
+        <p class="ct-scr">half a thought counts too.</p>
+      </div>
+      <div class="ct-info">
+        <div class="ct-block">
+          <p class="ct-block-h">When you send it</p>
+          <ul class="ct-facts">
+            <li>It comes to me, and a plain-text copy goes to you.</li>
+            <li>No mailing list, no ticket system, no database. Just those two emails.</li>
+            <li>A Cloudflare check runs in the background to keep bots out.</li>
+            <li>Please don’t send passwords, keys or anything secret. For a security issue, pick “Security” and we’ll find a safer way to talk.</li>
+          </ul>
+          <p class="ct-more">The details are in <a href={`${site.url}/privacy/#contact`}>Privacy and data</a>.</p>
+        </div>
+        <div class="ct-block">
+          <p class="ct-block-h">Or, if a form isn’t your thing</p>
+          <div class="ct-other">
+            <a class="lk" href={`mailto:${inbox}`}>{inbox}</a>
+            <a class="lk lk-discord" href={discordWeb}>@{site.discord.handle} on Discord</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="ct-card-wrap">
+        <div class="ct-yoru" aria-hidden="true" data-contact-yoru><div class="sprite s-idle"></div></div>
+        <div class="ct-card">
+          <p class="ct-from" hidden data-product-context>
+            <span data-product-context-icon></span>
+            <span>You came from <strong data-product-label></strong>, so it’s picked below. Change it if you like.</span>
+          </p>
+
+          <form class="ct-form" data-contact-form data-subject-max={LIMITS.subjectMax} data-products={productsJson} novalidate aria-labelledby="ct-form-t" method="post">
+            <h2 id="ct-form-t" class="sr">Write to me</h2>
+            <div class="err-sum" data-error-summary tabindex="-1" role="alert" hidden>
+              <p class="err-t" data-error-summary-title></p>
+              <ul data-error-summary-list></ul>
+            </div>
+
+            <fieldset class="field" aria-describedby="category-hint">
+              <legend class="lbl">Roughly what’s it about?</legend>
+              <p class="hint" id="category-hint">So it lands on the right pile. “Something else” is always fine.</p>
+              <div class="pills" role="radiogroup">
+                {CATEGORIES.map((c, i) => (
+                  <label class="pill"><input type="radio" name={FIELDS.category} value={c.value} id={i === 0 ? 'category' : `category-${c.value}`} /><span class="pill-t">{c.label}</span></label>
+                ))}
+              </div>
+            </fieldset>
+
+            <div class="field" data-combo>
+              <label class="lbl" for="product-search">About one of the projects? <span class="opt">optional</span></label>
+              <div class="combo">
+                <span class="combo-ico" data-combo-icon><Icon ui="search" /></span>
+                <input id="product-search" class="inp combo-inp" type="text" role="combobox" aria-expanded="false" aria-controls="product-list" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="Search the projects…" data-combo-input />
+                <button type="button" class="combo-clear" aria-label="Clear the project" hidden data-combo-clear>×</button>
+                <ul id="product-list" role="listbox" class="combo-list" aria-label="Projects" hidden data-combo-list>
+                  {CONTACT_PRODUCTS.map((p) => (
+                    <li id={`opt-${p.slug}`} role="option" aria-selected="false" class="combo-opt" data-slug={p.slug} data-label={p.label}>
+                      {p.icon ? <span class="pico"><Icon product={p.icon} size={20} /></span> : <span class="pico ph" aria-hidden="true">{p.initial}</span>}
+                      <span class="o-l">{p.label}</span>
+                      <span class="ill">{p.type}</span>
+                      <span class="check" aria-hidden="true">✓</span>
+                    </li>
+                  ))}
+                  <li class="combo-empty" role="presentation" hidden data-combo-empty>Nothing by that name. Leave it empty and just tell me.</li>
+                </ul>
+              </div>
+              <select id="product" name={FIELDS.product} class="sr" tabindex="-1" aria-hidden="true">
+                <option value=""></option>
+                {CONTACT_PRODUCTS.map((p) => <option value={p.slug}>{p.label}</option>)}
+              </select>
+            </div>
+
+            <div class="field">
+              <label class="lbl" for="name">Your name <span class="opt">optional</span></label>
+              <input id="name" name={FIELDS.name} class="inp" type="text" autocomplete="name" maxlength={LIMITS.nameMax} />
+            </div>
+
+            <div class="field">
+              <label class="lbl" for="email">Your email</label>
+              <p class="hint" id="email-hint">So I can write back. Your copy of the message goes here too.</p>
+              <input id="email" name={FIELDS.email} class="inp" type="email" autocomplete="email" inputmode="email" aria-describedby="email-hint" maxlength={LIMITS.emailMax} />
+            </div>
+
+            <div class="field">
+              <div class="lbl-row"><label class="lbl" for="subject">Subject</label><span class="count" data-subject-count>0 / {LIMITS.subjectMax}</span></div>
+              <input id="subject" name={FIELDS.subject} class="inp" type="text" />
+            </div>
+
+            <div class="field">
+              <label class="lbl" for="message">Your message</label>
+              <textarea id="message" name={FIELDS.message} class="inp" rows="8" aria-describedby="message-hint"></textarea>
+              <div class="foot-row"><span id="message-hint">Plain text. Links are fine.</span><span data-message-count>0 characters</span></div>
+            </div>
+
+            <div class="hp" aria-hidden="true"><label>Leave this empty <input name={FIELDS.honeypot} type="text" tabindex="-1" autocomplete="off" /></label></div>
+            <input type="hidden" name={FIELDS.formToken} data-form-token value="" />
+            <input type="hidden" name={FIELDS.submission} data-submission-id value="" />
+            <input type="hidden" name={FIELDS.attempt} data-attempt value="0" />
+            <div data-turnstile></div>
+
+            <div class="ct-send">
+              <button class="btn btn-solid" type="submit" data-submit disabled><Icon ui="lucide:send" size={17} /><span data-submit-label>Send it</span></button>
+              <p class="note" data-submit-note aria-live="polite"></p>
+            </div>
+            <noscript><p class="note">The form needs JavaScript for its bot check. Email <a href={`mailto:${inbox}`}>{inbox}</a> instead.</p></noscript>
+          </form>
+
+          <div class="outcome" data-outcome tabindex="-1" hidden>
+            <p class="out-k" data-outcome-kicker></p>
+            <h2 class="out-h" data-outcome-title></h2>
+            <p class="out-t" data-outcome-text></p>
+            <p class="out-ref" data-outcome-reference hidden>Reference<code data-outcome-reference-value></code></p>
+            <p class="out-scr" data-outcome-scribble hidden></p>
+            <div class="out-acts">
+              <button class="btn btn-solid" type="button" data-retry hidden>Try again</button>
+              <a class="btn btn-line" data-fallback-email href={`mailto:${inbox}`} hidden>Email {inbox}</a>
+              <a class="btn btn-line" data-outcome-home href={`${site.url}/`} hidden>Back to the walk</a>
+              <button class="btn-quiet" type="button" data-another hidden>Write another</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script>
+    import '../../features/contact/contact-form';
+  </script>
+</Base>

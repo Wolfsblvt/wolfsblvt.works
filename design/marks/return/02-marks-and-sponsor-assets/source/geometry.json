@@ -1,0 +1,103 @@
+{
+  "note": "Units: lockups are drawn with WOLFSBLVT at font-size 100 (cap height 70), baseline y=0, starting x=0. Icon on a 32-unit grid.",
+  "name": {
+    "font": "Abril Fatface",
+    "size": 100,
+    "letterSpacingEm": 0.01,
+    "width": 606.4,
+    "capHeight": 70
+  },
+  "icon": {
+    "grid": 32,
+    "stroke": 3,
+    "orange": "M4.6 20.5V13A8 8 0 0 1 12.6 5H17.5",
+    "magenta": "M27.4 8.5V15A12.4 12.4 0 0 1 15 27.4H9.5",
+    "dot": [
+      17.15,
+      17.35
+    ],
+    "dotRadius": 3.1,
+    "bendRadius": {
+      "orange": 8,
+      "magenta": 12.4
+    }
+  },
+  "lockup": {
+    "full": {
+      "viewBox": [
+        -48.16,
+        -99.96,
+        725.72,
+        157.73
+      ],
+      "cornerScale": 6.052,
+      "orangeAt": [
+        -37.08,
+        -88.88
+      ],
+      "magentaAt": [
+        666.49,
+        46.69
+      ],
+      "works": {
+        "x": 498.133,
+        "y": -28,
+        "k": 1.167,
+        "sw": 3.3,
+        "hw": 5.5
+      }
+    },
+    "compact": {
+      "viewBox": [
+        -41.49,
+        -97.49,
+        691.59,
+        158.57
+      ],
+      "cornerScale": 4.763,
+      "orangeAt": [
+        -32.34,
+        -88.34
+      ],
+      "magentaAt": [
+        638.74,
+        18.34
+      ],
+      "works": {
+        "x": 465.464,
+        "y": -21,
+        "k": 1.54,
+        "sw": 3.9,
+        "hw": 6
+      }
+    },
+    "switchBelowPx": 40
+  },
+  "sponsor": {
+    "cornerScale": 4,
+    "radiusTopLeftPx": 32,
+    "radiusBottomRightPx": 49.6
+  },
+  "motion": {
+    "dim": 0.14,
+    "sweep": 2.2,
+    "ws": 0.19,
+    "wl": 0.26,
+    "corner": 0.7,
+    "stagger": 0.38,
+    "after": 1.15
+  },
+  "colors": {
+    "canvas": "#100b11",
+    "text": "#f3e8dc",
+    "soft": "#d1c0b8",
+    "orange": "#eca557",
+    "rose": "#ef8ea1",
+    "magenta": "#db61aa",
+    "paper": "#f6efe6",
+    "ink": "#22171c",
+    "orangeInk": "#b8661f",
+    "magentaInk": "#a8327a",
+    "roseInk": "#c4506b"
+  }
+}

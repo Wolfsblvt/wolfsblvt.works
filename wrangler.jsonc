@@ -1,0 +1,60 @@
+{
+  // The Wolfsblvt Works site: Workers Static Assets from the Astro build, with a Worker that runs first only where
+  // the edge must act (home pile seed, contact page and submissions, the /contact/ redirect). Everything else is
+  // served straight from the assets, so the legal pages and assets keep working even if the Worker fails.
+  //
+  // Deliberately dormant: no account, no routes, no custom domains. Wolf Ops owns adoption (routes for
+  // wolfsblvt.works and contact.wolfsblvt.works, secrets, Turnstile widget, Email Service senders) as its own Work;
+  // see docs/DEVELOPMENT.md, "Publication".
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "wolfsblvt-works",
+  "main": "./worker/index.ts",
+  "compatibility_date": "2026-08-15",
+  "assets": {
+    "directory": "./artifacts/site",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash",
+    "run_worker_first": ["/", "/contact", "/contact/"]
+  },
+  // Local development (`npm run dev:worker`): the contact page answers at /contact/ and never sends mail.
+  "vars": {
+    "ENVIRONMENT_NAME": "development",
+    "BUILD_VERSION": "local",
+    "TURNSTILE_SITE_KEY": "1x00000000000000000000AA",
+    "CONTACT_INBOX": "contact@wolfsblvt.works",
+    "CONTACT_SENDING_ENABLED": "false"
+  },
+  "send_email": [
+    { "name": "CONTACT_INTERNAL", "destination_address": "contact@wolfsblvt.works" },
+    { "name": "CONTACT_VISITOR_COPY", "allowed_sender_addresses": ["contact@wolfsblvt.works"] }
+  ],
+  "ratelimits": [
+    { "name": "RATE_IP", "namespace_id": "1101", "simple": { "limit": 10, "period": 60 } },
+    { "name": "RATE_RECIPIENT", "namespace_id": "1102", "simple": { "limit": 5, "period": 60 } },
+    { "name": "RATE_LOCATION", "namespace_id": "1103", "simple": { "limit": 60, "period": 60 } }
+  ],
+  "observability": { "enabled": true },
+  "env": {
+    "production": {
+      // Secrets (wrangler secret put): TURNSTILE_SECRET_KEY, CONTACT_FORM_SECRET. The site key placeholder makes the
+      // contact service refuse to send until the real widget is configured.
+      "vars": {
+        "ENVIRONMENT_NAME": "production",
+        "BUILD_VERSION": "unset",
+        "TURNSTILE_SITE_KEY": "REPLACE_WITH_PRODUCTION_TURNSTILE_SITE_KEY",
+        "CONTACT_INBOX": "contact@wolfsblvt.works",
+        "CONTACT_SENDING_ENABLED": "true"
+      },
+      "send_email": [
+        { "name": "CONTACT_INTERNAL", "destination_address": "contact@wolfsblvt.works" },
+        { "name": "CONTACT_VISITOR_COPY", "allowed_sender_addresses": ["contact@wolfsblvt.works"] }
+      ],
+      "ratelimits": [
+        { "name": "RATE_IP", "namespace_id": "1101", "simple": { "limit": 10, "period": 60 } },
+        { "name": "RATE_RECIPIENT", "namespace_id": "1102", "simple": { "limit": 5, "period": 60 } },
+        { "name": "RATE_LOCATION", "namespace_id": "1103", "simple": { "limit": 60, "period": 60 } }
+      ]
+    }
+  }
+}

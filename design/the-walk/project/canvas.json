@@ -1,0 +1,110 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Main.dc.html": {
+      "expand": "fill",
+      "h": 6700,
+      "is_interactive": true,
+      "title": "The Walk — round 6 (interactive page, with the marks)",
+      "w": 1440,
+      "x": 0,
+      "y": 0
+    },
+    "PilePieces.dc.html": {
+      "h": 1900,
+      "is_interactive": true,
+      "title": "Pile pieces v2 (reference; compact controls and expanded forms superseded by round 3 + the Pile return)",
+      "w": 1440,
+      "x": 1507,
+      "y": 1280
+    },
+    "WalkFraming.dc.html": {
+      "h": 1180,
+      "is_interactive": true,
+      "title": "Walk route v2 — framing the content at three widths",
+      "w": 1440,
+      "x": 1520,
+      "y": 0
+    },
+    "Privacy.dc.html": {
+      "h": 3600,
+      "is_interactive": true,
+      "title": "Privacy and data (/privacy/, noindex) — dummy operator fixtures",
+      "w": 1440,
+      "x": 3060,
+      "y": 0
+    },
+    "Impressum.dc.html": {
+      "h": 1700,
+      "is_interactive": true,
+      "title": "Impressum (/impressum/, noindex) — dummy operator fixtures",
+      "w": 1440,
+      "x": 4580,
+      "y": 0
+    },
+    "NotFound.dc.html": {
+      "h": 1320,
+      "is_interactive": true,
+      "title": "404 — off the path (click Yoru)",
+      "w": 1440,
+      "x": 4580,
+      "y": 1800
+    },
+    "ServerError.dc.html": {
+      "h": 900,
+      "is_interactive": true,
+      "title": "503 — something broke (self-contained in production)",
+      "w": 1440,
+      "x": 4580,
+      "y": 3220
+    },
+    "Contact.dc.html": {
+      "h": 1760,
+      "is_interactive": true,
+      "title": "Contact (contact.wolfsblvt.works) — try it: State tweak shows every outcome",
+      "w": 1440,
+      "x": 3060,
+      "y": 3720
+    },
+    "Finishing.dc.html": {
+      "h": 3200,
+      "is_interactive": false,
+      "title": "Finishing touches — signpost, social cards, app icons, favicon (pick by letter)",
+      "w": 1440,
+      "x": -1560,
+      "y": 0
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-10-13T04:10:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {
+    "round1": {
+      "kind": "title1",
+      "maxW": 2960,
+      "text": "The Walk · round 7 — finishing touches sheet, then the build",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    }
+  },
+  "order": [
+    "Finishing.dc.html",
+    "Main.dc.html",
+    "WalkFraming.dc.html",
+    "PilePieces.dc.html",
+    "Contact.dc.html",
+    "Privacy.dc.html",
+    "Impressum.dc.html",
+    "NotFound.dc.html",
+    "ServerError.dc.html"
+  ],
+  "pages": [],
+  "title": "Wolfsblvt Works — The Walk"
+}

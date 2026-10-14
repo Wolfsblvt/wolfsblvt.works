@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Works Marks — Round 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,300..800;1,7..72,300..800&family=Fraunces:opsz,wght,SOFT@9..144,300..900,0..100&family=Playfair+Display:wght@900&family=Gloock&family=Abril+Fatface&family=DM+Serif+Display&family=Shantell+Sans:wght@400;500&family=Albert+Sans:wght@400..800&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --desk:#1b1a1e; --desk-line:#2a282e; --board:#0f0e11; --label:#a8a2ad; --label-strong:#ece6ef;
+  --note:#f4e9c8; --note-ink:#2d2618; --pin:#db61aa;
+  --canvas:#100b11; --text:#f3e8dc; --soft:#d1c0b8; --muted:#c0b0b1;
+  --orange:#eca557; --rose:#ef8ea1; --magenta:#db61aa; --cyan:#73cae3;
+  --paper:#f6efe6; --ink:#22171c; --rule:rgb(243 232 220 / 12%);
+}
+*{box-sizing:border-box}
+html{background:var(--desk)}
+body{margin:0;color:var(--label-strong);font-family:'Albert Sans',system-ui,sans-serif;font-size:14px;line-height:1.5;background:var(--desk);background-image:radial-gradient(var(--desk-line) 1px,transparent 1px);background-size:22px 22px}
+.wrap{max-width:1640px;margin:0 auto;padding:40px clamp(16px,3vw,48px) 120px}
+h1,h2,h3{margin:0}
+.top{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:28px;align-items:start;margin-bottom:28px}
+.top h1{font-family:'Literata',serif;font-weight:400;font-size:clamp(34px,4vw,52px);line-height:1.02;letter-spacing:-.02em;font-variation-settings:'opsz' 72}
+.lede{color:#c9c2cd;max-width:64ch;margin-top:14px;font-size:15.5px}
+.cap{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--label);margin:0 0 8px}
+.note{background:var(--note);color:var(--note-ink);border-radius:3px;padding:16px 18px 18px;box-shadow:0 10px 24px rgb(0 0 0 / 35%);position:relative;font-size:13.5px;line-height:1.5}
+.note::before{content:"";position:absolute;top:-6px;left:22px;width:12px;height:12px;border-radius:50%;background:var(--pin);box-shadow:0 2px 3px rgb(0 0 0 / 40%)}
+.note h4{margin:0 0 6px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;opacity:.75}
+.note p{margin:0 0 8px}.note p:last-child{margin:0}
+.note ul{margin:4px 0 0;padding-left:18px}.note li{margin:3px 0}
+.note q{font-style:italic}
+.tilt{transform:rotate(.6deg)}.tilt-l{transform:rotate(-.6deg)}
+/* toolbar */
+.bar{position:sticky;top:0;z-index:20;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;padding:10px 14px;margin:0 0 30px;background:rgb(20 19 23 / 92%);backdrop-filter:blur(8px);border:1px solid #2c2930;border-radius:10px}
+.bar label{display:flex;gap:8px;align-items:center;color:var(--label);font-size:12.5px}
+select,.btn{appearance:none;border:1px solid #3a3640;background:#1a181d;color:var(--label-strong);font:inherit;font-size:12.5px;padding:6px 12px;border-radius:999px;cursor:pointer}
+select{padding-right:28px;background-image:linear-gradient(45deg,transparent 50%,#a8a2ad 50%),linear-gradient(135deg,#a8a2ad 50%,transparent 50%);background-position:calc(100% - 15px) 55%,calc(100% - 10px) 55%;background-size:5px 5px;background-repeat:no-repeat}
+.btn:hover,select:hover{border-color:var(--cyan)}
+.btn:focus-visible,select:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.btn[aria-pressed=true]{background:var(--label-strong);color:#141216;border-color:var(--label-strong)}
+.seg{display:inline-flex;gap:4px}
+.sec{margin:64px 0 20px;display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+.sec h2{font-family:'Literata',serif;font-weight:500;font-size:30px;font-variation-settings:'opsz' 48}
+.sec .k{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--label)}
+.board{background:var(--board);border:1px solid #2c2930;border-radius:10px;padding:22px;margin-bottom:30px;position:relative}
+.board-h{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+.board-h .tag{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--label)}
+.board-h h3{font-family:'Literata',serif;font-weight:500;font-size:26px;margin-top:2px;font-variation-settings:'opsz' 48}
+.board-h .one{color:#c9c2cd;margin-top:4px;max-width:76ch}
+.ctl{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ctl .mlabel{font-size:12px;color:var(--label)}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.col{display:flex;flex-direction:column;gap:14px;min-width:0}
+.col-h{display:flex;align-items:baseline;gap:10px}
+.col-h b{font-family:'Literata',serif;font-weight:600;font-size:19px}
+.col-h span{color:var(--label);font-size:13px}
+.panel{border-radius:8px;padding:18px;position:relative;overflow:hidden}
+.pd{background:linear-gradient(160deg,#100b11 0%,#181018 52%,#0c1217 100%);border:1px solid var(--rule)}
+.pl{background:var(--paper);color:var(--ink)}
+.pd .cap{color:#9c8c93}.pl .cap{color:#8a777d}
+.lock{display:block;width:100%;height:auto;overflow:visible}
+.center{display:flex;align-items:center;justify-content:center}
+.row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.sizes{display:flex;align-items:flex-end;gap:16px}
+.sizes figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:10.5px;color:#9c8c93}
+.pl .sizes figure{color:#8a777d}
+.tab{display:flex;align-items:center;gap:8px;height:34px;padding:0 14px;border-radius:9px 9px 0 0;font-size:12.5px;width:max-content}
+.tabbar{display:flex;padding:8px 10px 0;border-radius:8px 8px 0 0}
+.tabbar.d{background:#1c1b20}.tabbar.d .tab{background:#2b2a30;color:#e9e6ee}
+.tabbar.l{background:#e7e2db}.tabbar.l .tab{background:#fff;color:#2a2a2a}
+.slot{display:flex;align-items:center;gap:14px;padding:10px 14px;border-radius:8px}
+.slot.d{background:#141016;color:var(--soft);border:1px solid var(--rule)}
+.slot.l{background:#fff;color:#3a2e33;border:1px solid #e3dad1}
+.slot .me{color:var(--text)}.slot.l .me{color:var(--ink)}
+.slot .sep{width:1px;height:20px;background:currentColor;opacity:.25}
+.slot small{font-size:10.5px;opacity:.6}
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:18px}
+.ratio{font-variant-numeric:tabular-nums;font-size:12px;color:var(--label)}
+.ratio b{color:var(--label-strong)}
+/* site header demo */
+.hdr{display:flex;align-items:center;gap:26px;padding:12px 18px;border-radius:8px;font-size:13.5px;color:#9c8c93}
+.hdr.d{background:#100b11;border:1px solid var(--rule)}
+.hdr.l{background:var(--paper);color:#7d6a70}
+.hdr .lg{height:40px;width:auto;flex:none}
+.hdr nav{display:flex;gap:18px;margin-left:auto}
+/* system strip */
+.system{display:grid;grid-template-columns:minmax(0,.7fr) auto minmax(0,1.2fr) auto minmax(0,1.3fr);gap:14px;align-items:center}
+.system .arrow{font-family:'Shantell Sans';color:var(--rose);font-size:26px}
+.system figure{margin:0;display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center}
+.system figcaption{font-size:12.5px;color:#c9c2cd}
+.system figcaption b{display:block;font-family:'Literata';font-weight:600;font-size:15px;color:var(--label-strong)}
+/* font bench */
+.bench{display:grid;grid-template-columns:200px minmax(0,1fr) minmax(0,1fr) 120px;gap:12px 18px;align-items:center}
+.bench .bh{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--label)}
+.bench .bl{display:flex;flex-direction:column;gap:6px}
+.bench .bl b{font-size:14px}
+.bench .cell{background:linear-gradient(160deg,#100b11,#181018 52%,#0c1217);border:1px solid var(--rule);border-radius:8px;padding:10px 14px;display:flex;align-items:center;min-height:86px}
+.bench .cell svg{height:62px;width:auto;max-width:100%}
+.bench .sel{outline:2px solid var(--cyan);outline-offset:2px}
+/* sponsor */
+.sp{position:relative;overflow:hidden;isolation:isolate;border-radius:10px;min-height:270px;display:flex;align-items:center}
+.sp-art{position:absolute;inset:0 0 0 auto;width:74%;z-index:-2}
+.sp-art svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.sp-veil{position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,var(--veil) 0%,var(--veil) 24%,rgb(from var(--veil) r g b / 70%) 36%,transparent 54%)}
+.sp-c{position:absolute;overflow:visible;pointer-events:none}
+.sp-c.tl{left:0;top:0}.sp-c.br{right:0;bottom:0}
+.sp-w{position:absolute;overflow:visible;pointer-events:none}
+.sp-copy{position:relative;padding:calc(var(--pad) + 6px) clamp(22px,3vw,40px) var(--pad) var(--pad);max-width:min(520px,60%)}
+.sp h4{margin:0}
+.sp p{margin:10px 0 0}
+.sp .acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.sp .acts a{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;text-decoration:none;font-weight:600;font-size:14px}
+.sp .acts a:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.h-works{--veil:#140d14;background:linear-gradient(160deg,#120c13 0%,#181018 60%,#0d1318 100%);border:1px solid var(--rule);color:var(--text);min-height:330px}
+.h-works h4{font-family:'Literata',serif;font-weight:400;font-size:clamp(34px,3.4vw,48px);line-height:1;letter-spacing:-.025em;font-variation-settings:'opsz' 72}
+.h-works p{font-family:'Literata',serif;font-size:16.5px;color:var(--soft);line-height:1.55}
+.h-works .add{color:#e6d8cc}
+.h-works .acts a{border-radius:999px;font-family:'Albert Sans'}
+.h-works .acts a.p{background:var(--text);color:#140d14}.h-works .acts a.s{border:1px solid rgb(243 232 220 / 35%);color:var(--text)}
+.h-dd{--veil:#151922;background:#151922;border-top:1px solid #484d58;border-bottom:1px solid #484d58;border-radius:0;color:#f0f2f5;font-family:'IBM Plex Sans',sans-serif}
+.h-dd h4{font-weight:600;font-size:24px}
+.h-dd p{color:#aab0bb;font-size:14px}
+.h-dd .acts a{border-radius:6px;font-size:13.5px;min-height:36px}
+.h-dd .acts a.p{background:#f061ba;color:#151922}.h-dd .acts a.s{border:1px solid #484d58;color:#f0f2f5}
+.h-lt{--veil:#fff7ee;background:#fff7ee;color:#2b1d14;border:1px solid #efe1d0;border-radius:24px}
+.h-lt h4{font-family:'Albert Sans';font-weight:800;font-size:28px;letter-spacing:-.03em}
+.h-lt p{color:#6b5446;font-size:14px}
+.h-lt .add{color:#2b1d14;font-weight:600}
+.h-lt .acts a{border-radius:999px;font-size:13.5px;min-height:38px}
+.h-lt .acts a.p{background:#2b1d14;color:#fff7ee}.h-lt .acts a.s{border:1.5px solid #2b1d14;color:#2b1d14}
+/* ---------------- motion ---------------- */
+.dr,.hw,.ul{stroke-dasharray:1;stroke-dashoffset:0}
+.dot{transform-box:fill-box;transform-origin:50% 50%}
+.band{transform:none}
+/* A — draw & write */
+.play[data-m=a] .dr{stroke-dashoffset:1;animation:draw .75s cubic-bezier(.55,0,.2,1) forwards;animation-delay:calc(var(--i,0) * .22s + .1s)}
+.play[data-m=a] .dot{animation:pop .5s cubic-bezier(.3,1.9,.5,1) both .72s}
+.play[data-m=a] .name{animation:fade .5s ease both .05s}
+.play[data-m=a] .hw{stroke-dashoffset:1;animation:draw .3s cubic-bezier(.4,0,.6,1) forwards;animation-delay:calc(var(--i) * .27s + .95s)}
+.play[data-m=a] .ul{stroke-dashoffset:1;animation:draw .42s cubic-bezier(.3,0,.2,1) forwards 2.35s}
+.play[data-m=a] .works .halo{animation:fade .3s ease both .9s}
+.play[data-m=a] .sp .fg{clip-path:inset(0 100% 0 0);animation:across 1.9s cubic-bezier(.45,.05,.2,1) forwards .25s}
+/* B — light & hold */
+.play[data-m=b] .c-o .c-in{animation:inO .75s cubic-bezier(.2,.9,.25,1.12) both .15s}
+.play[data-m=b] .c-m .c-in{animation:inM .75s cubic-bezier(.2,.9,.25,1.12) both .28s}
+.play[data-m=b] .dot-w{animation:drop .6s cubic-bezier(.3,1.45,.45,1) both .7s}
+.play[data-m=b] .name{animation:dimlit 1.5s ease both}
+.play[data-m=b] .band{animation:band 1.35s cubic-bezier(.45,.05,.3,1) both .2s}
+.play[data-m=b] .sp .band{animation-duration:1.8s}
+.play[data-m=b] .hw{stroke-dashoffset:1;animation:draw .17s linear forwards;animation-delay:calc(var(--i) * .12s + 1.15s)}
+.play[data-m=b] .ul{stroke-dashoffset:1;animation:draw .3s cubic-bezier(.3,0,.2,1) forwards 1.8s}
+.play[data-m=b] .works .halo{animation:fade .2s ease both 1.1s}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pop{0%{transform:scale(0)}100%{transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes across{to{clip-path:inset(0 0 0 0)}}
+@keyframes inO{from{transform:translate(-8px,-8px);opacity:0}to{transform:none;opacity:1}}
+@keyframes inM{from{transform:translate(8px,8px);opacity:0}to{transform:none;opacity:1}}
+@keyframes drop{0%{transform:translateY(-12px);opacity:0}60%{opacity:1}100%{transform:none;opacity:1}}
+@keyframes dimlit{0%{opacity:.28}45%{opacity:.4}100%{opacity:1}}
+@keyframes band{from{transform:none}to{transform:translateX(var(--travel))}}
+@media (prefers-reduced-motion:reduce){.play *{animation:none!important;clip-path:none!important}}
+@media (max-width:1100px){.two,.top{grid-template-columns:1fr}.system{grid-template-columns:1fr}.system .arrow{display:none}.bench{grid-template-columns:1fr}}
+@media (max-width:640px){.sp-copy{max-width:100%}.sp-art{width:100%;opacity:.45}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div>
+    <div class="cap">Wolfsblvt Works · marks &amp; sponsor · round 2 · Tala</div>
+    <h1>One direction. Two ways to build each piece, two ways for it to move.</h1>
+    <p class="lede">E’s corners are the system now: <b>two corners hold the work.</b> The icon holds a dot, the lockups hold the name, the sponsor section holds the invitation. Each piece below has two candidates side by side, and every board can switch between two motion candidates, <b>A · draw &amp; write</b> or <b>B · light &amp; hold</b>, so you can try any form with either motion.</p>
+    <p class="lede">The toolbar swaps the WOLFSBLVT font everywhere (seven heavy serifs, measured), the sponsor font separately, and the sponsor corners between the 64px and 128px icon scale.</p>
+  </div>
+  <div class="note tilt">
+    <h4>What you chose, as you said it</h4>
+    <ul>
+      <li>Icon <b>E</b>: <q>It actually has individuality. It is simple.</q></li>
+      <li>Wordmark: WOLFSBLVT <q>in the same font as in the sponsor panel</q>, WORKS <q>off-center like the actual D was</q>, with E.</li>
+      <li><q>try WORKS even in scribble</q> … <q>with a bigger W</q>, underlined.</li>
+      <li>Horizontal: <q>use the icon in-place as the border</q>; and the overlay idea, a scribbled-over WORKS: <q>Then we don’t have it aaaas fucking wide</q>.</li>
+      <li>Sponsor: Big Type, colour run <q>further right, so we can see both Works colors</q>, plus the corners — <q>Maybe the 128px version?</q> test 64 too.</li>
+      <li><q>really lean into the animation</q>, two candidates each.</li>
+    </ul>
+  </div>
+</header>
+
+<div class="bar" role="toolbar" aria-label="Canvas controls">
+  <label>WOLFSBLVT font <select id="fontName"></select></label>
+  <label>Sponsor font <select id="fontSp"></select></label>
+  <label>Sponsor corners <span class="seg"><button class="btn" data-cs="2" aria-pressed="false">64px icon</button><button class="btn" data-cs="4" aria-pressed="true">128px icon</button></span></label>
+  <button class="btn" id="replayAll" style="margin-left:auto">Replay all ↻</button>
+</div>
+
+<div class="board" data-m="a" id="sys">
+  <div class="board-h"><div><div class="tag">The system</div><h3>Two corners hold the work</h3><p class="one">The same two strokes at every size, scaled together with their weight, never redrawn. What sits between them changes with the job.</p></div><div class="ctl"><button class="btn replay">Replay ↻</button></div></div>
+  <div class="system" id="systemStrip"></div>
+</div>
+
+<div class="sec"><h2>Icon</h2><span class="k">favicon · avatar · wolfsblvt-icons glyph · credit</span></div>
+<div id="iconBoard"></div>
+
+<div class="sec"><h2>Wordmark</h2><span class="k">stacked, the formal signature</span></div>
+<div id="wmBoard"></div>
+
+<div class="sec"><h2>Horizontal lockup</h2><span class="k">the corners become the border</span></div>
+<div id="hBoard"></div>
+
+<div class="sec"><h2>Font bench</h2><span class="k">how wide each font makes the horizontal lockup · click a row to use it</span></div>
+<div class="board" id="bench"></div>
+
+<div class="sec"><h2>Sponsor section</h2><span class="k">Big Type, held by the corners</span></div>
+<div id="spBoard"></div>
+
+<div class="sec"><h2>Where I landed</h2><span class="k">my read, and what’s still yours</span></div>
+<div class="two">
+  <div class="note" id="takeNote"></div>
+  <div class="note tilt" id="openNote"></div>
+</div>
+
+</div>
+<script src="system.js"></script>
+<script src="sponsor.js"></script>
+<script src="canvas.js"></script>
+</body>
+</html>

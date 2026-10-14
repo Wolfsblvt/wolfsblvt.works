@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Pile pieces v2</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,300..800;1,7..72,300..800&family=Shantell+Sans:wght@400;500&family=Albert+Sans:wght@400..800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#100b11;color:#f3e8dc;font-family:'Literata',Georgia,serif}
+a{color:#73cae3}a:hover{color:#9fdcee}
+.ui{font-family:'Albert Sans',sans-serif}
+.k{font:12px 'Albert Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#c0b0b1}
+.row{display:grid;grid-template-columns:250px 330px minmax(0,1fr);gap:40px;align-items:center;padding:24px 0;border-top:1px solid rgb(243 232 220 / 9%)}
+.name{font:700 17px 'Albert Sans',sans-serif}.what{font:13px/1.45 'Albert Sans',sans-serif;color:#c0b0b1;margin-top:4px}
+.shape{margin-top:8px;font:12px/1.5 'IBM Plex Mono',monospace;color:#9c8c93}
+.mat{position:relative;padding:18px;border-radius:10px;background-image:radial-gradient(rgb(243 232 220 / 9%) 1px,transparent 1.4px);background-size:16px 16px}
+.drop{filter:drop-shadow(0 10px 14px rgb(0 0 0 / 45%))}
+.pt{position:relative;padding:8px 6px 6px 10px;font-style:italic;font-weight:300;font-size:25px;line-height:1.17;letter-spacing:-.01em;text-shadow:0 0 16px #100b11,0 0 6px #100b11}
+.pt-q{position:absolute;left:-.18em;top:-.42em;font:500 3em/1 'Shantell Sans',cursive;color:rgb(239 142 161 / 38%);font-style:normal;z-index:-1;text-shadow:none}
+.pt-u{display:block;width:62%;height:10px;margin-top:6px}
+.pn-wrap{position:relative;padding-top:8px;width:220px}
+.pn{background:#eadbc8;color:#4a2234;font-family:'Shantell Sans',cursive;font-weight:500;font-size:17px;line-height:1.35;padding:20px 18px 22px;clip-path:polygon(0 0,100% 0,100% 90%,94% 100%,86% 93%,76% 100%,64% 94%,52% 100%,40% 93%,28% 100%,16% 94%,6% 100%,0 92%)}
+.pn-tape{position:absolute;top:0;left:50%;width:70px;height:20px;transform:translateX(-50%) rotate(-4deg);background:rgb(239 142 161 / 62%);z-index:1}
+.pa{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;width:150px;font-family:'Albert Sans',sans-serif}
+.pa-icon{width:78px;height:78px;border-radius:22px;display:grid;place-items:center;font:800 32px 'Albert Sans',sans-serif;color:#100b11;box-shadow:inset 0 1px 0 rgb(255 255 255 / 35%),inset 0 -2px 0 rgb(0 0 0 / 18%)}
+.pk{width:300px;background:#0c1217;border:1px solid rgb(115 202 227 / 22%);border-radius:8px;overflow:hidden;font:12.5px/1.6 'IBM Plex Mono',monospace;color:#c9d4dc}
+.pk-bar{padding:7px 12px;font:600 12px 'Albert Sans',sans-serif;color:#9cc9d9;border-bottom:1px solid rgb(115 202 227 / 14%);display:flex;justify-content:space-between}
+.pl{position:relative;width:260px;padding:6px 4px;font-family:'Albert Sans',sans-serif}
+.pl-up{display:inline-block;border:1.5px dashed rgb(243 232 220 / 45%);border-radius:8px;padding:6px 11px;font-size:12.5px;color:#d1c0b8;background:#140e15;transform:rotate(-3deg)}
+.pl-us{display:inline-block;margin:-4px 0 0 34%;background:#ef8ea1;color:#100b11;border:3px solid #f3e8dc;border-radius:12px;padding:7px 13px;font-weight:800;font-size:15px;transform:rotate(2.5deg)}
+.pl-arrow{position:absolute;left:12%;top:24px;width:70px;height:40px;overflow:visible}
+.pd-arch{position:relative;width:132px;height:196px;box-sizing:border-box;border:1.5px solid rgb(243 232 220 / 42%);border-radius:66px 66px 3px 3px;background:linear-gradient(180deg,#160f17,#0e0a0f);display:grid;place-items:center}
+.pd-arch::after{content:'';position:absolute;right:16px;top:54%;width:7px;height:7px;border-radius:50%;background:#eca557;box-shadow:0 0 10px rgb(236 165 87 / 60%)}
+.pd-name{font:600 12px 'Albert Sans',sans-serif;letter-spacing:.22em;text-transform:uppercase;color:#d1c0b8;writing-mode:vertical-rl;transform:rotate(180deg)}
+.die{appearance:none;cursor:pointer;width:64px;height:64px;border-radius:14px;border:0;background:#f3e8dc;color:#100b11;font:800 28px 'Albert Sans',sans-serif;display:grid;place-items:center;box-shadow:inset 0 -4px 0 rgb(0 0 0 / 14%)}
+.die.rolled{animation:roll .45s cubic-bezier(.2,1.4,.4,1)}
+@keyframes roll{0%{transform:rotate(0) scale(1)}40%{transform:rotate(200deg) scale(.86)}100%{transform:rotate(360deg) scale(1)}}
+.tk{display:flex;width:280px;font-family:'Albert Sans',sans-serif;background:#2a1b16;border:1px solid rgb(236 165 87 / 35%);border-radius:8px;overflow:hidden}
+.tk-stub{position:relative;width:46px;border-left:1.5px dashed rgb(236 165 87 / 45%);display:grid;place-items:center;color:#eca557;font-size:18px;text-decoration:none}
+.tk-stub::before,.tk-stub::after{content:'';position:absolute;left:-8px;width:14px;height:14px;border-radius:50%;background:#100b11}
+.tk-stub::before{top:-8px}.tk-stub::after{bottom:-8px}
+.tk-fav{width:18px;height:18px;border-radius:4px;display:grid;place-items:center;font:800 10px 'Albert Sans';color:#100b11}
+.tk-dom{font:12px 'IBM Plex Mono',monospace;color:#eca557}
+.ex{max-width:640px}
+@media (prefers-reduced-motion:reduce){.die.rolled{animation:none}}
+</style>
+</helmet>
+<div style="width:1440px;box-sizing:border-box;padding:48px 56px 56px">
+<div class="k">The Pile · pieces v2</div>
+<h1 style="margin:8px 0 0;font-weight:300;font-size:40px;letter-spacing:-.02em;max-width:30ch">Eight different objects, not eight kinds of card.</h1>
+<p class="ui" style="margin:12px 0 0;font-size:15px;color:#d1c0b8;max-width:100ch">Each kind has its own silhouette and material: bare type, a paper slip, an app icon, a little terminal, two stickers, a door, the toy itself, a ticket. Colour stays inside the Smoke &amp; Fireworks family (bone, rose, cyan, ember, plum); only projects with their own colour bring it, and mostly in Endless. The pile engine still knows none of this: it measures, places, drops and lifts.</p>
+
+<div style="display:grid;grid-template-columns:250px 330px minmax(0,1fr);gap:40px;margin-top:34px" class="k"><span>kind · carries</span><span>in the pile</span><span>in Endless</span></div>
+
+<div class="row">
+<div><div class="name">thought</div><div class="what">A sentence from me. Bare type straight on the pile. Ends in “?” and it gets a big rose question mark behind it.</div><div class="shape">title, line?, more?, status?</div></div>
+<div class="mat"><div class="pt"><span class="pt-q" aria-hidden="true">?</span>Could a stream receipt be better than this?<svg class="pt-u" viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2 6 C 40 2, 70 9, 110 5 S 170 3, 198 6" fill="none" stroke="#ef8ea1" stroke-width="2" stroke-linecap="round" stroke-opacity=".75"></path></svg></div></div>
+<div class="ex"><div class="k">a question</div><p style="margin:12px 0 0;font-size:40px;line-height:1.08;letter-spacing:-.02em;font-weight:300;font-style:italic;max-width:22ch">Could a stream receipt be better than this?</p><p style="margin:14px 0 0;font-size:16px;color:#d1c0b8">I began with a question about Twitch stream receipts. Following it led to a much bigger idea for a Twitch-history tool.</p><p class="ui" style="margin:8px 0 0;font-size:13px;color:#c0b0b1">A concept, not a release announcement.</p></div>
+</div>
+
+<div class="row">
+<div><div class="name">note</div><div class="what">Handwritten, on an actual slip of paper with tape. The one light object in a dark pile.</div><div class="shape">title</div></div>
+<div class="mat"><div class="pn-wrap drop" style="transform:rotate(-3deg)"><span class="pn-tape" aria-hidden="true"></span><div class="pn">a game where you only ever plant one tree.</div></div></div>
+<div><div style="display:inline-block;background:#eadbc8;color:#4a2234;font-family:'Shantell Sans',cursive;font-weight:500;font-size:32px;line-height:1.25;padding:34px 32px 38px;transform:rotate(-1.5deg);clip-path:polygon(0 0,100% 0,100% 92%,94% 100%,86% 94%,76% 100%,64% 95%,52% 100%,40% 94%,28% 100%,16% 95%,6% 100%,0 93%)">a game where you only ever plant one tree.</div></div>
+</div>
+
+<div class="row">
+<div><div class="name">chip</div><div class="what">An icon, quickly. Extensions and plugins sit like an app on a desktop: icon, name, platform.</div><div class="shape">title, sub, icon, tint, line, color?</div></div>
+<div class="mat"><div class="pa drop"><span class="pa-icon" style="background:linear-gradient(150deg,#73cae3 0%,color-mix(in oklab,#73cae3 62%,#100b11) 100%)">x</span><span style="font-weight:700;font-size:14.5px">xkcd tracker</span><span style="font-size:11.5px;color:#c0b0b1">Chrome extension</span></div></div>
+<div style="display:flex;gap:28px;align-items:center;font-family:'Albert Sans',sans-serif"><span class="pa-icon" style="width:120px;height:120px;border-radius:32px;font-size:48px;flex:none;background:linear-gradient(150deg,#73cae3 0%,color-mix(in oklab,#73cae3 62%,#100b11) 100%)">x</span><div><div class="k">Chrome extension</div><div style="font-weight:800;font-size:44px;line-height:1;letter-spacing:-.03em;margin-top:8px">xkcd tracker</div><p style="margin:12px 0 0;font-size:17px;color:#d1c0b8">Remembers which xkcd comics you’ve already read.</p></div></div>
+</div>
+
+<div class="row">
+<div><div class="name">artifact</div><div class="what">A small tool, shown as what it is: a tiny terminal with the command and one comment. Its links stay clickable.</div><div class="shape">title, sub, cmd, line, links[]</div></div>
+<div class="mat"><div class="pk drop"><div class="pk-bar"><span>OpenAI Tunnel auto-updater</span><span style="color:#8fa3b0;font-weight:400">small tool</span></div><div style="padding:10px 12px 12px"><div><span style="color:#73cae3">$</span> tunnel-updater</div><div style="color:#8fa3b0"># keeps the tunnel up to date, so nobody has to remember to</div><a href="#tunnel" style="font:13px 'Albert Sans',sans-serif;text-decoration:none">→ source</a></div></div></div>
+<div class="ex" style="background:#0c1217;border:1px solid rgb(115 202 227 / 22%);border-radius:12px;overflow:hidden;font:14px/1.7 'IBM Plex Mono',monospace;color:#c9d4dc"><div style="display:flex;justify-content:space-between;padding:12px 18px;border-bottom:1px solid rgb(115 202 227 / 14%);font:600 14px 'Albert Sans',sans-serif;color:#9cc9d9"><span>OpenAI Tunnel auto-updater</span><span style="font-weight:400;color:#8fa3b0">small tool</span></div><div style="padding:18px 20px 20px"><div><span style="color:#73cae3">$</span> tunnel-updater</div><div style="color:#8fa3b0"># keeps the tunnel up to date, so nobody has to remember to</div></div></div>
+</div>
+
+<div class="row">
+<div><div class="name">lineage</div><div class="what">Builds on someone else’s work. Their dashed tag, our sticker, a drawn arrow between. The credit is the picture.</div><div class="shape">title, credit, line, links[]</div></div>
+<div class="mat"><div class="pl"><span class="pl-up">builds on [an open-source tool]</span><svg class="pl-arrow" viewBox="0 0 70 40" aria-hidden="true"><path d="M6 4 C 4 22, 22 34, 52 30" fill="none" stroke="#ef8ea1" stroke-width="1.8" stroke-linecap="round"></path><path d="M45 24 L53 30 L44 35" fill="none" stroke="#ef8ea1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="pl-us">A fork worth explaining</span><span style="display:block;margin-top:10px;font-size:12.5px;color:#d1c0b8">I’d rather extend this than rebuild it.</span></div></div>
+<div class="ui ex"><div style="display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:18px;align-items:center"><div style="border:1.5px dashed rgb(243 232 220 / 35%);border-radius:14px;padding:16px 18px;color:#d1c0b8">[an open-source tool]<span style="display:block;font-size:12px;color:#9c8c93;margin-top:4px">the original, with its credit</span></div><svg width="64" height="16" viewBox="0 0 64 16" aria-hidden="true"><path d="M2 8h56" stroke="#ef8ea1" stroke-width="1.6" stroke-dasharray="4 4"></path><path d="m54 3 6 5-6 5" fill="none" stroke="#ef8ea1" stroke-width="1.6"></path></svg><div style="background:#ef8ea1;color:#100b11;border:3px solid #f3e8dc;border-radius:14px;padding:16px 18px;font-weight:800;transform:rotate(1.5deg)">A fork worth explaining</div></div></div>
+</div>
+
+<div class="row">
+<div><div class="name">door</div><div class="what">A deliberate limit, as an actual closed door with a warm knob. Endless gives it a bigger door, not more words.</div><div class="shape">title, line</div></div>
+<div class="mat" style="display:flex;flex-direction:column;align-items:center;gap:10px"><div class="pd-arch"><span class="pd-name">Baumhaus</span></div><span class="ui" style="font-size:12px;color:#9c8c93;text-align:center;max-width:22ch">I’m keeping this one mostly to myself for now.</span></div>
+<div style="display:flex;gap:32px;align-items:center"><div class="pd-arch" style="width:180px;height:268px;border-radius:90px 90px 3px 3px"><span class="pd-name" style="font-size:14px">Baumhaus</span></div><p class="ui" style="margin:0;font-size:15px;color:#9c8c93;max-width:30ch">I’m keeping this one mostly to myself for now.</p></div>
+</div>
+
+<div class="row">
+<div><div class="name">specimen</div><div class="what">The thing itself, when it can be. A die you can roll right there in the pile, labelled in my hand.</div><div class="shape">title, more, control (custom renderer)</div></div>
+<div class="mat"><div style="display:flex;align-items:center;gap:14px"><button class="die {{dieCls}}" onClick="{{roll}}" aria-label="Roll the die. Current value {{die}}">{{die}}</button><span><span style="display:block;font-family:'Shantell Sans',cursive;color:#ef8ea1;font-weight:500;font-size:17px">dice for one</span><span class="ui" style="display:block;font-size:12px;color:#c0b0b1;margin-top:3px">go on, roll it</span></span></div></div>
+<div style="display:flex;gap:28px;align-items:center"><button class="die {{dieCls}}" style="width:120px;height:120px;font-size:54px;border-radius:26px" onClick="{{roll}}" aria-label="Roll the die. Current value {{die}}">{{die}}</button><div><div style="font-family:'Shantell Sans',cursive;color:#ef8ea1;font-size:36px">dice for one</div><p class="ui" style="margin:10px 0 0;font-size:16px;color:#d1c0b8;max-width:44ch">An item can bring its own little control into the pile. The pile does not need to know what a die is.</p></div></div>
+</div>
+
+<div class="row">
+<div><div class="name">site</div><div class="what">Has a home of its own. A ticket with its domain; the stub is the way out.</div><div class="shape">title, domain, icon, tint, href, line</div></div>
+<div class="mat"><div class="tk drop"><div style="flex:1;padding:12px 14px;display:flex;flex-direction:column;gap:4px"><div style="display:flex;align-items:center;gap:8px"><span class="tk-fav" style="background:#eca557">R</span><span class="tk-dom">recipes.example</span></div><span style="font-weight:700;font-size:15px">Recipe scaler</span><span style="font-size:12.5px;color:#d1c0b8">Doubles a recipe without doubling the salt.</span></div><a class="tk-stub" href="#ex-recipe" aria-label="Visit Recipe scaler">↗</a></div></div>
+<div style="display:flex;max-width:640px;font-family:'Albert Sans',sans-serif;background:#2a1b16;border:1px solid rgb(236 165 87 / 35%);border-radius:12px;overflow:hidden"><div style="flex:1;padding:24px 26px"><div style="display:flex;align-items:center;gap:10px"><span class="tk-fav" style="width:24px;height:24px;font-size:12px;background:#eca557">R</span><span class="tk-dom" style="font-size:14px">recipes.example</span></div><div style="font-weight:800;font-size:32px;letter-spacing:-.02em;margin-top:12px">Recipe scaler</div><p style="margin:8px 0 0;font-size:16px;color:#d1c0b8">Doubles a recipe without doubling the salt.</p></div><a class="tk-stub" style="width:90px;font-size:26px" href="#ex-recipe" aria-label="Visit Recipe scaler">↗</a></div>
+</div>
+<p class="ui" style="margin:18px 0 0;font-size:12.5px;color:#9c8c93">Recipe scaler, the fork, the die and the tree note are illustrative. xkcd tracker, the tunnel updater, the stream-receipt question and Baumhaus are yours.</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1900}}'>
+class Component extends DCLogic {
+  state = { die: 4, rolled: false };
+  roll = () => { this.setState({ die: 1 + Math.floor(Math.random() * 6), rolled: true }); clearTimeout(this._t); this._t = setTimeout(() => this.setState({ rolled: false }), 460); };
+  componentWillUnmount() { clearTimeout(this._t); }
+  renderVals() { return { die: this.state.die, dieCls: this.state.rolled ? 'rolled' : '', roll: this.roll }; }
+}
+</script>
+</body>
+</html>

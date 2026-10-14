@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Works Asset Gallery</title>
+<style>
+:root{--desk:#1b1a1e;--board:#0f0e11;--label:#a8a2ad;--strong:#ece6ef;--dark:#100b11;--paper:#f6efe6;--rule:#2c2930;--cyan:#73cae3}
+*{box-sizing:border-box}
+body{margin:0;background:var(--desk);color:var(--strong);font:14px/1.5 system-ui,sans-serif}
+.wrap{max-width:1500px;margin:0 auto;padding:36px clamp(16px,3vw,44px) 90px}
+h1{font:400 40px/1.05 Georgia,serif;margin:0 0 8px}
+h2{font:500 24px Georgia,serif;margin:46px 0 14px}
+p{color:#c9c2cd;max-width:76ch;margin:0 0 10px}
+code{font-size:12.5px;color:var(--strong)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.card{background:var(--board);border:1px solid var(--rule);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.stage{display:flex;align-items:center;justify-content:center;padding:26px;min-height:150px}
+.stage.d{background:var(--dark)}.stage.l{background:var(--paper)}.stage.c{background:repeating-conic-gradient(#2a272d 0 25%,#1f1d22 0 50%) 0 0/16px 16px}
+.stage img{max-width:100%;height:auto;display:block}
+.meta{padding:10px 14px;border-top:1px solid var(--rule);font-size:12.5px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.meta a{color:var(--cyan);text-decoration:none}.meta a:hover{text-decoration:underline}
+.btn{appearance:none;border:1px solid #3a3640;background:#1a181d;color:var(--strong);font:inherit;font-size:12.5px;padding:6px 12px;border-radius:999px;cursor:pointer}
+.btn:focus-visible,.meta a:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Wolfsblvt Works · asset gallery</h1>
+  <p>Every exported file, shown on the background it was made for. Checkerboard = transparent PNG/APNG. Animated files play once; <button class="btn" id="replay">Replay animations ↻</button></p>
+  <p>The design reasoning and usage rules live in <a href="README.md" style="color:var(--cyan)">README.md</a>; the design record is in <a href="canvas/round-3/canvas.html" style="color:var(--cyan)">canvas/</a>.</p>
+  <div id="out"></div>
+</div>
+<script>
+const SECTIONS = [
+  ['Icon · SVG', [['svg/icon/works-icon-dark.svg','d'],['svg/icon/works-icon-light.svg','l'],['svg/icon/works-icon-mono.svg','l'],['svg/icon/favicon.svg','d'],['svg/icon/works-icon-animated-dark.svg','d'],['svg/icon/works-icon-animated-light.svg','l'],['svg/glyph/works-glyph-24.svg','l']], 120],
+  ['Lockup (= wordmark) · SVG', [['svg/lockup/works-lockup-dark.svg','d'],['svg/lockup/works-lockup-light.svg','l'],['svg/lockup/works-lockup-mono.svg','l'],['svg/lockup/works-lockup-animated-dark.svg','d'],['svg/lockup/works-lockup-animated-light.svg','l'],['svg/lockup/works-lockup-compact-dark.svg','d'],['svg/lockup/works-lockup-compact-light.svg','l'],['svg/lockup/works-lockup-compact-mono.svg','l']]],
+  ['Sponsor banner · SVG', [['svg/sponsor/works-sponsor-banner-dark.svg','d'],['svg/sponsor/works-sponsor-banner-light.svg','l'],['svg/sponsor/works-sponsor-banner-animated-dark.svg','d'],['svg/sponsor/works-sponsor-banner-animated-light.svg','l']]],
+  ['Icon · PNG (transparent)', [['png/icon/works-icon-dark-512.png','c'],['png/icon/works-icon-light-512.png','l'],['png/icon/works-icon-white-512.png','c'],['png/icon/works-icon-black-512.png','l'],['png/icon/apple-touch-icon-180.png','c'],['png/icon/works-icon-maskable-512.png','c'],['png/icon/works-icon-dark-32.png','c'],['png/icon/works-icon-dark-16.png','c'],['png/glyph/works-glyph-bone-96.png','c'],['png/glyph/works-glyph-ink-96.png','l']], 160],
+  ['Lockup · PNG (transparent)', [['png/lockup/works-lockup-dark-1200w.png','c'],['png/lockup/works-lockup-light-1200w.png','l'],['png/lockup/works-lockup-white-1200w.png','c'],['png/lockup/works-lockup-black-1200w.png','l'],['png/lockup/works-lockup-compact-dark-64h.png','c'],['png/lockup/works-lockup-compact-light-64h.png','l'],['png/lockup/works-lockup-compact-dark-32h.png','c']]],
+  ['Sponsor banner · PNG', [['png/sponsor/works-sponsor-banner-dark.png','c'],['png/sponsor/works-sponsor-banner-light.png','l']]],
+  ['Animated · GIF (play once, on a background)', [['animated/gif/works-icon-dark-256.gif','d'],['animated/gif/works-icon-light-256.gif','l'],['animated/gif/works-lockup-dark-1200w.gif','d'],['animated/gif/works-lockup-light-1200w.gif','l'],['animated/gif/works-sponsor-banner-dark.gif','d'],['animated/gif/works-sponsor-banner-light.gif','l']]],
+  ['Animated · APNG (play once, transparent)', [['animated/apng/works-icon-dark-256.apng','c'],['animated/apng/works-icon-light-256.apng','l'],['animated/apng/works-lockup-dark-1200w.apng','c'],['animated/apng/works-lockup-light-1200w.apng','l'],['animated/apng/works-sponsor-banner-dark.apng','c'],['animated/apng/works-sponsor-banner-light.apng','l']]],
+];
+const out = document.getElementById('out');
+out.innerHTML = SECTIONS.map(([title, files, max]) => `<h2>${title}</h2><div class="grid">${files.map(([f, bg]) => `
+  <div class="card"><div class="stage ${bg}"><img src="${f}" alt="${f.split('/').pop()}" style="${max ? `height:${max}px;width:auto;` : 'width:100%;height:auto;'}" onerror="this.closest('.card').style.opacity=.35"></div>
+  <div class="meta"><code>${f.split('/').pop()}</code><a href="${f}" download>download</a></div></div>`).join('')}</div>`).join('');
+document.getElementById('replay').addEventListener('click', () => document.querySelectorAll('img').forEach(i => { const s = i.getAttribute('src'); i.src = ''; i.src = s + (s.includes('?') ? '&' : '?') + 'r=' + Date.now(); }));
+</script>
+</body>
+</html>

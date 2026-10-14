@@ -1,0 +1,77 @@
+---
+/**
+ * Who: Wolf builds with AI agents. The chat is an example, not a transcript; it plays at a sped-up, uneven pace once
+ * the section is properly in view (home.ts), and is simply there without JavaScript.
+ */
+import { Image } from 'astro:assets';
+import agents from '../../design/the-walk/assets/avatar-agents-96.jpg';
+import juno from '../../design/the-walk/assets/avatar-juno-96.jpg';
+import katja from '../../design/the-walk/assets/avatar-katja-96.jpg';
+import nyxara from '../../design/the-walk/assets/avatar-nyxara-96.jpg';
+import wolf from '../../design/the-walk/assets/avatar-wolf-96.jpg';
+
+const PEOPLE = {
+  // Wolf's colour is the rose of his handwriting on this site; the agents keep their own identity colours.
+  Wolf: { color: '#ef8ea1', avatar: wolf },
+  Nyxara: { color: '#c05cff', avatar: nyxara },
+  Katja: { color: '#35c2ff', avatar: katja },
+  Juno: { color: '#ffb347', avatar: juno },
+} as const;
+type Who = keyof typeof PEOPLE;
+
+const CHAT: { who: Who; lines: string[] }[] = [
+  { who: 'Wolf', lines: ['i want the inn’s cat to steal your hat'] },
+  { who: 'Nyxara', lines: ['And refuse to get out of it. It’s a bed now.'] },
+  { who: 'Katja', lines: ['Do you have to chase it to get your equipment back?'] },
+  { who: 'Wolf', lines: ['nooo. cute, not inventory admin'] },
+  { who: 'Juno', lines: ['You can take it straight back. But behind the bar there’s a whole stash of things it’s stolen.'] },
+  { who: 'Wolf', lines: ['wait', 'why is there a crown in there'] },
+  { who: 'Nyxara', lines: ['The innkeeper seems very keen to change the subject.'] },
+  { who: 'Katja', lines: ['We’re giving the cat a questline, aren’t we?'] },
+  { who: 'Wolf', lines: ['apparently we are'] },
+];
+// One step per sent line: [message, line, delay before it appears in ms]. Uneven, like a sped-up chat.
+const PACE = [[0, 0, 250], [1, 0, 1150], [2, 0, 1350], [3, 0, 700], [4, 0, 1900], [5, 0, 520], [5, 1, 640], [6, 0, 1250], [7, 0, 1500], [8, 0, 780]];
+const avatar = (img: ImageMetadata, size: number, alt = '') => ({ src: img, width: size, height: size, alt });
+---
+
+<section id="who" class="frame sec lift" aria-labelledby="who-h" data-who>
+  <div class="who">
+    <div>
+      <h2 id="who-h" class="who-h">I don’t work alone.</h2>
+      <p style="margin:22px 0 0;font-size:19px;color:var(--text);max-width:40ch;line-height:1.5">I build with AI agents. We explore ideas, argue about the details, and make things together.</p>
+      <p style="margin:12px 0 0;font-size:19px;color:var(--text-soft);max-width:40ch;line-height:1.5">They’re brilliant to build with. Sometimes they still need babysitting.</p>
+      <dl class="names">
+        <dt style="color:#c05cff">Nyxara</dt><dd>Drawn to raw ideas and the meaning inside them.</dd>
+        <dt style="color:#35c2ff">Katja</dt><dd>Makes complexity tractable without losing the idea.</dd>
+        <dt style="color:#ffb347">Juno</dt><dd>Checks what we’re taking for granted.</dd>
+      </dl>
+      <p class="ui" style="margin:14px 0 0;font-size:15px;color:var(--text-faint)">…and a few more.</p>
+    </div>
+    <div>
+      <figure class="chat" aria-label="An example chat, not a transcript">
+        <div class="chat-top">
+          <Image {...avatar(agents, 24)} />
+          <span class="chat-chan"><span class="h">#</span>the-inn</span>
+          <span class="chat-topic">somewhere between an idea and a questline</span>
+          <span class="chat-mem" aria-hidden="true">
+            {(['Wolf', 'Nyxara', 'Katja', 'Juno'] as const).map((name) => <Image {...avatar(PEOPLE[name].avatar, 22)} />)}
+          </span>
+        </div>
+        <div class="chat-body" data-chat data-pace={JSON.stringify(PACE)}>
+          {CHAT.map((m, i) => (
+            <div class="msg" data-msg={i}>
+              <Image class="av" {...avatar(PEOPLE[m.who].avatar, 40)} />
+              <div>
+                <div class="msg-n" style={`color:${PEOPLE[m.who].color}`}>{m.who}</div>
+                {m.lines.map((text, j) => <div class="msg-l" data-line={`${i}.${j}`}>{text}</div>)}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div class="composer" aria-hidden="true"><span class="plus">+</span><span>Message #the-inn</span></div>
+      </figure>
+      <p class="kicker" style="margin:12px 0 0;font-size:11px;text-align:right">An example, not a transcript.</p>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,141 @@
+---
+/**
+ * Privacy and data: a short-version list, then the details, with a contents column. It names the controller and points
+ * to the Impressum for the postal address. Retention is given as criteria without promising scheduled deletion.
+ * Highlighted values are fixtures until the private projection and the deployment's provider facts replace them.
+ */
+import site from '../../../site.config.mjs';
+import Nap from '../../components/Nap.astro';
+import Base from '../../layouts/Base.astro';
+import { loadLegalOperator } from '../../lib/legal-operator.mjs';
+import '../../styles/rooms.css';
+
+const operator = loadLegalOperator({ requireProduction: process.env.WORKS_PUBLICATION === '1' });
+const p = site.legal.privacy;
+const pending = Object.values(p).some((v) => v.pending);
+const showFixtures = operator.fixture === true || pending;
+const fx = (value: { value: string; pending: boolean }) => ({ text: value.value, cls: value.pending ? 'fx' : undefined });
+const updated = new Date(`${site.legal.lastUpdated}T12:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+const privacyMail = operator.contacts.privacy;
+const TOC = [
+  ['controller', 'Who is responsible'],
+  ['hosting', 'Hosting and delivery'],
+  ['storage', 'Your browser and this site'],
+  ['contact', 'When you write to me'],
+  ['links', 'Links to other places'],
+  ['rights', 'Your rights'],
+  ['object', 'Your right to object'],
+  ['mine', 'My rights'],
+  ['changes', 'When this changes'],
+] as const;
+const host = fx(p.host);
+const logs = fx(p.requestLogRetention);
+const transfer = fx(p.transferBasis);
+const cookie = fx(p.securityCookie);
+const turnstile = fx(p.turnstile);
+const contactLogs = fx(p.contactLogRetention);
+---
+
+<Base
+  page="Privacy and data"
+  description="What happens to your data when you visit wolfsblvt.works, and how to reach me about it."
+  canonical={`${site.url}/privacy/`}
+  indexing="legal"
+  loc="Privacy and data"
+  footerCurrent="privacy"
+>
+  <main id="main" class:list={['frame lift lg', { fixtures: showFixtures }]}>
+    <div class="lg-head">
+      <div>
+        <h1 class="lg-h">Privacy and data</h1>
+        <p class="lg-sub">Last updated <span>{updated}</span> · applies to wolfsblvt.works</p>
+        {showFixtures && <span class="fx-key ui">Highlighted bits are dummy fixtures. The real values come from the private build.</span>}
+      </div>
+      <Nap lines={['the boring part.', 'Yoru already fell asleep.']} />
+    </div>
+    <div class="lg-grid">
+      <article class="prose">
+        <p>This page explains what happens to your data when you visit wolfsblvt.works, and how to reach me about it. It’s written to be read, not skimmed past.</p>
+        <div class="short">
+          <span class="short-tag">the short version</span>
+          <ul>
+            <li>No analytics, no advertising, no tracking across sites.</li>
+            <li>To deliver a page, the hosting provider has to handle your request, which includes your IP address.</li>
+            <li>Fonts, scripts and images come from this site itself. The contact form’s bot check is the one exception.</li>
+            <li>If you write to me, I use what you send to answer you, and nothing else.</li>
+            <li>Your pile is shuffled a little by your browser’s name and language. Nothing about it is stored.</li>
+          </ul>
+        </div>
+
+        <h2 id="controller"><span class="n">01</span>Who is responsible</h2>
+        <p>The controller for this website is <span class:list={{ fx: operator.fixture === true }}>{operator.legalName}</span>. The postal address is in the <a href="/impressum/">Impressum</a>.</p>
+        <p>Privacy contact: <a href={`mailto:${privacyMail}`}>{privacyMail}</a>. You can also use the <a href={site.contactUrl}>contact form</a> and pick “Privacy”.</p>
+        <p>Wolfsblvt Works is the name I make and publish things under. It isn’t a company.</p>
+
+        <h2 id="hosting"><span class="n">02</span>Hosting and delivery</h2>
+        <p>wolfsblvt.works is a static website served through <span class={host.cls}>{host.text}</span>. When you open a page, your browser sends a request, and the provider processes it to deliver the page and to keep the service safe from abuse.</p>
+        <dl class="facts">
+          <dt>Data</dt><dd>IP address, the address you requested, date and time, browser and system details (user agent), and the referring page, if your browser sends one.</dd>
+          <dt>Purpose and basis</dt><dd>Delivering the website reliably and securely, Article 6(1)(f) GDPR. The legitimate interest is a working, protected website.</dd>
+          <dt>Recipient</dt><dd>The hosting provider, acting as a processor.</dd>
+          <dt>Retention</dt><dd><span class={logs.cls}>{logs.text}</span>, longer only when needed to investigate a specific attack.</dd>
+          <dt>Do you have to?</dt><dd>Without this data, a page can’t be delivered to you.</dd>
+        </dl>
+        <h3>Outside the EU</h3>
+        <p>The provider may process this data in the United States. <span class={transfer.cls}>{transfer.text}</span>, which you can request through the privacy contact above.</p>
+
+        <h2 id="storage"><span class="n">03</span>Your browser and this site</h2>
+        <p>This site doesn’t set cookies or store anything in your browser for its own purposes. Where you are in the Pile lives in the page address (the part after the <code>#</code>), which your browser keeps and never sends to the server.</p>
+        <p>Today’s pile is worked out in your browser from the date. Nothing about what you looked at leaves your device.</p>
+        <h3>Why your pile might look different</h3>
+        <p>Today’s pile is shuffled a little per browser, so not everyone sees exactly the same one. The shuffle mixes in your browser’s name, version and language, which your browser sends with every request anyway. That mix is used once, to deal the pile, and isn’t stored, logged or sent anywhere else. Anyone with the same browser and language gets the same pile. It’s just for fun.</p>
+        <p><span class={cookie.cls}>{cookie.text}</span></p>
+
+        <h2 id="contact"><span class="n">04</span>When you write to me</h2>
+        <p>You can reach me by email, through the contact form, or on Discord. When you do, I process what you send so I can answer.</p>
+        <dl class="facts">
+          <dt>Data</dt><dd>Your message, your email address or handle, and anything else you choose to include.</dd>
+          <dt>Purpose and basis</dt><dd>Answering you, Article 6(1)(f) GDPR. If it’s about an agreement between us, Article 6(1)(b).</dd>
+          <dt>Retention</dt><dd>As long as it’s useful for our conversation and whatever follows from it. I archive mail rather than deleting it on a schedule. If you want yours deleted, tell me, and it will be, unless a legal duty requires keeping it.</dd>
+          <dt>Do you have to?</dt><dd>No. I just can’t answer without a way to reach you.</dd>
+        </dl>
+        <h3>The contact form</h3>
+        <p>The form sends what you enter (topic, optional project, optional name, email, subject and message) to my inbox as one email, and a plain-text copy to the address you gave. There’s no database behind it: the message only exists as those two emails.</p>
+        <p>To keep bots out, the form uses <span class={turnstile.cls}>{turnstile.text}</span>, which checks technical signals from your browser and connection, not what you wrote. The service records a technical event about each attempt, like the time, your IP address, the topic and project you picked, and the outcome, without your name, email, subject or message. <span class={contactLogs.cls}>{contactLogs.text}</span></p>
+        <p>If you message me on Discord, Discord’s own privacy policy covers what you send there.</p>
+
+        <h2 id="links"><span class="n">05</span>Links to other places</h2>
+        <p>Links to GitHub, Discord, Bluesky or wolfsblvt.com are plain links. Nothing from those services loads on this site, and nothing is sent to them until you click.</p>
+
+        <h2 id="rights"><span class="n">06</span>Your rights</h2>
+        <p>Subject to the legal conditions, you have the right to access your data, to have it corrected or deleted, to restrict its processing, and to data portability. Write to <a href={`mailto:${privacyMail}`}>{privacyMail}</a>.</p>
+        <p>You can also complain to a data protection supervisory authority, in particular in the EU country where you live, work, or where you think something went wrong. You don’t have to ask me first.</p>
+
+        <h2 id="object"><span class="n">07</span>Your right to object</h2>
+        <p>Where processing is based on Article 6(1)(f) GDPR, you can object to it for reasons that come from your particular situation. I then stop, unless I can show compelling legitimate grounds that override your interests, rights and freedoms, or I need the data to establish, exercise or defend legal claims. Write to <a href={`mailto:${privacyMail}`}>{privacyMail}</a>.</p>
+
+        <h2 id="mine"><span class="n">08</span>My rights</h2>
+        <p>To not provide you this site in anything but dark mode.</p>
+        <p class="aside-scribble">this one isn’t legally binding. just firmly held.</p>
+
+        <h2 id="changes"><span class="n">09</span>When this changes</h2>
+        <p>If what this site does with data changes, this page changes first, and the date at the top moves with it.</p>
+
+        <div class="next">
+          <p class="next-h">done with the boring part?</p>
+          <a class="lk" href="/">Back to the walk</a>
+          <a class="lk" href="/impressum/">Impressum</a>
+          <a class="lk" href={site.contactUrl}>Ask me something</a>
+        </div>
+      </article>
+      <nav class="toc" aria-label="On this page" data-toc>
+        <p class="toc-h">On this page</p>
+        <ol>{TOC.map(([id, title]) => <li><a href={`#${id}`} data-toc-link={id}>{title}</a></li>)}</ol>
+        <p class="toc-note">nothing here is meant to be clever. just true.</p>
+      </nav>
+    </div>
+  </main>
+  <script>
+    import '../../scripts/room';
+  </script>
+</Base>

@@ -1,0 +1,24 @@
+{
+  // Test-only configuration for the site Worker against a tiny representative build. No routes, no account; never
+  // deployed.
+  "name": "wolfsblvt-works-site-test",
+  "main": "../../worker/index.ts",
+  "compatibility_date": "2026-08-15",
+  "assets": { "directory": "./site", "binding": "ASSETS", "not_found_handling": "404-page", "html_handling": "auto-trailing-slash", "run_worker_first": ["/", "/contact", "/contact/"] },
+  "vars": {
+    "ENVIRONMENT_NAME": "test",
+    "BUILD_VERSION": "test-build",
+    "TURNSTILE_SITE_KEY": "1x00000000000000000000AA",
+    "CONTACT_INBOX": "contact@wolfsblvt.works",
+    "CONTACT_SENDING_ENABLED": "true"
+  },
+  "send_email": [
+    { "name": "CONTACT_INTERNAL", "destination_address": "contact@wolfsblvt.works" },
+    { "name": "CONTACT_VISITOR_COPY", "allowed_sender_addresses": ["contact@wolfsblvt.works"] }
+  ],
+  "ratelimits": [
+    { "name": "RATE_IP", "namespace_id": "9101", "simple": { "limit": 100, "period": 60 } },
+    { "name": "RATE_RECIPIENT", "namespace_id": "9102", "simple": { "limit": 100, "period": 60 } },
+    { "name": "RATE_LOCATION", "namespace_id": "9103", "simple": { "limit": 100, "period": 60 } }
+  ]
+}

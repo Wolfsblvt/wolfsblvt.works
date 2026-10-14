@@ -1,0 +1,71 @@
+---
+/**
+ * The footer: the lockup with the maker line, the walk in plain names beside a small Walk that hugs its labels and
+ * runs off the bottom, and the site column (contact, source, licences, legal). Yoru naps here on the home page.
+ */
+import site from '../../site.config.mjs';
+import { footerLockup } from '../lib/marks';
+import { NAV } from '../lib/nav';
+import Icon from './Icon.astro';
+
+interface Props {
+  home?: boolean;
+  linkOrigin?: string;
+  current?: 'contact' | 'privacy' | 'impressum';
+}
+const { home = false, linkOrigin = '', current } = Astro.props;
+const walkHref = (id: string) => (home ? `#${id}` : `${linkOrigin}/#${id}`);
+const sameSite = (path: string) => `${linkOrigin}${path}`;
+const aria = (key: typeof current) => (current === key ? 'page' : undefined);
+---
+
+<footer class="site-foot lift" data-footer>
+  <div class="frame foot-frame">
+    {home && <div class="foot-nap" data-yoru-nap hidden><div class="sprite s-doze" role="img" aria-label="Yoru, asleep on the footer"></div></div>}
+    <div class="foot">
+      <div class="foot-col" style="min-width:0">
+        <a href={home ? '#hi' : `${linkOrigin}/`} class="brand-foot" aria-label="Wolfsblvt Works, back to the start" data-nav-link={home ? 'hi' : undefined} set:html={footerLockup()} />
+        <p class="about">{site.description}</p>
+        <p>Made by Wolf, with AI agents. Yoru: generated artwork.</p>
+        <div class="icons">
+          <a class="icon-a" href={site.links.maker} aria-label="wolfsblvt.com, about the maker"><Icon ui="lucide:globe" /></a>
+          <a class="icon-a" href={site.links.discordCommunity} aria-label="Discord, Wolfsblvt Works community"><Icon brand="discord" /></a>
+          {site.links.bluesky
+            ? <a class="icon-a" href={site.links.bluesky} aria-label="Bluesky, development updates"><Icon brand="bluesky" /></a>
+            : <span class="icon-a off" role="img" aria-label="Bluesky, not up yet" title="Bluesky: not up yet"><Icon brand="bluesky" /></span>}
+          <a class="icon-a" href={site.links.github} aria-label="GitHub, source code"><Icon brand="github" /></a>
+        </div>
+      </div>
+      <nav class="foot-col" aria-label="The walk, in plain names">
+        <div class="foot-h" style="padding-left:34px">The walk</div>
+        <div class="mini">
+          <svg viewBox="0 0 200 480" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <filter id="mf" filterUnits="userSpaceOnUse" x="-120" y="-80" width="440" height="700"><feGaussianBlur stdDeviation="6"></feGaussianBlur></filter>
+              <linearGradient id="mfade" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"></stop><stop offset=".12" stop-color="#fff" stop-opacity="1"></stop><stop offset="1" stop-color="#fff" stop-opacity="1"></stop></linearGradient>
+              <mask id="mm" maskUnits="userSpaceOnUse" x="-120" y="-30" width="440" height="560"><rect x="-120" y="-30" width="440" height="560" fill="url(#mfade)"></rect></mask>
+            </defs>
+            <g mask="url(#mm)">
+              <path d="M-22 -20 L 10 -20 C 2 60, 18 130, 8 200 S 14 300, 9 380 S 6 460, 10 520 L -22 520 Z" fill="#eca557" fill-opacity=".24" filter="url(#mf)"></path>
+              <path d="M222 -20 L 190 -20 C 198 70, 182 140, 194 210 S 186 310, 191 390 S 196 470, 192 520 L 222 520 Z" fill="#db61aa" fill-opacity=".26" filter="url(#mf)"></path>
+              <path d="M10 -6 C 2 60, 18 130, 8 200 S 14 300, 9 380 S 6 460, 10 520" fill="none" stroke="#eca557" stroke-width="1.8" stroke-opacity=".72" vector-effect="non-scaling-stroke"></path>
+              <path d="M190 -6 C 198 70, 182 140, 194 210 S 186 310, 191 390 S 196 470, 192 520" fill="none" stroke="#db61aa" stroke-width="1.8" stroke-opacity=".74" vector-effect="non-scaling-stroke"></path>
+            </g>
+          </svg>
+          {NAV.map((n) => (
+            <a href={walkHref(n.id)} data-nav-link={home ? n.id : undefined}><span class="fw">{n.word}</span><span class="fp">{n.plain}</span></a>
+          ))}
+        </div>
+      </nav>
+      <nav class="foot-col" aria-label="Site">
+        <div class="foot-h">Site</div>
+        <a href={site.contactUrl} aria-current={aria('contact')}>Contact</a>
+        <a href={site.links.source}>Source on GitHub</a>
+        <a href={site.links.security}>Security</a>
+        <a href={site.links.licences}>Licences</a>
+        <a href={sameSite('/privacy/')} aria-current={aria('privacy')}>Privacy and data</a>
+        <a href={sameSite('/impressum/')} aria-current={aria('impressum')}>Impressum</a>
+      </nav>
+    </div>
+  </div>
+</footer>

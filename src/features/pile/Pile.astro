@@ -1,0 +1,67 @@
+---
+/**
+ * Whoa: the daily Pile and Endless, rendered as one semantic document. Without JavaScript every daily-eligible
+ * compact object sits in a readable flow, Endless is open, and every address works natively. The controller
+ * (client/controller.ts) deals today's pile, packs it, and carries opening, closing and the journeys to entries.
+ */
+import { loadCatalogue } from './catalogue';
+import Compact from './components/Compact.astro';
+import EndlessEntry from './components/EndlessEntry.astro';
+import './pile.css';
+
+const entries = await loadCatalogue();
+const daily = entries.filter((entry) => entry.data.daily.include);
+const manifest = entries.map((entry) => ({
+  id: entry.id,
+  kind: entry.data.form.kind,
+  footprint: entry.data.daily.footprint,
+  daily: entry.data.daily.include,
+}));
+---
+
+<section id="whoa" class="frame sec lift" aria-labelledby="pile-h" data-pile>
+  <div id="pile" data-pile-threshold style="scroll-margin-top:90px">
+    <div class="pile-head">
+      <h2 id="pile-h" class="pile-h">And then there’s the pile.</h2>
+      <div class="pile-today" data-pile-today hidden>
+        <div class="scribble" style="font-size:19px;transform:rotate(-2deg)">that’s today’s pile.</div>
+        <div class="ui" style="font-size:12.5px;color:var(--text-faint);margin-top:2px" data-pile-date></div>
+      </div>
+    </div>
+    <p style="margin:20px 0 0;font-size:19px;color:var(--text-soft);max-width:52ch">Tools, experiments, ideas, and things still taking shape. Pick something and the Walk continues, taking you straight to it.</p>
+  </div>
+
+  <div class="stage" data-pile-stage>
+    {daily.map((entry) => <Compact entry={entry} />)}
+    <div class="empty-note" aria-hidden="true">
+      <span>they’re down there now.</span>
+      <svg width="34" height="48" viewBox="0 0 34 48" aria-hidden="true"><path d="M17 3 C 11 16, 23 26, 16 42" fill="none" stroke="#ef8ea1" stroke-width="1.8" stroke-linecap="round"></path><path d="M9 34 L16 43 L23 35" fill="none" stroke="#ef8ea1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    </div>
+  </div>
+
+  <div class="act">
+    <a class="btn btn-cyan" href="#endless" data-pile-static-open>There’s more. A lot more.</a>
+    <button class="btn btn-cyan" type="button" hidden aria-expanded="false" aria-controls="endless" data-pile-toggle>There’s more. A lot more.</button>
+    <span class="act-label" aria-hidden="true" data-pile-action></span>
+  </div>
+
+  <div id="endless" class="end-outer" data-endless-outer>
+    <div data-endless-inner style="padding-bottom:20px">
+      <div class="end-intro">
+        <h2 class="end-h" tabindex="-1">A closer look.</h2>
+        <p style="margin:14px 0 0;font-size:18px;color:var(--text-soft);max-width:52ch">A little more about each thing, and places to follow it next.</p>
+        <p class="ui pile-unknown" hidden data-pile-unknown>This piece isn’t here. <a href="#endless" data-pile-link="endless">Browse the collection</a></p>
+      </div>
+      <div class="e-list">
+        {entries.map((entry, index) => <EndlessEntry entry={entry} index={index} />)}
+      </div>
+      <div style="margin-top:72px"><button class="btn btn-line" type="button" hidden aria-label="Gather the pile and close Endless" data-pile-close>Gather the pile</button></div>
+    </div>
+  </div>
+</section>
+<a class="back-pile hide" href="#pile" data-pile-back>↑ Back to the pile</a>
+<script type="application/json" id="pile-manifest" set:html={JSON.stringify(manifest)} />
+<script>
+  import { mountPile } from './client/controller';
+  mountPile();
+</script>

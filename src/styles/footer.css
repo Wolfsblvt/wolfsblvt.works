@@ -1,0 +1,29 @@
+/* Footer: the lockup and maker line, the Walk in plain names with its own mini Walk, and the site links. */
+.site-foot { margin-top: clamp(90px, 12vh, 130px); }
+.foot-frame { position: relative; border-top: 1px solid rgb(243 232 220 / 12%); }
+.foot { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, .45fr); gap: 28px 48px; padding: 44px 0 48px; font-family: var(--sans); font-size: 13.5px; color: var(--text-quiet); }
+@media (max-width: 820px) { .foot { grid-template-columns: 1fr; } }
+.foot a { color: var(--text-soft); text-decoration: none; }
+.foot a:hover { color: var(--cyan); }
+.foot p { margin: 0; max-width: 40ch; line-height: 1.5; }
+.foot p.about { margin-top: 6px; }
+.foot-h { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--text-faint); margin: 0 0 12px; }
+.foot-col { display: flex; flex-direction: column; gap: 9px; }
+.foot-col a[aria-current=page] { color: var(--text); position: relative; }
+.foot-col a[aria-current=page]::before { content: ''; position: absolute; left: -12px; top: .55em; width: 5px; height: 5px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 8px rgb(115 202 227 / 70%); }
+.brand-foot { display: inline-block; margin: -6px 0 4px -6px; }
+.mark-foot { display: block; height: 54px; width: auto; overflow: visible; }
+/* The mini Walk hugs its labels; its lines run off the bottom rather than being cut */
+.mini { position: relative; padding: 4px 30px 8px; width: max-content; max-width: 100%; }
+.mini svg { position: absolute; left: 0; top: -14px; width: 100%; height: calc(100% + 260px); overflow: visible; pointer-events: none; }
+.mini a { position: relative; display: flex; gap: 10px; align-items: baseline; padding: 3px 0; }
+.mini .fw { min-width: 52px; color: var(--text); font-weight: 600; }
+.mini .fp { color: var(--text-faint); }
+.mini .fw, .mini .fp { transition: color .2s; }
+.mini a:hover .fw, .mini a:hover .fp, .mini a:focus-visible .fw, .mini a:focus-visible .fp { color: var(--cyan); }
+.icons { display: flex; gap: 6px; margin-top: 14px; }
+.icon-a { display: inline-grid; place-items: center; width: 36px; height: 36px; border-radius: 8px; color: var(--text-soft); }
+.icon-a:hover { background: rgb(243 232 220 / 7%); color: var(--cyan); }
+.icon-a.off { color: #6a5c63; cursor: default; }
+.icon-a.off:hover { background: none; color: #6a5c63; }
+.foot-nap { position: absolute; right: 8%; top: -101px; }

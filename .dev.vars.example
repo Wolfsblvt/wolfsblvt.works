@@ -1,0 +1,5 @@
+# Copy to `.dev.vars` for `npm run dev:worker`. Real values never enter Git.
+# Turnstile's documented always-passing test key pair keeps local runs honest without a real widget.
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+# Any long random string; signs the contact form's minimum-interaction token.
+CONTACT_FORM_SECRET=replace-with-a-long-random-string

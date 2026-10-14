@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "fixture": true,
+  "operatorId": "example-fixture",
+  "publisherName": "Wolfsblvt Works",
+  "legalName": "Max Mustermann",
+  "postalAddress": {
+    "streetAddress": "Musterstraße 1",
+    "postalCode": "12345",
+    "locality": "Musterstadt",
+    "countryCode": "DE",
+    "countryName": "Germany"
+  },
+  "contacts": {
+    "legal": "legal@example.invalid",
+    "impressum": "impressum@example.invalid",
+    "privacy": "legal@example.invalid"
+  },
+  "additionalDirectContact": {
+    "label": "Contact form (fixture)",
+    "href": "https://contact.example.invalid/",
+    "standing": "provisioned"
+  },
+  "lastReviewedOn": "2000-01-01"
+}

@@ -1,0 +1,31 @@
+---
+/**
+ * diffdevil's window: the project speaks in its own type, colour and words, with an illustrative terminal.
+ * This is the one window already in its real voice and theme.
+ */
+import site from '../../../site.config.mjs';
+import lockupUrl from '../../../design/the-walk/assets/diffdevil-lockup-dark.svg?url';
+---
+
+<div class="dd" data-reveal="term">
+  <div class="frame dd-grid">
+    <div>
+      <div class="dd-origin">I wanted a size label that counted changed lines as changed lines.</div>
+      <h2 id="dd-h" style="margin:0"><img class="dd-logo" src={lockupUrl} alt="diffdevil" width="240" height="72" /></h2>
+      <p class="dd-tag">The devil is in the diff.</p>
+      <p class="dd-sub">Measure changes. Match rules. Act on the result.</p>
+      <a href={site.links.diffdevil} class="dd-btn">Explore diffdevil →</a>
+    </div>
+    <div>
+      <div class="dd-term" aria-label="Illustrative terminal output" role="img">
+        <div class="dd-tline" style="transition-delay:.2s"><span class="p">$</span> <span class="c">diffdevil analyze</span></div>
+        <div class="dd-tline" style="transition-delay:.7s">diffdevil analysis</div>
+        <div class="dd-tline" style="transition-delay:1s">Changed  <span class="a">+128</span>  <span class="d">−42</span>  <span class="m">~19</span></div>
+        <div class="dd-tline" style="transition-delay:1.3s">Measurement status: exact</div>
+        <div class="dd-tline" style="transition-delay:1.6s">Band: <span class="c">size/M</span></div>
+      </div>
+      <p class="dd-body">Git gives you a patch and a pair of raw counters. diffdevil turns the details inside that diff into facts your scripts and workflows can inspect, query, evaluate, and act on.</p>
+      <p class="dd-note">terminal output illustrative</p>
+    </div>
+  </div>
+</div>

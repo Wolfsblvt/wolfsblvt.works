@@ -1,0 +1,62 @@
+---
+/**
+ * Every icon on the site resolves through @wolfsblvt/icons: semantic UI aliases or explicit `lucide:<name>` glyphs,
+ * curated brands, and Works product glyphs. Geometry is embedded at build time; nothing loads from an icon CDN.
+ * Decorative by default; pass `label` only when the icon itself carries information.
+ */
+import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import { getBrand, resolveProductIcon, resolveUiIcon } from '@wolfsblvt/icons';
+
+type Props = {
+  size?: number;
+  strokeWidth?: number;
+  label?: string;
+  class?: string;
+} & ({ ui: string; brand?: never; product?: never } | { brand: string; ui?: never; product?: never } | { product: string; ui?: never; brand?: never });
+
+const require = createRequire(import.meta.url);
+const collections = new Map<string, { icons: Record<string, { body: string }>; width?: number; height?: number }>();
+function iconifyBody(fullName: string): { body: string; viewBox: string } {
+  const [prefix, name] = fullName.split(':') as [string, string];
+  if (!collections.has(prefix)) {
+    collections.set(prefix, JSON.parse(readFileSync(require.resolve(`@iconify-json/${prefix}/icons.json`), 'utf8')));
+  }
+  const collection = collections.get(prefix)!;
+  const icon = collection.icons[name];
+  if (!icon) throw new Error(`Icon ${fullName} is not in @iconify-json/${prefix}.`);
+  const size = collection.width ?? 24;
+  return { body: icon.body, viewBox: `0 0 ${size} ${collection.height ?? size}` };
+}
+
+const { size = 18, strokeWidth, label, class: className } = Astro.props;
+let body: string;
+let viewBox = '0 0 24 24';
+let stroked = false;
+if ('product' in Astro.props && Astro.props.product) {
+  body = resolveProductIcon(Astro.props.product).body;
+  stroked = true;
+} else if ('brand' in Astro.props && Astro.props.brand) {
+  ({ body, viewBox } = iconifyBody(getBrand(Astro.props.brand).iconifyName));
+} else {
+  ({ body, viewBox } = iconifyBody(resolveUiIcon((Astro.props as { ui: string }).ui)));
+}
+if (strokeWidth) body = body.replaceAll('stroke-width="2"', `stroke-width="${strokeWidth}"`);
+---
+
+<svg
+  class={className}
+  width={size}
+  height={size}
+  viewBox={viewBox}
+  fill={stroked ? 'none' : undefined}
+  stroke={stroked ? 'currentColor' : undefined}
+  stroke-width={stroked ? (strokeWidth ?? 2) : undefined}
+  stroke-linecap={stroked ? 'round' : undefined}
+  stroke-linejoin={stroked ? 'round' : undefined}
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+  focusable="false"
+  set:html={(label ? `<title>${label}</title>` : '') + body}
+/>

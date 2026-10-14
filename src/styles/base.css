@@ -1,0 +1,137 @@
+/* The shared ground of every page: Smoke & Fireworks palette, type, the content frame, handwriting, reveals, Yoru's
+   sprite and the common controls. Values come from the canvas (design/the-walk/project/Main.dc.html). */
+:root {
+  color-scheme: dark;
+  --canvas: #100b11;
+  --canvas-mid: #181018;
+  --canvas-cool: #0c1217;
+  --text: #f3e8dc;
+  --text-soft: #d1c0b8;
+  --text-quiet: #c0b0b1;
+  --text-faint: #9c8c93;
+  --orange: #eca557;
+  --rose: #ef8ea1;
+  --magenta: #db61aa;
+  --cyan: #73cae3;
+  --panel: #211720;
+  --gutter: clamp(1rem, 2.5vw, 2rem);
+  --frame: 80rem;
+  --header-h: 62px;
+  --serif: 'Literata', Georgia, serif;
+  --sans: 'Albert Sans', system-ui, sans-serif;
+  --hand: 'Shantell Sans', cursive;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+html {
+  background: var(--canvas);
+  scrollbar-width: thin;
+  scrollbar-color: #a2577f #120c13;
+}
+body {
+  margin: 0;
+  background: var(--canvas);
+  color: var(--text);
+  font-family: var(--serif);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--text); }
+a:hover { color: var(--cyan); }
+::selection { background: var(--rose); color: var(--canvas); }
+:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; border-radius: 3px; }
+[hidden] { display: none !important; }
+
+/* A Works-themed scrollbar: the walk's colours on a quiet track */
+::-webkit-scrollbar { width: 11px; height: 11px; }
+::-webkit-scrollbar-track { background: #120c13; }
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--orange), var(--rose) 55%, var(--magenta)); border-radius: 999px; border: 3px solid #120c13; }
+::-webkit-scrollbar-thumb:hover { border-width: 2px; }
+::-webkit-scrollbar-corner { background: #120c13; }
+
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.skip { position: absolute; left: 12px; top: -60px; z-index: 100; padding: 10px 16px; border-radius: 999px; background: var(--text); color: var(--canvas); font: 600 14px var(--sans); text-decoration: none; }
+.skip:focus { top: 12px; color: var(--canvas); }
+
+.root {
+  position: relative;
+  font-size: 18px;
+  line-height: 1.55;
+  overflow: clip;
+  overflow-anchor: none;
+  min-height: 100vh;
+  background: linear-gradient(160deg, var(--canvas) 0%, var(--canvas-mid) 52%, var(--canvas-cool) 100%);
+}
+.frame { box-sizing: border-box; width: min(100% - 2 * var(--gutter), var(--frame)); margin-inline: auto; }
+.lift { position: relative; z-index: 1; }
+
+/* The Walk: sized from the content, behind it */
+.walk-bg { position: absolute; left: 0; top: 0; width: 100%; pointer-events: none; z-index: 0; overflow: hidden; opacity: 0; transition: opacity .9s ease; }
+.walk-bg.ready { opacity: 1; }
+.walk-bg svg { display: block; }
+.walk-bg.ends svg { -webkit-mask-image: linear-gradient(180deg, #000 0 46%, rgb(0 0 0 / 35%) 68%, transparent 88%); mask-image: linear-gradient(180deg, #000 0 46%, rgb(0 0 0 / 35%) 68%, transparent 88%); }
+
+.ui { font-family: var(--sans); }
+.scribble { font-family: var(--hand); color: var(--rose); font-weight: 500; }
+.sec { padding-top: clamp(96px, 14vh, 150px); }
+.guide { margin: 0 0 30px; font-size: clamp(20px, 1.7vw, 24px); line-height: 1.45; max-width: 46ch; color: var(--text-soft); text-wrap: pretty; font-variation-settings: 'opsz' 24; }
+.kicker { font-family: var(--sans); font-size: 12.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--text-quiet); }
+.ill { display: inline-block; font-family: var(--sans); font-size: 10.5px; letter-spacing: .06em; color: var(--text-faint); text-transform: uppercase; font-style: normal; font-weight: 400; }
+
+/* Chalkboard wipe, shared by the Yoru caption, the What arrow and the nav scribbles */
+@keyframes wipe { 0% { clip-path: inset(-20% -6% -20% -6%); filter: blur(0); opacity: 1 } 70% { opacity: .5 } 100% { clip-path: inset(-20% -6% -20% 106%); filter: blur(3px); opacity: 0 } }
+@keyframes writein { from { clip-path: inset(-20% 106% -20% -6%) } to { clip-path: inset(-20% -6% -20% -6%) } }
+@keyframes write { to { clip-path: inset(0 -4% -10px 0) } }
+@keyframes dash { to { stroke-dashoffset: 0 } }
+@keyframes fadein { to { opacity: 1 } }
+.wiping { animation: wipe .65s cubic-bezier(.5, 0, .6, 1) forwards; }
+.writing { animation: writein .55s cubic-bezier(.2, .7, .2, 1) both; }
+.writing-slow { animation: writein .95s cubic-bezier(.3, .6, .2, 1) both; }
+
+/* Reveals wait until the thing is properly in view; without JavaScript everything is simply there */
+.js [data-reveal=write] > * { clip-path: inset(0 100% -10px 0); transition: clip-path 1s cubic-bezier(.2, .7, .2, 1) .2s; }
+.js [data-reveal=write][data-on] > * { clip-path: inset(0 -4% -10px 0); }
+.js [data-reveal=fade] { opacity: 0; transform: translateY(14px); transition: opacity 1s ease, transform 1s ease; }
+.js [data-reveal=fade][data-on] { opacity: 1; transform: none; }
+
+/* Yoru's sprite: 96x104 frames */
+.sprite { width: 96px; height: 104px; background-image: url(/yoru/sheet-1x.webp); background-image: image-set(url(/yoru/sheet-1x.webp) 1x, url(/yoru/sheet-2x.webp) 2x); background-size: 768px 936px; background-repeat: no-repeat; }
+.s-idle { animation: s-idle 1.4s steps(6) infinite; }
+.s-look { animation: s-look 1.6s steps(6) 1 forwards; }
+.s-runL { animation: s-runL .7s steps(8) infinite; }
+.s-runR { animation: s-runR .7s steps(8) infinite; }
+.s-sit { animation: s-sit .9s steps(5) 1 forwards; }
+.s-doze { background-position: -288px -520px; animation: s-doze 2.8s steps(2) infinite; }
+@keyframes s-idle { from { background-position: 0 0 } to { background-position: -576px 0 } }
+@keyframes s-look { from { background-position: 0 -832px } to { background-position: -576px -832px } }
+@keyframes s-wave { from { background-position: 0 -312px } to { background-position: -384px -312px } }
+@keyframes s-runR { from { background-position: 0 -104px } to { background-position: -768px -104px } }
+@keyframes s-runL { from { background-position: 0 -208px } to { background-position: -768px -208px } }
+@keyframes s-sit { from { background-position: 0 -520px } to { background-position: -480px -520px } }
+@keyframes s-doze { from { background-position: -288px -520px } to { background-position: -480px -520px } }
+.yoru-btn { appearance: none; background: none; border: 0; padding: 0; margin: 0; cursor: pointer; display: block; }
+
+/* Buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 44px; padding: 0 20px; border-radius: 999px; font: 600 15px var(--sans); text-decoration: none; box-sizing: border-box; transition: transform .2s, background .2s, color .2s, border-color .2s; cursor: pointer; }
+.btn-solid { background: var(--text); color: var(--canvas); border: 0; }
+.btn-solid:hover { color: var(--canvas); transform: translateY(-1px); }
+.btn-line { border: 1px solid rgb(243 232 220 / 24%); color: var(--text); background: none; }
+.btn-line:hover { border-color: var(--cyan); color: var(--cyan); }
+.btn-cyan { appearance: none; border: 0; background: var(--cyan); color: var(--canvas-cool); }
+.btn-cyan:hover { color: var(--canvas-cool); transform: translateY(-1px); filter: brightness(1.06); }
+.btn-discord { background: #5865F2; color: #fff; box-shadow: 0 12px 30px -10px rgb(88 101 242 / 45%); }
+.btn-discord:hover { color: #fff; background: #6873f4; transform: translateY(-1px); box-shadow: 0 16px 36px -10px rgb(88 101 242 / 60%); }
+.lk { display: inline-flex; align-items: center; gap: 7px; min-height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid rgb(243 232 220 / 18%); font: 13.5px var(--sans); color: var(--text); text-decoration: none; }
+.lk:hover { border-color: var(--cyan); color: var(--cyan); }
+
+/* A destination that doesn't exist yet: shown, but not a link */
+.btn-off { opacity: .45; cursor: default; }
+.btn-off:hover { transform: none; }
+
+.toast { position: fixed; left: 50%; bottom: 28px; z-index: 70; transform: translate(-50%, 16px); opacity: 0; padding: 10px 16px; border-radius: 999px; background: var(--panel); border: 1px solid rgb(243 232 220 / 16%); font: 600 14px var(--sans); color: var(--text); box-shadow: 0 12px 30px rgb(0 0 0 / 40%); transition: opacity .25s ease, transform .25s ease; pointer-events: none; }
+.toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .js [data-reveal], .js [data-reveal] > * { opacity: 1 !important; transform: none !important; clip-path: none !important; }
+  .s-doze { background-position: -288px -520px; }
+}

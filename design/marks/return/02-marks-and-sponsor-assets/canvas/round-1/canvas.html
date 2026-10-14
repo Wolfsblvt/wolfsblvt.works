@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Works Marks — Round 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,300..800;1,7..72,300..800&family=Shantell+Sans:wght@400;500;600&family=Albert+Sans:wght@400..800&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --desk:#1b1a1e; --desk-line:#2a282e; --board:#0f0e11; --label:#a8a2ad; --label-strong:#ece6ef;
+  --note:#f4e9c8; --note-ink:#2d2618; --pin:#db61aa;
+  --canvas:#100b11; --surface:#181219; --raised:#211720; --text:#f3e8dc; --soft:#d1c0b8; --muted:#c0b0b1;
+  --orange:#eca557; --rose:#ef8ea1; --magenta:#db61aa; --cyan:#73cae3; --plum:#4d1b40;
+  --paper:#f6efe6; --ink:#22171c; --ink-soft:#6d5a60;
+  --rule:rgb(243 232 220 / 12%);
+}
+*{box-sizing:border-box}
+html{background:var(--desk)}
+body{margin:0;color:var(--label-strong);font-family:'Albert Sans',system-ui,sans-serif;font-size:14px;line-height:1.5;
+  background:var(--desk);background-image:radial-gradient(var(--desk-line) 1px,transparent 1px);background-size:22px 22px}
+.wrap{max-width:1640px;margin:0 auto;padding:48px clamp(16px,3vw,48px) 120px}
+h1,h2,h3{margin:0;font-weight:700;letter-spacing:-.01em}
+.top{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:28px;align-items:start;margin-bottom:56px}
+.top h1{font-family:'Literata',serif;font-weight:400;font-size:clamp(34px,4vw,54px);line-height:1.02;letter-spacing:-.02em;font-variation-settings:'opsz' 72}
+.top h1 em{font-family:'Shantell Sans';font-style:normal;font-weight:500;color:var(--rose);font-size:.5em;display:inline-block;transform:rotate(-4deg) translateY(-.4em);margin-left:.3em}
+.lede{color:#c9c2cd;max-width:62ch;margin-top:16px;font-size:15.5px}
+.note{background:var(--note);color:var(--note-ink);border-radius:3px;padding:16px 18px 18px;box-shadow:0 10px 24px rgb(0 0 0 / 35%),0 1px 0 rgb(0 0 0 / 20%);position:relative;font-size:13.5px;line-height:1.5}
+.note::before{content:"";position:absolute;top:-6px;left:22px;width:12px;height:12px;border-radius:50%;background:var(--pin);box-shadow:0 2px 3px rgb(0 0 0 / 40%)}
+.note h4{margin:0 0 6px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;opacity:.75}
+.note p{margin:0 0 8px}.note p:last-child{margin:0}
+.note ul{margin:4px 0 0;padding-left:18px}.note li{margin:2px 0}
+.note.tilt{transform:rotate(.6deg)} .note.tilt-l{transform:rotate(-.7deg)}
+.sec{margin:72px 0 22px;display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+.sec h2{font-family:'Literata',serif;font-weight:500;font-size:30px;font-variation-settings:'opsz' 48}
+.sec .k{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--label)}
+.board{background:var(--board);border:1px solid #2c2930;border-radius:10px;padding:22px;margin-bottom:34px;position:relative;content-visibility:auto;contain-intrinsic-size:auto 1100px}
+.board-h{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap}
+.board-h .tag{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--label)}
+.board-h h3{font-family:'Literata',serif;font-weight:500;font-size:26px;margin-top:2px;font-variation-settings:'opsz' 48}
+.board-h .one{color:#c9c2cd;margin-top:4px;max-width:70ch}
+.btn{appearance:none;border:1px solid #3a3640;background:#1a181d;color:var(--label-strong);font:inherit;font-size:12.5px;padding:7px 12px;border-radius:999px;cursor:pointer}
+.btn:hover{border-color:var(--cyan);color:var(--cyan)} .btn:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.btn[aria-pressed=true]{background:var(--label-strong);color:#141216;border-color:var(--label-strong)}
+.cap{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--label);margin:0 0 8px}
+.dgrid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:16px}
+.panel{border-radius:8px;padding:18px;position:relative;overflow:hidden}
+.pd{background:linear-gradient(160deg,#100b11 0%,#181018 52%,#0c1217 100%);border:1px solid var(--rule)}
+.pl{background:var(--paper);color:var(--ink)}
+.pd .cap{color:#9c8c93}.pl .cap{color:#8a777d}
+.lock{display:block;width:100%;height:auto}
+.hero{min-height:300px;display:flex;flex-direction:column;justify-content:center}
+.stack{display:flex;flex-direction:column;gap:16px}
+.row{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.sym-big{width:132px;height:132px;flex:none}
+.sizes{display:flex;align-items:flex-end;gap:14px}
+.sizes figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:10.5px;color:#9c8c93}
+.tab{display:flex;align-items:center;gap:8px;height:34px;padding:0 14px;border-radius:9px 9px 0 0;font-size:12.5px;width:max-content;min-width:200px}
+.tab.d{background:#2b2a30;color:#e9e6ee}.tab.l{background:#ffffff;color:#2a2a2a;box-shadow:0 0 0 1px #d8d3cc}
+.tabbar{display:flex;gap:6px;align-items:flex-end;padding:8px 10px 0;border-radius:8px 8px 0 0}
+.tabbar.d{background:#1c1b20}.tabbar.l{background:#e7e2db}
+.slot{display:flex;align-items:center;gap:14px;padding:10px 14px;border-radius:8px}
+.slot.d{background:#141016;color:var(--soft);border:1px solid var(--rule)}
+.slot.l{background:#fff;color:#3a2e33;border:1px solid #e3dad1}
+.slot .me{color:var(--text)} .slot.l .me{color:var(--ink)}
+.slot .sep{width:1px;height:20px;background:currentColor;opacity:.25}
+.credit{display:flex;align-items:center;gap:7px;font-size:12.5px}
+.dd-foot{background:#151922;border-top:1px solid #484d58;color:#aab0bb;font-family:'IBM Plex Sans',sans-serif;padding:12px 16px;border-radius:6px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-size:12.5px}
+.lt-foot{background:#fff7ee;color:#5b4a3f;padding:12px 16px;border-radius:6px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-size:12.5px;border:1px solid #efe1d0}
+.notes4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:20px}
+.footer-slice{height:150px;overflow:hidden;position:relative;border-radius:8px;background:linear-gradient(160deg,#100b11 0%,#181018 52%,#0c1217 100%);border:1px solid var(--rule)}
+.footer-slice .big{position:absolute;left:-2%;right:-2%;bottom:-42%;opacity:.16}
+.footer-slice .links{position:absolute;inset:16px 18px auto;display:flex;gap:22px;font-size:12.5px;color:var(--muted)}
+.footer-slice .links b{color:var(--text);font-weight:600}
+/* at-a-glance */
+.glance{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+.gcell{border-radius:10px;overflow:hidden;border:1px solid #2c2930;background:var(--board)}
+.gcell .gd,.gcell .gl{display:flex;align-items:center;justify-content:center;gap:16px;padding:18px 10px}
+.gcell .gd{background:linear-gradient(160deg,#100b11,#181018 52%,#0c1217)}
+.gcell .gl{background:var(--paper)}
+.gcell .gn{padding:10px 14px;font-size:13px}
+.gcell .gn b{font-family:'Literata',serif;font-weight:600;font-size:16px}
+.gcell .gg{display:flex;gap:12px;align-items:center;padding:10px 14px;border-top:1px solid #2c2930;color:var(--soft)}
+/* inventory */
+.inv{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.item{border:1px solid #2c2930;border-radius:8px;padding:14px 16px;background:#141216}
+.item h5{margin:0 0 4px;font-size:14.5px}
+.item p{margin:0;color:#b7b0bb;font-size:13px}
+.item .st{display:inline-block;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:99px;margin-bottom:8px}
+.st.core{background:#2b2230;color:#e8c8de}.st.r1{background:#2c2618;color:var(--orange)}.st.prop{background:#14272d;color:var(--cyan)}.st.not{background:#262226;color:#9c8c93}
+/* motion */
+.draw{stroke-dasharray:1;stroke-dashoffset:0}
+.play .draw{stroke-dashoffset:1;animation:drawin .85s cubic-bezier(.45,.05,.2,1) forwards;animation-delay:calc(var(--i,0) * .28s + .15s)}
+@keyframes drawin{to{stroke-dashoffset:0}}
+.play .fa{opacity:0;animation:facet .7s ease forwards}
+.play .fa.fl{animation-delay:.35s}.play .fa.fr{animation-delay:.7s}
+@keyframes facet{0%{opacity:0;filter:brightness(2.2)}60%{opacity:1;filter:brightness(1.5)}100%{opacity:1;filter:none}}
+.punch{transform-box:fill-box;transform-origin:50% 60%}
+.play .punch{animation:stamp .5s cubic-bezier(.3,1.6,.5,1) both .1s}
+@keyframes stamp{0%{transform:scale(1.35) rotate(-6deg);opacity:0}55%{opacity:1}100%{transform:none;opacity:1}}
+.wipe{transform-box:fill-box;transform-origin:0 50%}
+.play .wipe{transform:scaleX(0);animation:write 1.1s cubic-bezier(.2,.7,.2,1) forwards .45s}
+@keyframes write{to{transform:none}}
+.dot{transform-box:fill-box;transform-origin:center}
+.play .dot{animation:pop .45s cubic-bezier(.3,1.8,.5,1) both .9s}
+@keyframes pop{0%{transform:scale(0)}100%{transform:none}}
+/* sponsor */
+.sp-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 18px;color:var(--label)}
+.sp-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px}
+.sp-hosts{display:flex;flex-direction:column;gap:16px}
+.sp{position:relative;overflow:hidden;isolation:isolate;border-radius:10px;min-height:250px;display:flex;align-items:center}
+.sp-art{position:absolute;inset:0 0 0 auto;width:72%;z-index:-2}
+.sp-veil{position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,var(--veil) 0%,var(--veil) 30%,rgb(from var(--veil) r g b / 72%) 44%,transparent 62%)}
+.sp-art svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.sp-copy{position:relative;padding:34px clamp(22px,3vw,40px);max-width:min(520px,62%)}
+.sp h4{margin:0}
+.sp p{margin:10px 0 0}
+.sp .acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.sp .acts a{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;text-decoration:none;font-weight:600;font-size:14px}
+.sp .acts a:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.sp .credit-mini{position:absolute;right:16px;bottom:12px;font-size:11px;letter-spacing:.06em;opacity:.7;display:flex;gap:6px;align-items:center}
+/* host: works */
+.h-works{--veil:#140d14;background:linear-gradient(160deg,#120c13 0%,#181018 60%,#0d1318 100%);border:1px solid var(--rule);color:var(--text);min-height:320px}
+.h-works h4{font-family:'Literata',serif;font-weight:400;font-size:clamp(34px,3.6vw,50px);line-height:1;letter-spacing:-.025em;font-variation-settings:'opsz' 72}
+.h-works p{font-family:'Literata',serif;font-size:16.5px;color:var(--soft);line-height:1.55}
+.h-works .add{color:#e6d8cc}
+.h-works .acts a{border-radius:999px;font-family:'Albert Sans'}
+.h-works .acts a.p{background:var(--text);color:#140d14}.h-works .acts a.s{border:1px solid rgb(243 232 220 / 35%);color:var(--text)}
+.h-works .acts a.s:hover{border-color:var(--cyan);color:var(--cyan)}
+/* host: diffdevil */
+.h-dd{--veil:#151922;background:#151922;border-top:1px solid #484d58;border-bottom:1px solid #484d58;border-radius:0;color:#f0f2f5;font-family:'IBM Plex Sans',sans-serif}
+.h-dd h4{font-weight:600;font-size:24px;letter-spacing:-.01em}
+.h-dd p{color:#aab0bb;font-size:14px}
+.h-dd .acts a{border-radius:6px;font-size:13.5px;min-height:36px}
+.h-dd .acts a.p{background:#f061ba;color:#151922}.h-dd .acts a.s{border:1px solid #484d58;color:#f0f2f5}
+/* host: light product */
+.h-lt{--veil:#fff7ee;background:#fff7ee;color:#2b1d14;border:1px solid #efe1d0;border-radius:24px}
+.h-lt h4{font-family:'Albert Sans';font-weight:800;font-size:28px;letter-spacing:-.03em}
+.h-lt p{color:#6b5446;font-size:14px}
+.h-lt .add{color:#2b1d14;font-weight:600}
+.h-lt .acts a{border-radius:999px;font-size:13.5px;min-height:38px}
+.h-lt .acts a.p{background:#2b1d14;color:#fff7ee}.h-lt .acts a.s{border:1.5px solid #2b1d14;color:#2b1d14}
+.h-lt.night .sp-art{inset:12px 12px 12px auto;width:50%;border-radius:16px;overflow:hidden;background:linear-gradient(160deg,#100b11,#181018 55%,#0c1217)}
+.h-lt.night .sp-veil{display:none}
+.h-lt.night .sp-copy{max-width:48%}
+.play .sp .fg.down{clip-path:inset(0 0 100% 0);animation:reveal 1.6s cubic-bezier(.45,.05,.2,1) forwards .15s}
+@keyframes reveal{to{clip-path:inset(0 0 0 0)}}
+.play .sp .fg.across{clip-path:inset(0 100% 0 0);animation:trace 2.2s cubic-bezier(.45,.05,.2,1) forwards .2s}
+@keyframes trace{to{clip-path:inset(0 0 0 0)}}
+.play .sp .burst{transform:scale(.25);opacity:0;animation:bloom .9s cubic-bezier(.1,.75,.25,1) forwards;animation-delay:calc(var(--d,0s) + .2s)}
+@keyframes bloom{0%{transform:scale(.25);opacity:0}25%{opacity:1}100%{transform:none;opacity:1}}
+.play .sp .spark{opacity:0;animation:spark .9s ease forwards;animation-delay:calc(var(--d,0s) + .3s)}
+@keyframes spark{0%{opacity:0}30%{opacity:1}100%{opacity:.85}}
+.play .sp .chip{opacity:0;animation:chipin .6s ease forwards;animation-delay:var(--d,0s)}
+@keyframes chipin{0%{opacity:0}100%{opacity:1}}
+.legend{font-size:12px;color:var(--label);margin-top:8px}
+@media (prefers-reduced-motion:reduce){.play *{animation:none!important;clip-path:none!important}}
+@media (max-width:1100px){.dgrid,.sp-grid,.top{grid-template-columns:1fr}.glance{grid-template-columns:repeat(2,minmax(0,1fr))}.notes4{grid-template-columns:1fr 1fr}.inv{grid-template-columns:1fr 1fr}}
+@media (max-width:640px){.glance,.notes4,.inv{grid-template-columns:1fr}.sp-copy{max-width:100%}.sp-art{width:100%;opacity:.5}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div>
+    <div class="cap" style="color:var(--label)">Wolfsblvt Works · marks &amp; sponsor assets · round 1 · Tala</div>
+    <h1>Five ways Works could sign its name. <em>and a banner that pops.</em></h1>
+    <p class="lede">This is discovery, not a choice. Each direction is a different idea about <i>what kind of signature</i> Works is — carved, written, stamped, scribbled or lit — drawn far enough to judge at every size it has to live at: the formal lockup, a 16-pixel favicon, the 24-pixel <code>wolfsblvt-icons</code> slot, and a “by WOLFSBLVT” credit on someone else’s page. Below them are four sponsor treatments, tested on Works and on two very different product pages.</p>
+    <p class="lede">Press <b>Replay</b> on any board: the marks are drawn to move, because motion is part of the identity, not a garnish.</p>
+  </div>
+  <div class="stack">
+    <div class="note tilt">
+      <h4>Held fixed (from the sources)</h4>
+      <ul>
+        <li><b>WOLFSBLVT</b> dominant, <b>WORKS</b> subordinate. Kept in every direction.</li>
+        <li>No literal wolf, no Yoru face, no WW-by-default. Yoru appears only as a guest in one Works-native banner.</li>
+        <li>Smoke &amp; Fireworks: orange from the left, magenta from the right, rose for handwriting, cyan for precise interaction.</li>
+        <li>Sponsor words are the selected ones, exactly. Two buttons. No prices, no logos, no counts.</li>
+      </ul>
+    </div>
+    <div class="note tilt-l">
+      <h4>Provisional (mine, to be joined later)</h4>
+      <ul>
+        <li>Lockups use live fonts as stand-ins: Literata, Albert Sans, Shantell Sans (the Walk’s current set). The chosen direction gets drawn letters in round 2.</li>
+        <li>Light-mode colours (paper <code>#f6efe6</code>, deeper ink relatives) are my authored guesses, not grammar decisions.</li>
+        <li>Host pages are sketches: diffdevil from its window in the Walk; the light page is illustrative, not smolpng’s real styling.</li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<div class="sec"><h2>At a glance</h2><span class="k">the five symbols at 64 · 32 · 16 px, dark and light, plus the icon-slot glyph</span></div>
+<div class="glance" id="glance"></div>
+
+<div class="sec"><h2>The directions</h2><span class="k">each board: formal lockup · light · symbol &amp; favicon · icon slot · credits · footer</span></div>
+<div id="directions"></div>
+
+<div class="sec"><h2>The sponsor section</h2><span class="k">“Support the work.” — four treatments, three hosts each</span></div>
+<div class="note" style="max-width:920px;margin-bottom:22px">
+  <p><b>The rule I designed to:</b> the copy is always real HTML in the host’s own type and buttons; only the artwork on the right is Works. So the banner is a small <i>Works window on someone else’s page</i> — the reverse of what the Walk does, where projects get windows on Works. The text side stays semi-transparent and calm; the right side is where it pops.</p>
+  <p>Each treatment is shown at full size on Works (with the exact Works addition), on diffdevil (no project line — none is authored yet, and the banner must stand without one), and on a light page with the example smolpng line.</p>
+</div>
+<div class="sp-toolbar" role="group" aria-label="Mark shown in the sponsor artwork">
+  <span>Mark in the artwork:</span>
+  <button class="btn" data-sym="A" aria-pressed="true">A · Chip-cut</button>
+  <button class="btn" data-sym="B" aria-pressed="false">B · Double-V</button>
+  <button class="btn" data-sym="C" aria-pressed="false">C · Maker’s punch</button>
+  <button class="btn" data-sym="D" aria-pressed="false">D · Margin note</button>
+  <button class="btn" data-sym="E" aria-pressed="false">E · Two lights</button>
+</div>
+<div id="sponsors"></div>
+
+<div class="sec"><h2>The whole set</h2><span class="k">what Works actually needs, and what I’d add</span></div>
+<div class="inv" id="inventory"></div>
+
+<div class="sec"><h2>Where I’d go next</h2><span class="k">my read, and the choices that are yours</span></div>
+<div class="dgrid">
+  <div class="note" style="font-size:14.5px">
+    <h4>My recommendation</h4>
+    <p><b>A · Chip-cut</b> as the symbol, with <b>D’s handwritten “works”</b> kept as the expressive second voice (footer, sponsor art, the site header on large screens) — while the formal lockup stays typeset.</p>
+    <p>Why: the chip is the only symbol here that <i>explains the palette</i> instead of just wearing it. Orange and magenta stop being two brand colours and become two lights on one cut. It comes from the name’s own V, not a wolf or the Walk, so it survives a site redesign. At 16 px it degrades into a clean orange-magenta V, which is the best small-size behaviour of the five. It doesn’t lean on a W, a badge or a frame, which is where most of the other four meet familiar company.</p>
+    <p>Its weak spot is warmth; a carved triangle is precise and a little cool on its own. That’s exactly what the handwritten “works” supplies — the precise construction and the human correction, side by side, which is already the site’s best move (the crossed-out <i>software</i>).</p>
+    <p><b>Runner-up:</b> C · Maker’s punch, if you want the credit on product pages to feel like a hallmark more than a logo. It is the best “by WOLFSBLVT” of the five.</p>
+  </div>
+  <div class="note tilt">
+    <h4>What I need from you</h4>
+    <ul>
+      <li><b>Which symbol idea</b> moves forward — or which two should fight one more round. Mixing is fine (e.g. A’s symbol with D’s lockup).</li>
+      <li><b>Handwriting:</b> do you want the “works” scribble to be <i>your</i> handwriting? You said some site notes will be. If yes, write “works” ten-ish times on paper or a tablet and I vectorise the best one.</li>
+      <li><b>Sponsor on light pages:</b> does Works bring its own night (the dark inset window) or re-light for daylight? Both are shown.</li>
+      <li><b>Which sponsor art</b> — Lit edge, Fireworks, Carved field or Big type. They pair with different marks; Carved field only really sings with A.</li>
+    </ul>
+    <p style="margin-top:10px">Round 2 then builds the chosen family for real: drawn wordmark, optical 16/32 favicon cuts, the glyph through the icon-standard checks, the sponsor section as a reusable component plus the static README SVG, and the usage reference.</p>
+  </div>
+</div>
+
+</div>
+<script src="marks.js"></script>
+<script src="sponsor.js"></script>
+<script src="canvas.js"></script>
+</body>
+</html>

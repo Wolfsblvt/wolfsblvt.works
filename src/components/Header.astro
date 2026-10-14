@@ -1,0 +1,106 @@
+---
+/**
+ * The header: the easing lockup, the sketched signpost, the personal navigation with its handwritten plain names and
+ * filling path, the mobile menu, and the GitHub and community utilities. Behaviour lives in src/scripts/header.ts.
+ */
+import site from '../../site.config.mjs';
+import { headerLockup } from '../lib/marks';
+import { NAV } from '../lib/nav';
+import Icon from './Icon.astro';
+
+interface Props {
+  /** The home page navigates within itself; every other page links back to the walk's sections. */
+  home?: boolean;
+  /** The nav word marked as current on rooms (Contact marks Hello?). */
+  navOn?: string;
+  /** Small location label beside the lockup on rooms. */
+  loc?: string;
+  /** Absolute origin for links back to the walk, used where the page is served from another host. */
+  linkOrigin?: string;
+  /** Rooms show the finished drawing; only the home page plays the mark's motion. */
+  markStill?: boolean;
+}
+
+const { home = false, navOn, loc, linkOrigin = '', markStill = true } = Astro.props;
+const walkHref = (id: string) => (home ? `#${id}` : `${linkOrigin}/#${id}`);
+const homeHref = home ? '#hi' : `${linkOrigin}/`;
+const lockup = headerLockup({ still: markStill });
+const progPath = 'M2 6 C 40 2, 80 9, 130 5 S 220 2, 270 6 S 360 9, 398 4';
+---
+
+<header class="site-head" data-header data-home={home ? '' : undefined}>
+  <div class="frame hdr">
+    <a href={homeHref} class="brand brand-mark" aria-label={home ? 'Wolfsblvt Works, back to the start' : 'Wolfsblvt Works, home'} data-nav-link={home ? 'hi' : undefined} set:html={lockup} />
+    {loc && <span class="loc"><slot name="loc">{loc}</slot></span>}
+    <div class="hdr-right">
+      <div class="navwrap">
+        <Icon product="wolfsblvt/signpost" size={28} strokeWidth={1.7} class="signpost" />
+        <nav aria-label="Along the walk" class="nav-full" data-nav>
+          {NAV.map((n) => (
+            <div class="nav-i" data-nav-item={n.id}>
+              <a href={walkHref(n.id)} class:list={['nav-a', { on: navOn === n.id }]} aria-label={`${n.word}, ${n.plain}`} data-nav-link={home ? n.id : undefined} aria-current={navOn === n.id ? 'page' : undefined}>
+                <span class:list={{ 'nav-hello': n.id === 'hello' }}>{n.word}</span>
+              </a>
+              {n.id === 'hello' ? <span class="nav-x perm" aria-hidden="true">Contact</span> : <span class="nav-x" aria-hidden="true" data-nav-scribble data-plain={n.plain} />}
+            </div>
+          ))}
+          {home && <svg class="whatarrow" aria-hidden="true" data-what-arrow style="display:none"><path class="wa-line"></path><path class="wa-head"></path></svg>}
+          <svg class="prog" viewBox="0 0 400 10" preserveAspectRatio="none" aria-hidden="true">
+            <defs><linearGradient id="progGrad" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#eca557"></stop><stop offset=".55" stop-color="#ef8ea1"></stop><stop offset="1" stop-color="#db61aa"></stop></linearGradient></defs>
+            <path d={progPath} fill="none" stroke="rgb(243 232 220 / 13%)" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
+            <path d={progPath} fill="none" stroke="url(#progGrad)" stroke-width="2.4" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" vector-effect="non-scaling-stroke" data-progress></path>
+          </svg>
+        </nav>
+      </div>
+      <div class="nav-menu">
+        <button class="menu-btn" type="button" aria-expanded="false" aria-controls="menu-panel" data-panel-toggle="menu-panel">
+          Menu<Icon ui="lucide:chevron-down" size={10} strokeWidth={2.4} />
+        </button>
+        <div id="menu-panel" class="panel panel-start" hidden data-panel>
+          {NAV.map((n) => (
+            <a class="prow" href={walkHref(n.id)} data-nav-link={home ? n.id : undefined}>
+              <span><span class="prow-t" style="font-weight:600">{n.word}</span><span class="prow-s">{n.plain}</span></span>
+            </a>
+          ))}
+        </div>
+      </div>
+      <span class="divider" aria-hidden="true"></span>
+      <div class="utils">
+        <a class="util-btn" href={site.links.source} aria-label="Source on GitHub" title="GitHub"><Icon brand="github" size={16} /></a>
+        <div style="position:relative">
+          <button class="util-btn" type="button" style="width:42px" aria-label="Community and social links" title="Community" aria-expanded="false" aria-controls="social-panel" data-panel-toggle="social-panel">
+            <Icon ui="lucide:waypoints" size={16} />
+            <Icon ui="lucide:chevron-down" size={10} strokeWidth={2.4} />
+          </button>
+          <div id="social-panel" class="panel panel-end" hidden data-panel>
+            <div class="panel-h">Community</div>
+            <a class="prow" href={site.links.discordCommunity}>
+              <Icon brand="discord" size={16} />
+              <span><span class="prow-t">Discord</span><span class="prow-s">Wolfsblvt Works community</span></span>
+            </a>
+            {site.links.bluesky ? (
+              <a class="prow" href={site.links.bluesky}>
+                <Icon brand="bluesky" size={16} />
+                <span><span class="prow-t">Bluesky</span><span class="prow-s">Development updates</span></span>
+              </a>
+            ) : (
+              <span class="prow off" aria-disabled="true">
+                <Icon brand="bluesky" size={16} />
+                <span><span class="prow-t">Bluesky</span><span class="prow-s">Development updates · not up yet</span></span>
+              </span>
+            )}
+            <a class="prow" href={site.links.maker}>
+              <Icon ui="lucide:globe" size={16} />
+              <span><span class="prow-t">wolfsblvt.com</span><span class="prow-s">About the maker</span></span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <svg class="prog-m" viewBox="0 0 100 2" preserveAspectRatio="none" aria-hidden="true">
+    <defs><linearGradient id="progGradM" gradientUnits="userSpaceOnUse" x1="0" x2="100" y1="0" y2="0"><stop offset="0" stop-color="#eca557"></stop><stop offset=".55" stop-color="#ef8ea1"></stop><stop offset="1" stop-color="#db61aa"></stop></linearGradient></defs>
+    <rect x="0" y="0" width="100" height="2" fill="rgb(243 232 220 / 10%)"></rect>
+    <rect x="0" y="0" width="0" height="2" fill="url(#progGradM)" data-progress-m></rect>
+  </svg>
+</header>

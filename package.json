@@ -1,0 +1,59 @@
+{
+  "name": "wolfsblvt.works",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "The Wolfsblvt Works website and its contact service.",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "npm run assets && astro dev",
+    "assets": "node scripts/prepare-fonts.mjs && node scripts/generate-identity-assets.mjs",
+    "build": "npm run assets && astro build && node scripts/write-headers.mjs",
+    "build:production": "node scripts/build-production.mjs",
+    "preview": "astro preview",
+    "clean": "node -e \"for (const p of ['artifacts', '.astro', '.wrangler', 'src/generated', 'public/fonts', 'src/styles/fonts.generated.css', 'public/favicon.svg', 'public/favicon-192.png', 'public/apple-touch-icon.png', 'public/yoru']) require('node:fs').rmSync(p, { recursive: true, force: true })\"",
+    "cards": "node scripts/render-social-cards.mjs",
+    "dev:worker": "npm run build && wrangler dev",
+    "check": "npm run check:types && npm run test:unit && npm run build && npm run check:output",
+    "check:types": "astro check && tsc --noEmit -p tsconfig.worker.json",
+    "check:output": "node scripts/check-output.mjs",
+    "check:publish": "node scripts/check-publish.mjs",
+    "test": "npm run test:unit",
+    "test:unit": "vitest run",
+    "test:e2e": "playwright test",
+    "qa": "npm run build && playwright test"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "3.7.4",
+    "@fontsource-variable/albert-sans": "5.3.0",
+    "@fontsource-variable/literata": "5.3.0",
+    "@fontsource/ibm-plex-mono": "5.3.0",
+    "@fontsource/ibm-plex-sans": "5.3.0",
+    "@fontsource/shantell-sans": "5.3.0",
+    "@fontsource/special-elite": "5.3.0",
+    "@iconify-json/lucide": "1.2.133",
+    "@iconify-json/simple-icons": "1.2.96",
+    "@wolfsblvt/icons": "0.3.0",
+    "astro": "7.3.8"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "@cloudflare/vitest-pool-workers": "0.22.0",
+    "@cloudflare/workers-types": "5.20261008.1",
+    "@playwright/test": "1.63.0",
+    "@types/node": "22.20.4",
+    "sharp": "0.35.5",
+    "typescript": "5.9.3",
+    "vitest": "4.1.11",
+    "wrangler": "4.149.0"
+  },
+  "allowScripts": {
+    "esbuild@0.28.1": true,
+    "esbuild@0.28.2": true,
+    "workerd@1.20260815.1": true,
+    "workerd@1.20261006.1": true
+  }
+}

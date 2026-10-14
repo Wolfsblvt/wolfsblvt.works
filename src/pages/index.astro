@@ -1,0 +1,97 @@
+---
+/**
+ * The home page: one long walk. Hi, What (diffdevil), Why, more project windows, Who, Help, Whoa (the Pile and
+ * Endless) and Hello?. The Worker adds today's per-browser pile seed to [data-pile] in production.
+ */
+import site from '../../site.config.mjs';
+import Pile from '../features/pile/Pile.astro';
+import Base from '../layouts/Base.astro';
+import Hello from '../sections/Hello.astro';
+import Help from '../sections/Help.astro';
+import Hero from '../sections/Hero.astro';
+import Diffdevil from '../sections/projects/Diffdevil.astro';
+import Lunescence from '../sections/projects/Lunescence.astro';
+import Shikkuri from '../sections/projects/Shikkuri.astro';
+import Smolpng from '../sections/projects/Smolpng.astro';
+import Who from '../sections/Who.astro';
+import Why from '../sections/Why.astro';
+import '../styles/home.css';
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: site.title,
+  url: `${site.url}/`,
+  description: site.description,
+  inLanguage: site.language,
+  author: { '@type': 'Person', name: 'Wolfsblvt', url: site.links.maker },
+};
+---
+
+<Base
+  description={site.description}
+  canonical={`${site.url}/`}
+  socialImage={{ url: `${site.url}/social/home.png`, alt: 'Oddly useful software, crossed out and corrected to things, also games, also questions. Yoru sits beside the Wolfsblvt Works lockup.' }}
+  home
+  structuredData={structuredData}
+>
+  <script slot="head" is:inline>
+    // The Pile's bootstrap. It marks the document so the collapsed Pile doesn't flash open, and holds a shared
+    // #endless or #pile-<id> address so the browser doesn't jump before the animated journey. If the controller
+    // hasn't acknowledged within 2 s, it restores the address and shows the plain collection with working anchors.
+    (function () {
+      var d = document.documentElement, b = { hash: null };
+      window.__pileBoot = b;
+      d.classList.add('pile-boot');
+      try {
+        if (/^#(endless|pile-[a-z0-9]+(?:-[a-z0-9]+)*)$/.test(location.hash)) {
+          b.hash = location.hash; b.url = location.href; b.state = history.state; b.restoration = history.scrollRestoration;
+          history.scrollRestoration = 'manual';
+          history.replaceState(history.state, '', location.href.replace(/#.*$/, ''));
+        }
+      } catch (e) { b.hash = null; }
+      setTimeout(function () {
+        if (window.__pileReady) return;
+        b.failed = true;
+        d.classList.remove('pile-boot');
+        try {
+          if (b.hash) {
+            history.replaceState(b.state, '', b.url);
+            history.scrollRestoration = b.restoration;
+            var t = document.getElementById(b.hash.slice(1));
+            if (t && scrollY < 40) t.scrollIntoView();
+          }
+        } catch (e) {}
+      }, 2000);
+    })();
+  </script>
+
+  <div class="follower" data-yoru-follower hidden slot="before-header">
+    <button class="yoru-btn" type="button" aria-label="Yoru, the resident. Click him and he runs off." title="Yoru"><div class="sprite s-idle"></div></button>
+  </div>
+
+  <main id="main">
+    <Hero />
+    <section id="what" class="sec lift" aria-labelledby="dd-h">
+      <div class="frame"><p class="guide">Let’s start somewhere practical.</p></div>
+      <Diffdevil />
+    </section>
+    <Why />
+    <div id="what2">
+      <div class="frame sec lift" style="padding-bottom:4px">
+        <p class="guide" style="margin-bottom:6px">Here are some curated projects we are working on.</p>
+        <div data-reveal="write"><div class="scribble" style="font-size:19px;transform:rotate(-2deg);width:max-content">not all of them are ready. yet.</div></div>
+      </div>
+      <Smolpng />
+      <Shikkuri />
+      <Lunescence />
+    </div>
+    <Who />
+    <Help />
+    <Pile />
+    <Hello />
+  </main>
+  <script>
+    import '../scripts/home';
+  </script>
+</Base>

@@ -1,0 +1,16 @@
+---
+/** Yoru, asleep on a line, with a handwritten note: the legal rooms' quiet resident. */
+interface Props {
+  lines: string[];
+}
+const { lines } = Astro.props;
+---
+
+<div class="lg-nap" aria-hidden="true">
+  <div class="lg-nap-cap">
+    <span>{lines.map((line, i) => <>{i > 0 && <br />}{line}</>)}</span>
+    <svg width="34" height="30" viewBox="0 0 34 30" fill="none" stroke="#ef8ea1" stroke-width="1.6" stroke-linecap="round"><path d="M3 6c9 1 18 6 26 17"></path><path d="M22 22l7 1.5-1-7"></path></svg>
+  </div>
+  <div class="sprite s-doze"></div>
+  <div class="lg-nap-line"></div>
+</div>
