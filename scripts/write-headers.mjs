@@ -46,6 +46,8 @@ const headers = [
   rule('/privacy', legal),
   rule('/privacy/*', legal),
   rule('/503.html', ['X-Robots-Tag: noindex']),
+  // Source fragment for build-time adoption, not an indexable visitor page.
+  rule('/brand/works/components/works-sponsor.html', ['X-Robots-Tag: noindex, nosnippet', 'Content-Type: text/plain; charset=utf-8']),
   rule('/_astro/*', immutable),
   rule('/fonts/*', immutable),
   rule('/yoru/*', week),

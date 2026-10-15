@@ -82,9 +82,15 @@ It touches nothing tracked. `node_modules` can go too; `npm install` restores it
 
 ## Reusable assets and the sponsor section
 
-Find all usable exports in the [brand asset catalogue](../assets/README.md): `assets/brand/` stores SVGs, static light/dark variants, adaptive SVGs, PNGs and animations. Source geometry, generators and historical canvas/specimens are separately in `design/marks/`. The website never depends on the internal design handoff structure.
+Find every consumer file in the [brand catalogue](../assets/README.md) and `brand/bundle/works/manifest.json`.
+Maintained artwork and foundation masters live in `brand/source/works/`; historical geometry/canvases remain in
+`design/marks/`. The website reads only the generated bundle.
 
-To regenerate approved marks, use `design/marks/source/`: install the dependencies there and run `node build.mjs --font <path-to-AbrilFatface-Regular.ttf>` (`--no-raster` for an SVG-only pass). SVG and raster exports go into `assets/brand/`, the geometry stays under `design/marks/source/`, and preview specimens remain under `design/marks/sponsor-section/`. Review and commit intended changed exports.
+After changing masters/exporter, commit the immutable input first, then run `npm run brand:export -- <input-sha>` and
+`npm run brand:check`. Commit the generated tree in a later carrier commit. Preserve the input commit unchanged on
+integration or regenerate after establishing its replacement. Repeat the export and compare all files and the digest.
+The optional historical design renderer now writes artwork masters, never consumer files. It is not needed to reproduce
+the bundle. [Qualification](brand-qualification.md) records its pinned inputs and rendered boundary.
 
 The live Help section is `src/components/WorksSponsor.astro` plus `src/styles/sponsor.css`. It renders real links from `site.config.mjs`; no HTML or CSS is scraped from design demonstrations. `src/lib/marks.ts`, the favicon generator and social-card renderer use the approved exports. `npm run check` also verifies the rendered sponsorship links.
 
@@ -97,6 +103,7 @@ Produced by the build, ignored by Git, never edited by hand:
 | `artifacts/site/` | `astro build`, then `scripts/write-headers.mjs` for `_headers` |
 | `public/fonts/`, `src/styles/fonts.generated.css` | `scripts/prepare-fonts.mjs`, from the Fontsource packages (Latin and Latin Extended) |
 | `public/favicon.svg`, `public/favicon-192.png`, `public/apple-touch-icon.png` | `scripts/generate-identity-assets.mjs`, from the marks |
+| `public/brand/works/` | The same script, byte-for-byte mirror of the committed canonical bundle |
 | `public/yoru/sheet-1x.webp`, `sheet-2x.webp`, `src/generated/yoru-doze.ts` | the same script, from Yoru's frames in `design/the-walk/assets/` |
 | `artifacts/test-results/`, `artifacts/review/` | Playwright, and one-off review captures |
 

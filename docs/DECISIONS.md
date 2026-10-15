@@ -134,9 +134,11 @@ like the same place.
 
 ### Finished assets, editable design, and production markup are separate
 
-**Date:** 2026-10-15 · **Status:** Current
+**Date:** 2026-10-15 · **Status:** Separation retained; paths and sponsor ownership superseded by the standard bundle below
 
-Approved reusable marks and their SVG/PNG/animation variants belong to `assets/brand/`, exposed through `assets/README.md`. The approved geometry, generator, canvas rounds and sponsor *demonstrations* live under `design/marks/`, without the internal contribution number in their paths. Live sponsorship HTML and CSS are owned by `src/components/WorksSponsor.astro` and `src/styles/sponsor.css`; the website no longer parses design-demo HTML to render Help.
+The first separation placed approved exports in a dedicated artwork directory and production sponsor markup in the
+website, away from design demonstrations. The standard bundle now owns the reusable addresses and shared component;
+the website's native component binds it. Editable co-design provenance stays under `design/marks/`.
 
 **Why.** The original site read header marks, favicons, social cards and sponsorship markup directly from a numbered design handoff. That made an internal delivery format a lasting implementation API and hid the downloadable exports from the very people meant to reuse them. Preserve Tala and Wolf's selected artwork and rationale, not the delivery wrapper.
 
@@ -534,3 +536,19 @@ artwork are not covered by either licence. Third-party fonts and assets keep the
 resident identify Works and stay with it.
 
 **Rejected.** A single permissive licence over everything, which would also license the identity.
+
+### Standard Works bundle and shared sponsor source
+
+**Date:** 2026-10-16 · **Status:** Selected source migration; product acceptance pending
+
+The accepted Brand Bundle v1 layout replaces the historical export coordinates. Maintained masters live in
+`brand/source/works/`; only generated `brand/bundle/works/` is a consumer API. The website reads the same
+shared sponsor template/styles/behavior that products may vendor; its Astro adapter supplies only host facts.
+
+**Why.** Wolf required standard reusable paths once, and one opt-in Works sponsor treatment across products.
+Keeping legacy public aliases or independent native artwork would recreate drift. The approved pictures and
+co-design provenance survive. Existing SVG/raster masters make export reproducible without installing the historical
+renderer toolchain. Glyphs remain in @wolfsblvt/icons.
+
+**Boundary.** This candidate does not publish the website, enable accounts or complete external adoption.
+The manifest input commit must survive integration unchanged, or the bundle must be regenerated against a new durable input.

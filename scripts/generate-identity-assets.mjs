@@ -7,51 +7,29 @@
 //   public/yoru/sheet-1x.webp     Yoru's spritesheet at display size
 //   public/yoru/sheet-2x.webp     ... and for high-density screens
 //   src/generated/yoru-doze.ts    one sleeping frame as a data URI, for the self-contained 503
-import { copyFileSync, mkdirSync, writeFileSync } from 'node:fs';
+import { cpSync, rmSync, copyFileSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const marks = join(root, 'assets', 'brand');
+const marks = join(root, 'brand', 'bundle', 'works');
 const yoruMaster = join(root, 'design', 'the-walk', 'assets', 'yoru-spritesheet.webp');
 const pub = join(root, 'public');
+
+rmSync(join(pub, 'brand', 'works'), { recursive: true, force: true });
+cpSync(marks, join(pub, 'brand', 'works'), { recursive: true });
 
 mkdirSync(join(pub, 'yoru'), { recursive: true });
 mkdirSync(join(root, 'src', 'generated'), { recursive: true });
 
 // ---------- favicon and app icons ----------
-copyFileSync(join(marks, 'svg', 'icon', 'favicon.svg'), join(pub, 'favicon.svg'));
+copyFileSync(join(marks, 'assets', 'icon-favicon', 'on-light-adaptive.svg'), join(pub, 'favicon.svg'));
 
 // The selected app-icon tile (finishing sheet, tile 2): the Works icon on a dark tile with the Walk's orange and
 // magenta glowing in from the corners. The icon geometry is the return's 32-grid icon at 62% of the tile.
-function glowTile(size) {
-  const s = size;
-  const icon = s * 0.62;
-  const offset = (s - icon) / 2;
-  const k = icon / 32;
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${s}" height="${s}" viewBox="0 0 ${s} ${s}">
-  <defs>
-    <radialGradient id="o" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="1" gradientTransform="scale(${1.2 * s} ${0.9 * s})">
-      <stop offset="0" stop-color="#eca557" stop-opacity=".30"/><stop offset=".55" stop-color="#eca557" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="m" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="1" gradientTransform="translate(${s} ${s}) scale(${1.2 * s} ${0.9 * s})">
-      <stop offset="0" stop-color="#db61aa" stop-opacity=".34"/><stop offset=".55" stop-color="#db61aa" stop-opacity="0"/>
-    </radialGradient>
-  </defs>
-  <rect width="${s}" height="${s}" fill="#140d14"/>
-  <rect width="${s}" height="${s}" fill="url(#o)"/>
-  <rect width="${s}" height="${s}" fill="url(#m)"/>
-  <g transform="translate(${offset} ${offset}) scale(${k})">
-    <path d="M4.6 20.5V13A8 8 0 0 1 12.6 5H17.5" fill="none" stroke="#eca557" stroke-width="3" stroke-linecap="round"/>
-    <path d="M27.4 8.5V15A12.4 12.4 0 0 1 15 27.4H9.5" fill="none" stroke="#db61aa" stroke-width="3" stroke-linecap="round"/>
-    <circle cx="17.15" cy="17.35" r="3.1" fill="#f3e8dc"/>
-  </g>
-</svg>`;
-}
-
-await sharp(Buffer.from(glowTile(1024))).resize(180, 180).png().toFile(join(pub, 'apple-touch-icon.png'));
-await sharp(Buffer.from(glowTile(1024))).resize(192, 192).png().toFile(join(pub, 'favicon-192.png'));
+copyFileSync(join(marks, 'assets/icon-touch/universal-180x180.png'), join(pub, 'apple-touch-icon.png'));
+copyFileSync(join(marks, 'assets/icon-application/universal-192x192.png'), join(pub, 'favicon-192.png'));
 
 // ---------- Yoru ----------
 // The master is a 2x sheet: frames of 192x208 on a 1536x1872 canvas; the site shows them at 96x104.

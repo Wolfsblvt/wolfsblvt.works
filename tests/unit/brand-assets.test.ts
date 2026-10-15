@@ -2,15 +2,15 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-const read = (path: string) => readFileSync(join(process.cwd(), 'assets', 'brand', path), 'utf8');
+const read = (path: string) => readFileSync(join(process.cwd(), 'brand', 'bundle', 'works', path), 'utf8');
 
 // These are the actual files embedded in GitHub profiles and reused by other products.
 describe('reusable theme-aware Works SVGs', () => {
   for (const path of [
-    'svg/icon/works-icon.svg',
-    'svg/lockup/works-lockup.svg',
-    'svg/lockup/works-lockup-compact.svg',
-    'svg/sponsor/works-sponsor-banner.svg',
+    'assets/mark-primary/on-light-adaptive.svg',
+    'assets/lockup-default/on-light-adaptive.svg',
+    'assets/lockup-compact/on-light-adaptive.svg',
+    'assets/sponsor-banner/on-light-adaptive.svg',
   ]) {
     it(`${path} includes both complete palette drawings`, () => {
       const svg = read(path);
@@ -21,8 +21,8 @@ describe('reusable theme-aware Works SVGs', () => {
     });
   }
   it('keeps explicit contrast variants for GitHub picture fallbacks', () => {
-    const light = read('svg/lockup/works-lockup-light.svg');
-    const dark = read('svg/lockup/works-lockup-dark.svg');
+    const light = read('assets/lockup-default/on-light.svg');
+    const dark = read('assets/lockup-default/on-dark.svg');
     expect(light).toContain('#22171c');
     expect(dark).toContain('#f3e8dc');
     expect(light).not.toEqual(dark);

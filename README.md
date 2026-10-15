@@ -1,7 +1,7 @@
 <h1 id="wolfsblvt-works">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="assets/brand/svg/lockup/works-lockup-dark.svg">
-    <img src="assets/brand/svg/lockup/works-lockup-light.svg" alt="Wolfsblvt Works" height="48">
+    <source media="(prefers-color-scheme: dark)" srcset="brand/bundle/works/assets/lockup-default/on-dark.svg">
+    <img src="brand/bundle/works/assets/lockup-default/on-light.svg" alt="Wolfsblvt Works" height="48">
   </picture>
 </h1>
 

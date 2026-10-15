@@ -5,3 +5,5 @@
 *.woff2 binary
 *.apng binary
 *.gif binary
+brand/bundle/** -text -filter -ident -working-tree-encoding
+vendor/brand/** -text -filter -ident -working-tree-encoding

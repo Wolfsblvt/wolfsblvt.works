@@ -17,7 +17,7 @@ Adoption on Cloudflare is Wolf Ops work; see [Development](DEVELOPMENT.md#public
 
 | Component | Responsibility | Talks to |
 | --- | --- | --- |
-| Astro site (`src/`) | Every page as static HTML: the home walk, Contact, Privacy and data, Impressum, 404, the 503 error page, `robots.txt` and the sitemap | Build-time only: `site.config.mjs`, the Pile collection, `@wolfsblvt/icons`, the approved marks in `assets/brand/`, the legal-operator projection |
+| Astro site (`src/`) | Every page as static HTML: the home walk, Contact, Privacy and data, Impressum, 404, the 503 error page, `robots.txt` and the sitemap | Build-time only: `site.config.mjs`, the Pile collection, `@wolfsblvt/icons`, the approved marks in `brand/bundle/works/`, the legal-operator projection |
 | Browser scripts (`src/scripts/`, `src/features/*/client/`) | The Walk, header lockup and nav, reveals and travel, Yoru, the Pile and Endless, the contact form | Only the page; the contact form also posts to its own origin and loads Turnstile |
 | Build scripts (`scripts/`) | Fonts, identity assets, `_headers`, social cards, the output and publication checks | The build output in `artifacts/site/` |
 | Site Worker (`worker/index.ts`) | Routes the few Worker-first paths, seeds the home pile, serves and prepares the contact page, sets security headers and CSP on what it serves | `ASSETS`, the contact service, `pile-seed.ts`, `shared/csp.ts` |
@@ -102,7 +102,7 @@ storage. A contact message exists only as two emails. The contact service's log 
 are the only records; [Logging](LOGGING.md) describes them.
 
 Build-time data comes from the repository: `site.config.mjs` (identity, links, legal facts), the Pile collection in
-`src/content/pile/`, the approved marks in `assets/brand/`, and Yoru's frames in `design/the-walk/assets/`. The legal operator's
+`src/content/pile/`, the approved marks in `brand/bundle/works/`, and Yoru's frames in `design/the-walk/assets/`. The legal operator's
 name and address reach the build only as the private `WOLFSBLVT_LEGAL_OPERATOR_B64` projection; the public source
 carries an obvious fixture in `src/data/legal-operator.example.json`.
 
@@ -141,6 +141,14 @@ carries an obvious fixture in `src/data/legal-operator.example.json`.
 - Every inline script on a page is pinned by hash in that page's CSP; adding one without rebuilding the headers breaks
   it visibly rather than silently allowing inline code.
 - Every animation has a finished state under `prefers-reduced-motion`, and every page is complete without JavaScript.
+
+## Identity source and consumer bundle
+
+The identity's maintained masters live in `brand/source/works/`. A deterministic exporter writes the committed
+`brand/bundle/works/` tree and manifest; website build-time consumers read it and copy it verbatim into the served
+`/brand/works/` mirror. The mirror's sponsor HTML is downloadable template source, served as plain text with noindex
+headers rather than treated as a visitor page. The output check validates its bytes and bundle identity separately.
+The Astro sponsor component binds that same template, stylesheet and progressive enhancement.
 
 ## Known compromises
 

@@ -1,0 +1,133 @@
+{
+  "fonts": [
+    {
+      "family": "Works Literata",
+      "format": "woff2",
+      "weight": {
+        "min": 200,
+        "max": 900
+      },
+      "style": "normal",
+      "fallbacks": [
+        "Georgia",
+        "serif"
+      ],
+      "licenceId": "literata-ofl",
+      "source": "@fontsource-variable/literata@5.3.0",
+      "file": "fonts/literata-latin-ext-opsz-normal.woff2"
+    },
+    {
+      "family": "Works Literata",
+      "format": "woff2",
+      "weight": {
+        "min": 200,
+        "max": 900
+      },
+      "style": "normal",
+      "fallbacks": [
+        "Georgia",
+        "serif"
+      ],
+      "licenceId": "literata-ofl",
+      "source": "@fontsource-variable/literata@5.3.0",
+      "file": "fonts/literata-latin-opsz-normal.woff2"
+    },
+    {
+      "family": "Works Albert Sans",
+      "format": "woff2",
+      "weight": {
+        "min": 100,
+        "max": 900
+      },
+      "style": "normal",
+      "fallbacks": [
+        "system-ui",
+        "sans-serif"
+      ],
+      "licenceId": "albert-sans-ofl",
+      "source": "@fontsource-variable/albert-sans@5.3.0",
+      "file": "fonts/albert-sans-latin-ext-wght-normal.woff2"
+    },
+    {
+      "family": "Works Albert Sans",
+      "format": "woff2",
+      "weight": {
+        "min": 100,
+        "max": 900
+      },
+      "style": "normal",
+      "fallbacks": [
+        "system-ui",
+        "sans-serif"
+      ],
+      "licenceId": "albert-sans-ofl",
+      "source": "@fontsource-variable/albert-sans@5.3.0",
+      "file": "fonts/albert-sans-latin-wght-normal.woff2"
+    },
+    {
+      "family": "Works Shantell Sans",
+      "format": "woff2",
+      "weight": {
+        "min": 400,
+        "max": 400
+      },
+      "style": "normal",
+      "fallbacks": [
+        "cursive"
+      ],
+      "licenceId": "shantell-sans-ofl",
+      "source": "@fontsource/shantell-sans@5.3.0",
+      "file": "fonts/shantell-sans-latin-ext-400-normal.woff2"
+    },
+    {
+      "family": "Works Shantell Sans",
+      "format": "woff2",
+      "weight": {
+        "min": 400,
+        "max": 400
+      },
+      "style": "normal",
+      "fallbacks": [
+        "cursive"
+      ],
+      "licenceId": "shantell-sans-ofl",
+      "source": "@fontsource/shantell-sans@5.3.0",
+      "file": "fonts/shantell-sans-latin-400-normal.woff2"
+    }
+  ],
+  "licences": [
+    {
+      "id": "literata-ofl",
+      "subject": "Works Literata",
+      "name": "SIL Open Font License 1.1",
+      "source": "@fontsource-variable/literata@5.3.0",
+      "file": "licences/literata-ofl.txt"
+    },
+    {
+      "id": "albert-sans-ofl",
+      "subject": "Works Albert Sans",
+      "name": "SIL Open Font License 1.1",
+      "source": "@fontsource-variable/albert-sans@5.3.0",
+      "file": "licences/albert-sans-ofl.txt"
+    },
+    {
+      "id": "shantell-sans-ofl",
+      "subject": "Works Shantell Sans",
+      "name": "SIL Open Font License 1.1",
+      "source": "@fontsource/shantell-sans@5.3.0",
+      "file": "licences/shantell-sans-ofl.txt"
+    },
+    {
+      "id": "works-artwork",
+      "subject": "Wolfsblvt Works identity artwork",
+      "name": "All rights reserved",
+      "file": "licences/works-artwork.txt"
+    },
+    {
+      "id": "agpl-3",
+      "subject": "Shared Works sponsor component and foundation code",
+      "name": "AGPL-3.0-only",
+      "file": "licences/agpl-3.txt"
+    }
+  ]
+}

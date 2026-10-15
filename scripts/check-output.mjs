@@ -7,6 +7,7 @@ import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import site from '../site.config.mjs';
 import { loadLegalOperator } from '../src/lib/legal-operator.mjs';
+import { validateBrandBundle } from '../tools/brand-bundle/scripts/validate-brand-bundle.mjs';
 
 const out = fileURLToPath(new URL('../artifacts/site/', import.meta.url));
 const failures = [];
@@ -27,7 +28,12 @@ function files(dir) {
 const read = (path) => readFileSync(join(out, path), 'utf8');
 const pages = files(out)
   .map((file) => relative(out, file).replaceAll('\\', '/'))
-  .filter((path) => path.endsWith('.html'));
+  // This exact HTML file is downloadable template source, not a visitor page. It remains in the data-leak scan below.
+  .filter((path) => path.endsWith('.html') && path !== 'brand/works/components/works-sponsor.html');
+
+const mirror = await validateBrandBundle(join(out, 'brand', 'works'));
+const sourceBundle = JSON.parse(readFileSync(new URL('../brand/bundle/works/manifest.json', import.meta.url), 'utf8'));
+if (mirror.manifest.bundleSha256 !== sourceBundle.bundleSha256) fail('Served Works mirror differs from the committed bundle.');
 
 const metaRobots = (html) => html.match(/<meta name="robots" content="([^"]*)"/)?.[1] ?? null;
 const canonical = (html) => html.match(/<link rel="canonical" href="([^"]*)"/)?.[1] ?? null;

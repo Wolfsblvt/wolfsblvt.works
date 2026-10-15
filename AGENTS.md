@@ -10,8 +10,12 @@ Wolf's private data. It carries only what is specific to this repository.
 
 Read [docs/VISION.md](docs/VISION.md) for what the site is for and [docs/DECISIONS.md](docs/DECISIONS.md) before
 changing how anything looks or behaves: most of the design is deliberate in ways the code can't explain. The design
-canvas in `design/the-walk/project/` and the marks in `design/marks/` are the design sources; a change that departs from
-them is a decision to record, not a cleanup. [docs/PROJECT-MAP.md](docs/PROJECT-MAP.md) says where things live. The approved reusable SVG, PNG and animated artwork lives at [assets/](assets/README.md). Website production reads those stable exports, never a numbered handoff or design demo. The Help panel's real markup and CSS live in `src/components/WorksSponsor.astro` and `src/styles/sponsor.css`; design specimens must not be scraped for production.
+canvas in `design/the-walk/project/` and maintained identity masters in `brand/source/works/` are the design sources.
+`design/marks/` preserves the co-design record; `brand/bundle/works/` is the sole consumer identity root. A change that departs from
+them is a decision to record, not a cleanup. [docs/PROJECT-MAP.md](docs/PROJECT-MAP.md) says where things live.
+[The asset catalogue](assets/README.md) points to the canonical SVG, PNG and animated files. Website production reads
+the bundle, never a numbered handoff or design demo. `src/components/WorksSponsor.astro` binds the bundle's shared
+markup, CSS and behavior; `src/styles/sponsor.css` supplies the website's host styling.
 
 The Works voice and site expression are owned by the Wolfsblvt Works foundation, not by this repository. Where Works
 speaks, follow it; inside a project's window, the project's own voice and facts win. Wolf decides copy.

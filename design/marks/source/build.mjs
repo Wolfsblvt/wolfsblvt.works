@@ -12,7 +12,7 @@ import * as K from './core.mjs';
 import * as SP from './sponsor-section.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const OUT = resolve(HERE, '..', '..', '..', 'assets', 'brand');
+const OUT = resolve(HERE, '..', '..', '..', 'brand', 'source', 'works', 'artwork');
 const DESIGN = resolve(HERE, '..');
 const arg = (name, dflt) => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : dflt; };
 const FONT = arg('--font', process.env.WORKS_FONT);
@@ -41,7 +41,7 @@ for (const mode of ['dark', 'light']) {
   put(`svg/sponsor/works-sponsor-banner-animated-${mode}.svg`, K.sponsorBannerSvg(N, mode, { animated: true }));
 }
 put('svg/icon/favicon.svg', K.faviconSvg());
-put('svg/glyph/works-glyph-24.svg', K.glyphSvg());
+// UI glyph distribution belongs exclusively to @wolfsblvt/icons.
 
 /* ---------------- adaptive light/dark SVG exports ---------------- */
 // The two designs have distinct colors and, for the banner, distinct panel geometry.
@@ -136,7 +136,7 @@ for (const [name, col] of [['white', '#ffffff'], ['black', '#000000']]) {
 }
 await png(tile('dark', 180, 124, K.COLORS.canvas), 'png/icon/apple-touch-icon-180.png', 180, 180);
 await png(tile('dark', 512, 300, K.COLORS.canvas), 'png/icon/works-icon-maskable-512.png', 512, 512);
-for (const [name, col] of [['bone', K.COLORS.text], ['ink', K.COLORS.ink]]) for (const s of [24, 48, 96]) await png(K.glyphSvg().replace('currentColor', col), `png/glyph/works-glyph-${name}-${s}.png`, s, s);
+// Historical glyph rasters are provenance only.
 console.log('Static PNGs rendered.');
 
 /* ---------------- animations: frames → play-once GIF (on background) and APNG (transparent) ---------------- */

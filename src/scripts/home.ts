@@ -231,14 +231,6 @@ function mountChat(): void {
   }, { threshold: 0.4, rootMargin: '0px 0px -15% 0px' });
 }
 
-/** The shared sponsor component plays its motion once, the first time it is properly in view. */
-function mountSponsor(): void {
-  const sponsor = document.querySelector<HTMLElement>('[data-sponsor]');
-  if (!sponsor || reducedMotion() || !('IntersectionObserver' in window)) return;
-  sponsor.classList.add('will-play');
-  whenInView(sponsor, () => sponsor.classList.add('is-playing'));
-}
-
 /** Discord: try the app first, fall back to the web profile if nothing took focus. Copy handle copies the handle. */
 function mountDiscord(): void {
   document.querySelectorAll<HTMLAnchorElement>('[data-discord-app]').forEach((link) => {
@@ -275,5 +267,4 @@ mountWalkSpy();
 mountNavTravel();
 mountYoru();
 mountChat();
-mountSponsor();
 mountDiscord();

@@ -11,9 +11,9 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const outDir = join(root, 'public', 'social');
 mkdirSync(outDir, { recursive: true });
 
-const marks = join(root, 'assets', 'brand');
+const marks = join(root, 'brand', 'bundle', 'works');
 const lockup = (prefix, height, extra = '') =>
-  readFileSync(join(marks, 'svg', 'lockup', 'works-lockup-dark.svg'), 'utf8')
+  readFileSync(join(marks, 'assets', 'lockup-default', 'on-dark.svg'), 'utf8')
     .replace(/<\?xml[^>]*\?>\s*/, '')
     .replace('<svg xmlns="http://www.w3.org/2000/svg"', `<svg xmlns="http://www.w3.org/2000/svg" style="height:${height}px;width:auto;display:block;${extra}"`)
     .split('wk-full-dark-')

@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { LOCKUP, markFrame } from './mark-ease';
 
-const ASSET_DIR = join(process.cwd(), 'assets', 'brand');
+const ASSET_DIR = join(process.cwd(), 'brand', 'bundle', 'works');
 
 const read = (path: string) => readFileSync(join(ASSET_DIR, path), 'utf8').replace(/<\?xml[^>]*\?>\s*/, '');
 
@@ -15,7 +15,7 @@ function replaceExactly(source: string, from: string, to: string, count = 1): st
 
 /** The motion rules of the animated lockup, plus the finished state the rooms show. */
 export function markMotionCss(): string {
-  const svg = read('svg/lockup/works-lockup-animated-dark.svg');
+  const svg = read('assets/lockup-default/on-dark-animated.svg');
   const css = /<style>([\s\S]*?)<\/style>/.exec(svg)?.[1];
   if (!css) throw new Error('marks: animated lockup has no style block');
   return `${css}\n.wk.mark-still *{animation:none!important}.wk.mark-still .dr,.wk.mark-still .hw,.wk.mark-still .ul{stroke-dashoffset:0}\n`;
@@ -27,7 +27,7 @@ export function markMotionCss(): string {
  */
 export function headerLockup(options: { still: boolean; topPx?: number }): string {
   const frame = markFrame(0, options.topPx ?? 60, false, options.still);
-  let s = read('svg/lockup/works-lockup-animated-dark.svg');
+  let s = read('assets/lockup-default/on-dark-animated.svg');
   s = s.replace(/<style>[\s\S]*?<\/style>\s*/, '');
   s = replaceExactly(
     s,
@@ -47,7 +47,7 @@ export function headerLockup(options: { still: boolean; topPx?: number }): strin
 
 /** The static full lockup for the footer, re-id'd so it can share a page with the header copy. */
 export function footerLockup(idPrefix = 'fk-'): string {
-  let s = read('svg/lockup/works-lockup-dark.svg');
+  let s = read('assets/lockup-default/on-dark.svg');
   s = replaceExactly(
     s,
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="-48.16 -99.96 725.72 157.73" role="img" aria-label="Wolfsblvt Works">',
@@ -58,7 +58,7 @@ export function footerLockup(idPrefix = 'fk-'): string {
 
 /** The approved adaptive favicon, unchanged. */
 export function faviconSvg(): string {
-  return read('svg/icon/favicon.svg');
+  return read('assets/icon-favicon/on-light-adaptive.svg');
 }
 
 export { LOCKUP };

@@ -2,15 +2,23 @@
 
 ## Meaning
 
-This is the maintained source and design record of the approved Wolfsblvt Works identity, originally contributed in co-design round 02: the identity marks (icon, lockup and wordmark, favicon, icon-slot glyph, maker credit) and the shared sponsor section, with their motion. Tala designed it with Wolf in three canvas rounds on 2026-10-14. It records what Wolf selected, in his words, and how the marks are built and used. It also lists every file and what still has to join with the visual-grammar and website work.
+This is the historical co-design record of the approved Wolfsblvt Works identity, originally contributed in co-design round 02: the identity marks (icon, lockup and wordmark, favicon, icon-slot glyph, maker credit) and the shared sponsor section, with their motion. Tala designed it with Wolf in three canvas rounds on 2026-10-14. It records what Wolf selected, in his words, and how the marks are built and used. It also lists every file and what still has to join with the visual-grammar and website work.
 
 The selected marks and sponsor panel now form part of the website. This record preserves the co-design rationale and editable sources; it is **not** the download or runtime dependency for finished artwork, a deployed website claim or trademark clearance. Get usable exports from the [asset catalogue](../../assets/README.md). Wolf's choices below are his; unquoted construction and recommendations were written by Tala.
 
-- Open [the approved asset gallery](../../assets/brand/assets.html) to see every exported file on the background it was made for.
+- Open [the approved asset gallery](../../assets/works-gallery.html) to see every exported file on the background it was made for.
 - Open [`canvas/round-3/canvas.html`](canvas/round-3/canvas.html) for the final design record, with motion replay and timing sliders. Rounds [1](canvas/round-1/canvas.html) and [2](canvas/round-2/canvas.html) keep the explored and rejected directions.
 - Open [`sponsor-section/specimen.html`](sponsor-section/specimen.html) for the reusable web section on three hosts and on phone width.
 
 The historical canvases and the specimen load fonts from Google Fonts and need to be served over HTTP. Any static server works, for example `python -m http.server` from this folder. Opened as plain files they still render, but some browsers block the scripts.
+
+## Current source relationship
+
+Maintained masters are in `brand/source/works/`; consumer exports exist only in `brand/bundle/works/`.
+[The current catalogue](../../assets/README.md) and [shared sponsor contract](../../docs/works-sponsor.md) supersede
+the original handoff paths, glyph proposal and integration notes below. Relative artwork links below are provenance,
+not consumer coordinates. The old renderer is an optional design tool; the deterministic bundle exporter reads the
+approved source bytes without requiring its historical Chrome/ffmpeg/font toolchain.
 
 ## The idea: two corners hold the work
 
@@ -61,8 +69,8 @@ These are quoted from the round-2, round-3 and final review messages. Everything
   | Light | `#b8661f` | `#a8327a` | `#22171c` |
 
   The mono version uses `currentColor`.
-- **Favicon:** [`../../assets/brand/svg/icon/favicon.svg`](../../assets/brand/svg/icon/favicon.svg) switches between the dark and light colours with `prefers-color-scheme`. PNG sizes run from 16 to 1024. The set also includes an opaque `apple-touch-icon-180.png` and a `works-icon-maskable-512.png` with safe-zone padding.
-- **Icon-slot glyph:** [`../../assets/brand/svg/glyph/works-glyph-24.svg`](../../assets/brand/svg/glyph/works-glyph-24.svg) is drawn on the 24×24 grid with 2px round strokes in `currentColor`. It uses the same arcs and the same offset dot (12.8, 13), like diffdevil's trimmed glyph. It is a candidate for `@wolfsblvt/icons`; admission still runs through that package's own standard and checks.
+- **Favicon:** [`../../brand/bundle/works/svg/icon/favicon.svg`](../../brand/bundle/works/svg/icon/favicon.svg) switches between the dark and light colours with `prefers-color-scheme`. PNG sizes run from 16 to 1024. The set also includes an opaque `apple-touch-icon-180.png` and a `works-icon-maskable-512.png` with safe-zone padding.
+- **Icon-slot glyph:** [`../../brand/bundle/works/svg/glyph/works-glyph-24.svg`](../../brand/bundle/works/svg/glyph/works-glyph-24.svg) is drawn on the 24×24 grid with 2px round strokes in `currentColor`. It uses the same arcs and the same offset dot (12.8, 13), like diffdevil's trimmed glyph. It is a candidate for `@wolfsblvt/icons`; admission still runs through that package's own standard and checks.
 - **Credit:** use the 16–18px icon next to `by WOLFSBLVT` in the host's type, or the text credits from the Works identity authority (`A Wolfsblvt Works product`, …). The canvases show both on a diffdevil footer and on a light footer.
 
 ## Lockup (also the wordmark)
@@ -126,7 +134,7 @@ The words are the selected shared sponsorship copy, unchanged: **Support the wor
 - **Below a 600px container:** one column, the type behind the copy at low strength, and WORKS written over the magenta corner with its outline.
 - **Before it ships:** the hrefs are placeholders (`#github-sponsors`, `#ko-fi`) until the real enabled destinations are set. Give ids that are unique on the page, because the artwork uses SVG masks.
 
-**Static banner** ([`../../assets/brand/svg/sponsor/`](../../assets/brand/svg/sponsor/), [`../../assets/brand/png/sponsor/`](../../assets/brand/png/sponsor/), animated in [`../../assets/brand/animated/`](../../assets/brand/animated/)): the same composition for READMEs and fixed slots.
+**Static banner** ([`../../brand/bundle/works/svg/sponsor/`](../../brand/bundle/works/svg/sponsor/), [`../../brand/bundle/works/png/sponsor/`](../../brand/bundle/works/png/sponsor/), animated in [`../../brand/bundle/works/animated/`](../../brand/bundle/works/animated/)): the same composition for READMEs and fixed slots.
 - It holds only the common words, because an image can't carry two links. The text stays editable `<text>`. Outside a browser with Literata loaded, it falls back to Georgia.
 - GitHub README, dark and light:
 
@@ -149,20 +157,20 @@ The words are the selected shared sponsorship copy, unchanged: **Support the wor
   - [Literata](https://fonts.google.com/specimen/Literata) (SIL OFL 1.1) for the Works sponsor copy.
   - The canvases also use Albert Sans, Shantell Sans, IBM Plex Sans, DM Serif Display and Fraunces as specimens.
 
-## Files
+## Historical source inventory
 
 | Folder | Contents |
 | --- | --- |
-| [`../../assets/brand/svg/icon/`](../../assets/brand/svg/icon/) | `works-icon-{dark,light,mono}.svg`, `works-icon-animated-{dark,light}.svg`, `favicon.svg` |
-| [`../../assets/brand/svg/glyph/`](../../assets/brand/svg/glyph/) | `works-glyph-24.svg` |
-| [`../../assets/brand/svg/lockup/`](../../assets/brand/svg/lockup/) | `works-lockup-{dark,light,mono}.svg`, `works-lockup-compact-{dark,light,mono}.svg`, `works-lockup-animated-{dark,light}.svg` |
-| [`../../assets/brand/svg/sponsor/`](../../assets/brand/svg/sponsor/) | `works-sponsor-banner-{dark,light}.svg`, `works-sponsor-banner-animated-{dark,light}.svg` |
-| [`../../assets/brand/png/icon/`](../../assets/brand/png/icon/) | transparent `works-icon-{dark,light}-{16…1024}.png`, `works-icon-{white,black}-512.png`, `apple-touch-icon-180.png`, `works-icon-maskable-512.png` |
-| [`../../assets/brand/png/glyph/`](../../assets/brand/png/glyph/) | `works-glyph-{bone,ink}-{24,48,96}.png` |
-| [`../../assets/brand/png/lockup/`](../../assets/brand/png/lockup/) | transparent `works-lockup-{dark,light}-{600,1200,2400}w.png`, `works-lockup-{white,black}-1200w.png`, `works-lockup-compact-{dark,light}-{32,64,128}h.png` |
-| [`../../assets/brand/png/sponsor/`](../../assets/brand/png/sponsor/) | `works-sponsor-banner-{dark,light}.png` and `@2x` |
-| [`../../assets/brand/animated/gif/`](../../assets/brand/animated/gif/) | play-once GIFs for icon (256), lockup (1200w) and sponsor banner, dark and light. GIFs sit on their background: Works dark/paper, and GitHub's README backgrounds for the banner |
-| [`../../assets/brand/animated/apng/`](../../assets/brand/animated/apng/) | play-once APNGs, same set, transparent |
+| [`../../brand/bundle/works/svg/icon/`](../../brand/bundle/works/svg/icon/) | `works-icon-{dark,light,mono}.svg`, `works-icon-animated-{dark,light}.svg`, `favicon.svg` |
+| [`../../brand/bundle/works/svg/glyph/`](../../brand/bundle/works/svg/glyph/) | `works-glyph-24.svg` |
+| [`../../brand/bundle/works/svg/lockup/`](../../brand/bundle/works/svg/lockup/) | `works-lockup-{dark,light,mono}.svg`, `works-lockup-compact-{dark,light,mono}.svg`, `works-lockup-animated-{dark,light}.svg` |
+| [`../../brand/bundle/works/svg/sponsor/`](../../brand/bundle/works/svg/sponsor/) | `works-sponsor-banner-{dark,light}.svg`, `works-sponsor-banner-animated-{dark,light}.svg` |
+| [`../../brand/bundle/works/png/icon/`](../../brand/bundle/works/png/icon/) | transparent `works-icon-{dark,light}-{16…1024}.png`, `works-icon-{white,black}-512.png`, `apple-touch-icon-180.png`, `works-icon-maskable-512.png` |
+| [`../../brand/bundle/works/png/glyph/`](../../brand/bundle/works/png/glyph/) | `works-glyph-{bone,ink}-{24,48,96}.png` |
+| [`../../brand/bundle/works/png/lockup/`](../../brand/bundle/works/png/lockup/) | transparent `works-lockup-{dark,light}-{600,1200,2400}w.png`, `works-lockup-{white,black}-1200w.png`, `works-lockup-compact-{dark,light}-{32,64,128}h.png` |
+| [`../../brand/bundle/works/png/sponsor/`](../../brand/bundle/works/png/sponsor/) | `works-sponsor-banner-{dark,light}.png` and `@2x` |
+| [`../../brand/bundle/works/animated/gif/`](../../brand/bundle/works/animated/gif/) | play-once GIFs for icon (256), lockup (1200w) and sponsor banner, dark and light. GIFs sit on their background: Works dark/paper, and GitHub's README backgrounds for the banner |
+| [`../../brand/bundle/works/animated/apng/`](../../brand/bundle/works/animated/apng/) | play-once APNGs, same set, transparent |
 | [`sponsor-section/`](sponsor-section/) | the web component, examples and specimen |
 | [`canvas/`](canvas/) | the three design rounds, interactive |
 | [`source/`](source/) | the generator (`core.mjs`, `build.mjs`, `sponsor-section.mjs`) and `geometry.json` |
@@ -172,11 +180,11 @@ The words are the selected shared sponsorship copy, unchanged: **Support the wor
 - **Animated SVGs** animate with CSS. They play in browsers, including as `<img>`. Editors such as Inkscape or Figma show their *start* state (empty corners), so edit the static SVGs instead.
 - **APNG:** a viewer without APNG support shows only the first frame, which is the empty start state. That's why the files use the `.apng` extension instead of passing as static PNGs. Use them only where APNG support is known.
 
-## Regenerating
+## Historical renderer
 
 From `design/marks/source/`, run `npm install`. Then run `node build.mjs --font <path>/AbrilFatface-Regular.ttf`. The font comes from [google/fonts](https://github.com/google/fonts/tree/main/ofl/abrilfatface) and isn't included here.
 
-- `--no-raster` writes SVGs into `assets/brand/`, updates source geometry here, and regenerates design-only sponsor specimens.
+- `--no-raster` writes SVGs into `brand/bundle/works/`, updates source geometry here, and regenerates design-only sponsor specimens.
 - The raster pass needs Chrome (`--chrome <path>` if it isn't in the default location) and `ffmpeg` on PATH. It renders in a temporary, isolated Chrome profile and deletes it afterwards.
 - One detail that matters: headless Chrome reports `prefers-reduced-motion: reduce`, so the build emulates `no-preference` for frames. Without that, every frame comes out as the finished state.
 
@@ -187,7 +195,7 @@ From `design/marks/source/`, run `npm install`. Then run `node build.mjs --font 
 - **No claims made:** this return claims no trademark registration, clearance, or live sponsorship destination. The Works name and legal standing remain with the Works identity authority in Leitsatz.
 - **Placeholder content:** the diffdevil host is a sketch of its window in the Walk. The light host and the smolpng line are illustrative.
 
-## Still open, and where it joins
+## Original handoff remainder (historical)
 
 - **Visual grammar (contribution 01):** confirm the light-mode relatives and token names. Placement of the marks in the site grammar.
 - **Website session:**
