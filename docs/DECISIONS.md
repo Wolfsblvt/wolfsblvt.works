@@ -132,6 +132,17 @@ like the same place.
 
 ## The header and the marks
 
+### Finished assets, editable design, and production markup are separate
+
+**Date:** 2026-10-15 · **Status:** Current
+
+Approved reusable marks and their SVG/PNG/animation variants belong to `assets/brand/`, exposed through `assets/README.md`. The approved geometry, generator, canvas rounds and sponsor *demonstrations* live under `design/marks/`, without the internal contribution number in their paths. Live sponsorship HTML and CSS are owned by `src/components/WorksSponsor.astro` and `src/styles/sponsor.css`; the website no longer parses design-demo HTML to render Help.
+
+**Why.** The original site read header marks, favicons, social cards and sponsorship markup directly from a numbered design handoff. That made an internal delivery format a lasting implementation API and hid the downloadable exports from the very people meant to reuse them. Preserve Tala and Wolf's selected artwork and rationale, not the delivery wrapper.
+
+**Theme handling.** The standalone responsive SVG exports contain both selected light and dark drawings and switch through `prefers-color-scheme`. Static `-light` and `-dark` exports remain for reliable GitHub `<picture>` usage and image processors. Their suffix describes the background each drawing fits. This does not change the Works website's dark-only design.
+
+
 ### The lockup eases from full to compact as you scroll
 
 **Date:** 2026-10-14 · **Status:** Current

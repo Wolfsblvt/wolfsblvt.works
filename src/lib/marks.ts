@@ -56,7 +56,7 @@ export function footerLockup(idPrefix = 'fk-'): string {
   return s.split('wk-full-dark-').join(idPrefix);
 }
 
-/** The return's adaptive favicon, unchanged. */
+/** The approved adaptive favicon, unchanged. */
 export function faviconSvg(): string {
   return read('svg/icon/favicon.svg');
 }

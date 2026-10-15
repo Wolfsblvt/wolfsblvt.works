@@ -1,7 +1,7 @@
 <h1 id="wolfsblvt-works">
   <picture>
-    <source media="(prefers-color-scheme: light)" srcset="design/marks/return/02-marks-and-sponsor-assets/svg/lockup/works-lockup-light.svg">
-    <img src="design/marks/return/02-marks-and-sponsor-assets/svg/lockup/works-lockup-dark.svg" alt="Wolfsblvt Works" height="48">
+    <source media="(prefers-color-scheme: dark)" srcset="assets/brand/svg/lockup/works-lockup-dark.svg">
+    <img src="assets/brand/svg/lockup/works-lockup-light.svg" alt="Wolfsblvt Works" height="48">
   </picture>
 </h1>
 
@@ -81,6 +81,7 @@ and everything else.
 | [Architecture](docs/ARCHITECTURE.md) | The static build, the Worker, the Pile and the contact service |
 | [Development](docs/DEVELOPMENT.md) | Commands, tests, generated files and the publication checklist |
 | [Project map](docs/PROJECT-MAP.md) | What lives where |
+| [Ready-to-use Works artwork](assets/README.md) | SVGs, PNGs, logos and sponsorship graphics |
 | [Writing Pile pieces](docs/pile/pile-authoring-guide.md) | Adding to the Pile |
 | [Security](SECURITY.md) | Reporting a vulnerability privately |
 

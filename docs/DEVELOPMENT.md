@@ -80,6 +80,14 @@ npm run build
 That removes every build output, Astro's cache, Wrangler's local state and the generated assets, then recreates them.
 It touches nothing tracked. `node_modules` can go too; `npm install` restores it from the lockfile.
 
+## Reusable assets and the sponsor section
+
+Find all usable exports in the [brand asset catalogue](../assets/README.md): `assets/brand/` stores SVGs, static light/dark variants, adaptive SVGs, PNGs and animations. Source geometry, generators and historical canvas/specimens are separately in `design/marks/`. The website never depends on the internal design handoff structure.
+
+To regenerate approved marks, use `design/marks/source/`: install the dependencies there and run `node build.mjs --font <path-to-AbrilFatface-Regular.ttf>` (`--no-raster` for an SVG-only pass). SVG and raster exports go into `assets/brand/`, the geometry stays under `design/marks/source/`, and preview specimens remain under `design/marks/sponsor-section/`. Review and commit intended changed exports.
+
+The live Help section is `src/components/WorksSponsor.astro` plus `src/styles/sponsor.css`. It renders real links from `site.config.mjs`; no HTML or CSS is scraped from design demonstrations. `src/lib/marks.ts`, the favicon generator and social-card renderer use the approved exports. `npm run check` also verifies the rendered sponsorship links.
+
 ## Generated artifacts
 
 Produced by the build, ignored by Git, never edited by hand:

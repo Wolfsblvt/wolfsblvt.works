@@ -8,7 +8,7 @@ This is the authoritative component map for code, prose, artwork and third-party
 
 The website's code is licensed under [GNU AGPL-3.0-only](AGPL-3.0-only.txt): everything under `src/` that is code (Astro components, pages, layouts, browser scripts, styles and content schemas), the Cloudflare Worker and contact service under `worker/`, the shared contract and policy modules under `shared/`, build and asset scripts under `scripts/`, the tests under `tests/`, and the configuration files at the root. A modified version that people use over a network must offer them its Corresponding Source.
 
-The design canvas's tool scripts under `design/the-walk/tools/` and the marks generator under `design/marks/return/02-marks-and-sponsor-assets/source/` are code too, under the same terms; the artwork they produce is not (see below).
+The design canvas's tool scripts under `design/the-walk/tools/` and the marks generator under `design/marks/source/` are code too, under the same terms; the artwork they produce is not (see below).
 
 ## Prose — CC BY 4.0
 
@@ -16,7 +16,7 @@ Original prose is licensed under [Creative Commons Attribution 4.0 International
 
 ## Reserved: the marks, Yoru and other artwork
 
-The Wolfsblvt Works marks (the WOLFSBLVT / WORKS lockups, the icon and its corners, the handwritten WORKS, the sponsor artwork and their motion), Yoru, the agent avatars, the diffdevil identity, the social cards and every other piece of artwork in this repository are reserved. That covers `design/marks/`, `design/the-walk/assets/`, `references/avatars/`, `public/social/` and the projections the build generates from them (favicons, app icons, Yoru's spritesheets). Their appearance in AGPL code or CC BY prose grants no right to use them; the names and marks identify Wolfsblvt Works and its projects.
+The Wolfsblvt Works marks (the WOLFSBLVT / WORKS lockups, the icon and its corners, the handwritten WORKS, the sponsor artwork and their motion), Yoru, the agent avatars, the diffdevil identity, the social cards and every other piece of artwork in this repository are reserved. That covers `assets/brand/`, `design/marks/`, `design/the-walk/assets/`, `references/avatars/`, `public/social/` and the projections the build generates from them (favicons, app icons, Yoru's spritesheets). Their appearance in AGPL code or CC BY prose grants no right to use them; the names and marks identify Wolfsblvt Works and its projects.
 
 The compact `wolfsblvt/works` and `wolfsblvt/signpost` glyphs are a separate case: they are distributed by [`@wolfsblvt/icons`](https://github.com/Wolfsblvt/wolfsblvt-icons) under MIT, and the site renders them from that package.
 
