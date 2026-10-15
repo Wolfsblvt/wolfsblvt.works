@@ -11,7 +11,7 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const outDir = join(root, 'public', 'social');
 mkdirSync(outDir, { recursive: true });
 
-const marks = join(root, 'design', 'marks', 'return', '02-marks-and-sponsor-assets');
+const marks = join(root, 'assets', 'brand');
 const lockup = (prefix, height, extra = '') =>
   readFileSync(join(marks, 'svg', 'lockup', 'works-lockup-dark.svg'), 'utf8')
     .replace(/<\?xml[^>]*\?>\s*/, '')

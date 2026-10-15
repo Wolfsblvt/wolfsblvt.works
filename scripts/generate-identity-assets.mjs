@@ -1,5 +1,5 @@
 // Identity and media projections derived from their masters in design/. Everything written here is generated and
-// ignored by Git; the masters are the marks return (icon, favicon) and Yoru's spritesheet.
+// ignored by Git; the masters are the approved brand exports (icon, favicon) and Yoru's spritesheet.
 //
 //   public/favicon.svg            the return's adaptive favicon, unchanged (static, never the animated mark)
 //   public/favicon-192.png        square raster favicon on the glow tile
@@ -13,7 +13,7 @@ import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const marks = join(root, 'design', 'marks', 'return', '02-marks-and-sponsor-assets');
+const marks = join(root, 'assets', 'brand');
 const yoruMaster = join(root, 'design', 'the-walk', 'assets', 'yoru-spritesheet.webp');
 const pub = join(root, 'public');
 

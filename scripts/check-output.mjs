@@ -60,6 +60,14 @@ for (const path of pages.filter((p) => !(p in EXPECTED) && p !== '503.html')) {
   fail(`${path} is a page this check does not know; add its expected identity to scripts/check-output.mjs.`);
 }
 
+// The production sponsor section must have real markup and configured destinations.
+const home = read('index.html');
+if (!home.includes('data-sponsor') || !home.includes('class="works-sponsor host-works"')) fail('Home is missing its production sponsor component.');
+for (const [name, url] of Object.entries(site.sponsors)) {
+  if (!home.includes(`href="${url}"`)) fail(`Home is missing the configured ${name} sponsor destination.`);
+}
+if (/href="#(?:github-sponsors|ko-fi)"/.test(home)) fail('Home contains demonstration sponsor links.');
+
 // The sitemap lists the walk and nothing that is noindex or lives on another host.
 const sitemap = existsSync(join(out, 'sitemap-0.xml')) ? read('sitemap-0.xml') : '';
 if (!existsSync(join(out, 'sitemap-index.xml')) || !sitemap) fail('The sitemap is missing.');

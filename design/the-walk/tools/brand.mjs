@@ -1,12 +1,15 @@
-// The Works marks for the site, lifted from the brand return (design/marks/return/02-marks-and-sponsor-assets).
+// Design canvas reads the approved Works exports; its sponsor specimens are design-only.
 // One source for Main and the generated rooms: the scroll-eased header lockup, the footer lockup and the
 // Works-hosted sponsor section. Nothing here redraws a mark; it re-ids, re-scopes and parameterises the returned SVG.
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const RET = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'marks', 'return', '02-marks-and-sponsor-assets');
-const read = (p) => readFileSync(join(RET, p), 'utf8');
+const ROOT = dirname(fileURLToPath(import.meta.url));
+const ASSETS = join(ROOT, '..', '..', '..', 'assets', 'brand');
+const SPECIMENS = join(ROOT, '..', '..', 'marks', 'sponsor-section');
+const read = (p) => readFileSync(join(ASSETS, p), 'utf8');
+const readSpecimen = (p) => readFileSync(join(SPECIMENS, p), 'utf8');
 const stripXml = (s) => s.replace(/<\?xml[^>]*\?>\s*/, '');
 
 function mustReplace(s, from, to, count = 1) {
@@ -75,9 +78,9 @@ export function footerLockup(idPrefix = 'fk-') {
   return s.split('wk-full-dark-').join(idPrefix);
 }
 
-// ---------- the sponsor section, Works instance, from the return's specimen ----------
+// ---------- design canvas sponsor specimen, never a production dependency ----------
 export function sponsorSection() {
-  const lines = read('sponsor-section/specimen.html').split('\n');
+  const lines = readSpecimen('specimen.html').split('\n');
   const start = lines.findIndex((l) => l.includes('<div class="works-sponsor host-works">'));
   const end = lines.findIndex((l, i) => i > start && l.trim() === '</div></div>');
   if (start < 0 || end < 0) throw new Error('brand.mjs: Works sponsor block not found in specimen.html');
@@ -87,8 +90,8 @@ export function sponsorSection() {
 }
 
 export function sponsorCss() {
-  const css = read('sponsor-section/works-sponsor.css');
-  const spec = read('sponsor-section/specimen.html');
+  const css = readSpecimen('works-sponsor.css');
+  const spec = readSpecimen('specimen.html');
   const host = spec.split('\n').filter((l) => /^\.(works-sponsor \.actions|works-sponsor h2|host-works)/.test(l)).join('\n');
   return css + '\n' + host + '\n';
 }
