@@ -1,17 +1,11 @@
-/**
- * The Works marks, lifted at build time from their master in the marks return
- * (`design/marks/return/02-marks-and-sponsor-assets`). Nothing here redraws a mark: it re-ids, re-scopes and
- * parameterises the returned SVG so the header can ease it and several copies can share one page.
- *
- * Server-only: reads files from the repository.
- */
+/** Build-time rendering of approved Works assets, not internal design specimens. */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { LOCKUP, markFrame } from './mark-ease';
 
-const RETURN_DIR = join(process.cwd(), 'design', 'marks', 'return', '02-marks-and-sponsor-assets');
+const ASSET_DIR = join(process.cwd(), 'assets', 'brand');
 
-const read = (path: string) => readFileSync(join(RETURN_DIR, path), 'utf8').replace(/<\?xml[^>]*\?>\s*/, '');
+const read = (path: string) => readFileSync(join(ASSET_DIR, path), 'utf8').replace(/<\?xml[^>]*\?>\s*/, '');
 
 function replaceExactly(source: string, from: string, to: string, count = 1): string {
   const found = source.split(from).length - 1;
@@ -62,32 +56,9 @@ export function footerLockup(idPrefix = 'fk-'): string {
   return s.split('wk-full-dark-').join(idPrefix);
 }
 
-/** The return's adaptive favicon, unchanged. */
+/** The approved adaptive favicon, unchanged. */
 export function faviconSvg(): string {
   return read('svg/icon/favicon.svg');
-}
-
-/** The Works-hosted sponsor section from the return's specimen, with real destinations. */
-export function sponsorSection(destinations: { github: string; kofi: string }): string {
-  const lines = read('sponsor-section/specimen.html').split('\n');
-  const start = lines.findIndex((line) => line.includes('<div class="works-sponsor host-works">'));
-  const end = lines.findIndex((line, i) => i > start && line.trim() === '</div></div>');
-  if (start < 0 || end < 0) throw new Error('marks: Works sponsor block not found in specimen.html');
-  let html = lines.slice(start, end + 1).join('\n');
-  html = html.replace(/^.*?<div class="works-sponsor host-works">/, '<div class="works-sponsor host-works" data-sponsor>').replace(/<\/div><\/div>\s*$/, '</div>');
-  html = replaceExactly(html, 'href="#github-sponsors"', `href="${destinations.github}"`);
-  html = replaceExactly(html, 'href="#ko-fi"', `href="${destinations.kofi}"`);
-  return html;
-}
-
-/** The shared component's stylesheet and the Works host rules from the specimen. */
-export function sponsorCss(): string {
-  const css = read('sponsor-section/works-sponsor.css');
-  const host = read('sponsor-section/specimen.html')
-    .split('\n')
-    .filter((line) => /^\.(works-sponsor \.actions|works-sponsor h2|host-works)/.test(line))
-    .join('\n');
-  return `${css}\n${host}\n`;
 }
 
 export { LOCKUP };

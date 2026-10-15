@@ -1,6 +1,6 @@
 // Build every export from core.mjs:
 //   node build.mjs --font <path-to/AbrilFatface-Regular.ttf> [--chrome <chrome.exe>] [--no-raster]
-// Writes SVGs, geometry.json and the sponsor-section art; then (unless --no-raster) renders transparent PNGs,
+// Writes approved brand exports, editable geometry and design sponsor specimens; then (unless --no-raster) renders transparent PNGs,
 // and play-once GIF/APNG via a headless Chrome in an isolated, temporary profile plus ffmpeg on PATH.
 import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
@@ -12,7 +12,8 @@ import * as K from './core.mjs';
 import * as SP from './sponsor-section.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-const OUT = resolve(HERE, '..');
+const OUT = resolve(HERE, '..', '..', '..', 'assets', 'brand');
+const DESIGN = resolve(HERE, '..');
 const arg = (name, dflt) => { const i = process.argv.indexOf(name); return i > 0 ? process.argv[i + 1] : dflt; };
 const FONT = arg('--font', process.env.WORKS_FONT);
 const CHROME = arg('--chrome', process.env.CHROME || 'C:/Program Files/Google/Chrome/Application/chrome.exe');
@@ -22,6 +23,7 @@ if (!FONT || !existsSync(FONT)) { console.error('Need --font <AbrilFatface-Regul
 const font = opentype.parse(readFileSync(FONT).buffer);
 const N = K.outlineName(font, 100);
 const write = (rel, text) => { const p = join(OUT, rel); mkdirSync(dirname(p), { recursive: true }); writeFileSync(p, text); return p; };
+const writeDesign = (rel, text) => { const p = join(DESIGN, rel); mkdirSync(dirname(p), { recursive: true }); writeFileSync(p, text); return p; };
 const XML = '<?xml version="1.0" encoding="UTF-8"?>\n';
 
 /* ---------------- SVG ---------------- */
@@ -41,18 +43,41 @@ for (const mode of ['dark', 'light']) {
 put('svg/icon/favicon.svg', K.faviconSvg());
 put('svg/glyph/works-glyph-24.svg', K.glyphSvg());
 
-/* ---------------- sponsor section (web component) ---------------- */
-write('sponsor-section/works-sponsor.css', SP.LAYOUT_CSS + '\n' + SP.MOTION_CSS);
-write('sponsor-section/works-sponsor.js', SP.PLAY_JS);
-write('sponsor-section/example.html', `<!-- One Works sponsor section, ready to paste. Requires works-sponsor.css and works-sponsor.js.
+/* ---------------- adaptive light/dark SVG exports ---------------- */
+// The two designs have distinct colors and, for the banner, distinct panel geometry.
+// Select a complete layer rather than attempting to recolor a dark-only export.
+function adaptiveSvg(light, dark) {
+  const opening = light.match(/^<svg[^>]*>/)?.[0];
+  if (!opening || dark.match(/^<svg[^>]*>/)?.[0] !== opening) throw new Error('Adaptive SVG root mismatch');
+  const inside = (svg) => svg.slice(opening.length, svg.lastIndexOf('</svg>')).trim();
+  return opening + '\n<style>\n  .for-dark-theme { display: none; }\n  @media (prefers-color-scheme: dark) {\n    .for-light-theme { display: none; }\n    .for-dark-theme { display: inline; }\n  }\n</style>\n' +
+    '<g class="for-light-theme">' + inside(light) + '</g>\n' +
+    '<g class="for-dark-theme">' + inside(dark) + '</g>\n</svg>';
+}
+for (const [folder, name] of [
+  ['icon', 'works-icon'],
+  ['lockup', 'works-lockup'],
+  ['lockup', 'works-lockup-compact'],
+  ['sponsor', 'works-sponsor-banner'],
+]) {
+  put('svg/' + folder + '/' + name + '.svg', adaptiveSvg(
+    svgs['svg/' + folder + '/' + name + '-light.svg'],
+    svgs['svg/' + folder + '/' + name + '-dark.svg'],
+  ));
+}
+
+/* ---------------- sponsor section (design specimens) ---------------- */
+writeDesign('sponsor-section/works-sponsor.css', SP.LAYOUT_CSS + '\n' + SP.MOTION_CSS);
+writeDesign('sponsor-section/works-sponsor.js', SP.PLAY_JS);
+writeDesign('sponsor-section/example.html', `<!-- One Works sponsor section, ready to paste. Requires works-sponsor.css and works-sponsor.js.
      Replace the two hrefs with the real enabled destinations; keep ids unique per page; set --works-sponsor-veil to the panel colour. -->
 ` + SP.sectionHtml(N, { mode: 'dark', id: 'works-sponsor' }) + '\n');
-write('sponsor-section/example-light.html', SP.sectionHtml(N, { mode: 'light', id: 'works-sponsor-light' }) + '\n');
-write('sponsor-section/specimen.html', SP.specimenHtml(N));
+writeDesign('sponsor-section/example-light.html', SP.sectionHtml(N, { mode: 'light', id: 'works-sponsor-light' }) + '\n');
+writeDesign('sponsor-section/specimen.html', SP.specimenHtml(N));
 
 /* ---------------- geometry.json — numbers the website session needs ---------------- */
 const geo = (v) => { const G = K.lockupGeometry(N, v); return { viewBox: G.vb, cornerScale: +G.h.s.toFixed(3), orangeAt: [+G.h.x0.toFixed(2), +G.h.y0.toFixed(2)], magentaAt: [+G.h.x1.toFixed(2), +G.h.y1.toFixed(2)], works: Object.fromEntries(Object.entries(G.works).map(([k, x]) => [k, +x.toFixed(3)])) }; };
-write('source/geometry.json', JSON.stringify({
+writeDesign('source/geometry.json', JSON.stringify({
   note: 'Units: lockups are drawn with WOLFSBLVT at font-size 100 (cap height 70), baseline y=0, starting x=0. Icon on a 32-unit grid.',
   name: { font: 'Abril Fatface', size: 100, letterSpacingEm: .01, width: +N.w.toFixed(2), capHeight: N.capH },
   icon: { grid: 32, stroke: K.SW, orange: K.ORANGE, magenta: K.MAGENTA, dot: K.DOT, dotRadius: 3.1, bendRadius: { orange: K.R_O, magenta: K.R_M } },

@@ -2,15 +2,15 @@
 
 ## Meaning
 
-This is the return of contribution 02 of the Wolfsblvt Works brand co-design: the identity marks (icon, lockup and wordmark, favicon, icon-slot glyph, maker credit) and the shared sponsor section, with their motion. Tala designed it with Wolf in three canvas rounds on 2026-10-14. It records what Wolf selected, in his words, and how the marks are built and used. It also lists every file and what still has to join with the visual-grammar and website work.
+This is the maintained source and design record of the approved Wolfsblvt Works identity, originally contributed in co-design round 02: the identity marks (icon, lockup and wordmark, favicon, icon-slot glyph, maker credit) and the shared sponsor section, with their motion. Tala designed it with Wolf in three canvas rounds on 2026-10-14. It records what Wolf selected, in his words, and how the marks are built and used. It also lists every file and what still has to join with the visual-grammar and website work.
 
-It is a **candidate for the main brand conversation**, not a publication, package admission, deployed website or trademark claim. Wolf's choices below are his. The construction, the specification and every recommendation not quoted from him were written by Tala.
+The selected marks and sponsor panel now form part of the website. This record preserves the co-design rationale and editable sources; it is **not** the download or runtime dependency for finished artwork, a deployed website claim or trademark clearance. Get usable exports from the [asset catalogue](../../assets/README.md). Wolf's choices below are his; unquoted construction and recommendations were written by Tala.
 
-- Open [`assets.html`](assets.html) to see every exported file on the background it was made for.
+- Open [the approved asset gallery](../../assets/brand/assets.html) to see every exported file on the background it was made for.
 - Open [`canvas/round-3/canvas.html`](canvas/round-3/canvas.html) for the final design record, with motion replay and timing sliders. Rounds [1](canvas/round-1/canvas.html) and [2](canvas/round-2/canvas.html) keep the explored and rejected directions.
 - Open [`sponsor-section/specimen.html`](sponsor-section/specimen.html) for the reusable web section on three hosts and on phone width.
 
-The canvases and the specimen load fonts from Google Fonts and need to be served over HTTP. Any static server works, for example `python -m http.server` from this folder. Opened as plain files they still render, but some browsers block the scripts.
+The historical canvases and the specimen load fonts from Google Fonts and need to be served over HTTP. Any static server works, for example `python -m http.server` from this folder. Opened as plain files they still render, but some browsers block the scripts.
 
 ## The idea: two corners hold the work
 
@@ -61,8 +61,8 @@ These are quoted from the round-2, round-3 and final review messages. Everything
   | Light | `#b8661f` | `#a8327a` | `#22171c` |
 
   The mono version uses `currentColor`.
-- **Favicon:** [`svg/icon/favicon.svg`](svg/icon/favicon.svg) switches between the dark and light colours with `prefers-color-scheme`. PNG sizes run from 16 to 1024. The set also includes an opaque `apple-touch-icon-180.png` and a `works-icon-maskable-512.png` with safe-zone padding.
-- **Icon-slot glyph:** [`svg/glyph/works-glyph-24.svg`](svg/glyph/works-glyph-24.svg) is drawn on the 24×24 grid with 2px round strokes in `currentColor`. It uses the same arcs and the same offset dot (12.8, 13), like diffdevil's trimmed glyph. It is a candidate for `@wolfsblvt/icons`; admission still runs through that package's own standard and checks.
+- **Favicon:** [`../../assets/brand/svg/icon/favicon.svg`](../../assets/brand/svg/icon/favicon.svg) switches between the dark and light colours with `prefers-color-scheme`. PNG sizes run from 16 to 1024. The set also includes an opaque `apple-touch-icon-180.png` and a `works-icon-maskable-512.png` with safe-zone padding.
+- **Icon-slot glyph:** [`../../assets/brand/svg/glyph/works-glyph-24.svg`](../../assets/brand/svg/glyph/works-glyph-24.svg) is drawn on the 24×24 grid with 2px round strokes in `currentColor`. It uses the same arcs and the same offset dot (12.8, 13), like diffdevil's trimmed glyph. It is a candidate for `@wolfsblvt/icons`; admission still runs through that package's own standard and checks.
 - **Credit:** use the 16–18px icon next to `by WOLFSBLVT` in the host's type, or the text credits from the Works identity authority (`A Wolfsblvt Works product`, …). The canvases show both on a diffdevil footer and on a light footer.
 
 ## Lockup (also the wordmark)
@@ -126,7 +126,7 @@ The words are the selected shared sponsorship copy, unchanged: **Support the wor
 - **Below a 600px container:** one column, the type behind the copy at low strength, and WORKS written over the magenta corner with its outline.
 - **Before it ships:** the hrefs are placeholders (`#github-sponsors`, `#ko-fi`) until the real enabled destinations are set. Give ids that are unique on the page, because the artwork uses SVG masks.
 
-**Static banner** ([`svg/sponsor/`](svg/sponsor/), [`png/sponsor/`](png/sponsor/), animated in [`animated/`](animated/)): the same composition for READMEs and fixed slots.
+**Static banner** ([`../../assets/brand/svg/sponsor/`](../../assets/brand/svg/sponsor/), [`../../assets/brand/png/sponsor/`](../../assets/brand/png/sponsor/), animated in [`../../assets/brand/animated/`](../../assets/brand/animated/)): the same composition for READMEs and fixed slots.
 - It holds only the common words, because an image can't carry two links. The text stays editable `<text>`. Outside a browser with Literata loaded, it falls back to Georgia.
 - GitHub README, dark and light:
 
@@ -153,16 +153,16 @@ The words are the selected shared sponsorship copy, unchanged: **Support the wor
 
 | Folder | Contents |
 | --- | --- |
-| [`svg/icon/`](svg/icon/) | `works-icon-{dark,light,mono}.svg`, `works-icon-animated-{dark,light}.svg`, `favicon.svg` |
-| [`svg/glyph/`](svg/glyph/) | `works-glyph-24.svg` |
-| [`svg/lockup/`](svg/lockup/) | `works-lockup-{dark,light,mono}.svg`, `works-lockup-compact-{dark,light,mono}.svg`, `works-lockup-animated-{dark,light}.svg` |
-| [`svg/sponsor/`](svg/sponsor/) | `works-sponsor-banner-{dark,light}.svg`, `works-sponsor-banner-animated-{dark,light}.svg` |
-| [`png/icon/`](png/icon/) | transparent `works-icon-{dark,light}-{16…1024}.png`, `works-icon-{white,black}-512.png`, `apple-touch-icon-180.png`, `works-icon-maskable-512.png` |
-| [`png/glyph/`](png/glyph/) | `works-glyph-{bone,ink}-{24,48,96}.png` |
-| [`png/lockup/`](png/lockup/) | transparent `works-lockup-{dark,light}-{600,1200,2400}w.png`, `works-lockup-{white,black}-1200w.png`, `works-lockup-compact-{dark,light}-{32,64,128}h.png` |
-| [`png/sponsor/`](png/sponsor/) | `works-sponsor-banner-{dark,light}.png` and `@2x` |
-| [`animated/gif/`](animated/gif/) | play-once GIFs for icon (256), lockup (1200w) and sponsor banner, dark and light. GIFs sit on their background: Works dark/paper, and GitHub's README backgrounds for the banner |
-| [`animated/apng/`](animated/apng/) | play-once APNGs, same set, transparent |
+| [`../../assets/brand/svg/icon/`](../../assets/brand/svg/icon/) | `works-icon-{dark,light,mono}.svg`, `works-icon-animated-{dark,light}.svg`, `favicon.svg` |
+| [`../../assets/brand/svg/glyph/`](../../assets/brand/svg/glyph/) | `works-glyph-24.svg` |
+| [`../../assets/brand/svg/lockup/`](../../assets/brand/svg/lockup/) | `works-lockup-{dark,light,mono}.svg`, `works-lockup-compact-{dark,light,mono}.svg`, `works-lockup-animated-{dark,light}.svg` |
+| [`../../assets/brand/svg/sponsor/`](../../assets/brand/svg/sponsor/) | `works-sponsor-banner-{dark,light}.svg`, `works-sponsor-banner-animated-{dark,light}.svg` |
+| [`../../assets/brand/png/icon/`](../../assets/brand/png/icon/) | transparent `works-icon-{dark,light}-{16…1024}.png`, `works-icon-{white,black}-512.png`, `apple-touch-icon-180.png`, `works-icon-maskable-512.png` |
+| [`../../assets/brand/png/glyph/`](../../assets/brand/png/glyph/) | `works-glyph-{bone,ink}-{24,48,96}.png` |
+| [`../../assets/brand/png/lockup/`](../../assets/brand/png/lockup/) | transparent `works-lockup-{dark,light}-{600,1200,2400}w.png`, `works-lockup-{white,black}-1200w.png`, `works-lockup-compact-{dark,light}-{32,64,128}h.png` |
+| [`../../assets/brand/png/sponsor/`](../../assets/brand/png/sponsor/) | `works-sponsor-banner-{dark,light}.png` and `@2x` |
+| [`../../assets/brand/animated/gif/`](../../assets/brand/animated/gif/) | play-once GIFs for icon (256), lockup (1200w) and sponsor banner, dark and light. GIFs sit on their background: Works dark/paper, and GitHub's README backgrounds for the banner |
+| [`../../assets/brand/animated/apng/`](../../assets/brand/animated/apng/) | play-once APNGs, same set, transparent |
 | [`sponsor-section/`](sponsor-section/) | the web component, examples and specimen |
 | [`canvas/`](canvas/) | the three design rounds, interactive |
 | [`source/`](source/) | the generator (`core.mjs`, `build.mjs`, `sponsor-section.mjs`) and `geometry.json` |
@@ -174,9 +174,9 @@ The words are the selected shared sponsorship copy, unchanged: **Support the wor
 
 ## Regenerating
 
-From `source/`, run `npm install`. Then run `node build.mjs --font <path>/AbrilFatface-Regular.ttf`. The font comes from [google/fonts](https://github.com/google/fonts/tree/main/ofl/abrilfatface) and isn't included here.
+From `design/marks/source/`, run `npm install`. Then run `node build.mjs --font <path>/AbrilFatface-Regular.ttf`. The font comes from [google/fonts](https://github.com/google/fonts/tree/main/ofl/abrilfatface) and isn't included here.
 
-- `--no-raster` writes only the SVGs, the sponsor section and `geometry.json`.
+- `--no-raster` writes SVGs into `assets/brand/`, updates source geometry here, and regenerates design-only sponsor specimens.
 - The raster pass needs Chrome (`--chrome <path>` if it isn't in the default location) and `ffmpeg` on PATH. It renders in a temporary, isolated Chrome profile and deletes it afterwards.
 - One detail that matters: headless Chrome reports `prefers-reduced-motion: reduce`, so the build emulates `no-preference` for frames. Without that, every frame comes out as the finished state.
 

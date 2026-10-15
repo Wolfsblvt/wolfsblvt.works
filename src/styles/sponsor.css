@@ -1,0 +1,58 @@
+/* Wolfsblvt Works — shared sponsor section.
+   Works owns: the artwork, the two corners on the border, the WORKS note, the two Works radii, the motion.
+   The host owns: panel background and border, its other two radii, typography, buttons, spacing around it.
+   Set --works-sponsor-veil to the panel's background colour so the copy side stays calm. */
+.works-sponsor{--works-sponsor-veil:#140d14;position:relative;container-type:inline-size}
+.works-sponsor__panel{position:relative;overflow:hidden;isolation:isolate;min-height:270px;display:flex;align-items:center;
+  border-top-left-radius:32px;border-bottom-right-radius:49.6px}
+.works-sponsor__art{position:absolute;inset:0 0 0 auto;width:74%;z-index:-2}
+.works-sponsor__art svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.works-sponsor__veil{position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(90deg,var(--works-sponsor-veil) 0%,var(--works-sponsor-veil) 24%,color-mix(in srgb,var(--works-sponsor-veil) 70%,transparent) 36%,transparent 54%)}
+.works-sponsor__copy{position:relative;padding:56px clamp(22px,3vw,40px) 52px 56px;max-width:min(520px,60%)}
+.works-sponsor__corner{position:absolute;width:128px;height:128px;overflow:visible;pointer-events:none;z-index:2}
+.works-sponsor__corner--tl{left:-18.4px;top:-20px}
+.works-sponsor__corner--br{right:-18.400000000000006px;bottom:-18.400000000000006px}
+.works-sponsor__works{position:absolute;overflow:visible;pointer-events:none;z-index:3;right:85.6px;bottom:24px}
+/* Narrow sections: one column, the type behind the copy at low strength, WORKS written over the magenta corner. */
+@container (max-width:600px){
+  .works-sponsor__art{width:100%;opacity:.24}
+  .works-sponsor__veil{display:none}
+  .works-sponsor__copy{max-width:100%;padding:52px 30px 92px 40px}
+  .works-sponsor__works{right:6px;bottom:-8.8px}
+}
+
+/* Motion: corners draw (magenta answers later), then the letters light up from dim while WORKS is written. Plays once. */
+.works-sponsor{--dim:0.14}
+.works-sponsor.will-play:not(.is-playing) .dr,.works-sponsor.will-play:not(.is-playing) .hw,.works-sponsor.will-play:not(.is-playing) .ul{stroke-dasharray:1 2;stroke-dashoffset:1.001}
+.works-sponsor.will-play:not(.is-playing) .art-base{opacity:var(--dim)}
+.works-sponsor.will-play:not(.is-playing) .art-glow{opacity:calc(var(--dim) * .25)}
+.works-sponsor.will-play:not(.is-playing) .wipe{transform:translateX(calc(-1 * var(--travel)))}
+.works-sponsor.is-playing{--dim:0.14;--sweep:2.2s;--ws:0.19s;--wl:0.26s;--corner:0.7s;--stagger:0.38s;--after:1.15s}
+.works-sponsor.is-playing .dr,.works-sponsor.is-playing .hw,.works-sponsor.is-playing .ul{stroke-dasharray:1 2;stroke-dashoffset:1.001}
+.works-sponsor.is-playing .dr{animation:wk-draw var(--corner) cubic-bezier(.55,0,.2,1) forwards;animation-delay:calc(var(--i,0) * var(--stagger) + .05s)}
+.works-sponsor.is-playing .dot{transform-box:fill-box;transform-origin:50% 50%;animation:wk-pop .5s cubic-bezier(.3,1.9,.5,1) both calc(var(--after) - .05s)}
+.works-sponsor.is-playing .name-base,.works-sponsor.is-playing .art-base{animation:wk-holddim var(--sweep) linear both var(--after)}
+.works-sponsor.is-playing .art-glow{animation:wk-glowup var(--sweep) ease-in both var(--after)}
+.works-sponsor.is-playing .wipe{animation:wk-wipein var(--sweep) cubic-bezier(.45,.05,.3,1) both var(--after)}
+.works-sponsor.is-playing .band{animation:wk-band var(--sweep) cubic-bezier(.45,.05,.3,1) both var(--after)}
+.works-sponsor.is-playing .hw{animation:wk-draw var(--wl) cubic-bezier(.4,0,.6,1) forwards;animation-delay:calc(var(--after) + var(--i) * var(--ws))}
+.works-sponsor.is-playing .ul{animation:wk-draw .36s cubic-bezier(.3,0,.2,1) forwards;animation-delay:calc(var(--after) + 5 * var(--ws) + .04s)}
+@keyframes wk-draw{to{stroke-dashoffset:0}}
+@keyframes wk-pop{0%{transform:scale(0)}100%{transform:none}}
+@keyframes wk-holddim{0%,99.9%{opacity:var(--dim)}100%{opacity:1}}
+@keyframes wk-glowup{from{opacity:calc(var(--dim) * .25)}}
+@keyframes wk-wipein{from{transform:translateX(calc(-1 * var(--travel)))}to{transform:none}}
+@keyframes wk-band{from{transform:none}to{transform:translateX(var(--travel))}}
+@media (prefers-reduced-motion:reduce){.works-sponsor.is-playing *{animation:none!important}.works-sponsor.is-playing .dr,.works-sponsor.is-playing .hw,.works-sponsor.is-playing .ul{stroke-dashoffset:0}}
+
+/* Host-specific Works site styles. */
+.works-sponsor .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.works-sponsor .actions a{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;text-decoration:none;font-weight:600;font-size:14px}
+.works-sponsor .actions a:focus-visible{outline:2px solid #73cae3;outline-offset:3px}
+.works-sponsor h2,.works-sponsor h3{margin:0}.works-sponsor p{margin:10px 0 0}
+.host-works{--works-sponsor-veil:#140d14}
+.host-works .works-sponsor__panel{background:linear-gradient(160deg,#120c13 0%,#181018 60%,#0d1318 100%);border:1px solid rgb(243 232 220 / 12%);border-top-right-radius:10px;border-bottom-left-radius:10px;color:#f3e8dc;min-height:330px}
+.host-works h2{font:400 clamp(34px,3.4vw,48px)/1 'Literata',serif;letter-spacing:-.025em;font-variation-settings:'opsz' 72}
+.host-works p{font-family:'Literata',serif;font-size:16.5px;color:#d1c0b8;line-height:1.55}.host-works .add{color:#e6d8cc}
+.host-works .actions a{border-radius:999px}.host-works .primary{background:#f3e8dc;color:#140d14}.host-works .secondary{border:1px solid rgb(243 232 220 / 35%);color:#f3e8dc}

@@ -1,16 +1,10 @@
 ---
-/**
- * Help: the original of the shared Works sponsor section, lifted from the marks return. It plays its motion once,
- * the first time it is properly in view (home.ts); otherwise it shows its finished state.
- */
+/** Sponsorship invitation from production-owned markup and stylesheet. */
 import site from '../../site.config.mjs';
-import { sponsorCss, sponsorSection } from '../lib/marks';
-
-const html = sponsorSection(site.sponsors);
-const css = sponsorCss();
+import WorksSponsor from '../components/WorksSponsor.astro';
+import '../styles/sponsor.css';
 ---
 
 <section id="help" class="frame sec lift" aria-labelledby="sp-works-title">
-  <Fragment set:html={html} />
+  <WorksSponsor github={site.sponsors.github} kofi={site.sponsors.kofi} />
 </section>
-<style is:global set:html={css}></style>
