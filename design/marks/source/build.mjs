@@ -43,7 +43,30 @@ for (const mode of ['dark', 'light']) {
 put('svg/icon/favicon.svg', K.faviconSvg());
 put('svg/glyph/works-glyph-24.svg', K.glyphSvg());
 
-/* ---------------- sponsor section (web component) ---------------- */
+/* ---------------- adaptive light/dark SVG exports ---------------- */
+// The two designs have distinct colors and, for the banner, distinct panel geometry.
+// Select a complete layer rather than attempting to recolor a dark-only export.
+function adaptiveSvg(light, dark) {
+  const opening = light.match(/^<svg[^>]*>/)?.[0];
+  if (!opening || dark.match(/^<svg[^>]*>/)?.[0] !== opening) throw new Error('Adaptive SVG root mismatch');
+  const inside = (svg) => svg.slice(opening.length, svg.lastIndexOf('</svg>')).trim();
+  return opening + '\n<style>\n  .for-dark-theme { display: none; }\n  @media (prefers-color-scheme: dark) {\n    .for-light-theme { display: none; }\n    .for-dark-theme { display: inline; }\n  }\n</style>\n' +
+    '<g class="for-light-theme">' + inside(light) + '</g>\n' +
+    '<g class="for-dark-theme">' + inside(dark) + '</g>\n</svg>';
+}
+for (const [folder, name] of [
+  ['icon', 'works-icon'],
+  ['lockup', 'works-lockup'],
+  ['lockup', 'works-lockup-compact'],
+  ['sponsor', 'works-sponsor-banner'],
+]) {
+  put('svg/' + folder + '/' + name + '.svg', adaptiveSvg(
+    svgs['svg/' + folder + '/' + name + '-light.svg'],
+    svgs['svg/' + folder + '/' + name + '-dark.svg'],
+  ));
+}
+
+/* ---------------- sponsor section (design specimens) ---------------- */
 writeDesign('sponsor-section/works-sponsor.css', SP.LAYOUT_CSS + '\n' + SP.MOTION_CSS);
 writeDesign('sponsor-section/works-sponsor.js', SP.PLAY_JS);
 writeDesign('sponsor-section/example.html', `<!-- One Works sponsor section, ready to paste. Requires works-sponsor.css and works-sponsor.js.
