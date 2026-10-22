@@ -32,7 +32,7 @@
   --smol-peach: #feeddd;
   --smol-peach-deep: #f3dbcc;
 
-  /* type, provisional: A keeps the walk's Albert Sans, B tries a rounder face. Mono carries Squishling. */
+  /* type: Wolf chose version B on 2026-10-22, so the rounder face is smolpng's. Albert Sans remains the fallback. Mono carries Squishling. */
   --smol-sans: 'Albert Sans', system-ui, sans-serif;
   --smol-sans-round: 'Nunito', 'Albert Sans', system-ui, sans-serif;
   --smol-mono: 'IBM Plex Mono', 'Cascadia Mono', Consolas, 'DejaVu Sans Mono', ui-monospace, monospace;
