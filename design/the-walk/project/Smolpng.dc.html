@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="color-scheme" content="dark">
+<meta name="darkreader-lock">
+<title>smolpng window · light-first candidate · Wolfsblvt Works</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,300..800;1,7..72,300..800&family=Shantell+Sans:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&family=Albert+Sans:wght@400..800&family=Nunito:wght@600..1000&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/smolpng-light-tokens.css">
+<style>
+/* ---------- board chrome (same as the other canvas pages) ---------- */
+body{margin:0;background:#100b11;color:#f3e8dc;font-family:'Albert Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.sheet{padding:64px 72px 96px;background:linear-gradient(160deg,#100b11 0%,#181018 52%,#0c1217 100%);min-height:100vh;box-sizing:border-box}
+.sheet-h{margin:0;font:300 64px/1 'Literata',serif;letter-spacing:-.03em;font-variation-settings:'opsz' 72}
+.sheet-sub{margin:16px 0 0;max-width:76ch;font:17px/1.55 'Literata',serif;color:#d1c0b8}
+.sec{margin-top:88px}
+.sec-h{display:flex;align-items:baseline;gap:16px;margin:0 0 6px;font:400 34px/1.1 'Literata',serif;letter-spacing:-.015em}
+.sec-h .n{font:600 13px 'Albert Sans',sans-serif;color:#73cae3;letter-spacing:.08em}
+.sec-p{margin:0 0 28px;max-width:84ch;font-size:15px;line-height:1.55;color:#c0b0b1}
+.sec-p code,.note code{font:12.5px 'IBM Plex Mono',monospace;color:#f3e8dc}
+.rec{display:inline-flex;align-items:baseline;gap:10px;margin:22px 0 0;font:500 19px/1.3 'Shantell Sans',cursive;color:#ef8ea1;transform:rotate(-1.5deg)}
+.note{margin:14px 0 0;max-width:84ch;font-size:13.5px;line-height:1.55;color:#9c8c93}
+.lbl{display:flex;align-items:center;gap:10px;margin:0 0 12px;font:600 12.5px 'Albert Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#9c8c93}
+.lbl b{color:#73cae3;letter-spacing:.08em}
+.replay{appearance:none;border:1px solid rgb(243 232 220 / 20%);background:none;color:#f3e8dc;border-radius:999px;padding:4px 12px;font:600 12px 'Albert Sans',sans-serif;cursor:pointer;margin-left:auto}
+.replay:hover{border-color:#73cae3;color:#73cae3}
+.two{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:32px;align-items:start}
+.walk{position:relative;padding:72px 56px;background:#100b11;border:1px solid rgb(243 232 220 / 10%);border-radius:18px;overflow:hidden}
+.walk-narrow{padding:48px 0;border-radius:28px}
+.walk::before,.walk::after{content:"";position:absolute;top:0;bottom:0;width:2px;opacity:.55}
+.walk::before{left:18px;background:linear-gradient(#eca557,transparent 70%)}
+.walk::after{right:18px;background:linear-gradient(transparent 30%,#db61aa)}
+.walk-narrow::before{left:8px}.walk-narrow::after{right:8px}
+.guide{margin:0 0 26px;font:300 22px/1.45 'Literata',serif;color:#d1c0b8;max-width:46ch}
+.walk-narrow .guide{font-size:18px;margin:0 20px 22px}
+.frame{container:smol / inline-size}
+.walk-narrow .frame{margin:0 16px}
+/* swatches */
+.sw-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px}
+.sw{border-radius:14px;overflow:hidden;border:1px solid rgb(243 232 220 / 12%);background:rgb(243 232 220 / 3%)}
+.sw-c{height:72px}
+.sw-t{padding:10px 12px 12px}
+.sw-t b{display:block;font-size:13px}
+.sw-t span{display:block;font:11.5px 'IBM Plex Mono',monospace;color:#9c8c93;margin-top:3px}
+.sw-t i{display:block;font-style:normal;font-size:12px;color:#c0b0b1;margin-top:6px;line-height:1.4}
+.src{display:flex;gap:10px;align-items:center;margin-top:22px;flex-wrap:wrap}
+.src .dot{width:26px;height:26px;border-radius:50%;border:1px solid rgb(243 232 220 / 20%)}
+.src span{font:11.5px 'IBM Plex Mono',monospace;color:#9c8c93;margin-right:10px}
+.parts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.part{position:relative;border:1px solid rgb(243 232 220 / 12%);border-radius:16px;background:rgb(243 232 220 / 3%);padding:22px}
+.part h3{margin:0 0 6px;font:700 15px 'Albert Sans',sans-serif}
+.part p{margin:0 0 16px;font-size:13.5px;line-height:1.5;color:#c0b0b1}
+.part-light{background:var(--smol-paper);color:var(--smol-ink)}
+.part-light h3{color:var(--smol-ink)}.part-light p{color:var(--smol-ink-soft)}
+.states{display:grid;gap:14px}
+.state{display:grid;grid-template-columns:70px 1fr;gap:12px;align-items:center;font-size:13px;color:var(--smol-ink-soft)}
+.state b{font:600 11px 'Albert Sans',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--smol-ink-quiet)}
+.open{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.open .part p{margin-bottom:8px}
+.open ul{margin:0;padding-left:18px;font-size:13.5px;line-height:1.55;color:#c0b0b1}
+.open li{margin:4px 0}
+
+/* ---------- the window itself (this is the editable design; one markup, two variants) ---------- */
+.smol-win{position:relative;box-sizing:border-box;border-radius:36px;background:var(--smol-paper);color:var(--smol-ink);font-family:var(--smol-sans);
+  padding:clamp(28px,4cqw,52px) clamp(24px,5cqw,60px);box-shadow:0 30px 80px -30px rgb(156 201 217 / 35%), 0 0 0 1px rgb(243 232 220 / 8%)}
+.smol-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:clamp(24px,4cqw,56px);align-items:center}
+.smol-kicker{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:0 0 20px;font:600 12px/1 var(--smol-sans);letter-spacing:.14em;text-transform:uppercase;color:var(--smol-ink-quiet)}
+.smol-wip{display:inline-flex;align-items:center;gap:7px;padding:7px 11px 6px;border-radius:999px;background:var(--smol-peach);color:var(--smol-coral);letter-spacing:.12em}
+.smol-wip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.smol-h{margin:0;font-weight:800;font-size:clamp(42px,6.2cqw,84px);line-height:.94;letter-spacing:-.045em;color:var(--smol-marine-deep);text-wrap:balance}
+.smol-h em{font-style:normal;color:var(--smol-coral)}
+.smol-sub{margin:18px 0 0;font-size:clamp(17px,1.5cqw,20px);line-height:1.45;max-width:30ch;color:var(--smol-ink)}
+.smol-body{margin:14px 0 0;font-size:15.5px;line-height:1.6;max-width:42ch;color:var(--smol-ink-soft)}
+.smol-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.smol-btn{display:inline-flex;align-items:center;gap:9px;min-height:44px;padding:0 20px;border-radius:999px;font:600 15px var(--smol-sans);text-decoration:none;color:#fff;background:var(--smol-marine);box-sizing:border-box;transition:transform .2s,background .2s}
+.smol-btn:hover{background:var(--smol-marine-deep);transform:translateY(-1px)}
+.smol-btn-off{background:none;color:var(--smol-ink-quiet);border:1px dashed var(--smol-line-strong);cursor:default}
+.smol-btn-off:hover{background:none;transform:none}
+.smol-note{margin:16px 0 0;font:11px/1.3 var(--smol-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--smol-ink-quiet)}
+/* stage: Squishling above, the drop below */
+.smol-stage{display:grid;gap:18px;justify-items:center}
+.smol-mascot{position:relative;display:grid;justify-items:center;gap:10px}
+.smol-blob{display:grid;place-items:center;padding:clamp(18px,2.6cqw,30px) clamp(20px,3cqw,36px);border-radius:48% 52% 46% 54% / 56% 44% 56% 44%;background:var(--smol-peach);border:2px dashed var(--smol-peach-deep)}
+/* the box-drawing strokes need a mono face that carries U+2500–257F; the stack falls through per glyph */
+.smol-ascii{margin:0;font:500 clamp(17px,2.4cqw,30px)/1.15 'Cascadia Mono',Consolas,'DejaVu Sans Mono',var(--smol-mono),ui-monospace,monospace;color:var(--smol-ink);white-space:pre;letter-spacing:0}
+.smol-scribble{font:500 clamp(15px,1.4cqw,18px)/1.2 'Shantell Sans',cursive;color:var(--smol-coral-soft);transform:rotate(-2deg);text-align:center;max-width:26ch}
+.smol-drop{margin:0;width:100%;max-width:360px}
+.smol-zone{position:relative;height:118px;border-radius:22px;border:2px dashed var(--smol-periwinkle);background:var(--smol-paper-cool);overflow:visible;transition:border-color .4s,background .4s}
+.smol-zone::after{content:"drop an image here";position:absolute;left:0;right:0;bottom:12px;text-align:center;font:600 11px/1 var(--smol-sans);letter-spacing:.14em;text-transform:uppercase;color:var(--smol-ink-quiet);transition:opacity .3s}
+.smol-chip{position:absolute;left:50%;top:34px;transform:translateX(-50%);display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:12px;background:#fff;border:1px solid var(--smol-line);box-shadow:0 10px 24px -12px rgb(28 56 80 / 40%);font:500 13.5px var(--smol-sans);color:var(--smol-ink);white-space:nowrap}
+.smol-chip::before{content:"";width:26px;height:20px;border-radius:4px;background:linear-gradient(135deg,var(--smol-ice),var(--smol-marine));flex:none}
+.smol-chip-size{font:500 12.5px var(--smol-mono);color:var(--smol-ink-quiet)}
+.smol-chip-out{color:var(--smol-marine-deep);border-color:var(--smol-ice)}
+.smol-chip-out .smol-chip-size{color:var(--smol-coral)}
+.smol-stamp{position:absolute;right:-10px;top:-14px;padding:6px 10px;border-radius:999px;background:var(--smol-coral);color:#fff;font:800 13px var(--smol-sans);letter-spacing:.02em;transform:rotate(8deg)}
+.smol-drop figcaption{margin:10px 0 0;text-align:center;font:11px/1.3 var(--smol-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--smol-ink-quiet)}
+/* the drop, choreographed: chip falls in, zone takes it, the smaller copy appears, coral stamps the saving */
+.js .smol-chip-in{opacity:0;transform:translate(-50%,-70px)}
+.js .smol-chip-out,.js .smol-stamp{opacity:0;transform:translate(-50%,0) scale(.86)}
+.js .smol-stamp{transform:rotate(8deg) scale(.5)}
+.js [data-on] .smol-chip-in{animation:smol-fall .55s cubic-bezier(.2,.7,.2,1) .2s forwards, smol-squish .5s ease 1.25s forwards}
+.js [data-on] .smol-chip-out{animation:smol-appear .45s cubic-bezier(.16,1,.3,1) 1.55s forwards}
+.js [data-on] .smol-stamp{animation:smol-stamp .35s cubic-bezier(.16,1,.3,1) 1.95s forwards}
+.js [data-on] .smol-zone{animation:smol-take .6s ease 1.1s forwards}
+.js [data-on] .smol-zone::after{opacity:0;transition-delay:.9s}
+@keyframes smol-fall{to{opacity:1;transform:translate(-50%,0)}}
+@keyframes smol-squish{0%{opacity:1;transform:translate(-50%,0) scale(1)}60%{opacity:1;transform:translate(-50%,0) scale(1.04,.72)}100%{opacity:0;transform:translate(-50%,0) scale(.6,.5)}}
+@keyframes smol-appear{to{opacity:1;transform:translate(-50%,0) scale(1)}}
+@keyframes smol-stamp{to{opacity:1;transform:rotate(8deg) scale(1)}}
+@keyframes smol-take{0%{border-color:var(--smol-periwinkle);background:var(--smol-paper-cool)}50%{border-color:var(--smol-marine);background:#e4f0f6}100%{border-color:var(--smol-ice);background:var(--smol-paper-cool)}}
+@media (prefers-reduced-motion:reduce){.js .smol-chip-in{display:none}.js .smol-chip-out,.js .smol-stamp{opacity:1;transform:translate(-50%,0)}.js .smol-stamp{transform:rotate(8deg)}.js [data-on] *{animation:none!important}}
+/* narrow: one column, the mascot keeps its full drawing */
+@container smol (max-width: 720px){
+  .smol-win{border-radius:28px}
+  .smol-grid{grid-template-columns:1fr;gap:28px}
+  .smol-h{font-size:clamp(40px,12cqw,56px)}
+  .smol-ascii{font-size:clamp(15px,4.6cqw,19px)}
+  .smol-stage{justify-items:stretch}
+  .smol-mascot{justify-items:center}
+  .smol-drop{max-width:none}
+}
+/* ---------- variant B · ice plane, coral cut, rounder face ---------- */
+[data-variant=b] .smol-win{background:linear-gradient(160deg,var(--smol-ice-plane) 0%,var(--smol-paper-cool) 58%,var(--smol-paper) 100%);font-family:var(--smol-sans-round);box-shadow:0 30px 80px -30px rgb(51 115 157 / 40%),0 0 0 1px rgb(243 232 220 / 8%)}
+[data-variant=b] .smol-win::before{content:"";position:absolute;left:0;top:14%;bottom:14%;width:5px;border-radius:0 4px 4px 0;background:var(--smol-coral)}
+[data-variant=b] .smol-h{font-family:var(--smol-sans-round);font-weight:900;letter-spacing:-.035em;color:var(--smol-ink)}
+[data-variant=b] .smol-h em{color:var(--smol-coral)}
+[data-variant=b] .smol-kicker,[data-variant=b] .smol-btn,[data-variant=b] .smol-chip,[data-variant=b] .smol-stamp{font-family:var(--smol-sans-round)}
+[data-variant=b] .smol-wip{background:#fff;color:var(--smol-marine-deep)}
+[data-variant=b] .smol-blob{background:#fff;border-color:var(--smol-ice)}
+[data-variant=b] .smol-zone{background:rgb(255 255 255 / 60%);border-color:var(--smol-marine-light)}
+[data-variant=b] .smol-btn{background:var(--smol-ink)}
+[data-variant=b] .smol-btn:hover{background:var(--smol-marine-deep)}
+</style>
+</helmet>
+
+<!-- ONE markup for the window. Edit it here; the script below stamps it into every frame on the board. -->
+<template id="smol-window">
+<section class="smol-win" aria-labelledby="smol-h" data-placeholder="project-window">
+  <div class="smol-grid">
+    <div class="smol-copy">
+      <p class="smol-kicker"><span class="smol-wip">work in progress</span><span>0.3.0 public preview</span></p>
+      <h2 id="smol-h" class="smol-h">Make images <em>smol.</em></h2>
+      <p class="smol-sub">Local-first image compression for people, scripts, and agents.</p>
+      <p class="smol-body">Drop an image on it and get a smaller one back. The original stays where it was, and nothing leaves your machine.</p>
+      <div class="smol-actions">
+        <a class="smol-btn" href="https://github.com/Wolfsblvt/smolpng">Source on GitHub →</a>
+        <span class="smol-btn smol-btn-off" aria-disabled="true" title="smolpng’s website is still being made">Website coming</span>
+      </div>
+      <p class="smol-note">copy provisional · the words belong to W-A</p>
+    </div>
+    <div class="smol-stage">
+      <div class="smol-mascot">
+        <div class="smol-blob"><pre class="smol-ascii" role="img" aria-label="Squishling, drawn in ASCII: a round creature with narrowed happy eyes, holding a picture against its chest with both hands">     ( ¬ω¬ )
+  /╭───────╮\
+ (_) ○╱╲_ (_)
+   ╰───────╯╲_⌒)</pre></div>
+        <div class="smol-scribble">Squishling. the real one is still being drawn.</div>
+      </div>
+      <figure class="smol-drop" role="img" aria-label="Illustration: a 657 KB camera photo dropped on smolpng comes back as a 287 KB copy beside the original, 56 percent smaller.">
+        <div class="smol-zone">
+          <div class="smol-chip smol-chip-in"><span>camera.jpg</span><span class="smol-chip-size">657 KB</span></div>
+          <div class="smol-chip smol-chip-out"><span>camera.smol.jpg</span><span class="smol-chip-size">287 KB</span></div>
+          <div class="smol-stamp">−56%</div>
+        </div>
+        <figcaption>illustrative · sizes from a real run</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+</template>
+
+<div class="sheet">
+<h1 class="sheet-h">smolpng, in its window</h1>
+<p class="sheet-sub">A light-first candidate for smolpng’s identity, shown where it will first be met: its window on the Works walk. Two versions of the same window, each at desktop and phone width. Wolf picks by letter, or mixes. The palette is leaned on Gura’s official colours, as asked; Squishling is here in ASCII until the real drawing exists. Nothing here is integrated or published.</p>
+
+<section class="sec">
+<h2 class="sec-h"><span class="n">01</span> The palette, light-first</h2>
+<p class="sec-p">Sampled from the official full-body renders on 2026-10-22 (hoodie, hood shadow, mouth, skin, white, hair greys) and checked against the community palette the dark-first Gura Sparks sheet was derived from. Same family, lit from the other side: paper is the world, marine is the hoodie, coral is the one warm event. Tokens live in <code>design/the-walk/assets/smolpng-light-tokens.css</code>.</p>
+<div class="sw-grid">
+  <div class="sw"><div class="sw-c" style="background:var(--smol-paper);border-bottom:1px solid #e3e9ee"></div><div class="sw-t"><b>Paper</b><span>#fbfcfd</span><i>the world. cool white, never pure</i></div></div>
+  <div class="sw"><div class="sw-c" style="background:var(--smol-ink)"></div><div class="sw-t"><b>Ink</b><span>#1c3850</span><i>text. deep marine, not black</i></div></div>
+  <div class="sw"><div class="sw-c" style="background:var(--smol-marine)"></div><div class="sw-t"><b>Marine</b><span>#33739d</span><i>the hoodie. action, links, headline</i></div></div>
+  <div class="sw"><div class="sw-c" style="background:var(--smol-ice)"></div><div class="sw-t"><b>Ice</b><span>#9cc9d9</span><i>focus, the drop field</i></div></div>
+  <div class="sw"><div class="sw-c" style="background:var(--smol-periwinkle)"></div><div class="sw-t"><b>Periwinkle</b><span>#93a9c9</span><i>quiet structure, dashed edges</i></div></div>
+  <div class="sw"><div class="sw-c" style="background:var(--smol-coral)"></div><div class="sw-t"><b>Coral</b><span>#be4449</span><i>the one warm event. “smol.”, the saving</i></div></div>
+  <div class="sw"><div class="sw-c" style="background:var(--smol-paper-cool)"></div><div class="sw-t"><b>Paper, cool</b><span>#eef4f8</span><i>surfaces, the zone</i></div></div>
+  <div class="sw"><div class="sw-c" style="background:var(--smol-peach)"></div><div class="sw-t"><b>Peach</b><span>#feeddd</span><i>skin. where Squishling sits, the WIP mark</i></div></div>
+  <div class="sw"><div class="sw-c" style="background:var(--smol-marine-deep)"></div><div class="sw-t"><b>Marine, deep</b><span>#24547b</span><i>hover, pressed, A’s headline</i></div></div>
+  <div class="sw"><div class="sw-c" style="background:var(--smol-ice-plane)"></div><div class="sw-t"><b>Ice plane</b><span>#dcebf2</span><i>B’s ground. a field with mass</i></div></div>
+  <div class="sw"><div class="sw-c" style="background:var(--smol-coral-soft)"></div><div class="sw-t"><b>Coral, soft</b><span>#e16f73</span><i>the scribble, lifted for small text</i></div></div>
+  <div class="sw"><div class="sw-c" style="background:var(--smol-ink-quiet)"></div><div class="sw-t"><b>Ink, quiet</b><span>#67809a</span><i>captions, kickers, disabled</i></div></div>
+</div>
+<div class="src">
+  <span>sampled from the official art →</span>
+  <div class="dot" style="background:#33729c" title="hoodie #33729c"></div><div class="dot" style="background:#2a638c" title="hood shadow #2a638c"></div><div class="dot" style="background:#24547b" title="deep #24547b"></div><div class="dot" style="background:#448bad" title="highlight #448bad"></div><div class="dot" style="background:#bd4449" title="mouth #bd4449"></div><div class="dot" style="background:#feeddd" title="skin #feeddd"></div><div class="dot" style="background:#f3dbcc" title="skin shade #f3dbcc"></div><div class="dot" style="background:#fbfcfc" title="white #fbfcfc"></div><div class="dot" style="background:#e5e9ed" title="hair #e5e9ed"></div><div class="dot" style="background:#d4dbe3" title="hair shade #d4dbe3"></div>
+  <span style="margin-left:14px">community palette (Gura Sparks’ anchors) →</span>
+  <div class="dot" style="background:#33739d"></div><div class="dot" style="background:#be4449"></div><div class="dot" style="background:#9cc9d9"></div><div class="dot" style="background:#f3f3f3"></div><div class="dot" style="background:#93a9c9"></div>
+</div>
+<p class="note">Contrast on paper: ink 12.4:1, marine 5.3:1, coral 5.1:1, quiet ink 4.6:1. Avoid, as the dark sheet already says: all five sparks at equal weight, cyan glow on controls, shark motifs, pure white. Keep coral present enough that this never becomes another calm blue tool page.</p>
+</section>
+
+<section class="sec">
+<h2 class="sec-h"><span class="n">02</span> A · Paper and hoodie</h2>
+<p class="sec-p">The window is a lit sheet of paper in the dark walk. Marine headline with “smol.” in coral, the walk’s own Albert Sans at 800 so smolpng feels like a cousin of the site rather than a stranger. Squishling sits on a peach blob with a dashed edge: visibly a reserved shape, visibly the main thing. Below it, the drop: a camera photo falls into the zone, gets squished, and comes back smaller with the saving stamped in coral. The numbers are from a real smolpng run on a camera photo (657,362 → 287,155 bytes).</p>
+<div class="two">
+  <div>
+    <div class="lbl"><b>1280</b> desktop, in the walk <button class="replay" type="button" data-replay="a-wide">replay the drop</button></div>
+    <div class="walk" data-variant="a"><p class="guide">Here are some curated projects we are working on.</p><div class="frame" data-frame="a-wide"></div></div>
+  </div>
+  <div>
+    <div class="lbl"><b>390</b> phone <button class="replay" type="button" data-replay="a-narrow">replay</button></div>
+    <div class="walk walk-narrow" data-variant="a"><p class="guide">Here are some curated projects we are working on.</p><div class="frame" data-frame="a-narrow"></div></div>
+  </div>
+</div>
+</section>
+
+<section class="sec">
+<h2 class="sec-h"><span class="n">03</span> B · Ice plane, coral cut</h2>
+<p class="sec-p">The other use mode from the dark sheet, lit: one ice-and-periwinkle field takes real visual mass, and a single coral line cuts the window’s edge. Ink headline in Nunito 900, a rounder face that says “smol” before you read it; same words, same Squishling, same drop. If the rounder face is right but the ice plane is too much, A’s paper with B’s type is a clean mix.</p>
+<div class="two">
+  <div>
+    <div class="lbl"><b>1280</b> desktop, in the walk <button class="replay" type="button" data-replay="b-wide">replay the drop</button></div>
+    <div class="walk" data-variant="b"><p class="guide">Here are some curated projects we are working on.</p><div class="frame" data-frame="b-wide"></div></div>
+  </div>
+  <div>
+    <div class="lbl"><b>390</b> phone <button class="replay" type="button" data-replay="b-narrow">replay</button></div>
+    <div class="walk walk-narrow" data-variant="b"><p class="guide">Here are some curated projects we are working on.</p><div class="frame" data-frame="b-narrow"></div></div>
+  </div>
+</div>
+<div class="rec">my pick: A. it looks like a sheet of paper somebody put a sticker on, and the coral “smol.” does the whole job. B’s rounder face is worth keeping even if the ice plane isn’t.</div>
+</section>
+
+<section class="sec">
+<h2 class="sec-h"><span class="n">04</span> The pieces</h2>
+<p class="sec-p">What the window is made of, so each part can be judged and swapped on its own.</p>
+<div class="parts">
+  <div class="part part-light">
+    <h3>Squishling, in ASCII</h3>
+    <p>The full four-line drawing, Wolf’s exact bytes, in IBM Plex Mono. It stays at every width; the compact glyph is for places a mascot cannot fit (a favicon-sized seam, the TUI’s narrow header). The blob is the reserved shape the commissioned drawing will replace; the scribble says so in Wolf’s hand.</p>
+    <div class="smol-blob" style="display:inline-grid;margin-bottom:14px"><pre class="smol-ascii" style="font-size:18px">     ( ¬ω¬ )
+  /╭───────╮\
+ (_) ○╱╲_ (_)
+   ╰───────╯╲_⌒)</pre></div>
+    <div class="states">
+      <div class="state"><b>compact</b><pre class="smol-ascii" style="font-size:14px;color:var(--smol-ink)">    (¬ω¬)
+ (_[○^_ ]_)~</pre></div>
+      <div class="state"><b>tui</b><pre class="smol-ascii" style="font-size:14px;color:var(--smol-ink)">  ( . . )~
+   smolpng</pre></div>
+    </div>
+  </div>
+  <div class="part part-light">
+    <h3>The drop, in three states</h3>
+    <p>One image, three moments. Reduced motion shows the last one only. It is an illustration, not a tool: nothing on the page compresses anything.</p>
+    <div class="states">
+      <div class="state"><b>before</b><div class="smol-zone" style="height:84px"><div class="smol-chip smol-chip-in" style="opacity:1;transform:translate(-50%,-14px)"><span>camera.jpg</span><span class="smol-chip-size">657 KB</span></div></div></div>
+      <div class="state"><b>taking</b><div class="smol-zone" style="height:84px;border-color:var(--smol-marine);background:#e4f0f6"><div class="smol-chip smol-chip-in" style="opacity:1;transform:translate(-50%,-14px) scale(1.04,.72)"><span>camera.jpg</span><span class="smol-chip-size">657 KB</span></div></div></div>
+      <div class="state"><b>after</b><div class="smol-zone" style="height:84px;border-color:var(--smol-ice)"><div class="smol-chip smol-chip-out" style="opacity:1;transform:translate(-50%,-14px)"><span>camera.smol.jpg</span><span class="smol-chip-size">287 KB</span></div><div class="smol-stamp" style="opacity:1">−56%</div></div></div>
+    </div>
+  </div>
+  <div class="part part-light">
+    <h3>Standing, actions, words</h3>
+    <p>“Work in progress” is a word with a dot, in peach and coral, before anything else. The source is public, so the solid button can go to GitHub now; the website button stays visibly off until the site exists. The decision “smolpng’s button stays disabled until it has a public home” has met its reopen condition.</p>
+    <div class="states">
+      <div class="state"><b>wip</b><p class="smol-kicker" style="margin:0"><span class="smol-wip">work in progress</span><span>0.3.0 public preview</span></p></div>
+      <div class="state"><b>action</b><div class="smol-actions" style="margin:0"><a class="smol-btn" href="https://github.com/Wolfsblvt/smolpng" style="min-height:38px;font-size:14px">Source on GitHub →</a><span class="smol-btn smol-btn-off" style="min-height:38px;font-size:14px">Website coming</span></div></div>
+      <div class="state"><b>hand</b><div class="smol-scribble" style="text-align:left">Squishling. the real one is still being drawn.</div></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="sec">
+<h2 class="sec-h"><span class="n">05</span> What this decided, and what it didn’t</h2>
+<div class="open">
+  <div class="part">
+    <h3>Decided by the design (reversible)</h3>
+    <ul>
+      <li>smolpng’s window is light inside the dark-only site. The Vision says projects speak in their own colour inside their window; a light window is the strongest form of that, and it needs a line in Decisions when integrated.</li>
+      <li>The mascot is the main thing: Squishling’s full drawing, large, in a reserved shape, at every width.</li>
+      <li>Drag-and-drop is shown, not offered: an animated illustration with a finished state, real numbers, marked illustrative.</li>
+      <li>Standing is a word before the headline. No fake finished mascot, no fake website.</li>
+    </ul>
+  </div>
+  <div class="part">
+    <h3>Still open</h3>
+    <ul>
+      <li>Wolf: A or B, or A’s paper with B’s type. Whether smolpng gets its own typeface at all.</li>
+      <li>Copy belongs to W-A. Every sentence here is provisional and marked.</li>
+      <li>Squishling’s rights: the commissioned drawing does not exist; the ASCII is Wolf’s. Artist credit lands with the art.</li>
+      <li>Gura’s colours are leaned on, not licensed: the sheet carries hex values only, no artwork, no character.</li>
+      <li>Implementation standing: nothing integrated. Production reads <code>src/sections/projects/Smolpng.astro</code> and <code>src/styles/home.css</code>; the window CSS here maps onto them one to one, and Nunito (OFL) would be one new Fontsource package if B’s type is chosen.</li>
+    </ul>
+  </div>
+</div>
+</section>
+</div>
+
+<script>
+// Stamp the one window template into every frame; replay runs the drop again. Design-only; production has its own reveals.
+document.documentElement.classList.add('js');
+const tpl = document.getElementById('smol-window');
+for (const frame of document.querySelectorAll('[data-frame]')) {
+  const node = tpl.content.cloneNode(true);
+  const id = 'smol-h-' + frame.dataset.frame;
+  node.querySelector('h2').id = id; node.querySelector('section').setAttribute('aria-labelledby', id);
+  frame.appendChild(node);
+}
+const run = (name) => { const win = document.querySelector(`[data-frame="${name}"] .smol-win`); win.removeAttribute('data-on'); void win.offsetWidth; win.setAttribute('data-on', ''); };
+for (const b of document.querySelectorAll('[data-replay]')) b.addEventListener('click', () => run(b.dataset.replay));
+setTimeout(() => document.querySelectorAll('[data-frame]').forEach((f) => run(f.dataset.frame)), 500);
+</script>
+</x-dc>
+</body>
+</html>

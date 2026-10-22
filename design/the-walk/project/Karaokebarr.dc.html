@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="color-scheme" content="dark">
+<meta name="darkreader-lock">
+<title>Karaokebarr window · Wolfsblvt Works</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,300..800;1,7..72,300..800&family=Shantell+Sans:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&family=Albert+Sans:wght@400..800&family=Bricolage+Grotesque:opsz,wght@12..96,700&family=Atkinson+Hyperlegible+Next:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ---------- board chrome (same as the other canvas pages) ---------- */
+body{margin:0;background:#100b11;color:#f3e8dc;font-family:'Albert Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.sheet{padding:64px 72px 96px;background:linear-gradient(160deg,#100b11 0%,#181018 52%,#0c1217 100%);min-height:100vh;box-sizing:border-box}
+.sheet-h{margin:0;font:300 64px/1 'Literata',serif;letter-spacing:-.03em;font-variation-settings:'opsz' 72}
+.sheet-sub{margin:16px 0 0;max-width:76ch;font:17px/1.55 'Literata',serif;color:#d1c0b8}
+.sec{margin-top:88px}
+.sec-h{display:flex;align-items:baseline;gap:16px;margin:0 0 6px;font:400 34px/1.1 'Literata',serif;letter-spacing:-.015em}
+.sec-h .n{font:600 13px 'Albert Sans',sans-serif;color:#73cae3;letter-spacing:.08em}
+.sec-p{margin:0 0 28px;max-width:84ch;font-size:15px;line-height:1.55;color:#c0b0b1}
+.sec-p code,.note code,.open code{font:12.5px 'IBM Plex Mono',monospace;color:#f3e8dc}
+.rec{display:inline-flex;align-items:baseline;gap:10px;margin:22px 0 0;font:500 19px/1.3 'Shantell Sans',cursive;color:#ef8ea1;transform:rotate(-1.5deg)}
+.note{margin:14px 0 0;max-width:84ch;font-size:13.5px;line-height:1.55;color:#9c8c93}
+.lbl{display:flex;align-items:center;gap:10px;margin:0 0 12px;font:600 12.5px 'Albert Sans',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#9c8c93}
+.lbl b{color:#73cae3;letter-spacing:.08em}
+.replay{appearance:none;border:1px solid rgb(243 232 220 / 20%);background:none;color:#f3e8dc;border-radius:999px;padding:4px 12px;font:600 12px 'Albert Sans',sans-serif;cursor:pointer;margin-left:auto}
+.replay:hover{border-color:#73cae3;color:#73cae3}
+.two{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:32px;align-items:start}
+.walk{position:relative;padding:72px 56px;background:#100b11;border:1px solid rgb(243 232 220 / 10%);border-radius:18px;overflow:hidden}
+.walk-narrow{padding:48px 0;border-radius:28px}
+.walk::before,.walk::after{content:"";position:absolute;top:0;bottom:0;width:2px;opacity:.55}
+.walk::before{left:18px;background:linear-gradient(#eca557,transparent 70%)}
+.walk::after{right:18px;background:linear-gradient(transparent 30%,#db61aa)}
+.walk-narrow::before{left:8px}.walk-narrow::after{right:8px}
+.guide{margin:0 0 26px;font:300 22px/1.45 'Literata',serif;color:#d1c0b8;max-width:46ch}
+.walk-narrow .guide{font-size:18px;margin:0 20px 22px}
+.frame{container:kb / inline-size}
+.walk-narrow .frame{margin:0 16px}
+.parts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.part{position:relative;border:1px solid rgb(243 232 220 / 12%);border-radius:16px;background:rgb(243 232 220 / 3%);padding:22px}
+.part h3{margin:0 0 6px;font:700 15px 'Albert Sans',sans-serif}
+.part p{margin:0 0 16px;font-size:13.5px;line-height:1.5;color:#c0b0b1}
+.part-ink{background:var(--kb-bg);border-color:var(--kb-line-strong)}
+.states{display:grid;gap:14px}
+.state{display:grid;grid-template-columns:70px 1fr;gap:12px;align-items:center;font-size:13px;color:var(--kb-text-2)}
+.state b{font:600 11px 'Albert Sans',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#9c8c93}
+.open{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.open .part p{margin-bottom:8px}
+.open ul{margin:0;padding-left:18px;font-size:13.5px;line-height:1.55;color:#c0b0b1}
+.open li{margin:4px 0}
+.brand{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:22px}
+.sw-row{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:10px}
+.sw{height:44px;border-radius:8px;border:1px solid rgb(243 232 233 / 12%)}
+.sw-l{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:6px;font:11px 'IBM Plex Mono',monospace;color:#9c8c93}
+.marks{display:flex;align-items:center;gap:18px;margin-top:10px}
+.marks > div{display:grid;place-items:center;border-radius:12px}
+.type-sample{margin-top:10px;padding:16px 18px;border-radius:12px;background:var(--kb-bg);border:1px solid var(--kb-line-strong)}
+
+/* ---------- Karaokebarr tokens the window consumes. Source of truth: karaokebarr/docs/design/tokens/karaokebarr-tokens.css v0.1 ---------- */
+:root{
+  --kb-ink:#171926;--kb-paper:#F7F2E9;--kb-apricot:#F2AD7B;--kb-mint:#7CD9C7;--kb-lilac:#B7A4F3;--kb-slate:#A4A8BC;
+  --kb-bg-deep:#111320;--kb-bg:#171926;--kb-surface-1:#1E2231;--kb-surface-2:#252A3B;--kb-surface-3:#2D3347;
+  --kb-line:rgba(247,242,233,0.08);--kb-line-strong:rgba(247,242,233,0.16);
+  --kb-text-1:#F7F2E9;--kb-text-2:#A4A8BC;--kb-text-3:#8B90A6;--kb-text-on-accent:#171926;
+  --kb-accent:var(--kb-apricot);--kb-accent-hover:#F6BC93;--kb-accent-active:#E89E68;--kb-accent-soft:rgba(242,173,123,0.14);
+  --kb-editorial:var(--kb-mint);--kb-editorial-soft:rgba(124,217,199,0.12);--kb-focus:var(--kb-mint);
+  --kb-status-unknown:#8B90A6;--kb-status-unknown-soft:rgba(164,168,188,0.12);
+  --kb-font-display:"Bricolage Grotesque","Atkinson Hyperlegible Next",system-ui,sans-serif;
+  --kb-font-ui:"Atkinson Hyperlegible Next",system-ui,sans-serif;
+  --kb-text-xs:11px;--kb-text-sm:12.5px;--kb-text-md:13.5px;--kb-text-lg:15px;
+  --kb-leading-tight:1.15;--kb-leading-ui:1.4;--kb-leading-prose:1.55;--kb-tracking-display:-0.02em;--kb-tracking-eyebrow:0.08em;
+  --kb-radius-xs:4px;--kb-radius-sm:6px;--kb-radius-md:10px;--kb-control-h:32px;--kb-control-h-lg:40px;--kb-space-2:8px;--kb-space-3:12px;--kb-space-5:20px;
+  --kb-disc-hole:0.14;--kb-disc-inner-ring:0.34;--kb-disc-trim:0.96;
+  --kb-ease:cubic-bezier(.2,.7,.2,1);--kb-ease-enter:cubic-bezier(.16,1,.3,1);--kb-dur-fast:120ms;--kb-dur:200ms;--kb-dur-slow:320ms;--kb-dur-once:480ms;--kb-disc-hover-rotate:4deg;
+}
+@media (prefers-reduced-motion:reduce){:root{--kb-dur-fast:0ms;--kb-dur:0ms;--kb-dur-slow:0ms;--kb-dur-once:0ms;--kb-disc-hover-rotate:0deg}}
+
+/* ---------- recipes used, from karaokebarr-recipes.css v0.1 (copied, not forked) ---------- */
+.kb-root{background:var(--kb-bg);color:var(--kb-text-1);font:var(--kb-text-md)/var(--kb-leading-ui) var(--kb-font-ui);-webkit-font-smoothing:antialiased}
+.kb-root a{color:var(--kb-editorial);text-decoration:none}
+.kb-root :focus-visible{outline:2px solid var(--kb-focus);outline-offset:2px;border-radius:var(--kb-radius-xs)}
+.kb-eyebrow{font:600 var(--kb-text-xs)/1 var(--kb-font-ui);letter-spacing:var(--kb-tracking-eyebrow);text-transform:uppercase;color:var(--kb-editorial)}
+.kb-meta{font-size:var(--kb-text-sm);color:var(--kb-text-2)}
+.kb-btn{display:inline-flex;align-items:center;gap:var(--kb-space-2);height:var(--kb-control-h);padding:0 var(--kb-space-3);border-radius:var(--kb-radius-sm);border:1px solid transparent;font:600 var(--kb-text-md)/1 var(--kb-font-ui);cursor:pointer;transition:background var(--kb-dur-fast) var(--kb-ease),transform var(--kb-dur-fast) var(--kb-ease);white-space:nowrap;text-decoration:none}
+.kb-btn:active{transform:translateY(1px)}
+.kb-btn-primary{background:var(--kb-accent);color:var(--kb-text-on-accent)}
+.kb-root a.kb-btn-primary{color:var(--kb-text-on-accent)}
+.kb-btn-primary:hover{background:var(--kb-accent-hover)}
+.kb-btn-lg{height:var(--kb-control-h-lg);padding:0 var(--kb-space-5);font-size:var(--kb-text-lg)}
+.kb-badge{display:inline-flex;align-items:center;gap:6px;height:20px;padding:0 8px;border-radius:var(--kb-radius-xs);font:600 var(--kb-text-xs)/1 var(--kb-font-ui);letter-spacing:.01em;white-space:nowrap}
+.kb-badge::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;flex:none}
+.kb-badge-unknown{color:var(--kb-status-unknown);background:var(--kb-status-unknown-soft)}
+.kb-badge-draft{color:var(--kb-status-unknown);background:var(--kb-status-unknown-soft)}
+.kb-badge-saved{color:var(--kb-editorial);background:var(--kb-editorial-soft)}
+.kb-badge-burned{color:var(--kb-apricot);background:var(--kb-accent-soft)}
+.kb-disc{position:relative;aspect-ratio:1;border-radius:50%;overflow:hidden;isolation:isolate;
+  -webkit-mask:radial-gradient(circle at 50% 50%,transparent 0 calc(var(--kb-disc-hole) * 50%),#000 calc(var(--kb-disc-hole) * 50% + 0.5px));
+  mask:radial-gradient(circle at 50% 50%,transparent 0 calc(var(--kb-disc-hole) * 50%),#000 calc(var(--kb-disc-hole) * 50% + 0.5px));
+  transition:transform var(--kb-dur-slow) var(--kb-ease)}
+.kb-disc::after{content:"";position:absolute;inset:0;border-radius:50%;pointer-events:none;
+  background:
+    radial-gradient(circle,transparent calc(var(--kb-disc-hole)*50%),rgba(247,242,233,.35) calc(var(--kb-disc-hole)*50% + 1px),transparent calc(var(--kb-disc-hole)*50% + 2px)),
+    radial-gradient(circle,transparent calc(var(--kb-disc-inner-ring)*50% - 1px),rgba(247,242,233,.22) calc(var(--kb-disc-inner-ring)*50%),transparent calc(var(--kb-disc-inner-ring)*50% + 1px)),
+    radial-gradient(circle,transparent calc(var(--kb-disc-trim)*50% - 1px),rgba(23,25,38,.35) calc(var(--kb-disc-trim)*50%),transparent calc(var(--kb-disc-trim)*50% + 1px))}
+.kb-disc-hover:hover{transform:rotate(var(--kb-disc-hover-rotate))}
+.kb-disc-wrap{position:relative;display:inline-block;border-radius:50%}
+.kb-disc-wrap[data-state="draft"]{outline:1.5px dashed rgba(247,242,233,.35);outline-offset:5px}
+.kb-disc-wrap[data-state="draft"] .kb-disc{filter:saturate(.6);opacity:.85}
+.kb-disc-wrap[data-state="burned"]::before{content:"";position:absolute;inset:-6px;border-radius:50%;border:1.5px solid var(--kb-apricot);pointer-events:none;animation:kb-in var(--kb-dur) linear var(--kb-dur-once) both}
+.kb-disc-wrap[data-state="burned"]::after{content:"";position:absolute;right:-4%;bottom:-2%;width:22%;max-width:28px;min-width:16px;aspect-ratio:1;border-radius:50%;background:var(--kb-apricot) center / 55% no-repeat url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23171926' stroke-width='1.8' stroke-linecap='round'><rect x='3.5' y='7' width='9' height='6.5' rx='1.5'/><path d='M5.5 7V5a2.5 2.5 0 0 1 5 0v2'/></svg>");border:3px solid var(--kb-bg);animation:kb-in var(--kb-dur) linear var(--kb-dur-once) both}
+.kb-disc-shadow{filter:drop-shadow(0 10px 24px rgba(17,19,32,.6))}
+.kb-disc-title{position:absolute;left:14%;right:14%;top:18%;text-align:center;font-family:var(--kb-font-display);font-weight:700;letter-spacing:-0.01em;line-height:1.05;text-wrap:balance;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.kb-disc-smallprint{position:absolute;left:20%;right:20%;bottom:20%;text-align:center;font:600 7% var(--kb-font-ui);letter-spacing:.12em;text-transform:uppercase;opacity:.85;white-space:nowrap}
+.kb-label-coast{background:radial-gradient(circle at 30% 25%,#F2AD7B 0,rgba(242,173,123,0) 38%),linear-gradient(160deg,#7CD9C7 0%,#2F6F78 55%,#171926 100%);color:var(--kb-paper)}
+.kb-label-night{background:radial-gradient(circle at 65% 30%,rgba(183,164,243,.9) 0,rgba(183,164,243,0) 42%),linear-gradient(180deg,#2D3347 0%,#171926 100%);color:var(--kb-paper)}
+.kb-label-berry{background:radial-gradient(circle at 25% 70%,#F2AD7B 0,rgba(242,173,123,0) 40%),linear-gradient(150deg,#B7A4F3 0%,#6E4B7A 55%,#2A1E3A 100%);color:var(--kb-paper)}
+.kb-burn-ring{stroke:var(--kb-apricot);stroke-width:4;fill:none;stroke-dasharray:565;stroke-dashoffset:565}
+.kb-fade-swap{transition:opacity var(--kb-dur) linear}
+@keyframes kb-ring{to{stroke-dashoffset:0}}
+@keyframes kb-in{from{opacity:0}to{opacity:1}}
+
+/* ---------- the window: Ink outside, the Disc inside. One markup, stamped into both frames ---------- */
+.kb-win{position:relative;box-sizing:border-box;border-radius:14px;border:1px solid var(--kb-line-strong);background:var(--kb-bg);padding:clamp(28px,4cqw,52px) clamp(24px,5cqw,60px);box-shadow:0 0 0 1px rgba(17,19,32,.6),0 30px 80px -40px rgba(124,217,199,.25)}
+.kb-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(24px,4cqw,56px);align-items:center}
+.kb-lockup{display:flex;align-items:center;gap:.72em;margin:14px 0 0;font:700 clamp(38px,5cqw,64px)/1 var(--kb-font-display);letter-spacing:var(--kb-tracking-display);color:var(--kb-text-1)}
+.kb-mark{display:block;height:.72em;width:.72em}
+.kb-tag{margin:22px 0 0;font:700 clamp(24px,2.6cqw,34px)/1.15 var(--kb-font-display);letter-spacing:var(--kb-tracking-display);color:var(--kb-text-1);text-wrap:balance}
+.kb-body{margin:14px 0 0;font:var(--kb-text-lg)/var(--kb-leading-prose) var(--kb-font-ui);color:var(--kb-text-2);max-width:48ch}
+.kb-standing{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:22px}
+.kb-actions{margin-top:22px}
+.kb-note{margin:16px 0 0;font:11px/1.3 'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--kb-text-3)}
+.kb-stage{display:grid;justify-items:center;gap:18px}
+.kb-scene{position:relative;width:clamp(200px,24cqw,300px);display:grid;place-items:center;container-type:inline-size}
+.kb-scene .kb-disc{font-size:100cqw} /* the face size; the title is 9% of it and the small print 8%, as the guide says */
+.kb-scene .kb-disc-wrap{width:100%}
+.kb-ring{position:absolute;inset:-7%;width:114%;height:114%;pointer-events:none}
+.kb-lifecycle{display:flex;gap:10px;align-items:center}
+.kb-lifecycle .kb-badge{opacity:.35}
+.kb-lifecycle .kb-badge[data-live]{opacity:1}
+.kb-caption{margin:0;font:11px/1.3 'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--kb-text-3);text-align:center}
+/* lifecycle, choreographed by the script: draft → saved → burned, the ring drawn once at the end */
+.kb-scene[data-burn] .kb-burn-ring{animation:kb-ring var(--kb-dur-once) var(--kb-ease) forwards}
+@media (prefers-reduced-motion:reduce){.kb-burn-ring{stroke-dashoffset:0}}
+@container kb (max-width: 720px){
+  .kb-grid{grid-template-columns:1fr;gap:28px}
+  .kb-lockup{font-size:clamp(34px,10cqw,44px)}
+  .kb-scene{width:clamp(200px,60cqw,240px)}
+}
+</style>
+</helmet>
+
+<!-- ONE markup for the window. Edit here; the script stamps it into both frames. -->
+<template id="kb-window">
+<section class="kb-win kb-root" aria-labelledby="kb-h" data-placeholder="project-window">
+  <div class="kb-grid">
+    <div class="kb-copy">
+      <p class="kb-eyebrow" style="margin:0">Self-hosted karaoke automation</p>
+      <h2 id="kb-h" class="kb-lockup"><img class="kb-mark" src="../assets/karaokebarr-mark.svg" alt="" width="64" height="64"><span>Karaokebarr</span></h2>
+      <p class="kb-tag">Your music. Ready to sing.</p>
+      <p class="kb-body">Turn the music you love into karaoke you can actually sing. Karaokebarr runs on your own server and finds, prepares, checks and delivers songs to your players. Then you make a Disc: a personal mix with its own printed label, a story and a song order, like the CDs you used to burn for friends.</p>
+      <div class="kb-standing"><span class="kb-badge kb-badge-unknown">Designed · not yet built</span><span class="kb-meta">27 screens selected · source scaffold is public</span></div>
+      <div class="kb-actions"><a class="kb-btn kb-btn-primary kb-btn-lg" href="https://github.com/Wolfsblvt/karaokebarr">See the design →</a></div>
+      <p class="kb-note">copy provisional · the words belong to W-B</p>
+    </div>
+    <div class="kb-stage">
+      <div class="kb-scene">
+        <svg class="kb-ring" viewBox="0 0 200 200" aria-hidden="true"><circle class="kb-burn-ring" cx="100" cy="100" r="90"></circle></svg>
+        <div class="kb-disc-wrap kb-disc-shadow" data-state="draft" role="img" aria-label="A Disc called Friday, the loud one, twelve songs, shown as a draft, then saved, then burned.">
+          <div class="kb-disc kb-disc-hover kb-label-coast"><div class="kb-disc-title" style="font-size:9%">Friday, the loud one</div><div class="kb-disc-smallprint">12 songs · 2026</div></div>
+        </div>
+      </div>
+      <div class="kb-lifecycle" aria-hidden="true"><span class="kb-badge kb-badge-draft kb-fade-swap" data-step="draft">Draft</span><span class="kb-badge kb-badge-saved kb-fade-swap" data-step="saved">Saved · editable</span><span class="kb-badge kb-badge-burned kb-fade-swap" data-step="burned">Burned</span></div>
+      <p class="kb-caption">fictional disc · the lifecycle, on the object</p>
+    </div>
+  </div>
+</section>
+</template>
+
+<div class="sheet">
+<h1 class="sheet-h">Karaokebarr, in its window</h1>
+<p class="sheet-sub">Karaokebarr already has a complete brand: the labeled-disc mark, Ink and Paper with Apricot, Mint and Lilac, Bricolage Grotesque and Atkinson Hyperlegible Next, and a Disc with a real hole. Nothing provisional needed inventing. This board recovers that brand and puts it in the product’s window on the Works walk, where the Disc does what the product promises: personal music becoming ready to sing. Nothing here is integrated or published.</p>
+
+<section class="sec">
+<h2 class="sec-h"><span class="n">01</span> The brand, recovered</h2>
+<p class="sec-p">Source: <code>karaokebarr/docs/design/brand/BRAND.md</code>, the tokens in <code>docs/design/tokens/</code> and the UI guide. Fixed there: dark only, no mascot ever, Ink and Paper as the base, Apricot for the one primary action, Mint for editorial, Lilac only on Disc labels. The mark here is the repository’s <code>karaokebarr-mark.svg</code>, copied byte for byte into <code>design/the-walk/assets/</code> with its content credentials intact.</p>
+<div class="brand">
+  <div class="part">
+    <h3>Palette, fixed</h3>
+    <p>Ink · Warm paper · Apricot · Mint · Lilac · Muted slate</p>
+    <div class="sw-row"><div class="sw" style="background:#171926"></div><div class="sw" style="background:#F7F2E9"></div><div class="sw" style="background:#F2AD7B"></div><div class="sw" style="background:#7CD9C7"></div><div class="sw" style="background:#B7A4F3"></div><div class="sw" style="background:#A4A8BC"></div></div>
+    <div class="sw-l"><span>#171926</span><span>#F7F2E9</span><span>#F2AD7B</span><span>#7CD9C7</span><span>#B7A4F3</span><span>#A4A8BC</span></div>
+  </div>
+  <div class="part">
+    <h3>The mark</h3>
+    <p>A labeled disc with a real hole in the K’s open wedge. On dark: Apricot face, Ink K. Optical variant below 24px. Clear space one third of the mark.</p>
+    <div class="marks">
+      <div style="width:84px;height:84px;background:#171926"><img src="../assets/karaokebarr-mark.svg" alt="Karaokebarr mark on Ink" width="56" height="56"></div>
+      <div style="width:84px;height:84px;background:#F7F2E9"><img src="../assets/karaokebarr-mark.svg" alt="Karaokebarr mark on paper (the on-paper variant swaps face and K)" width="56" height="56"></div>
+      <div style="width:84px;height:84px;background:#171926"><img src="../assets/karaokebarr-mark.svg" alt="" width="24" height="24"></div>
+    </div>
+  </div>
+  <div class="part">
+    <h3>Type, fixed</h3>
+    <p>Bricolage Grotesque 700 for the wordmark and titles, never all-caps. Atkinson Hyperlegible Next for everything else. Both OFL 1.1, self-hosted in production.</p>
+    <div class="type-sample kb-root">
+      <div style="font:700 30px/1.1 var(--kb-font-display);letter-spacing:-.02em">Karaokebarr</div>
+      <div style="margin-top:8px;font:var(--kb-text-lg)/1.5 var(--kb-font-ui);color:var(--kb-text-2)">Copied to Living room. Player status has not been verified.</div>
+      <div class="kb-eyebrow" style="margin-top:10px">Refrainery · Song workshop</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="sec">
+<h2 class="sec-h"><span class="n">02</span> The window</h2>
+<p class="sec-p">Arr outside, disc inside, exactly as the guide says: Ink and hairlines for the window, colour only on the Disc and the one Apricot action. Mint eyebrow, lockup with the mark at cap height, the tagline as the headline. Standing is a word in a slate badge before anything else. On the right the Disc arrives as a draft (dashed cut-guide, desaturated), becomes saved (plain, Mint), and burns (the Apricot ring drawn once, lock badge). That is the product’s promise shown on its own object, and it is the only motion the guide allows a Disc besides the 4° hover.</p>
+<div class="two">
+  <div>
+    <div class="lbl"><b>1280</b> desktop, in the walk <button class="replay" type="button" data-replay="wide">replay the burn</button></div>
+    <div class="walk"><p class="guide">Here are some curated projects we are working on.</p><div class="frame" data-frame="wide"></div></div>
+  </div>
+  <div>
+    <div class="lbl"><b>390</b> phone <button class="replay" type="button" data-replay="narrow">replay</button></div>
+    <div class="walk walk-narrow"><p class="guide">Here are some curated projects we are working on.</p><div class="frame" data-frame="narrow"></div></div>
+  </div>
+</div>
+<div class="rec">one version only, on purpose: the brand is already decided, and the window’s job is to not argue with it.</div>
+</section>
+
+<section class="sec">
+<h2 class="sec-h"><span class="n">03</span> The pieces</h2>
+<p class="sec-p">The Disc’s three states as they appear in the window, and the two other label seeds from the recipes if “coast” is not the right evening.</p>
+<div class="parts">
+  <div class="part part-ink kb-root">
+    <h3 style="color:var(--kb-text-1)">Draft → Saved → Burned</h3>
+    <p style="color:var(--kb-text-2)">Reduced motion shows the burned Disc only. The title always also exists as text outside the label, which is what the window’s caption and aria label do.</p>
+    <div style="display:flex;gap:26px;align-items:flex-end;justify-content:center;padding:10px 0 6px">
+      <div style="display:grid;justify-items:center;gap:10px"><div class="kb-disc-wrap kb-disc-shadow" data-state="draft" style="width:96px"><div class="kb-disc kb-label-coast" style="font-size:96px"><div class="kb-disc-title" style="font-size:9%">Friday, the loud one</div></div></div><span class="kb-badge kb-badge-draft">Draft</span></div>
+      <div style="display:grid;justify-items:center;gap:10px"><div class="kb-disc-wrap kb-disc-shadow" data-state="saved" style="width:96px"><div class="kb-disc kb-label-coast" style="font-size:96px"><div class="kb-disc-title" style="font-size:9%">Friday, the loud one</div></div></div><span class="kb-badge kb-badge-saved">Saved · editable</span></div>
+      <div style="display:grid;justify-items:center;gap:10px"><div class="kb-disc-wrap kb-disc-shadow" data-state="burned" style="width:96px"><div class="kb-disc kb-label-coast" style="font-size:96px"><div class="kb-disc-title" style="font-size:9%">Friday, the loud one</div></div></div><span class="kb-badge kb-badge-burned">Burned</span></div>
+    </div>
+  </div>
+  <div class="part part-ink kb-root">
+    <h3 style="color:var(--kb-text-1)">Other evenings</h3>
+    <p style="color:var(--kb-text-2)">Label seeds from the recipes: night and berry. Lilac lives only here.</p>
+    <div style="display:flex;gap:26px;align-items:center;justify-content:center;padding:10px 0 6px">
+      <div class="kb-disc-wrap kb-disc-shadow" data-state="saved" style="width:110px"><div class="kb-disc kb-label-night" style="font-size:110px"><div class="kb-disc-title" style="font-size:9%">Quiet, after midnight</div></div></div>
+      <div class="kb-disc-wrap kb-disc-shadow" data-state="saved" style="width:110px"><div class="kb-disc kb-label-berry" style="font-size:110px"><div class="kb-disc-title" style="font-size:9%">Duets we can’t sing</div></div></div>
+    </div>
+  </div>
+  <div class="part part-ink kb-root">
+    <h3 style="color:var(--kb-text-1)">Standing, action, words</h3>
+    <p style="color:var(--kb-text-2)">Status is a word. One Apricot action per view. The public source scaffold is a real destination; the design gallery inside it is what the button means.</p>
+    <div class="states">
+      <div class="state"><b>standing</b><span><span class="kb-badge kb-badge-unknown">Designed · not yet built</span></span></div>
+      <div class="state"><b>action</b><span><a class="kb-btn kb-btn-primary" href="https://github.com/Wolfsblvt/karaokebarr">See the design →</a></span></div>
+      <div class="state"><b>eyebrow</b><span class="kb-eyebrow">Self-hosted karaoke automation</span></div>
+      <div class="state"><b>endorse</b><span class="kb-meta">Karaokebarr · by Wolfsblvt Works</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="sec">
+<h2 class="sec-h"><span class="n">04</span> What this decided, and what it didn’t</h2>
+<div class="open">
+  <div class="part">
+    <h3>Decided by the design (reversible)</h3>
+    <ul>
+      <li>No provisional wordmark or theme: the existing brand is complete and is used as-is. Inventing a lighter stand-in would have been a second design system.</li>
+      <li>The Disc, not a screenshot, is the window’s object. Its lifecycle is the motion, drawn once, within the guide’s own motion list.</li>
+      <li>The window keeps Ink inside the Works plum. The two darks are different enough to read as a change of room.</li>
+      <li>Standing is a word, before the promise: “Designed · not yet built”.</li>
+    </ul>
+  </div>
+  <div class="part">
+    <h3>Still open</h3>
+    <ul>
+      <li>Copy belongs to W-B; the body text here is the brand pitch shortened and is marked provisional. The Disc title is fictional.</li>
+      <li>Fonts: production self-hosts both faces. Fontsource carries <code>@fontsource-variable/bricolage-grotesque</code> and <code>@fontsource/atkinson-hyperlegible-next</code> (both 5.3.0, OFL); that is two packages for the site’s font step, not yet added.</li>
+      <li>Asset rights: the mark and brand are Wolf’s own, made for Karaokebarr; the copied SVG keeps its content credentials. Nothing from the player or any catalogue is used.</li>
+      <li>Implementation standing: nothing integrated. There is no <code>Karaokebarr.astro</code> window yet; this would be a new section in the Walk’s order, which Nyxara integrates. The window CSS maps onto <code>src/styles/home.css</code> the way diffdevil’s does.</li>
+    </ul>
+  </div>
+</div>
+</section>
+</div>
+
+<script>
+// Stamp the one window template into both frames and run the Disc's lifecycle. Design-only; production has its own reveals.
+document.documentElement.classList.add('js');
+const tpl = document.getElementById('kb-window');
+for (const frame of document.querySelectorAll('[data-frame]')) {
+  const node = tpl.content.cloneNode(true);
+  const id = 'kb-h-' + frame.dataset.frame;
+  node.querySelector('h2').id = id; node.querySelector('section').setAttribute('aria-labelledby', id);
+  frame.appendChild(node);
+}
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function lifecycle(name) {
+  const win = document.querySelector(`[data-frame="${name}"] .kb-win`);
+  const wrap = win.querySelector('.kb-disc-wrap'), scene = win.querySelector('.kb-scene'), badges = [...win.querySelectorAll('[data-step]')];
+  const set = (state) => { wrap.dataset.state = state; badges.forEach((b) => b.toggleAttribute('data-live', b.dataset.step === state)); if (state === 'burned') scene.setAttribute('data-burn', ''); };
+  scene.removeAttribute('data-burn'); void scene.offsetWidth;
+  if (reduced) { set('burned'); return; }
+  set('draft'); setTimeout(() => set('saved'), 1300); setTimeout(() => set('burned'), 2600);
+}
+for (const b of document.querySelectorAll('[data-replay]')) b.addEventListener('click', () => lifecycle(b.dataset.replay));
+setTimeout(() => document.querySelectorAll('[data-frame]').forEach((f) => lifecycle(f.dataset.frame)), 400);
+</script>
+</x-dc>
+</body>
+</html>

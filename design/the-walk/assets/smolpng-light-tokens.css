@@ -1,0 +1,40 @@
+/* smolpng · provisional light-first palette · candidate of 2026-10-22 (Tala, D-1)
+   smolpng is light-first. This sheet leans on Gawr Gura's official model art (illustration Amashiro Natsuki, the
+   full-body renders on hololive's talent page), colour-sampled on 2026-10-22: hoodie #33739d, hood shadows #2a638c
+   and #24547b, highlight #448bad, mouth #bd4449, skin #feeddd / #f3dbcc, white #fbfcfc, hair greys #e5e9ed / #d4dbe3.
+   The community palette on color-hex (#33739d #be4449 #9cc9d9 #f3f3f3 #93a9c9) agrees with the samples and is the same
+   set the dark-first "Gura Sparks" direction was derived from. Leaned on, not copied: no shark, no character branding.
+   Candidate for smolpng's whole light-mode design, not only its window on the Works walk. Not a complete token set. */
+:root {
+  /* paper: the world. Near-white with the cool cast of the hoodie trim, never pure white */
+  --smol-paper: #fbfcfd;
+  --smol-paper-cool: #eef4f8;
+  --smol-paper-warm: #fff3ea;
+  --smol-ice-plane: #dcebf2;
+
+  /* ink: deep marine, not black */
+  --smol-ink: #1c3850;
+  --smol-ink-soft: #3d5b74;
+  --smol-ink-quiet: #67809a;
+  --smol-line: rgb(28 56 80 / 14%);
+  --smol-line-strong: rgb(28 56 80 / 28%);
+
+  /* the hoodie: primary action, links, the headline's weight */
+  --smol-marine: #33739d;
+  --smol-marine-deep: #24547b;
+  --smol-marine-light: #448bad;
+
+  /* the sparks: ice is focus and the drop field, periwinkle quiet structure, coral the one warm event */
+  --smol-ice: #9cc9d9;
+  --smol-periwinkle: #93a9c9;
+  --smol-coral: #be4449;
+  --smol-coral-soft: #e16f73;
+  --smol-peach: #feeddd;
+  --smol-peach-deep: #f3dbcc;
+
+  /* type, provisional: A keeps the walk's Albert Sans, B tries a rounder face. Mono carries Squishling. */
+  --smol-sans: 'Albert Sans', system-ui, sans-serif;
+  --smol-sans-round: 'Nunito', 'Albert Sans', system-ui, sans-serif;
+  --smol-mono: 'IBM Plex Mono', 'Cascadia Mono', Consolas, 'DejaVu Sans Mono', ui-monospace, monospace;
+  /* Squishling's box-drawing strokes (U+2500–257F) must ship with the mono face in production; a Latin-only subset drops them */
+}

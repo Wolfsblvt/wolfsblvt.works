@@ -51,6 +51,22 @@
       "x": 4580,
       "y": 1800
     },
+    "Smolpng.dc.html": {
+      "h": 4900,
+      "is_interactive": true,
+      "title": "smolpng window — light-first candidate, two versions at desktop and phone (D-1, 2026-10-22)",
+      "w": 1440,
+      "x": 6100,
+      "y": 0
+    },
+    "Karaokebarr.dc.html": {
+      "h": 4200,
+      "is_interactive": true,
+      "title": "Karaokebarr window — the recovered brand in its window, desktop and phone (D-1, 2026-10-22)",
+      "w": 1440,
+      "x": 7620,
+      "y": 0
+    },
     "ServerError.dc.html": {
       "h": 900,
       "is_interactive": true,
