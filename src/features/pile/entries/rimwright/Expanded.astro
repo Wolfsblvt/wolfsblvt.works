@@ -1,0 +1,61 @@
+---
+/**
+ * Rimwright, expanded: the selected wall beside "Wall · Hit points". Before / After changes the value between the
+ * concrete example the project already carries (350 → 400); the wall itself need not grow. "One object. One
+ * deliberate change." is all the surrounding language. The copy follows; its last line is the RimWorld credit, kept
+ * small, while the frame renders the actual RimWorld link from the frontmatter.
+ */
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+  hid: string;
+}
+const { entry, hid } = Astro.props;
+---
+
+<div class="rw" data-interaction={entry.id}>
+  <h3 id={hid} class="e-h rw-h">{entry.data.title}</h3>
+  <div class="rw-scene">
+    <svg class="rw-art" viewBox="0 0 280 160" role="img" aria-label="A selected stone wall on the modding workbench.">
+      <ellipse cx="140" cy="134" rx="104" ry="18" fill="#060b10" fill-opacity=".33"/>
+      <path d="M45 61l80-36 114 40-79 39z" fill="#90908a"/>
+      <path d="M45 61v47l115 43v-47z" fill="#5e6667"/>
+      <path d="M160 104v47l79-39V65z" fill="#424e54"/>
+      <g fill="none" stroke="#28353a" stroke-width="3">
+        <path d="M45 85l115 43 79-40M82 75v23m39-8v24M78 99v22m41-7v22M187 90v24m27-37v24m-38 22v20m27-34v20M85 43l113 41M164 39l-78 37"/>
+      </g>
+      <path d="M37 58l88-40 122 44v56l-87 42-123-46z" fill="none" stroke="#f2b35f" stroke-width="1.5" stroke-dasharray="4 5"/>
+    </svg>
+    <div class="rw-panel">
+      <div class="rw-micro">Wall · Hit points</div>
+      <div class="rw-value" data-value aria-live="polite">350</div>
+      <div class="rw-source">One object.<br />One deliberate change.</div>
+    </div>
+  </div>
+  <div class="rw-controls" data-controls hidden>
+    <button type="button" aria-pressed="true" data-version="before">Before</button>
+    <button type="button" aria-pressed="false" data-version="after">After</button>
+  </div>
+  <div class="rw-copy"><slot /></div>
+</div>
+
+<style>
+  .rw { max-width: 640px; font-family: var(--sans); }
+  .rw-h { font: 500 clamp(26px, 2.8vw, 34px)/1.15 var(--serif); letter-spacing: -.01em; }
+  .rw-scene { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: center; margin-top: 18px; padding: 20px; border-radius: 7px; background: #181f25; border: 1px solid #4a565f; }
+  .rw-art { display: block; width: 100%; height: auto; }
+  .rw-micro { font: 500 11px/1.5 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--text); }
+  .rw-value { margin: 10px 0; font: 400 46px/1.2 var(--mono); font-variant-numeric: tabular-nums; color: #f2b35f; }
+  .rw-source { font: 13px/1.5 var(--mono); color: #c1cbd3; }
+  .rw-controls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .rw-controls button { min-height: 38px; padding: 8px 13px; border: 1px solid rgb(255 255 255 / 16%); border-radius: 6px; background: rgb(255 255 255 / 3%); color: var(--text); font: 13px var(--sans); cursor: pointer; }
+  .rw-controls button[aria-pressed=true] { background: #e4d4b9; color: #1b2026; border-color: #e4d4b9; }
+  /* The body's last paragraph is the RimWorld credit line: a credit, not a second paragraph. */
+  .rw-copy :global(.e-body p:last-child) { font: 13px/1.5 var(--sans); color: #b8c4c9; }
+  @media (max-width: 540px) {
+    .rw-scene { gap: 10px; padding: 12px; }
+    .rw-value { font-size: 36px; }
+    .rw-controls button { min-height: 44px; }
+  }
+</style>

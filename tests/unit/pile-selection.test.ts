@@ -70,7 +70,7 @@ describe('packing', () => {
   });
 
   it('gives today’s pick a little more room', () => {
-    expect(pieceWidth('thought', 1200, true)).toBeGreaterThan(pieceWidth('thought', 1200, false));
+    expect(pieceWidth('medium', 1200, true)).toBeGreaterThan(pieceWidth('medium', 1200, false));
   });
 });
 

@@ -1,0 +1,29 @@
+---
+/**
+ * RPG Maker script export, compact: a sand-coloured card with the title, the hook, and three slightly offset paper
+ * slips, a door, a condition, a consequence: the pieces of a game's logic.
+ */
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+}
+const { entry } = Astro.props;
+const slips = ['a door', 'a condition', 'a consequence'];
+---
+
+<div class="rpg">
+  <span class="name">{entry.data.title}</span>
+  <span class="hook">The credits weren’t the end.</span>
+  <span class="slips">{slips.map((slip) => <span class="slip">{slip}</span>)}</span>
+</div>
+
+<style>
+  .rpg { display: grid; padding: 17px 17px 24px; background: #cbbda0; color: #2b2926; border-bottom: 4px solid #9a8d75; transform: rotate(1deg); font-family: var(--sans); }
+  .name { font-weight: 600; font-size: 16px; line-height: 1.3; }
+  .hook { margin-top: 9px; font-family: var(--serif); font-size: 19px; line-height: 1.4; }
+  .slips { display: grid; margin-top: 18px; }
+  .slip { display: block; box-sizing: border-box; width: calc(100% - 16px); justify-self: start; padding: 6px 11px; background: #e5d9bd; border-left: 1px solid #887b62; box-shadow: 2px 2px 0 #b3a482; font: 12px/1.7 var(--mono); }
+  .slip:nth-child(2) { margin: -3px 0 0 8px; transform: rotate(-.6deg); }
+  .slip:nth-child(3) { margin: -3px 0 0 16px; transform: rotate(.5deg); }
+</style>

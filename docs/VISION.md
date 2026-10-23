@@ -78,7 +78,8 @@ The current build is the shell, the mechanics and the first real content. The si
 ## Character that must survive
 
 - Personal and definite. Opinions stated plainly, sincerity allowed to stand.
-- Honest about what exists. A vision is marked as a vision; an illustrative entry is labelled as illustrative.
+- Honest about what exists. A project's standing is said once; a composed scene is content, and only unreplaced
+  scaffolding is labelled as such.
 - Private by construction. No analytics, no tracking, no consent banner, nothing stored in the browser. Variety in the
   Pile comes from the date and what a request already carries, never from following a person.
 - Dark only. The palette, the glow and the handwriting are designed on a dark canvas.

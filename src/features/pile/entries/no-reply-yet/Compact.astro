@@ -1,0 +1,36 @@
+---
+/**
+ * NO REPLY YET, compact: a typed outbound slip from the Morrow relay. The relay line, the title, the SENT / IN
+ * TRANSIT packet line and the hook, on pale station paper with a dark top edge and a perforated bottom. The typed
+ * parts use the site's typewriter face; the host supplies the slip's tilt.
+ */
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+}
+const { entry } = Astro.props;
+---
+
+<div class="nr">
+  <span class="nr-micro">Morrow Relay · Outbound</span>
+  <span class="nr-name">{entry.data.title}</span>
+  <span class="nr-packet"><span>SENT</span><span>IN TRANSIT · · ·</span></span>
+  <span class="nr-hook">A life in the time between messages.</span>
+</div>
+
+<style>
+  .nr {
+    display: block;
+    padding: 21px 22px 20px;
+    background: #d9d5bc;
+    color: #1d3439;
+    border-top: 7px solid #3c6266;
+    font-family: var(--sans);
+    clip-path: polygon(0 0, 100% 0, 100% 97%, 97% 100%, 94% 97%, 91% 100%, 88% 97%, 85% 100%, 82% 97%, 79% 100%, 76% 97%, 73% 100%, 70% 97%, 67% 100%, 64% 97%, 61% 100%, 58% 97%, 55% 100%, 52% 97%, 49% 100%, 46% 97%, 43% 100%, 40% 97%, 37% 100%, 34% 97%, 31% 100%, 28% 97%, 25% 100%, 22% 97%, 19% 100%, 16% 97%, 13% 100%, 10% 97%, 7% 100%, 4% 97%, 0 100%);
+  }
+  .nr-micro { display: block; font: 11px/1.5 'Special Elite', var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+  .nr-name { display: block; margin: 13px 0 20px; font: 400 24px/1.1 'Special Elite', var(--mono); letter-spacing: -.02em; }
+  .nr-packet { display: flex; justify-content: space-between; gap: 14px; padding-top: 9px; border-top: 1px dashed #566e6b; font: 12px/1.5 'Special Elite', var(--mono); }
+  .nr-hook { display: block; margin-top: 8px; font-size: 14px; line-height: 1.45; }
+</style>

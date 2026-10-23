@@ -1,12 +1,21 @@
 ---
-title: "OpenAI Tunnel auto-updater"
+title: "TunnelTend"
 form:
   kind: artifact
-  caption: "small tool"
-  excerpt: "$ tunnel-updater\n# keeps the tunnel up to date"
-  example: "$ tunnel-updater\n# [what it checks for, in one line]\n# [what it does when it finds something newer]\n# [how you run it: once, on a schedule, as a service]"
 daily:
   include: true
   footprint: medium
-subline: "Keeps the tunnel up to date, so nobody has to remember to."
+subline: "Your MCP tunnels, quietly tended."
+standing: "1.0.1 · Windows 11"
+links:
+  - id: release
+    kind: download
+    label: "Get TunnelTend"
+    href: "https://github.com/Wolfsblvt/tunneltend/releases/tag/v1.0.1"
+  - id: guide
+    kind: docs
+    label: "Get started"
+    href: "https://github.com/Wolfsblvt/tunneltend/blob/v1.0.1/docs/getting-started.md"
 ---
+
+Connect a local MCP service on your Windows PC to ChatGPT. TunnelTend handles the routine around OpenAI’s official tunnel client: starting at sign-in, watching the connection, recovering from ordinary interruptions and keeping the client up to date. Tell it to stop, and it stays stopped for that session.

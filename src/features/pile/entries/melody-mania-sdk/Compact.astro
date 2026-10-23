@@ -1,0 +1,30 @@
+---
+/**
+ * Melody Mania SDK, compact: a small plum stage card with the hook across the top, a few coloured notes on their
+ * lines, and the title in the corner.
+ */
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+}
+const { entry } = Astro.props;
+const { title, subline } = entry.data;
+---
+
+<div class="mm">
+  <div class="mm-mini">
+    <span class="mm-kick">{subline}</span>
+    <span class="mm-notes" aria-hidden="true"><i></i></span>
+    <span class="mm-title">{title}</span>
+  </div>
+</div>
+
+<style>
+  .mm { padding: 6px 10px 10px; }
+  .mm-mini { position: relative; box-sizing: border-box; width: 100%; height: 230px; padding: 24px; overflow: hidden; border: 1px solid #6c435e; border-radius: 8px; background: radial-gradient(ellipse at 50% 25%, rgb(190 85 150 / 30%), transparent 57%), #211524; transform: rotate(-2deg); font-family: var(--sans); }
+  .mm-kick { display: block; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: #e6b8d0; }
+  .mm-notes { position: absolute; right: 25px; top: 45px; width: 155px; height: 100px; border-top: 1px solid #8b6282; border-bottom: 1px solid #8b6282; background: repeating-linear-gradient(0deg, transparent 0 24px, #71516e 24px 25px); transform: rotate(-9deg); }
+  .mm-notes i { position: absolute; left: 10px; top: 37px; width: 43px; height: 9px; border-radius: 9px; background: #f7b1c4; box-shadow: 42px -22px #9ad8e5, 76px 3px #edaa64, 101px -22px #e29bc4; }
+  .mm-title { position: absolute; left: 23px; bottom: 21px; z-index: 3; max-width: 180px; font: 400 23px/1.1 var(--serif); }
+</style>

@@ -1,0 +1,82 @@
+---
+/**
+ * A little face. Right there, expanded: the two lines with their own room. Emotes on / Show emotes switches between
+ * the :tinyvictory: / :sideeye: tokens and the inline faces; A little celebration gives the faces one brief,
+ * deliberate reaction. The faces are CSS shapes; both renderings of each reaction are in the markup.
+ */
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+  hid: string;
+}
+const { entry, hid } = Astro.props;
+const { title } = entry.data;
+---
+
+<div class="sc">
+  <h3 id={hid} class="e-h sc-h">{title}</h3>
+  <div class="sc-grid">
+    <div class="art" data-interaction={entry.id}>
+      <div class="chat" data-chat>
+        <p class="message">That worked. <span class="emote victory" role="img" aria-label="tiny victory"><span class="arm"></span><span class="arm"></span></span><code class="token" hidden>:tinyvictory:</code></p>
+        <p class="message second">Obviously. I was only mildly terrified. <span class="emote side-eye" role="img" aria-label="a tiny sideways glance"></span><code class="token" hidden>:sideeye:</code></p>
+        <p class="caption">A whole reaction. One little space.</p>
+      </div>
+      <div class="controls">
+        <button class="btn btn-line" type="button" aria-pressed="true" data-toggle hidden>Emotes on</button>
+        <button class="plain" type="button" data-react hidden>A little celebration</button>
+      </div>
+    </div>
+    <div class="sc-copy"><slot /></div>
+  </div>
+</div>
+
+<style>
+  .sc { font-family: var(--sans); }
+  .sc-h { font: 400 clamp(28px, 3vw, 40px)/1.15 var(--serif); letter-spacing: -.02em; max-width: 22ch; text-wrap: balance; }
+  .sc-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 28px 56px; align-items: start; margin-top: 26px; }
+  @media (max-width: 880px) { .sc-grid { grid-template-columns: 1fr; } }
+
+  .art { max-width: 560px; }
+  .chat { position: relative; padding: 26px 6px; }
+  .chat::before { content: ''; position: absolute; left: 4%; top: -20px; width: 65%; height: 250px; background: radial-gradient(ellipse, rgb(137 50 77 / 10%), transparent 70%); z-index: -1; }
+  .message { max-width: 450px; margin: 0; font: clamp(21px, 2.6vw, 28px)/1.9 var(--serif); color: var(--text); }
+  .message.second { margin-top: 30px; margin-left: 35px; padding-left: 23px; border-left: 1px solid rgb(239 142 161 / 36%); color: #d7c0ce; }
+  .caption { margin: 28px 0 0 35px; font-size: 11px; letter-spacing: .08em; color: var(--text-soft); }
+  .token { padding: 3px 4px; border-radius: 4px; background: rgb(239 142 161 / 9%); color: var(--rose); font: 14px/1.7 var(--mono); white-space: nowrap; }
+
+  .emote { display: inline-block; position: relative; width: 1.22em; height: 1.14em; margin: 0 .12em; vertical-align: -.18em; border-radius: 45% 47% 40% 42%; background: #edb567; box-shadow: inset -.08em -.09em #c48447; color: #39212c; font-size: 1.1em; transform-origin: 50% 80%; }
+  .emote::before { content: ''; position: absolute; left: 25%; top: 40%; width: .11em; height: .12em; border-radius: 50%; background: currentColor; box-shadow: .39em 0 currentColor; }
+  .emote::after { content: ''; position: absolute; left: 40%; top: 61%; width: .24em; height: .12em; border-bottom: .06em solid currentColor; border-radius: 0 0 50% 50%; }
+  .arm { position: absolute; top: 32%; width: .13em; height: .51em; border-radius: 8px; background: inherit; }
+  .arm:first-child { left: -.08em; transform: rotate(-28deg); }
+  .arm:last-child { right: -.08em; transform: rotate(28deg); }
+  .emote.side-eye { background: #db9bb3; box-shadow: inset -.08em -.09em #b56e91; transform: rotate(-7deg); }
+  .emote.side-eye::before { left: 34%; width: .10em; height: .09em; box-shadow: .35em 0 currentColor; }
+  .emote.side-eye::after { height: 0; left: 45%; top: 65%; border-radius: 0; transform: rotate(-8deg); }
+
+  .reacting .emote.victory { animation: little-cheer 600ms ease 1; }
+  .reacting .emote.side-eye { animation: little-look 650ms ease 1; }
+  @keyframes little-cheer { 0%, 100% { transform: none; } 35% { transform: translateY(-.18em) rotate(-9deg); } 65% { transform: rotate(8deg); } }
+  @keyframes little-look { 0%, 100% { transform: rotate(-7deg); } 50% { transform: rotate(6deg); } }
+  @media (prefers-reduced-motion: reduce) {
+    .reacting .emote.victory { transform: translateY(-.18em) rotate(-9deg); }
+    .reacting .emote.side-eye { transform: rotate(6deg); }
+  }
+
+  .controls { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+  .plain { min-height: 44px; padding: 6px; border: 0; background: transparent; color: var(--text); font: 12px var(--sans); text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+  .plain:hover { color: var(--cyan); }
+
+  @media (max-width: 850px) { .message.second { margin-left: 18px; padding-left: 18px; } }
+  @media (max-width: 640px) {
+    .chat { padding: 10px 2px; }
+    .caption { margin-left: 18px; }
+    .message { font-size: 25px; }
+  }
+  @media (max-width: 360px) {
+    .message { font-size: 23px; }
+    .message.second { margin-left: 12px; padding-left: 15px; }
+  }
+</style>

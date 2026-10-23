@@ -1,0 +1,38 @@
+---
+/**
+ * Folkwhile, compact: the village strip itself, sitting directly on the Works ground, with the Folkwhile label in its
+ * own face (Nunito) and the hook above it. The drawing is what makes the game recognizable; no icon stands in for it.
+ */
+import { Image } from 'astro:assets';
+import type { PileEntry } from '../../catalogue';
+import day from './village-day.png';
+
+interface Props {
+  entry: PileEntry;
+}
+const { entry } = Astro.props;
+---
+
+<div class="fw">
+  <div class="fw-label">
+    <span class="fw-name">{entry.data.title}</span>
+    <span class="fw-hook">A living village at the edge of your desktop.</span>
+  </div>
+  <Image
+    src={day}
+    width={1280}
+    height={260}
+    widths={[460, 920]}
+    sizes="(max-width: 540px) 92vw, 460px"
+    alt="A little village of cottages, a garden, a workshop and people by the green."
+    class="fw-strip"
+  />
+</div>
+
+<style>
+  .fw { padding-top: 5px; font-family: var(--sans); color: var(--text); }
+  .fw-label { display: grid; gap: 4px; padding-left: 14px; }
+  .fw-name { font: 750 26px/1.1 'Nunito', var(--sans); color: #f2d399; text-shadow: 0 0 10px #100b11; }
+  .fw-hook { font-size: 14px; line-height: 1.45; text-shadow: 0 0 8px #100b11; }
+  .fw-strip { display: block; width: 100%; height: auto; margin-top: 8px; }
+</style>

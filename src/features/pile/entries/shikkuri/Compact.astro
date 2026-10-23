@@ -1,0 +1,24 @@
+---
+/** Shikkuri, compact: the blue-green door with its taped note, the name beneath it and the two-sentence line. */
+import type { PileEntry } from '../../catalogue';
+import Door from './Door.astro';
+
+interface Props {
+  entry: PileEntry;
+}
+const { entry } = Astro.props;
+const { title, form } = entry.data;
+const caption = form.kind === 'door' ? form.caption : '';
+---
+
+<div class="sk">
+  <Door />
+  <span class="sk-name">{title}</span>
+  <span class="sk-line">{caption}</span>
+</div>
+
+<style>
+  .sk { display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 6px 10px 2px; font-family: var(--sans); }
+  .sk-name { margin-top: 10px; font-weight: 600; font-size: 14px; line-height: 1.2; text-shadow: 0 0 8px #100b11; }
+  .sk-line { font-size: 12px; line-height: 1.35; color: var(--text-faint); text-align: center; max-width: 24ch; text-shadow: 0 0 8px #100b11; }
+</style>

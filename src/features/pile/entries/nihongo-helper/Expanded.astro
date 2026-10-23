@@ -1,0 +1,48 @@
+---
+/**
+ * NihongoHelper, expanded: the same language surface, larger. The sentence keeps its reading above 星, the gloss names
+ * the word, and a native checkbox hides or shows the furigana without moving the line (a CSS :has rule; no script).
+ */
+import { Image } from 'astro:assets';
+import type { PileEntry } from '../../catalogue';
+import sillytavern from './sillytavern.png';
+
+interface Props {
+  entry: PileEntry;
+  hid: string;
+}
+const { entry, hid } = Astro.props;
+---
+
+<div class="nh">
+  <h3 id={hid} class="e-h nh-h">{entry.data.title}</h3>
+  <div class="surface">
+    <div class="host"><Image src={sillytavern} alt="" width={27} height={27} densities={[1, 2]} class="st" /><span>SillyTavern</span></div>
+    <p class="ja" lang="ja"><span class="word"><ruby>星<rt>ほし</rt></ruby></span>がきれいですね。</p>
+    <div class="gloss"><span lang="ja">星 · ほし</span><span>star</span></div>
+    <label class="readings"><input type="checkbox" checked />Show readings</label>
+  </div>
+  <slot />
+</div>
+
+<style>
+  .nh { max-width: 620px; font-family: var(--sans); }
+  .nh-h { font: 500 clamp(26px, 2.8vw, 34px)/1.15 var(--serif); letter-spacing: -.01em; }
+  .surface { margin-top: 22px; padding: 18px 22px 21px; background: #e9dfc9; color: #2e2828; }
+  .host { display: flex; align-items: center; gap: 8px; padding-bottom: 12px; border-bottom: 1px solid #bfb299; font-size: 12px; line-height: 1.4; }
+  .st { display: block; width: 27px; height: 27px; flex: none; object-fit: contain; }
+  .ja { margin: 20px 0 13px; font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif; font-size: clamp(25px, 4.5vw, 32px); line-height: 1.9; }
+  rt { font-size: 13px; }
+  .word { padding: 1px 3px; background: rgb(233 191 105 / 35%); border-bottom: 2px solid #a78442; }
+  .gloss { display: flex; flex-wrap: wrap; gap: 15px; padding-top: 13px; border-top: 1px solid #bfb299; font-size: 16px; }
+  .gloss span:first-child { font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif; }
+  .readings { display: flex; align-items: center; gap: 8px; width: fit-content; min-height: 32px; margin-top: 16px; font-size: 13px; cursor: pointer; }
+  .readings input { width: 17px; height: 17px; margin: 0; accent-color: #6d5131; }
+  .surface:has(input:not(:checked)) rt { visibility: hidden; }
+  @media (max-width: 560px) {
+    .surface { padding: 17px; }
+  }
+  @media (pointer: coarse) {
+    .readings { min-height: 44px; }
+  }
+</style>

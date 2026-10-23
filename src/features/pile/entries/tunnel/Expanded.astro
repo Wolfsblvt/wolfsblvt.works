@@ -1,0 +1,59 @@
+---
+/**
+ * TunnelTend, expanded: a calmer PowerShell window with the approved lockup, the read-only `tunneltend status`
+ * command, its three rows and the closing line. The lockup shows the title, so the heading is for readers only;
+ * the copy and the two destinations follow the window.
+ */
+import type { PileEntry } from '../../catalogue';
+import lockup from './lockup.svg?url';
+
+interface Props {
+  entry: PileEntry;
+  hid: string;
+}
+const { entry, hid } = Astro.props;
+---
+
+<div class="tt">
+  <h3 id={hid} class="e-h sr">{entry.data.title}</h3>
+  <div class="tt-scene">
+    <img class="tt-lockup" src={lockup} alt={entry.data.title} width="701" height="121" />
+    <div class="tt-title"><span>PowerShell</span><span aria-hidden="true">—</span></div>
+    <code class="tt-cmd"><span class="tt-shell">&gt;</span> tunneltend status</code>
+    <dl class="tt-rows">
+      <div><dt>notes</dt><dd class="tt-ok">connected</dd></div>
+      <div><dt>media</dt><dd class="tt-ok">connected</dd></div>
+      <div><dt>sandbox</dt><dd>stopped by you</dd></div>
+    </dl>
+    <p class="tt-foot">Two connections. One less thing on your mind.</p>
+  </div>
+  <div class="tt-copy"><slot /></div>
+</div>
+
+<style>
+  .tt { max-width: 620px; font-family: var(--sans); }
+  .tt-scene {
+    max-width: 590px;
+    padding: 28px 30px 0;
+    background: linear-gradient(135deg, #171d27, #111820);
+    border: 1px solid #3c515a;
+    border-radius: 5px;
+    box-shadow: 0 16px 34px rgb(0 0 0 / 20%);
+    font-family: var(--mono);
+  }
+  .tt-lockup { display: block; width: 215px; max-width: 100%; height: auto; margin: 0 0 29px; }
+  .tt-title { display: flex; justify-content: space-between; align-items: center; padding-bottom: 9px; margin-bottom: 19px; border-bottom: 1px solid #34434d; font: 11px/1.4 var(--sans); color: #aebfc6; }
+  .tt-cmd { display: block; padding: 0; background: none; font: 14px/1.5 var(--mono); color: #e8eef1; white-space: normal; }
+  .tt-shell { color: #79cad9; }
+  .tt-rows { margin: 17px 0 24px; font: 13px/1.6 var(--mono); }
+  .tt-rows div { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; }
+  .tt-rows dt, .tt-rows dd { margin: 0; }
+  .tt-rows dt { color: #c4ced2; }
+  .tt-rows dd { color: #b4c3cb; }
+  .tt-rows .tt-ok { color: #8cd6b0; }
+  .tt-foot { margin: 0; padding: 13px 0 16px; border-top: 1px solid #34434d; font: 12px/1.6 var(--sans); color: #a6bec8; }
+  .tt-copy { margin-top: 6px; }
+  @media (max-width: 600px) {
+    .tt-scene { padding: 22px 19px 0; }
+  }
+</style>

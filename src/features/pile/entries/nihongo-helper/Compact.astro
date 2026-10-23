@@ -1,0 +1,37 @@
+---
+/**
+ * NihongoHelper, compact: a warm, lightly taped language note. The SillyTavern mark names the host before the title;
+ * the sentence carries its reading above the highlighted word, and the hook closes the note.
+ */
+import { Image } from 'astro:assets';
+import type { PileEntry } from '../../catalogue';
+import sillytavern from './sillytavern.png';
+
+interface Props {
+  entry: PileEntry;
+}
+const { entry } = Astro.props;
+---
+
+<div class="wrap">
+  <span class="tape" aria-hidden="true"></span>
+  <div class="note">
+    <span class="host"><Image src={sillytavern} alt="SillyTavern" width={27} height={27} densities={[1, 2]} class="st" />SillyTavern extension</span>
+    <span class="name">{entry.data.title}</span>
+    <span class="ja" lang="ja"><span class="word"><ruby>星<rt>ほし</rt></ruby></span>がきれいですね。</span>
+    <span class="hook">Stay in the conversation.</span>
+  </div>
+</div>
+
+<style>
+  .wrap { position: relative; padding-top: 9px; container-type: inline-size; font-family: var(--sans); }
+  .tape { position: absolute; top: 0; left: 58%; width: 66px; height: 18px; background: rgb(214 192 171 / 80%); transform: rotate(3deg); z-index: 1; }
+  .note { display: grid; padding: 18px 20px 20px; background: #e9dfc9; color: #2e2828; transform: rotate(-.8deg); box-shadow: 3px 5px 0 rgb(0 0 0 / 33%); }
+  .host { display: flex; align-items: center; gap: 8px; font-size: 12px; line-height: 1.4; }
+  .st { display: block; width: 27px; height: 27px; flex: none; object-fit: contain; }
+  .name { margin-top: 14px; font-weight: 600; font-size: 16px; line-height: 1.3; }
+  .ja { margin: 14px 0 2px; font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif; font-size: 24px; font-size: clamp(21px, 8.4cqi, 26px); line-height: 1.9; }
+  rt { font-size: .46em; }
+  .word { padding: 1px 3px; background: rgb(233 191 105 / 35%); border-bottom: 2px solid #a78442; }
+  .hook { font-family: var(--serif); font-size: 17px; line-height: 1.4; }
+</style>

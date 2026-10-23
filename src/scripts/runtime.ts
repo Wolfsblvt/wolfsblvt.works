@@ -108,7 +108,7 @@ export function observeReveals(root: ParentNode = document): void {
   const big = make(0.72, '0px 0px -8% 0px');
   els.forEach((el) => {
     const kind = el.dataset.reveal;
-    const large = (kind === 'shelf' || kind === 'scene' || kind === 'why') && el.offsetHeight < innerHeight * 0.85;
+    const large = ['why', 'dd', 'smol', 'kb', 'lune'].includes(kind ?? '') && el.offsetHeight < innerHeight * 0.85;
     (large ? big : small).observe(el);
   });
 }

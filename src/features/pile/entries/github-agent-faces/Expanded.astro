@@ -1,0 +1,55 @@
+---
+/**
+ * GitHub Agent Faces, expanded: three comment header rows as the extension shows them, each voice with its own name
+ * and initial and "via Wolfsblvt" beneath. One button swaps them to the raw view (the shared account name with its
+ * [Name]: marker) and back; it appears once interaction.ts has mounted, so without JavaScript the rows simply stand.
+ */
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+  hid: string;
+}
+const { entry, hid } = Astro.props;
+const voices = [
+  ['Nyxara', 'nyxara'],
+  ['Katja', 'katja'],
+  ['Juno', 'juno'],
+] as const;
+---
+
+<div class="af" data-interaction={entry.id}>
+  <h3 id={hid} class="e-h af-h">{entry.data.title}</h3>
+  <div class="conversation" data-conversation>
+    {voices.map(([voice, tone]) => (
+      <div class="row" data-name={voice}>
+        <span class:list={['initial', tone]} aria-hidden="true" data-initial>{voice.charAt(0)}</span>
+        <div>
+          <span class="voice-name" data-voice-name>{voice}</span>
+          <span class="voice-origin" data-voice-origin>via Wolfsblvt</span>
+        </div>
+      </div>
+    ))}
+  </div>
+  <button type="button" class="control" data-faces-toggle hidden>Show raw markers</button>
+  <span class="sr" data-live aria-live="polite"></span>
+  <slot />
+</div>
+
+<style>
+  .af { max-width: 620px; font-family: var(--sans); }
+  .af-h { font: 500 clamp(26px, 2.8vw, 34px)/1.15 var(--serif); letter-spacing: -.01em; }
+  .conversation { display: grid; gap: 18px; margin-top: 22px; padding: 20px; background: #181c24; }
+  .row { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .initial { display: inline-grid; place-items: center; flex: none; width: 38px; height: 38px; border-radius: 50%; background: #adbcf2; color: #17131c; font-weight: 600; font-size: 15px; transition: background-color .18s ease; }
+  .katja { background: #ebbb79; }
+  .juno { background: #d3afd9; }
+  .conversation.raw .initial { background: #bdc4d1; }
+  .voice-name { display: block; font-size: 17px; }
+  .voice-origin { display: block; margin-top: 1px; font-size: 12px; color: #bac6d8; }
+  .control { margin-top: 15px; padding: 9px 13px; border: 1px solid #70809a; border-radius: 3px; background: #252d3b; color: #e7edf5; font: 13px/1.5 var(--sans); cursor: pointer; }
+  .control:hover { border-color: var(--cyan); color: var(--cyan); }
+  @media (pointer: coarse) {
+    .control { min-height: 44px; }
+  }
+</style>

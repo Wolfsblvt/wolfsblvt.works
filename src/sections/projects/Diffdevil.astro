@@ -1,31 +1,66 @@
 ---
 /**
- * diffdevil's window: the project speaks in its own type, colour and words, with an illustrative terminal.
- * This is the one window already in its real voice and theme.
+ * diffdevil's window: the project speaks in its own type, colour and words. The hook is its counting idea (GitHub
+ * +3 / −2, diffdevil 3 Changed), the App is the meaningful expansion ("diffdevil, with a memory.") and the Chrome
+ * extension a quieter third note. The captures are the product website's own.
  */
+import { Image } from 'astro:assets';
 import site from '../../../site.config.mjs';
 import lockupUrl from '../../../design/the-walk/assets/diffdevil-lockup-dark.svg?url';
+import overview from '../../../design/the-walk/assets/diffdevil/app-overview.png';
+import report from '../../../design/the-walk/assets/diffdevil/extension-report.png';
+import './diffdevil.css';
 ---
 
-<div class="dd" data-reveal="term">
+<div class="dd" data-reveal="dd">
   <div class="frame dd-grid">
     <div>
       <div class="dd-origin">I wanted a size label that counted changed lines as changed lines.</div>
       <h2 id="dd-h" style="margin:0"><img class="dd-logo" src={lockupUrl} alt="diffdevil" width="240" height="72" /></h2>
       <p class="dd-tag">The devil is in the diff.</p>
       <p class="dd-sub">Measure changes. Match rules. Act on the result.</p>
+      <p class="dd-body">Git gives you additions and deletions. diffdevil shows what changed, then puts those facts to work in your labels, checks, and workflows.</p>
       <a href={site.links.diffdevil} class="dd-btn">Explore diffdevil →</a>
     </div>
-    <div>
-      <div class="dd-term" aria-label="Illustrative terminal output" role="img">
-        <div class="dd-tline" style="transition-delay:.2s"><span class="p">$</span> <span class="c">diffdevil analyze</span></div>
-        <div class="dd-tline" style="transition-delay:.7s">diffdevil analysis</div>
-        <div class="dd-tline" style="transition-delay:1s">Changed  <span class="a">+128</span>  <span class="d">−42</span>  <span class="m">~19</span></div>
-        <div class="dd-tline" style="transition-delay:1.3s">Measurement status: exact</div>
-        <div class="dd-tline" style="transition-delay:1.6s">Band: <span class="c">size/M</span></div>
+    <figure class="dd-compare">
+      <div class="dd-git">
+        <span class="dd-k">GitHub</span>
+        <span class="dd-counts"><span class="a">+3</span> / <span class="d">−2</span></span>
       </div>
-      <p class="dd-body">Git gives you a patch and a pair of raw counters. diffdevil turns the details inside that diff into facts your scripts and workflows can inspect, query, evaluate, and act on.</p>
-      <p class="dd-note">terminal output illustrative</p>
+      <div class="dd-arrow" aria-hidden="true">→</div>
+      <div class="dd-changed">
+        <span class="dd-k">diffdevil</span>
+        <span class="dd-n">3</span><span class="dd-w">Changed</span>
+      </div>
+      <figcaption>Two lines rewritten. One added.</figcaption>
+    </figure>
+  </div>
+
+  <div class="frame dd-app">
+    <div>
+      <span class="dd-k">diffdevil GitHub App</span>
+      <h3>diffdevil, with a memory.</h3>
+      <p>See how pull requests move through your repositories: what changed, what merged, how big the work was, and how the story looks over time. Checks and labels are only the beginning.</p>
     </div>
+    <Image
+      class="dd-shot"
+      src={overview}
+      alt="The diffdevil App Overview across seven repositories: merged pull requests in the last 30 days against the period before, opened and open work, time to merge, median Changed and raw churn, then the change-volume chart split into modified, added-only and deleted-only lines."
+      widths={[640, 960, 1280, 1600]}
+      sizes="(min-width: 900px) 60vw, 100vw"
+      loading="lazy"
+    />
+  </div>
+
+  <div class="frame dd-ext">
+    <Image
+      class="dd-ext-shot"
+      src={report}
+      alt="The diffdevil analysis report open on a GitHub pull request: 178 changed, its decomposition, raw additions and deletions, files and coverage, the size policy selecting M and the label it would choose."
+      widths={[480, 720, 960]}
+      sizes="(min-width: 900px) 40vw, 100vw"
+      loading="lazy"
+    />
+    <p class="dd-ext-line">See Changed directly inside GitHub.<span>The Chrome extension, where you already review.</span></p>
   </div>
 </div>

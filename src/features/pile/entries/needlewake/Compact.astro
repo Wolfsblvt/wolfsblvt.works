@@ -1,0 +1,28 @@
+---
+/** Needlewake, compact: a usage trace from one half-hour, the +8 pp it covers and the two endpoints that bound it. */
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+}
+const { entry } = Astro.props;
+---
+
+<div class="nw">
+  <div class="nw-top"><span class="nw-name">{entry.data.title}</span><span class="nw-delta">+8 pp</span></div>
+  <svg class="nw-graph" viewBox="0 0 290 77" preserveAspectRatio="none" role="img" aria-label="Subscription usage rises from 38 percent at 14:00 to 46 percent at 14:30.">
+    <path d="M1 64H289" fill="none" stroke="#594339" stroke-width="1" />
+    <path d="M2 53L55 53L79 49L104 48L129 34L153 34L185 13L225 13L253 10L288 10" fill="none" stroke="#eca557" stroke-width="2.5" />
+    <path d="M129 31V66M185 10V66" fill="none" stroke="#856554" stroke-width="1" stroke-dasharray="2 5" />
+  </svg>
+  <div class="nw-bottom"><span>14:00 · 38%</span><span>14:30 · 46%</span></div>
+</div>
+
+<style>
+  .nw { padding: 0 3px 13px; border-bottom: 1px solid #715044; font-family: var(--sans); color: var(--text); }
+  .nw-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+  .nw-name { font-size: 14px; line-height: 1.4; }
+  .nw-delta { font: 400 27px/1 var(--serif); color: var(--orange); white-space: nowrap; }
+  .nw-graph { display: block; width: 100%; height: 77px; margin-top: 10px; }
+  .nw-bottom { display: flex; justify-content: space-between; gap: 15px; font-size: 11px; line-height: 1.4; color: var(--text-soft); }
+</style>

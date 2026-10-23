@@ -1,0 +1,83 @@
+/* smolpng, in its own light: the D-1 tokens (design/the-walk/assets/smolpng-light-tokens.css), scoped to the window
+   so the light palette never leaks into the dark-only site. Version B: ice plane, coral cut, Nunito. */
+.smol-frame { padding-top: clamp(56px, 8vh, 90px); }
+.smol-win {
+  --smol-paper: #fbfcfd; --smol-paper-cool: #eef4f8; --smol-ice-plane: #dcebf2;
+  --smol-ink: #1c3850; --smol-ink-soft: #3d5b74; --smol-ink-quiet: #67809a; --smol-line: rgb(28 56 80 / 14%); --smol-line-strong: rgb(28 56 80 / 28%);
+  --smol-marine: #33739d; --smol-marine-deep: #24547b; --smol-marine-light: #448bad;
+  --smol-ice: #9cc9d9; --smol-periwinkle: #93a9c9; --smol-coral: #be4449; --smol-coral-soft: #e16f73; --smol-peach: #feeddd;
+  --smol-sans: 'Nunito', 'Albert Sans', system-ui, sans-serif;
+  /* Squishling's box-drawing strokes need one mono face for every glyph, so the system's own mono comes first. */
+  --smol-ascii: ui-monospace, 'Cascadia Mono', Consolas, Menlo, 'DejaVu Sans Mono', monospace;
+  position: relative; box-sizing: border-box; border-radius: 36px; overflow: hidden;
+  background: linear-gradient(160deg, var(--smol-ice-plane) 0%, var(--smol-paper-cool) 58%, var(--smol-paper) 100%);
+  color: var(--smol-ink); font-family: var(--smol-sans);
+  padding: clamp(28px, 4vw, 52px) clamp(24px, 5vw, 60px);
+  box-shadow: 0 30px 80px -30px rgb(51 115 157 / 40%), 0 0 0 1px rgb(243 232 220 / 8%);
+}
+.smol-win::before { content: ''; position: absolute; left: 0; top: 14%; bottom: 14%; width: 5px; border-radius: 0 4px 4px 0; background: var(--smol-coral); }
+.smol-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(24px, 4vw, 56px); align-items: center; }
+.smol-kicker { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 0 0 20px; font: 700 12px/1 var(--smol-sans); letter-spacing: .14em; text-transform: uppercase; color: var(--smol-ink-quiet); }
+.smol-wip { display: inline-flex; align-items: center; gap: 7px; padding: 7px 11px 6px; border-radius: 999px; background: #fff; color: var(--smol-marine-deep); letter-spacing: .12em; }
+.smol-wip::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.smol-h { margin: 0; font-weight: 900; font-size: clamp(42px, 6.2vw, 84px); line-height: .94; letter-spacing: -.035em; color: var(--smol-ink); text-wrap: balance; }
+.smol-h em { font-style: normal; color: var(--smol-coral); }
+.smol-sub { margin: 18px 0 0; font-size: clamp(18px, 1.6vw, 22px); font-weight: 700; line-height: 1.4; max-width: 30ch; color: var(--smol-ink); }
+.smol-body { margin: 12px 0 0; font-size: 15.5px; line-height: 1.6; max-width: 44ch; color: var(--smol-ink-soft); }
+.smol-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+.smol-btn { display: inline-flex; align-items: center; gap: 9px; min-height: 44px; padding: 0 20px; border-radius: 999px; font: 700 15px var(--smol-sans); text-decoration: none; color: #fff; background: var(--smol-ink); box-sizing: border-box; transition: transform .2s, background .2s; }
+.smol-btn:hover { background: var(--smol-marine-deep); color: #fff; transform: translateY(-1px); }
+.smol-btn-off { background: none; color: var(--smol-ink-quiet); border: 1px dashed var(--smol-line-strong); cursor: default; }
+.smol-btn-off:hover { background: none; color: var(--smol-ink-quiet); transform: none; }
+
+/* The stage: Squishling above, the drop below. */
+.smol-stage { display: grid; gap: 18px; justify-items: center; }
+.smol-mascot { display: grid; justify-items: center; gap: 10px; text-align: center; }
+.smol-blob { display: grid; place-items: center; padding: clamp(18px, 2.6vw, 30px) clamp(20px, 3vw, 36px); border-radius: 48% 52% 46% 54% / 56% 44% 56% 44%; background: #fff; border: 2px dashed var(--smol-ice); }
+.smol-ascii { margin: 0; font: 500 clamp(17px, 2.4vw, 30px)/1.15 var(--smol-ascii); color: var(--smol-ink); white-space: pre; letter-spacing: 0; }
+.smol-meet { margin: 6px 0 0; font-size: 16px; line-height: 1.35; color: var(--smol-ink); max-width: 30ch; }
+.smol-meet strong { font-weight: 800; }
+.smol-meet-sub { margin: 0; font-size: 13.5px; line-height: 1.45; color: var(--smol-ink-quiet); max-width: 34ch; }
+.smol-drop { margin: 6px 0 0; width: 100%; max-width: 360px; }
+.smol-zone { position: relative; height: 118px; border-radius: 22px; border: 2px dashed var(--smol-marine-light); background: rgb(255 255 255 / 60%); transition: border-color .4s, background .4s; }
+.smol-zone::after { content: 'drop an image here'; position: absolute; left: 0; right: 0; bottom: 12px; text-align: center; font: 700 11px/1 var(--smol-sans); letter-spacing: .14em; text-transform: uppercase; color: var(--smol-ink-quiet); transition: opacity .3s; }
+.smol-chip { position: absolute; left: 50%; top: 34px; transform: translateX(-50%); display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 12px; background: #fff; border: 1px solid var(--smol-line); box-shadow: 0 10px 24px -12px rgb(28 56 80 / 40%); font: 600 13.5px var(--smol-sans); color: var(--smol-ink); white-space: nowrap; }
+.smol-chip::before { content: ''; width: 26px; height: 20px; border-radius: 4px; background: linear-gradient(135deg, var(--smol-ice), var(--smol-marine)); flex: none; }
+.smol-chip-size { font: 500 12.5px var(--mono); color: var(--smol-ink-quiet); }
+.smol-chip-out { color: var(--smol-marine-deep); border-color: var(--smol-ice); }
+.smol-chip-out .smol-chip-size { color: var(--smol-coral); }
+.smol-stamp { position: absolute; right: -10px; top: -14px; padding: 6px 10px; border-radius: 999px; background: var(--smol-coral); color: #fff; font: 900 13px var(--smol-sans); letter-spacing: .02em; transform: rotate(8deg); }
+.smol-drop figcaption { margin: 10px 0 0; text-align: center; font: 800 15px/1.3 var(--smol-sans); letter-spacing: -.01em; color: var(--smol-coral); }
+
+/* The drop, choreographed once it is properly in view: the chip falls in, the zone takes it, the smaller copy
+   appears, coral stamps the saving. Reduced motion and no JavaScript show the finished state. */
+.js .smol-chip-in { opacity: 0; transform: translate(-50%, -70px); }
+.js .smol-chip-out { opacity: 0; transform: translate(-50%, 0) scale(.86); }
+.js .smol-stamp { opacity: 0; transform: rotate(8deg) scale(.5); }
+.js [data-on] .smol-chip-in { animation: smol-fall .55s cubic-bezier(.2, .7, .2, 1) .2s forwards, smol-squish .5s ease 1.25s forwards; }
+.js [data-on] .smol-chip-out { animation: smol-appear .45s cubic-bezier(.16, 1, .3, 1) 1.55s forwards; }
+.js [data-on] .smol-stamp { animation: smol-stamp .35s cubic-bezier(.16, 1, .3, 1) 1.95s forwards; }
+.js [data-on] .smol-zone { animation: smol-take .6s ease 1.1s forwards; }
+.js [data-on] .smol-zone::after { opacity: 0; transition-delay: .9s; }
+.smol-chip-in:not(.js *) { display: none; }
+@keyframes smol-fall { to { opacity: 1; transform: translate(-50%, 0); } }
+@keyframes smol-squish { 0% { opacity: 1; transform: translate(-50%, 0) scale(1); } 60% { opacity: 1; transform: translate(-50%, 0) scale(1.04, .72); } 100% { opacity: 0; transform: translate(-50%, 0) scale(.6, .5); } }
+@keyframes smol-appear { to { opacity: 1; transform: translate(-50%, 0) scale(1); } }
+@keyframes smol-stamp { to { opacity: 1; transform: rotate(8deg) scale(1); } }
+@keyframes smol-take { 0% { border-color: var(--smol-marine-light); background: rgb(255 255 255 / 60%); } 50% { border-color: var(--smol-marine); background: #e4f0f6; } 100% { border-color: var(--smol-ice); background: rgb(255 255 255 / 60%); } }
+@media (prefers-reduced-motion: reduce) {
+  .js .smol-chip-in { display: none; }
+  .js .smol-chip-out { opacity: 1 !important; transform: translate(-50%, 0) !important; }
+  .js .smol-stamp { opacity: 1 !important; transform: rotate(8deg) !important; }
+  .smol-zone::after { opacity: 0 !important; }
+}
+
+@media (max-width: 760px) {
+  .smol-win { border-radius: 28px; }
+  .smol-grid { grid-template-columns: 1fr; gap: 28px; }
+  .smol-h { font-size: clamp(40px, 12vw, 56px); }
+  .smol-ascii { font-size: clamp(15px, 4.6vw, 19px); }
+  .smol-stage { justify-items: stretch; }
+  .smol-mascot { justify-items: center; }
+  .smol-drop { max-width: none; }
+}

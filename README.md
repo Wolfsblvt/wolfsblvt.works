@@ -17,9 +17,8 @@ following next. This repository is the whole website for **wolfsblvt.works**: on
 walk through, past the projects, the reasons behind them and the people making them, down to a pile of everything else
 and an open invitation to write. It also hosts the contact form that every Wolfsblvt site links to.
 
-The site is built and not yet published at its address. Its project windows and most Pile pieces are still clearly
-marked placeholders, and a publication check refuses a public build until they, the legal operator data and the
-hosting facts are real.
+The site is built and not yet published at its address. Five projects have their windows and the Pile holds its real
+collection; a publication check refuses a public build until the legal operator data and the hosting facts are real.
 
 **[Run it locally](#run-it-locally)** · [How it's built](docs/ARCHITECTURE.md) ·
 [Why it looks like this](docs/DECISIONS.md) · [Where it's going](docs/VISION.md)
@@ -29,7 +28,7 @@ hosting facts are real.
 ## What's on the walk
 
 - **Projects in their own windows.** Works narrates between them; inside a window the project speaks in its own type,
-  colour and words. diffdevil's window is already in its real theme.
+  colour and words: diffdevil, Borrowed Coast, smolpng, Karaokebarr and Lunescence.
 - **The Pile.** A desk of ideas, smaller projects, notes and artifacts, dealt fresh every day and the same for everyone
   on that day, with a little variation per browser that is computed at the edge and never stored. "There's more. A lot
   more." opens Endless, the whole collection, in place.

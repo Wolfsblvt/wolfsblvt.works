@@ -1,0 +1,33 @@
+---
+/**
+ * SimklBridge, alternative compact (the interactive set's poster chip). Not registered: files under alt/ are not
+ * discovered by the Pile; a comparison page imports this directly. Same props as a regular compact scene.
+ * A dark plum chip with the name, three miniature posters and one line of the conversation.
+ */
+import type { PileEntry } from '../../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+}
+const { entry } = Astro.props;
+const { title } = entry.data;
+---
+
+<div class="wm">
+  <div class="wm-chip">
+    <span class="wm-title">{title}</span>
+    <span class="wm-posters" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span class="wm-line">Something strange, but not bleak.</span>
+  </div>
+</div>
+
+<style>
+  .wm { padding: 8px 12px 10px; }
+  .wm-chip { position: relative; box-sizing: border-box; width: min(265px, 100%); padding: 18px; border: 1px solid #665069; border-radius: 13px; background: #271e32; transform: rotate(3deg); font-family: var(--sans); }
+  .wm-title { display: block; margin-bottom: 10px; font: 400 20px/1.2 var(--serif); }
+  .wm-posters { display: flex; align-items: center; gap: 7px; }
+  .wm-posters i { display: block; flex: 1; height: 69px; border-radius: 3px; box-shadow: 0 5px 8px rgb(0 0 0 / 30%); background: radial-gradient(circle at 50% 32%, #e9b46e 0 16%, transparent 17%), linear-gradient(140deg, #473740, #a36f54); }
+  .wm-posters i:nth-child(2) { background: linear-gradient(35deg, #1b444e 45%, transparent 46%), radial-gradient(circle at 65% 20%, #b5dad4 0 14%, transparent 15%), #66857e; }
+  .wm-posters i:nth-child(3) { background: radial-gradient(ellipse at 50% 30%, #e8acbd 0 16%, #9b6389 17% 22%, transparent 23%), linear-gradient(#493d6a, #291c43); }
+  .wm-line { display: block; margin-top: 12px; font-size: 10px; color: #d4b7d0; }
+</style>

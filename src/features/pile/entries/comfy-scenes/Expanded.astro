@@ -1,0 +1,90 @@
+---
+/**
+ * One still is only the beginning, expanded: the scene "Small hours" in three beats. A pale moth approaches the
+ * only lit streetlamp, reaches its warm light, then leaves carrying a small glow while the lamp dims. Any beat is
+ * directly selectable; Play runs the three once and can pause; under reduced motion the control steps to the next
+ * beat instead. The night, lamp and moth are CSS; every beat is complete at rest, so shot one reads without script.
+ */
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+  hid: string;
+}
+const { entry, hid } = Astro.props;
+const { title } = entry.data;
+
+const BEATS = [
+  { tag: '01 / FIND', name: 'The last light', caption: 'The last light.', description: 'Shot one: a pale moth approaches a single glowing streetlamp in a violet night.' },
+  { tag: '02 / MEET', name: 'A small visitor', caption: 'A small visitor.', description: 'Shot two: the moth reaches the warm light at the top of the streetlamp.' },
+  { tag: '03 / LEAVE', name: 'Something to take home', caption: 'Something to take home.', description: 'Shot three: the lamp dims while the little moth leaves, carrying a warm glow into the night.' },
+] as const;
+const first = BEATS[0];
+---
+
+<div class="sc">
+  <h3 id={hid} class="e-h sc-h">{title}</h3>
+  <div class="sc-grid">
+    <div class="art" data-interaction={entry.id}>
+      <div class="view" data-view data-shot="0" role="img" aria-label={first.description}>
+        <div class="night"><span class="stars"></span><span class="lamp"></span><span class="moth"></span></div>
+        <span class="num" data-num>01 / SMALL HOURS</span>
+        <span class="cap" data-caption>{first.caption}</span>
+      </div>
+      <div class="picker" role="group" aria-label="Choose a scene beat">
+        {BEATS.map((beat, index) => (
+          <button class="beat" type="button" data-shot={index} aria-pressed={index === 0 ? 'true' : 'false'} disabled>
+            <span>{beat.tag}</span>{beat.name}
+          </button>
+        ))}
+      </div>
+      <p class="film-caption">Small hours</p>
+      <div class="controls">
+        <button class="btn btn-line" type="button" data-play hidden>Play the three beats</button>
+        <span class="sr" role="status" data-status></span>
+      </div>
+    </div>
+    <div class="sc-copy"><slot /></div>
+  </div>
+</div>
+
+<style>
+  .sc { font-family: var(--sans); }
+  .sc-h { font: 400 clamp(28px, 3vw, 40px)/1.15 var(--serif); letter-spacing: -.02em; max-width: 22ch; text-wrap: balance; }
+  .sc-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 28px 56px; align-items: start; margin-top: 26px; }
+  @media (max-width: 880px) { .sc-grid { grid-template-columns: 1fr; } }
+
+  .art { max-width: 620px; }
+  .view { position: relative; height: 310px; overflow: hidden; border: 1px solid rgb(131 113 123 / 40%); border-radius: 3px; background: #11151f; }
+  .night { position: absolute; inset: 0; overflow: hidden; background: radial-gradient(ellipse at 68% 35%, rgb(119 85 55 / 27%), transparent 45%), linear-gradient(#111827, #303044 80%, #352c3d); }
+  .night::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 25%; background: linear-gradient(#131822, #11121a); clip-path: polygon(0 20%, 19% 10%, 40% 28%, 65% 7%, 84% 10%, 100% 25%, 100% 100%, 0 100%); }
+  .stars { position: absolute; left: 15%; top: 15%; width: 2px; height: 2px; border-radius: 50%; background: #c8c1d1; box-shadow: 26px 35px #bbb7c6, 68px -6px #7c849c, 135px 12px #8b879b, 200px 53px #6d6a8b, 12px 95px #79738d, 255px 0 #9b90aa; }
+  .lamp { position: absolute; left: 67%; top: 29%; width: 4px; height: 59%; background: linear-gradient(90deg, #6b6b75, #2d2d3b); transform-origin: bottom center; z-index: 1; }
+  .lamp::before { content: ''; position: absolute; right: -1px; top: -7px; width: 28px; height: 8px; border-radius: 13px 12px 1px 1px; background: #74707b; }
+  .lamp::after { content: ''; position: absolute; right: 4px; top: 0; width: 17px; height: 5px; border-radius: 0 0 50% 50%; background: #f8d28c; box-shadow: 0 0 17px 7px rgb(237 181 104 / 53%), 0 32px 64px 30px rgb(230 179 103 / 17%); transition: opacity 350ms; }
+  .moth { position: absolute; left: 29%; top: 68%; width: 9px; height: 20px; border-radius: 50%; background: #e2c398; transform: rotate(30deg); z-index: 2; transition: left 700ms ease, top 700ms ease, transform 700ms ease, filter 350ms; }
+  .moth::before, .moth::after { content: ''; position: absolute; top: -3px; width: 21px; height: 25px; border: 1px solid rgb(238 225 207 / 33%); background: linear-gradient(120deg, #e6dbca, #8d8598); }
+  .moth::before { right: 5px; border-radius: 60% 10% 30% 60%; transform: rotate(-19deg); }
+  .moth::after { left: 5px; border-radius: 10% 60% 60% 30%; transform: rotate(19deg); }
+  .view[data-shot='1'] .moth { left: 61%; top: 33%; transform: rotate(-28deg); }
+  .view[data-shot='2'] .moth { left: 31%; top: 22%; transform: rotate(-35deg); filter: drop-shadow(0 0 10px #eac276); }
+  .view[data-shot='2'] .lamp::after { opacity: .12; }
+  .view[data-shot='2'] .night { background: radial-gradient(ellipse at 31% 22%, rgb(141 106 61 / 20%), transparent 36%), linear-gradient(#111827, #202436 80%, #222232); }
+  .num { position: absolute; left: 17px; top: 15px; z-index: 3; font-size: 10px; letter-spacing: .15em; color: #b9b4c5; }
+  .cap { position: absolute; left: 20px; bottom: 16px; z-index: 3; font: 17px var(--serif); color: #f2dfcd; }
+
+  .picker { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+  .beat { min-height: 65px; padding: 10px; border: 1px solid rgb(243 232 220 / 13%); border-radius: 3px; background: transparent; color: var(--text-soft); font: 11px/1.4 var(--sans); text-align: left; cursor: pointer; }
+  .beat:disabled { cursor: default; }
+  .beat span { display: block; margin-bottom: 4px; font-size: 10px; letter-spacing: .1em; color: var(--orange); }
+  .beat[aria-pressed='true'] { border-color: rgb(236 165 87 / 60%); background: rgb(236 165 87 / 7%); color: var(--text); }
+  .film-caption { margin: 20px 0 0; font: italic 16px var(--serif); color: var(--rose); text-align: center; }
+  .controls { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+
+  @media (max-width: 640px) { .view { height: 280px; } }
+  @media (max-width: 360px) {
+    .view { height: 245px; }
+    .picker { gap: 6px; }
+    .beat { padding: 8px 6px; font-size: 10px; }
+  }
+</style>

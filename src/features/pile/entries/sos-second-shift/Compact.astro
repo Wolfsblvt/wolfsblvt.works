@@ -1,0 +1,24 @@
+---
+/** sOS Second Shift, compact: the machine's faceplate, its one line and the PLAY / WORK / SLEEP lamps with WORK lit. */
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+}
+const { entry } = Astro.props;
+---
+
+<div class="ss">
+  <span class="ss-name">{entry.data.title}</span>
+  <span class="ss-line">You already bought<br />the server.</span>
+  <div class="ss-modes"><span>PLAY</span><span class="lit">WORK</span><span>SLEEP</span></div>
+</div>
+
+<style>
+  .ss { padding: 18px 20px; background: #20242a; border: 1px solid #586169; border-radius: 5px; box-shadow: 3px 6px 0 #080a0c; font-family: var(--sans); color: var(--text); }
+  .ss-name { display: block; margin: 0 0 11px; font-size: 14px; line-height: 1.4; }
+  .ss-line { display: block; max-width: 210px; margin: 0 0 20px; font: 400 21px/1.15 var(--serif); }
+  .ss-modes { display: flex; justify-content: space-between; gap: 18px; font: 11px/1.4 var(--mono); color: #e3d9c8; }
+  .ss-modes span::before { content: ''; display: block; width: 7px; height: 7px; margin-bottom: 7px; border-radius: 50%; background: #746f64; }
+  .ss-modes .lit::before { background: #edbc70; box-shadow: 0 0 10px rgb(237 188 112 / 27%); }
+</style>

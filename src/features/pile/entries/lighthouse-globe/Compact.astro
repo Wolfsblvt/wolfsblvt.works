@@ -1,0 +1,61 @@
+---
+/**
+ * Lighthouse globe, compact: a small globe with a handful of warm points under a domed night sky, the title and the
+ * two-line hook beside it. The sphere's shading is a CSS gradient behind the line work, so the compact object needs
+ * no SVG gradient id (compact objects carry no ids).
+ */
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+}
+const { entry } = Astro.props;
+---
+
+<div class="lg">
+  <div class="lg-globe">
+    <svg viewBox="0 0 220 220" aria-hidden="true">
+      <circle cx="110" cy="110" r="91" fill="none" stroke="#526d80" stroke-width="1"/>
+      <g fill="none" stroke="#668397" opacity=".25">
+        <ellipse cx="110" cy="110" rx="49" ry="91"/>
+        <ellipse cx="110" cy="110" rx="76" ry="91"/>
+        <ellipse cx="110" cy="110" rx="91" ry="35"/>
+        <ellipse cx="110" cy="110" rx="91" ry="68"/>
+        <path d="M19 110h182M110 19v182"/>
+      </g>
+      <path d="M82 26c29 34 21 62 39 79s41 12 57 37" fill="none" stroke="#edc889" stroke-width="1.2" opacity=".6"/>
+      <g fill="#f3d8a4">
+        <circle cx="86" cy="32" r="2"/>
+        <circle cx="97" cy="50" r="2.5"/>
+        <circle cx="101" cy="64" r="1.5"/>
+        <circle cx="105" cy="83" r="2"/>
+        <circle cx="120" cy="104" r="3"/>
+        <circle cx="137" cy="114" r="1.5"/>
+        <circle cx="157" cy="121" r="2.5"/>
+        <circle cx="171" cy="134" r="1.7"/>
+        <circle cx="178" cy="143" r="2"/>
+      </g>
+      <circle cx="138" cy="142" r="10" fill="none" stroke="#e6c486" stroke-dasharray="2 3"/>
+      <circle cx="138" cy="142" r="2.5" fill="#e6c486"/>
+    </svg>
+  </div>
+  <div class="lg-words">
+    <span class="lg-name">{entry.data.title}</span>
+    <span class="lg-hook">Find a light.<br />See it from the water.</span>
+  </div>
+</div>
+
+<style>
+  .lg { display: grid; grid-template-columns: minmax(96px, 34%) minmax(0, 1fr); align-items: center; gap: 20px; min-height: 200px; padding: 28px 25px 24px; border-radius: 140px 140px 18px 18px; overflow: hidden; background: radial-gradient(ellipse at 50% 0, #1b3844, #0c151e 55%, #080b11); color: var(--text); font-family: var(--sans); }
+  .lg-globe { position: relative; aspect-ratio: 1; }
+  /* The sphere: circle r=91 centred in a 220 box, so its bounds sit 19/220 in from each edge. */
+  .lg-globe::before { content: ''; position: absolute; inset: 8.64%; border-radius: 50%; background: linear-gradient(135deg, #285263, #102b3c 55%, #050d19); }
+  .lg-globe svg { position: relative; display: block; width: 100%; height: auto; }
+  .lg-name { display: block; font: 400 24px/1.15 var(--serif); }
+  .lg-hook { display: block; margin-top: 8px; max-width: 300px; font-size: 14px; line-height: 1.45; color: #c1c8cc; }
+  @media (max-width: 540px) {
+    .lg { gap: 12px; min-height: 170px; padding: 24px 17px; border-radius: 80px 80px 15px 15px; }
+    .lg-name { font-size: 22px; }
+    .lg-hook { font-size: 13px; }
+  }
+</style>

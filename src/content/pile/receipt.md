@@ -1,13 +1,14 @@
 ---
-title: "Could a stream receipt be better than this?"
+title: "ThereWeGo"
 form:
-  kind: thought
-  question: true
+  kind: artifact
 daily:
   include: true
   footprint: large
-subline: "A question about Twitch stream receipts that kept going."
-standing: "A concept, not a release announcement."
+subline: "See what happened while you were streaming."
+standing: "In the works"
 ---
 
-Following it led to a much bigger idea for a Twitch-history tool. That larger possibility is what I’m keeping: an idea about what a stream leaves behind, and how we might make more of it.
+A stream leaves more behind than a viewer count. ThereWeGo gathers the moments, rituals and little detours into a memory the creator can shape: a recap to show at the end, a timeline to return to, and a history that still means something months later.
+
+*A quiet stream still happened.*

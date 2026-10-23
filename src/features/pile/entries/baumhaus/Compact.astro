@@ -1,0 +1,22 @@
+---
+/** Baumhaus, compact: the closed wooden door with its plaque, and the one line beneath it. */
+import type { PileEntry } from '../../catalogue';
+import Door from './Door.astro';
+
+interface Props {
+  entry: PileEntry;
+}
+const { entry } = Astro.props;
+const { title, form } = entry.data;
+const caption = form.kind === 'door' ? form.caption : '';
+---
+
+<div class="bh">
+  <Door title={title} />
+  <span class="bh-line">{caption}</span>
+</div>
+
+<style>
+  .bh { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 6px 6px 2px; font-family: var(--sans); }
+  .bh-line { font-size: 12px; line-height: 1.35; color: var(--text-faint); text-align: center; max-width: 24ch; text-shadow: 0 0 8px #100b11; }
+</style>

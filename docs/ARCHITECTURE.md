@@ -17,7 +17,7 @@ Adoption on Cloudflare is Wolf Ops work; see [Development](DEVELOPMENT.md#public
 
 | Component | Responsibility | Talks to |
 | --- | --- | --- |
-| Astro site (`src/`) | Every page as static HTML: the home walk, Contact, Privacy and data, Impressum, 404, the 503 error page, `robots.txt` and the sitemap | Build-time only: `site.config.mjs`, the Pile collection, `@wolfsblvt/icons`, the approved marks in `brand/bundle/works/`, the legal-operator projection |
+| Astro site (`src/`) | Every page as static HTML: the home walk with its five project windows (`src/sections/projects/`, each with its own stylesheet), Contact, Privacy and data, Impressum, 404, the 503 error page, `robots.txt` and the sitemap | Build-time only: `site.config.mjs`, the Pile collection and its entry scenes, `@wolfsblvt/icons`, the approved marks in `brand/bundle/works/`, the project artwork in `design/the-walk/assets/`, the legal-operator projection |
 | Browser scripts (`src/scripts/`, `src/features/*/client/`) | The Walk, header lockup and nav, reveals and travel, Yoru, the Pile and Endless, the contact form | Only the page; the contact form also posts to its own origin and loads Turnstile |
 | Build scripts (`scripts/`) | Fonts, identity assets, `_headers`, social cards, the output and publication checks | The build output in `artifacts/site/` |
 | Site Worker (`worker/index.ts`) | Routes the few Worker-first paths, seeds the home pile, serves and prepares the contact page, sets security headers and CSP on what it serves | `ASSETS`, the contact service, `pile-seed.ts`, `shared/csp.ts` |
@@ -37,8 +37,10 @@ Adoption on Cloudflare is Wolf Ops work; see [Development](DEVELOPMENT.md#public
 4. In the browser, the Pile controller (`src/features/pile/client/controller.ts`) deals today's pile from the manifest
    the page carries: the Europe/Berlin date plus the seed. It takes one piece from each of five forms first, fills a
    footprint budget, puts today's pick on top and packs the pieces with a skyline packer
-   (`client/selection.ts`). Without the Worker (for example `npm run dev`), there is no seed and everyone shares the
-   day's pile.
+   (`client/selection.ts`), sized by each piece's footprint. Without the Worker (for example `npm run dev`), there is
+   no seed and everyone shares the day's pile. Each entry is rendered at build time by its form's default or by its own
+   scene (`src/features/pile/entries/<id>/Compact.astro`, `Expanded.astro`), and an entry's `interaction.ts` is a lazy
+   import mounted once Endless is open and the entry nears the viewport.
 5. "There's more. A lot more." scatters the pile and opens Endless in place, pushing a history entry. `#pile-<id>`
    links open Endless at that piece; an inline bootstrap script in the page head holds the address before first
    paint so a cold link doesn't flash the closed pile.
@@ -110,7 +112,11 @@ carries an obvious fixture in `src/data/legal-operator.example.json`.
 
 - **Static versus Worker.** Only `/`, `/contact` and `/contact/` run the Worker first (`run_worker_first`). Everything
   else is served from the asset store; `not_found_handling: "404-page"` serves `404.html` for unknown paths. The
-  Worker never sits in front of the legal pages or the assets.
+  Worker never sits in front of the legal pages or the assets. If the Worker itself fails, it answers with the site's
+  own `503.html` (`worker/unavailable.ts`) rather than the provider's generic error.
+- **Hostnames.** The Worker is reachable only on the routed hosts: `workers_dev` and preview URLs are off. The first
+  launch deploys a contact-only build (`scripts/build-contact-only.mjs`) with only the contact host routed, so the
+  form can go live and be read back before the legal pages may claim it; the publication build follows.
 - **Headers.** Static responses get their headers from `artifacts/site/_headers`, written by
   `scripts/write-headers.mjs`: security headers, one site-wide CSP pinning every inline script the static pages ship by
   hash, `X-Robots-Tag: noindex, nosnippet` on the legal pages, and long caching for fingerprinted assets. The Worker
@@ -141,6 +147,10 @@ carries an obvious fixture in `src/data/legal-operator.example.json`.
 - Every inline script on a page is pinned by hash in that page's CSP; adding one without rebuilding the headers breaks
   it visibly rather than silently allowing inline code.
 - Every animation has a finished state under `prefers-reduced-motion`, and every page is complete without JavaScript.
+  Pile scenes hide controls that need a script until the script mounts, and native disclosures and radio switches do
+  not need one.
+- Fonts are self-hosted, Latin and Latin Extended only: the Works faces, and four project faces used only inside their
+  windows (Nunito; Bricolage Grotesque and Atkinson Hyperlegible Next; Alegreya and Alegreya Sans).
 
 ## Identity source and consumer bundle
 

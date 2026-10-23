@@ -1,7 +1,8 @@
 /**
- * Entries with their own behaviour, as one explicit table of bundled lazy imports. An ordinary entry needs no line
- * here; a scripted one adds one. Interactions mount once, when Endless is open and the entry approaches the viewport,
- * and own only their root. A failed import leaves the entry's static content usable.
+ * Entries with their own behaviour: an `interaction.ts` under entries/<id>/, discovered by file and bundled as a lazy
+ * import. An ordinary entry needs no script; a scripted one adds the file and marks its root `data-interaction=<id>`.
+ * Interactions mount once, when Endless is open and the entry approaches the viewport, and own only their root. A
+ * failed import leaves the entry's static content usable.
  */
 export interface InteractionContext {
   signal: AbortSignal;
@@ -12,9 +13,8 @@ export interface InteractionModule {
   mount(root: HTMLElement, context: InteractionContext): void;
 }
 
-const LOADERS: Record<string, () => Promise<InteractionModule>> = {
-  'ex-dice': () => import('../entries/ex-dice/interaction'),
-};
+const modules = import.meta.glob<InteractionModule>('../entries/*/interaction.ts');
+const LOADERS = new Map(Object.entries(modules).map(([path, load]) => [path.split('/').at(-2)!, load]));
 
 export function mountInteractions(section: HTMLElement, host: Pick<InteractionContext, 'navigateToEntry'>): { activate(): void } {
   const controller = new AbortController();
@@ -23,7 +23,7 @@ export function mountInteractions(section: HTMLElement, host: Pick<InteractionCo
 
   const mountOne = (root: HTMLElement) => {
     const id = root.dataset.interaction!;
-    const load = LOADERS[id];
+    const load = LOADERS.get(id);
     if (!load || mounted.has(id)) return;
     mounted.add(id);
     load()

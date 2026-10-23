@@ -1,0 +1,27 @@
+---
+/** G-keys, with a purpose, compact: a graphite strip of five keycaps, G1–G5, with a restrained rose glow on G5. */
+import type { PileEntry } from '../../catalogue';
+
+/** The frame names the entry on its link; the object itself carries no text besides its five caps. */
+interface Props {
+  entry: PileEntry;
+}
+const KEYS = ['G1', 'G2', 'G3', 'G4', 'G5'];
+---
+
+<div class="keys">
+  <div class="strip" aria-hidden="true">{KEYS.map((key) => <span>{key}</span>)}</div>
+  <p class="hook">A few spare keys. Much less rummaging.</p>
+</div>
+
+<style>
+  .keys { padding: 6px 2px 0; font-family: var(--sans); }
+  .strip { display: flex; gap: 9px; padding: 16px; border: 1px solid #66616a; border-bottom: 7px solid #0b0a0f; border-radius: 12px; background: linear-gradient(150deg, #353139, #17171d); box-shadow: 6px 12px 28px rgb(0 0 0 / 30%); }
+  .strip span { flex: 1; min-width: 0; padding: 12px 2px; border: 1px solid #625567; border-bottom: 5px solid #0b090e; border-radius: 5px; background: linear-gradient(140deg, #3f3a45, #211e28); color: #b6a9bc; font-size: 13px; text-align: center; }
+  .strip span:last-child { color: var(--rose); border-top-color: #a8748e; box-shadow: 0 0 16px rgb(239 142 161 / 15%); }
+  .hook { margin: 0; padding: 15px 6px 0; font-size: 15px; line-height: 1.4; color: var(--text-soft); text-shadow: 0 0 8px #100b11; }
+  @media (max-width: 400px) {
+    .strip { gap: 6px; padding: 12px; }
+    .strip span { font-size: 12px; padding: 10px 1px; }
+  }
+</style>

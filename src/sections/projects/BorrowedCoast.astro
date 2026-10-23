@@ -1,0 +1,65 @@
+---
+/**
+ * Borrowed Coast's window: one crop of the coast, three ways of knowing it. The same patch of sea in Chart, Watch and
+ * Nations, switched with the game's own mode nav, in the game's own type and colours. The switch is three radio
+ * buttons and CSS, so it works with JavaScript off, by keyboard, and under reduced motion. The captures come from the
+ * game's Night Chart v15 reference (design/the-walk/assets/borrowed-coast/).
+ */
+import { Image } from 'astro:assets';
+import Icon from '../../components/Icon.astro';
+import chart from '../../../design/the-walk/assets/borrowed-coast/window-chart.png';
+import nations from '../../../design/the-walk/assets/borrowed-coast/window-nations.png';
+import watch from '../../../design/the-walk/assets/borrowed-coast/window-watch.png';
+import './borrowed-coast.css';
+
+const MODES = [
+  {
+    id: 'chart', label: 'Chart', icon: 'borrowed-coast/chart', image: chart,
+    alt: 'The Borrowed Sea at ebb tide: dark graded water between umber islands, a fight at The Narrows, an ark moored at Lantern Reach.',
+    words: 'The water is the rules: deep channels, tidal shallows, and where the fight is.',
+  },
+  {
+    id: 'watch', label: 'Watch', icon: 'borrowed-coast/watch', image: watch,
+    alt: 'The same coast in Watch mode: your harbors and ships throw soft lamplight; foreign ships seen recently show as white light, with how many tides ago they were seen.',
+    words: 'What you know: your harbors and ships throw lamplight; what you have seen shows as white light.',
+  },
+  {
+    id: 'nations', label: 'Nations', icon: 'borrowed-coast/nations', image: nations,
+    alt: 'The same coast in Nations mode: each nation’s held coast in its colour, control marks on the harbors.',
+    words: 'Who holds which coast, in their colour, and what each harbor is worth.',
+  },
+] as const;
+---
+
+<section class="frame sec lift" aria-labelledby="bc-h">
+  <div class="bc" data-reveal="fade">
+    <div class="bc-copy">
+      <p class="bc-kicker">Borrowed Coast <span class="bc-standing">In development</span></p>
+      <h2 id="bc-h" class="bc-h">Your capital is a ship. The coast is only borrowed.</h2>
+      <p class="bc-sub">A slow strategy game about nations that can unmoor.</p>
+      <blockquote class="bc-report">
+        <p>“I can reach it at high water, in 3 tides.”</p>
+        <footer>Captain Rook Vale · Monitor 21</footer>
+      </blockquote>
+    </div>
+    <div class="bc-window">
+      <fieldset class="bc-coast">
+        <legend class="sr">Chart view</legend>
+        {MODES.map((mode, i) => <input class="sr bc-radio" type="radio" name="bc-mode" id={`bc-${mode.id}`} value={mode.id} checked={i === 0} />)}
+        <div class="bc-stage">
+          {MODES.map((mode) => (
+            <Image class="bc-img" data-mode={mode.id} src={mode.image} alt={mode.alt} widths={[760, 1140, 1520]} sizes="(min-width: 960px) 58vw, 100vw" loading="lazy" />
+          ))}
+        </div>
+        <div class="bc-modes">
+          {MODES.map((mode) => (
+            <label class="bc-mode" for={`bc-${mode.id}`} data-mode={mode.id}><Icon product={mode.icon} size={16} strokeWidth={1.7} /><span>{mode.label}</span></label>
+          ))}
+        </div>
+      </fieldset>
+      <p class="bc-caption">
+        {MODES.map((mode) => <span data-mode={mode.id}><b>{mode.label}.</b> {mode.words}</span>)}
+      </p>
+    </div>
+  </div>
+</section>

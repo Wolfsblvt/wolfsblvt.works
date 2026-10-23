@@ -1,0 +1,103 @@
+---
+/**
+ * The Streets We Owe, expanded: the survey scene with its tracing layer. "Lay over the other past" places a
+ * translucent second street plan on the same ground; "Lift the tracing" removes it. The scale line and the live
+ * caption sit on the survey paper under the block; the copy follows. Without JavaScript the city stands as it is.
+ */
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+  hid: string;
+}
+const { entry, hid } = Astro.props;
+---
+
+<div class="st" data-interaction={entry.id}>
+  <h3 id={hid} class="e-h st-h">{entry.data.title}</h3>
+  <div class="st-scene" data-scene>
+    <svg class="st-art" viewBox="0 0 600 300" role="img" aria-label="An inhabited city block with a second street plan aligned over the same place.">
+      <path d="M20 150l268-123 285 124-267 128z" fill="#858d82"/>
+      <path d="M46 153l239-110 260 111-241 110z" fill="#bcb39b"/>
+      <path d="M100 177l233-106 36 16-231 106z" fill="#697b79"/>
+      <path d="M187 88l204 88-30 15-204-90z" fill="#787e72"/>
+      <g stroke="#555b54" stroke-width="2" stroke-linejoin="round">
+        <path d="M87 121v-43l56-26 63 27v45l-57 27z" fill="#d2b897"/>
+        <path d="M87 78l56-26 63 27-57 27z" fill="#9b6957"/>
+        <path d="M149 106v45l57-27V79z" fill="#9d917e"/>
+        <path d="M319 117V69l52-25 73 32v47l-53 27z" fill="#c2b18e"/>
+        <path d="M319 69l52-25 73 32-53 26z" fill="#7b8582"/>
+        <path d="M391 102v48l53-27V76z" fill="#8a968b"/>
+        <path d="M210 210v-47l57-26 76 33v48l-57 26z" fill="#c6aa87"/>
+        <path d="M210 163l57-26 76 33-57 27z" fill="#a46e5a"/>
+        <path d="M286 197v47l57-26v-48z" fill="#9c927e"/>
+        <path d="M420 190v-37l48-22 51 22v36l-47 24z" fill="#b7a786"/>
+        <path d="M420 153l48-22 51 22-47 23z" fill="#7d8075"/>
+      </g>
+      <g fill="#efd39b">
+        <path d="M100 98l12 5v16l-12-5zm24 10l12 5v16l-12-5zM332 90l13 6v17l-13-6zm24 10l13 6v17l-13-6zM224 187l13 6v17l-13-6zm25 10l13 6v17l-13-6z"/>
+      </g>
+      <path d="M202 115q32 15 69 3" fill="none" stroke="#535e55"/>
+      <g fill="#dfcfb3">
+        <path d="M222 123v14l10 2v-14zM244 124v15l10-2v-15z"/>
+      </g>
+      <g fill="#536444" stroke="#444e3b">
+        <circle cx="132" cy="211" r="14"/>
+        <circle cx="487" cy="107" r="16"/>
+      </g>
+      <g fill="#bd704b">
+        <rect x="126" y="219" width="12" height="14"/>
+        <rect x="480" y="119" width="14" height="13"/>
+      </g>
+      <g fill="#343d3d">
+        <circle cx="173" cy="168" r="4"/>
+        <path d="M169 173h8l3 15h-14z"/>
+        <circle cx="375" cy="194" r="4"/>
+        <path d="M371 199h8l3 14h-14z"/>
+      </g>
+      <g fill="#c28c59">
+        <path d="M185 174l20-9 13 6-20 9z"/>
+        <path d="M185 174v8l13 6v-8z"/>
+      </g>
+      <g fill="#3c4643">
+        <circle cx="191" cy="185" r="3"/>
+        <circle cx="211" cy="177" r="3"/>
+      </g>
+      <g class="st-trace">
+        <path d="M42 78L353 18l203 116-246 162L32 202z" fill="#eee5cf" fill-opacity=".43" stroke="#54747b" stroke-width="1.5"/>
+        <path d="M67 184L344 62l199 76M121 220L381 105" fill="none" stroke="#35616b" stroke-width="3" stroke-dasharray="8 5"/>
+        <path d="M121 129l65-29 60 28v43l-63 29-62-29zM339 118l52-25 71 30v46l-55 26-68-31z" fill="none" stroke="#35616b" stroke-width="2"/>
+        <circle cx="71" cy="193" r="5" fill="#9a7640"/>
+        <circle cx="529" cy="141" r="5" fill="#9a7640"/>
+      </g>
+    </svg>
+    <div class="st-scale">
+      <svg viewBox="0 0 92 10" width="92" height="10" aria-hidden="true"><path d="M1 0v10M1 5h90M91 0v10" fill="none" stroke="#595f52" stroke-width="2"/></svg>
+      <span>One place. Incompatible pasts.</span>
+    </div>
+    <p class="st-caption" data-caption aria-live="polite">The city as it stands.</p>
+  </div>
+  <div class="st-controls" data-controls hidden>
+    <button type="button" aria-pressed="false" data-trace>Lay over the other past</button>
+  </div>
+  <div class="st-copy"><slot /></div>
+</div>
+
+<style>
+  .st { max-width: 720px; font-family: var(--sans); }
+  .st-h { font: 500 clamp(26px, 2.8vw, 34px)/1.15 var(--serif); letter-spacing: -.01em; }
+  .st-scene { position: relative; overflow: hidden; margin-top: 18px; padding: 16px; border-radius: 7px; background: #c7bba4; color: #353a38; box-shadow: inset 0 0 0 1px #8b816a; }
+  .st-art { display: block; width: 100%; height: auto; }
+  .st-trace { opacity: .13; transition: opacity .3s ease; }
+  .st-scene.trace-on .st-trace { opacity: 1; }
+  .st-scale { display: flex; align-items: center; gap: 10px; margin-top: 10px; padding: 0 8px; font: 12px/1.5 var(--mono); color: #4c584f; }
+  .st-scale svg { flex: none; }
+  .st-caption { margin: 4px 0 0; padding: 0 8px; font: 12px/1.5 var(--mono); color: #4d5045; }
+  .st-controls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .st-controls button { min-height: 38px; padding: 8px 13px; border: 1px solid rgb(255 255 255 / 16%); border-radius: 6px; background: rgb(255 255 255 / 3%); color: var(--text); font: 13px var(--sans); cursor: pointer; }
+  .st-controls button[aria-pressed=true] { background: #e4d4b9; color: #1b2026; border-color: #e4d4b9; }
+  @media (max-width: 540px) {
+    .st-scene { padding: 6px; }
+    .st-controls button { min-height: 44px; }
+  }
+</style>

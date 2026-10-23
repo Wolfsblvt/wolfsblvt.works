@@ -1,0 +1,124 @@
+---
+/**
+ * PresenceCue, expanded: the cue source (a phone's Focus, a game opening, a schedule) beside the Discord presence it
+ * produces. The three cue buttons and the manual override are revealed by interaction.ts; without it the Work Focus
+ * scene stands complete. Status and Rich Presence are distinct; a manual presence holds while cues keep changing.
+ */
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+  hid: string;
+}
+const { entry, hid } = Astro.props;
+const { title, form } = entry.data;
+---
+
+<div class="pc">
+  <div class="pc-head">
+    <span class="kicker">{form.kind === 'chip' ? form.platform : ''}</span>
+    <h3 id={hid} class="e-h pc-h">{title}</h3>
+  </div>
+  <div class="pc-stage" data-interaction={entry.id}>
+    <div class="controls" role="group" aria-label="Presence cues" data-enhancement hidden>
+      <button type="button" aria-pressed="true" data-cue="work">Work Focus</button>
+      <button type="button" aria-pressed="false" data-cue="play">Game opens</button>
+      <button type="button" aria-pressed="false" data-cue="away">Quiet hours</button>
+    </div>
+    <div class="scene" data-cue-mode="work" data-manual="false">
+      <div class="phone">
+        <span class="phone-top" aria-hidden="true"></span>
+        <span class="phone-time">09:41</span>
+        <span class="phone-source" data-cue-source>iPhone Focus</span>
+        <strong class="phone-label" data-cue-label>Work</strong>
+        <span class="phone-state" data-cue-state>Focus is on</span>
+      </div>
+      <div class="bridge" aria-hidden="true"><span></span><b>→</b><span></span></div>
+      <div class="card">
+        <div class="card-label">Discord</div>
+        <div class="profile">
+          <span class="avatar" aria-hidden="true">W<span class="light"></span></span>
+          <div><strong class="profile-name">Someone making things</strong><span class="profile-status" data-cue-status>Do not disturb</span></div>
+        </div>
+        <div class="rich">
+          <span class="rich-k">Rich Presence</span>
+          <strong class="rich-title" data-cue-rich>Making things.</strong>
+          <span class="rich-detail" data-cue-rich-detail>Room for a little concentration.</span>
+        </div>
+        <span class="owner" data-cue-owner>Following Work Focus</span>
+      </div>
+    </div>
+    <div class="manual" data-enhancement hidden>
+      <button type="button" aria-pressed="false" data-manual-toggle>Set my own: Taking a break.</button>
+      <span>You get the last word.</span>
+    </div>
+    <p class="sr" aria-live="polite" aria-atomic="true" data-cue-announcement>Work Focus. Discord: Do not disturb. Rich Presence: Making things.</p>
+  </div>
+  <div class="pc-copy"><slot /></div>
+</div>
+
+<style>
+  .pc { max-width: 680px; font-family: var(--sans); }
+  .pc-h { margin-top: 8px; font: 500 clamp(26px, 2.8vw, 34px)/1.15 var(--serif); letter-spacing: -.01em; }
+
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 13px; }
+  .controls[hidden], .manual[hidden] { display: none; }
+  .controls button, .manual button { min-height: 44px; padding: 9px 15px; border: 1px solid #65545c; border-radius: 4px; background: transparent; font: 13px/1.4 var(--sans); color: #e8d9cb; cursor: pointer; }
+  .controls button[aria-pressed="true"] { color: #19141a; background: #f0d7b7; border-color: #f0d7b7; }
+
+  .scene { --cue-color: #e68998; display: grid; grid-template-columns: 155px 44px minmax(0, 1fr); align-items: center; max-width: 650px; margin: 25px 0 0; }
+  .scene[data-cue-mode="play"] { --cue-color: #91d1aa; }
+  .scene[data-cue-mode="away"] { --cue-color: #8f899a; }
+  .scene[data-manual="true"] { --cue-color: #e5bc73; }
+
+  .phone { display: flex; flex-direction: column; align-items: center; min-height: 246px; padding: 13px 12px 24px; border: 2px solid #64566e; border-radius: 26px; background: linear-gradient(155deg, #382740, #17131d); text-align: center; box-shadow: 7px 12px 27px rgb(0 0 0 / 20%); }
+  .phone-top { width: 43px; height: 7px; margin: 0 0 23px; border-radius: 8px; background: #0d0a10; }
+  .phone-time { margin-bottom: 26px; font: 37px/1.1 var(--sans); letter-spacing: -.04em; color: #eadbf0; }
+  .phone-source, .phone-state { font: 10px/1.5 var(--sans); color: #c8afd6; }
+  .phone-label { display: block; margin: 7px 0; font: 400 20px/1.2 var(--serif); color: #f0e5f4; }
+  .scene[data-cue-mode="play"] .phone { min-height: 210px; border-radius: 8px; border-color: #547368; background: linear-gradient(155deg, #233d35, #141e20); box-shadow: 0 8px 0 #121b1c, 7px 12px 27px rgb(0 0 0 / 20%); }
+  .scene[data-cue-mode="away"] .phone { min-height: 210px; border-radius: 12px; background: linear-gradient(155deg, #282734, #17151d); }
+  .scene[data-cue-mode="play"] .phone-top { width: 100%; height: 1px; margin: 15px 0 30px; border-radius: 0; background: #537267; }
+  .scene[data-cue-mode="away"] .phone-top { width: 100%; height: 1px; margin: 15px 0 30px; border-radius: 0; background: #51455b; }
+  .scene[data-cue-mode="play"] .phone-time, .scene[data-cue-mode="away"] .phone-time { display: none; }
+
+  .bridge { display: flex; align-items: center; gap: 2px; padding: 0 6px; color: #c29ad7; }
+  .bridge span { flex: 1; height: 1px; background: #765b88; }
+  .bridge b { font: 400 20px/1 var(--sans); }
+
+  .card { padding: 20px; border: 1px solid #51465f; border-radius: 10px; background: #252331; box-shadow: 3px 10px 24px rgb(0 0 0 / 20%); }
+  .card-label { margin-bottom: 20px; font: 11px/1.5 var(--sans); letter-spacing: .05em; color: #cbbdd9; }
+  .profile { display: flex; align-items: center; gap: 12px; }
+  .avatar { position: relative; display: flex; justify-content: center; align-items: center; flex: 0 0 45px; width: 45px; height: 45px; border-radius: 50%; background: #6a527c; font: 24px/1 var(--serif); color: #eee1f6; }
+  .light { position: absolute; right: -3px; bottom: -2px; box-sizing: content-box; width: 13px; height: 13px; border: 3px solid #252331; border-radius: 50%; background: var(--cue-color); }
+  .scene[data-cue-mode="work"] .light::after { content: ''; position: absolute; left: 3px; top: 6px; width: 7px; height: 2px; background: #252331; }
+  .scene[data-cue-mode="away"] .light { background: transparent; outline: 2px solid #8f899a; outline-offset: -5px; }
+  .scene[data-manual="true"] .light { background: #e5bc73; outline: none; }
+  .scene[data-manual="true"] .light::after { content: none; }
+  .profile-name { display: block; font: 600 13px/1.4 var(--sans); color: #f0e9f5; }
+  .profile-status { display: block; margin-top: 3px; font: 11px/1.5 var(--sans); color: #d2c1df; }
+  .rich { min-height: 104px; margin-top: 20px; padding-top: 17px; border-top: 1px solid #494052; }
+  .rich-k { display: block; font: 10px/1.5 var(--sans); letter-spacing: .13em; text-transform: uppercase; color: var(--text-soft); }
+  .rich-title { display: block; margin: 6px 0; font: 400 23px/1.2 var(--serif); color: #f1d9fa; }
+  .rich-detail { display: block; font: 11px/1.5 var(--sans); color: #c8b5d6; }
+  .owner { display: block; margin-top: 13px; font: 10px/1.5 var(--sans); color: #cdb5df; }
+  .scene[data-manual="true"] .owner { color: #ecc788; }
+
+  .manual { display: flex; flex-wrap: wrap; align-items: center; gap: 13px; margin-top: 22px; }
+  .manual button { padding: 10px 13px; border-color: #64526d; font-size: 12px; color: #e6d8ee; text-align: left; }
+  .manual button[aria-pressed="true"] { border-color: #d5ae7a; color: #f1cf9d; background: rgb(75 56 42 / 40%); }
+  .manual > span { font: italic 12px/1.4 var(--serif); color: #cbb5d8; }
+
+  .pc-copy { margin-top: 10px; }
+
+  @media (max-width: 600px) {
+    .controls { gap: 7px; }
+    .controls button { padding: 9px 11px; font-size: 12px; }
+    .scene { grid-template-columns: minmax(0, 1fr); gap: 17px; }
+    .phone { width: 100%; max-width: 230px; min-height: 0; margin: auto; padding: 12px 18px 18px; border-radius: 20px; }
+    .phone-top { margin-bottom: 14px; }
+    .phone-time { margin-bottom: 15px; font-size: 30px; }
+    .bridge { width: 33px; margin: auto; padding: 0; transform: rotate(90deg); }
+    .card { width: 100%; max-width: 360px; margin: auto; }
+  }
+</style>

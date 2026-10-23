@@ -45,6 +45,7 @@ random string for `CONTACT_FORM_SECRET`. It is ignored by Git; real values never
 | Re-render the social cards | `npm run cards` |
 | Publication gate on its own | `npm run check:publish` |
 | Publication build | `npm run build:production` |
+| Contact-first launch build (the contact page, its assets, the 404 and the 503; nothing else) | `npm run build:contact-only` |
 
 `npm run dev` serves the static pages only: there is no Worker, so the Pile has no per-browser seed and the contact
 form is not prepared. Use `npm run dev:worker` for the contact journey and anything the Worker touches. It rebuilds
@@ -115,12 +116,14 @@ and commit them when the hero copy, the lockup or a card's line changes.
 
 ### Add a Pile piece
 
-Write a Markdown file in `src/content/pile/`. The schema is in `src/content.config.ts`; the forms, sizes and tone are in
-the [Pile authoring guide](pile/pile-authoring-guide.md), and the behaviour behind it in
-[the Pile experience](pile/pile-experience.md) and [technical plan](pile/pile-technical-plan.md). Add its id to `ENDLESS_ORDER`
-in `src/features/pile/order.ts`, which lists every piece exactly once in Endless order; the build refuses otherwise. Pieces with `daily: true` can be dealt onto the
-desk. A piece with its own small interaction gets a module under `src/features/pile/entries/<id>/` and a loader entry
-in `client/interactions.ts`.
+Write a Markdown file in `src/content/pile/`. The schema is in `src/content.config.ts`; the forms, footprints and tone
+are in the [Pile authoring guide](pile/pile-authoring-guide.md), and the behaviour behind it in
+[the Pile experience](pile/pile-experience.md) and [technical plan](pile/pile-technical-plan.md). Add its id to
+`ENDLESS_ORDER` in `src/features/pile/order.ts`, which lists every piece exactly once in Endless order; the build
+refuses otherwise. Pieces with `daily.include: true` can be dealt onto the desk; `daily.footprint` sizes them there.
+A piece whose form can't carry its material gets its own scene: `Compact.astro` and/or `Expanded.astro` under
+`src/features/pile/entries/<id>/`, and `interaction.ts` beside them when it has behaviour. They are found by file;
+nothing else needs editing. The existing entries are the examples.
 
 ### Add a product to the contact picker
 
@@ -141,38 +144,55 @@ fixture, until it has been read back from the actual deployment.
 
 ## Publication
 
-The site is complete and deliberately not published. Before it goes public, all of this must hold.
+The content is authored and the site is deliberately not yet published. Before it goes public, all of this must hold.
 
 **Content and copy** (refused by `npm run check:publish` until done):
 
-- Real Pile pieces replace the `illustrative: true` ones, and no piece links to an example address.
-- The smolpng, Shikkuri and Lunescence windows are authored in their projects' own voice and lose `data-placeholder`.
+- No Pile piece is `illustrative: true` and none links to an example address; no project window carries
+  `data-placeholder`. Both marks mean unreplaced scaffolding only; a composed scene is content
+  ([Decisions](DECISIONS.md#composed-scenes-are-content-only-unreplaced-scaffolding-is-a-placeholder)).
 - The legal operator arrives as `WOLFSBLVT_LEGAL_OPERATOR_B64` (base64 of the canonical operator record, schema version
-  1), with its contacts provisioned. The public fixture and anything containing its values are refused.
+  1), with its contacts provisioned and its additional direct contact (the live form) `provisioned`. The public
+  fixture and anything containing its values are refused.
 - Every `legal.privacy` fact in `site.config.mjs` is confirmed against the deployment and set `pending: false`,
-  including the retained log route and its 12-month retention from [Logging](LOGGING.md#retention-and-deletion).
-- `wrangler.jsonc` carries the production Turnstile site key instead of `REPLACE_WITH_PRODUCTION_TURNSTILE_SITE_KEY`.
+  including the retained log route and its retention from [Logging](LOGGING.md#retention-and-deletion).
+- `wrangler.jsonc` carries the production Turnstile site key (it does, since 2026-10-23: the public key of the widget
+  Wolf Ops created for `contact.wolfsblvt.works`).
 - Every dependency resolves from the npm registry, never a local path or tarball.
 
 **Confirmed by hand:**
 
-- GitHub Sponsors is live at `https://github.com/sponsors/Wolfsblvt`. Sponsors was waiting for this site and its assets;
-  set it up after they are done and before publishing.
+- GitHub Sponsors is live at `https://github.com/sponsors/Wolfsblvt` (read back by Wolf Ops on 2026-10-22).
 - Bluesky: `links.bluesky` in `site.config.mjs` is set when the profile exists. Until then the slot shows as visibly
   unavailable, which is fine to publish.
+- Tera's `.mpreg` fragment: included with her credit, or left out; it is not in the collection until Wolf decides.
+
+**The first launch, in order (Wolf Ops, #916):**
+
+1. **Contact first.** `npm run build:contact-only`, deployed with `--env production` and only
+   `contact.wolfsblvt.works` routed. The build holds the contact page, its assets, the 404 and the 503; no home, no
+   legal pages, no sitemap. `workers_dev` and preview URLs are off in `wrangler.jsonc`, so nothing is public on a
+   provider hostname either.
+2. **Read the form back.** The page renders with the production Turnstile, and one identified test submission arrives
+   in the inbox with the visitor copy.
+3. **Flip the legal pointer.** Ops records the additional direct contact as `provisioned` in the canonical record and
+   refreshes `WOLFSBLVT_LEGAL_OPERATOR_B64`.
+4. **Publish.** `npm run build:production`, deployed with both hosts routed, then read back from outside.
 
 **Hosting (Wolf Ops):**
 
-- A Cloudflare Worker named `wolfsblvt-works` deployed with `--env production`, `BUILD_VERSION` set to the commit, and
-  routes or custom domains for `wolfsblvt.works` and `contact.wolfsblvt.works`.
+- A Cloudflare Worker deployed with `--env production` (`wrangler` derives the name `wolfsblvt-works-production`),
+  `BUILD_VERSION` set to the commit, and routes or custom domains for `wolfsblvt.works` and
+  `contact.wolfsblvt.works`; `www` redirecting to the apex.
 - Secrets `TURNSTILE_SECRET_KEY` and `CONTACT_FORM_SECRET` (`wrangler secret put --env production`).
-- A managed Turnstile widget for `contact.wolfsblvt.works` with action `contact`.
-- Email Service: `contact@wolfsblvt.works` verified as the internal destination and allowed as the sender of the
-  visitor copy. Email Sending only; mail itself stays where it is hosted.
-- `artifacts/site/503.html` uploaded as the zone's custom error page for 5xx.
+- A managed Turnstile widget for `contact.wolfsblvt.works` with action `contact` (created 2026-10-22).
+- Email Service: `contact@wolfsblvt.works` verified as the internal destination and `wolfsblvt.works` onboarded as the
+  sending domain for the visitor copy (done 2026-10-22; the first real submission proves signing and delivery).
+- Errors: the Worker serves `503.html` itself for failures it can catch. The zone is on the free plan, which cannot
+  show a custom page for provider-level errors; that remains a priced choice for Wolf, not a step here.
 - Workers Logs on, and the retained log route from [Logging](LOGGING.md).
 - After deployment: read back both hosts, the redirect from `wolfsblvt.works/contact/`, the headers on a static page and
-  on the home page, a real contact submission end to end, and the privacy facts.
+  on the home page, a direct `#pile-<id>` link, a real contact submission end to end, and the privacy facts.
 
 `npm run build:production` with the operator projection in the environment builds the site with the legal pages
 required to be real, runs the output check, then the publication gate.

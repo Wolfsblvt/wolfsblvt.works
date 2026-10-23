@@ -1,0 +1,77 @@
+---
+/**
+ * The Streets We Owe, compact: a worn survey fragment. The stamp line, the title, the inhabited block (windows, a
+ * laundry line, plants, people and a handcart) under two dashed survey lines, and the two-line hook. Repair tape at
+ * the top edge and a softened corner make it an object; the host supplies its tilt.
+ */
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+}
+const { entry } = Astro.props;
+---
+
+<div class="sv">
+  <span class="sv-stamp">A survey of what remains</span>
+  <span class="sv-name">{entry.data.title}</span>
+  <svg class="sv-art" viewBox="0 0 600 300" aria-hidden="true">
+    <path d="M20 150l268-123 285 124-267 128z" fill="#858d82"/>
+    <path d="M46 153l239-110 260 111-241 110z" fill="#bcb39b"/>
+    <path d="M100 177l233-106 36 16-231 106z" fill="#697b79"/>
+    <path d="M187 88l204 88-30 15-204-90z" fill="#787e72"/>
+    <g stroke="#555b54" stroke-width="2" stroke-linejoin="round">
+      <path d="M87 121v-43l56-26 63 27v45l-57 27z" fill="#d2b897"/>
+      <path d="M87 78l56-26 63 27-57 27z" fill="#9b6957"/>
+      <path d="M149 106v45l57-27V79z" fill="#9d917e"/>
+      <path d="M319 117V69l52-25 73 32v47l-53 27z" fill="#c2b18e"/>
+      <path d="M319 69l52-25 73 32-53 26z" fill="#7b8582"/>
+      <path d="M391 102v48l53-27V76z" fill="#8a968b"/>
+      <path d="M210 210v-47l57-26 76 33v48l-57 26z" fill="#c6aa87"/>
+      <path d="M210 163l57-26 76 33-57 27z" fill="#a46e5a"/>
+      <path d="M286 197v47l57-26v-48z" fill="#9c927e"/>
+      <path d="M420 190v-37l48-22 51 22v36l-47 24z" fill="#b7a786"/>
+      <path d="M420 153l48-22 51 22-47 23z" fill="#7d8075"/>
+    </g>
+    <g fill="#efd39b">
+      <path d="M100 98l12 5v16l-12-5zm24 10l12 5v16l-12-5zM332 90l13 6v17l-13-6zm24 10l13 6v17l-13-6zM224 187l13 6v17l-13-6zm25 10l13 6v17l-13-6z"/>
+    </g>
+    <path d="M202 115q32 15 69 3" fill="none" stroke="#535e55"/>
+    <g fill="#dfcfb3">
+      <path d="M222 123v14l10 2v-14zM244 124v15l10-2v-15z"/>
+    </g>
+    <g fill="#536444" stroke="#444e3b">
+      <circle cx="132" cy="211" r="14"/>
+      <circle cx="487" cy="107" r="16"/>
+    </g>
+    <g fill="#bd704b">
+      <rect x="126" y="219" width="12" height="14"/>
+      <rect x="480" y="119" width="14" height="13"/>
+    </g>
+    <g fill="#343d3d">
+      <circle cx="173" cy="168" r="4"/>
+      <path d="M169 173h8l3 15h-14z"/>
+      <circle cx="375" cy="194" r="4"/>
+      <path d="M371 199h8l3 14h-14z"/>
+    </g>
+    <g fill="#c28c59">
+      <path d="M185 174l20-9 13 6-20 9z"/>
+      <path d="M185 174v8l13 6v-8z"/>
+    </g>
+    <g fill="#3c4643">
+      <circle cx="191" cy="185" r="3"/>
+      <circle cx="211" cy="177" r="3"/>
+    </g>
+    <path d="M58 178L324 56l211 91M128 210L392 87" fill="none" stroke="#54747b" stroke-width="2" stroke-dasharray="8 5" opacity=".85"/>
+  </svg>
+  <span class="sv-hook">A city with more than one past.<br />You still have to live in it.</span>
+</div>
+
+<style>
+  .sv { position: relative; display: block; padding: 22px 21px 16px; border-radius: 3px 12px 3px 3px; background: #d5c3a4; color: #3b3834; box-shadow: 4px 8px 0 rgb(0 0 0 / 20%); font-family: var(--sans); }
+  .sv::before { content: ''; position: absolute; left: 33%; top: -12px; width: 78px; height: 25px; background: rgb(169 151 113 / 60%); transform: rotate(4deg); }
+  .sv-stamp { display: block; font: 500 11px/1.5 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: #5d5649; }
+  .sv-name { display: block; margin-top: 6px; font: 500 24px/1.15 var(--serif); }
+  .sv-art { display: block; width: 100%; height: auto; margin-top: 13px; }
+  .sv-hook { display: block; margin-top: 8px; font-size: 14px; line-height: 1.45; }
+</style>

@@ -1,0 +1,73 @@
+---
+/**
+ * Trailer Lens, expanded: the commit panel the extension draws on GitHub. The subject, six readable trailer rows, and
+ * a native disclosure with the original trailer text. The addresses and #42 are plain text, not links.
+ */
+import type { PileEntry } from '../../catalogue';
+import mark from './mark.svg?url';
+
+interface Props {
+  entry: PileEntry;
+  hid: string;
+}
+const { entry, hid } = Astro.props;
+const rows = [
+  ['Co-author', 'Alex', false],
+  ['Reviewed by', 'Robin', false],
+  ['Tested by', 'Casey', false],
+  ['Signed off by', 'Morgan', false],
+  ['Fixes', '#42', true],
+  ['Component', 'reader', true],
+] as const;
+const original = [
+  'Co-authored-by: Alex <alex@example.com>',
+  'Reviewed-by: Robin <robin@example.com>',
+  'Tested-by: Casey <casey@example.com>',
+  'Signed-off-by: Morgan <morgan@example.com>',
+  'Fixes: #42',
+  'Component: reader',
+].join('\n');
+---
+
+<div class="tl">
+  <h3 id={hid} class="e-h tl-h">{entry.data.title}</h3>
+  <div class="commit">
+    <div class="line"><img src={mark} alt="" width="26" height="26" class="mark" /><span>Trailer Lens</span></div>
+    <p class="subject">Keep the reading position on return</p>
+    <dl class="rows">
+      {rows.map(([meaning, value, meta]) => (
+        <>
+          <dt>{meaning}</dt>
+          <dd class:list={{ meta }}>{value}</dd>
+        </>
+      ))}
+    </dl>
+    <details>
+      <summary>Original trailer text</summary>
+      <pre set:text={original}></pre>
+    </details>
+  </div>
+  <slot />
+</div>
+
+<style>
+  .tl { max-width: 640px; font-family: var(--sans); }
+  .tl-h { font: 500 clamp(26px, 2.8vw, 34px)/1.15 var(--serif); letter-spacing: -.01em; }
+  .commit { margin-top: 22px; padding: 18px; background: #171c23; border: 1px solid #414955; }
+  .line { display: flex; align-items: center; gap: 9px; font-size: 14px; color: var(--text-soft); }
+  .mark { display: block; width: 26px; height: 26px; flex: none; }
+  .subject { margin: 13px 0 19px; font-size: 17px; color: #f1e3d8; }
+  .rows { display: grid; grid-template-columns: minmax(110px, 1fr) 2fr; gap: 11px 18px; margin: 0; font-size: 15px; }
+  .rows dt { font-size: 13px; color: #b4c1ce; }
+  .rows dd { margin: 0; overflow-wrap: anywhere; }
+  .rows .meta { font: 14px var(--mono); color: #efb78e; }
+  details { margin-top: 20px; padding-top: 12px; border-top: 1px solid #3a4350; }
+  summary { width: fit-content; font-size: 13px; line-height: 1.8; color: var(--cyan); cursor: pointer; }
+  pre { margin: 13px 0 0; font: 12px/1.8 var(--mono); color: #c7d8e6; white-space: pre-wrap; overflow-wrap: anywhere; }
+  @media (max-width: 560px) {
+    .rows { grid-template-columns: minmax(100px, 1fr) 1.2fr; gap: 11px 12px; }
+  }
+  @media (pointer: coarse) {
+    summary { min-height: 44px; align-content: center; }
+  }
+</style>

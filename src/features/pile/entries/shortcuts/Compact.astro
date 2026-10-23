@@ -1,0 +1,31 @@
+---
+/**
+ * There’s probably a shortcut for that, compact: a warm taped paper slip with the headline, its two key rows and the
+ * slip's own small aside. The host tilts it; the slip only has to look kept.
+ */
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+}
+const { entry } = Astro.props;
+---
+
+<div class="slip-wrap">
+  <div class="slip">
+    <strong class="slip-head">{entry.data.title}</strong>
+    <span class="slip-key"><span>Find a note</span><kbd>Ctrl O</kbd></span>
+    <span class="slip-key"><span>Find an action</span><kbd>Ctrl P</kbd></span>
+    <span class="slip-aside">one less menu to remember</span>
+  </div>
+</div>
+
+<style>
+  .slip-wrap { position: relative; padding-top: 12px; font-family: var(--sans); }
+  .slip-wrap::before { content: ''; position: absolute; top: 0; left: 35%; width: 88px; height: 26px; background: rgb(207 184 142 / 67%); transform: rotate(4deg); z-index: 1; }
+  .slip { padding: 30px 22px 26px; background: #eadcc6; background-image: repeating-linear-gradient(0deg, transparent 0 31px, rgb(105 88 70 / 8%) 31px 32px); color: #31232c; box-shadow: 4px 12px 22px rgb(0 0 0 / 30%); }
+  .slip-head { display: block; margin: 4px 0 24px; font: 400 28px/1.13 var(--serif); text-wrap: balance; }
+  .slip-key { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgb(93 60 59 / 19%); font-size: 14px; }
+  kbd { display: inline-block; padding: 2px 7px; border: 1px solid currentColor; border-bottom-width: 3px; border-radius: 4px; font: 500 12px/1.55 var(--sans); white-space: nowrap; }
+  .slip-aside { display: block; margin-top: 22px; font: italic 15px/1.4 var(--serif); color: #6c4548; }
+</style>

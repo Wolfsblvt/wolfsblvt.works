@@ -1,0 +1,29 @@
+---
+/**
+ * SimklBridge's request note: a pale green note, a little uneven along the bottom, with tape across its top, typed
+ * (Special Elite). "Tonight, please. A film. Under two hours. Leave me hopeful. and tell me why this one." The
+ * compact object and the Endless window share it and the note keeps its tape in both; `size` scales it through `--u`.
+ * The request is the whole object: no field, no submit, no answer.
+ */
+interface Props {
+  size?: 'compact' | 'expanded';
+}
+const { size = 'compact' } = Astro.props;
+---
+
+<div class:list={['sb-note', `sb-${size}`]}>
+  <span class="sb-tape" aria-hidden="true"></span>
+  <span class="sb-kick">Tonight, please.</span>
+  <p class="sb-wish">A film.<br />Under two hours.<br />Leave me hopeful.</p>
+  <span class="sb-why">and tell me why this one.</span>
+</div>
+
+<style>
+  .sb-note { --u: 1px; position: relative; box-sizing: border-box; width: min(calc(270 * var(--u)), 100%); min-height: calc(218 * var(--u)); padding: calc(28 * var(--u)) calc(25 * var(--u)) calc(22 * var(--u)); background: #dbe5de; color: #304b45; font-family: 'Special Elite', var(--mono); text-align: left; transform: rotate(3deg); clip-path: polygon(0 0, 100% 0, 100% 96%, 95% 97%, 89% 96%, 82% 98%, 75% 96%, 68% 97%, 62% 96%, 55% 98%, 49% 97%, 40% 98%, 33% 96%, 25% 98%, 17% 97%, 10% 99%, 0 98%); }
+  .sb-tape { position: absolute; top: -1px; left: calc(96 * var(--u)); width: calc(72 * var(--u)); height: calc(20 * var(--u)); background: rgb(189 194 165 / 79%); transform: rotate(-5deg); }
+  .sb-kick { display: block; font-size: calc(10 * var(--u)); line-height: 1.4; letter-spacing: .16em; text-transform: uppercase; }
+  .sb-wish { margin: calc(13 * var(--u)) 0 calc(10 * var(--u)); font-size: calc(23 * var(--u)); line-height: 1.25; }
+  .sb-why { display: inline-block; padding: 1px 1px 3px; border-bottom: 1px solid #80988c; font-size: calc(11 * var(--u)); line-height: 1.4; transform: rotate(-3deg); }
+  .sb-expanded { --u: 1.35px; }
+  @media (max-width: 560px) { .sb-expanded { --u: 1.1px; } }
+</style>

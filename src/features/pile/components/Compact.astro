@@ -1,12 +1,14 @@
 ---
 /**
  * One compact object on the Pile: a single real link to its Endless entry. Its visual children are never controls;
- * an apparent ticket stub or die here is decoration. Placement wrappers (outer, flight, breathing) stay separate from
- * the object's own material, so a daily position never rerolls a note's personality.
+ * an apparent ticket stub or key here is decoration. An entry with its own Compact scene renders that inside the
+ * link; otherwise its form's default does. Placement wrappers (outer, flight, breathing) stay separate from the
+ * object's own material, so a daily position never rerolls a note's personality.
  */
 import type { PileEntry } from '../catalogue';
 import { markBackground } from '../catalogue';
 import { NOTE_TAPES } from '../notes';
+import { sceneFor } from '../scenes';
 
 interface Props {
   entry: PileEntry;
@@ -14,6 +16,8 @@ interface Props {
 const { entry } = Astro.props;
 const { title, form, illustrative, daily } = entry.data;
 const tapes = form.kind === 'note' ? NOTE_TAPES[form.preset] : null;
+const { Compact: Scene } = sceneFor(entry.id);
+const chipMark = form.kind === 'chip' ? (form.mark ?? { letter: title.charAt(0), tint: '#73cae3' }) : null;
 ---
 
 <div class="pi" data-pid={entry.id} data-kind={form.kind} data-footprint={daily.footprint}>
@@ -22,13 +26,14 @@ const tapes = form.kind === 'note' ? NOTE_TAPES[form.preset] : null;
       <div class="pi-in">
         <span class="pick-tag" aria-hidden="true">today’s pick</span>
         <a class="cl" href={`#pile-${entry.id}`} aria-label={`${title} — take a closer look`} data-pile-link={entry.id}>
-          {form.kind === 'thought' && (
+          {Scene && <Scene entry={entry} />}
+          {!Scene && form.kind === 'thought' && (
             <div class="pt">
               {form.question && <span class="pt-q" aria-hidden="true">?</span>}{title}<svg class="pt-u" viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2 6 C 40 2, 70 9, 110 5 S 170 3, 198 6" fill="none" stroke="#ef8ea1" stroke-width="2" stroke-linecap="round" stroke-opacity=".75"></path></svg>
               {illustrative && <span class="ill" style="display:block">illustrative</span>}
             </div>
           )}
-          {form.kind === 'note' && tapes && (
+          {!Scene && form.kind === 'note' && tapes && (
             <div class={`paper-wrap v-${form.preset}`}>
               <span class="tape" style={`top:0;${tapes[0]}`} aria-hidden="true"></span>
               {tapes[1] && <span class="tape b" style={`top:0;${tapes[1]}`} aria-hidden="true"></span>}
@@ -38,22 +43,22 @@ const tapes = form.kind === 'note' ? NOTE_TAPES[form.preset] : null;
               </div>
             </div>
           )}
-          {form.kind === 'chip' && (
+          {!Scene && form.kind === 'chip' && chipMark && (
             <div class="pa">
-              <span class="pa-icon" style={`background:${markBackground(form.mark.tint)}`}>{form.mark.letter}</span>
+              <span class="pa-icon" style={`background:${markBackground(chipMark.tint)}`}>{chipMark.letter}</span>
               <span class="pa-name">{title}</span>
               <span class="pa-sub">{form.platform}</span>
               {illustrative && <span class="ill">illustrative</span>}
             </div>
           )}
-          {form.kind === 'artifact' && (
+          {!Scene && form.kind === 'artifact' && (
             <div class="pk">
-              <div class="pk-bar"><span>{title}</span><span style="color:#8fa3b0;font-weight:400">{form.caption}</span></div>
-              <div class="pk-body">{form.excerpt}</div>
+              <div class="pk-bar"><span>{title}</span>{form.caption && <span style="color:#8fa3b0;font-weight:400">{form.caption}</span>}</div>
+              {form.excerpt && <div class="pk-body">{form.excerpt}</div>}
               {illustrative && <div style="padding:0 12px 10px"><span class="ill">illustrative</span></div>}
             </div>
           )}
-          {form.kind === 'lineage' && (
+          {!Scene && form.kind === 'lineage' && (
             <div class="pl">
               <span class="pl-up">{form.relationship} {form.from}</span>
               <svg class="pl-arrow" viewBox="0 0 70 40" aria-hidden="true"><path d="M6 4 C 4 22, 22 34, 52 30" fill="none" stroke="#ef8ea1" stroke-width="1.8" stroke-linecap="round"></path><path d="M45 24 L53 30 L44 35" fill="none" stroke="#ef8ea1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
@@ -61,22 +66,19 @@ const tapes = form.kind === 'note' ? NOTE_TAPES[form.preset] : null;
               {illustrative && <span class="ill" style="display:block;margin-top:8px">illustrative</span>}
             </div>
           )}
-          {form.kind === 'door' && (
+          {!Scene && form.kind === 'door' && (
             <div class="pd">
               <div class="pd-arch"><span class="pd-name">{title}</span></div>
               <span class="pd-line">{form.caption}</span>
             </div>
           )}
-          {form.kind === 'specimen' && (
+          {!Scene && form.kind === 'specimen' && (
             <div class="ps">
-              <span class="die static" aria-hidden="true">{form.face}</span>
-              <span>
-                <span class="scribble" style="display:block;font-size:17px;line-height:1.2;text-shadow:0 0 8px #100b11">{title}</span>
-                {illustrative && <span class="ill">illustrative</span>}
-              </span>
+              <span class="scribble" style="display:block;font-size:17px;line-height:1.2;text-shadow:0 0 8px #100b11">{title}</span>
+              {illustrative && <span class="ill">illustrative</span>}
             </div>
           )}
-          {form.kind === 'site' && (
+          {!Scene && form.kind === 'site' && (
             <div class="tk" style={`background:${form.background};border:1px solid ${form.mark.tint}55`}>
               <div class="tk-main">
                 <div style="display:flex;align-items:center;gap:8px">

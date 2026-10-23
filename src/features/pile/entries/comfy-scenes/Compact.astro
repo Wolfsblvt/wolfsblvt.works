@@ -1,0 +1,29 @@
+---
+/** One still is only the beginning, compact: a short strip of film, three night frames with one lamp, and the title. */
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+}
+const { entry } = Astro.props;
+---
+
+<div class="film-wrap">
+  <div class="film" aria-hidden="true"><span class="frame"></span><span class="frame"></span><span class="frame"></span></div>
+  <p class="film-title">{entry.data.title}</p>
+</div>
+
+<style>
+  .film-wrap { padding: 6px 0 4px; font-family: var(--sans); }
+  .film { position: relative; display: flex; gap: 5px; padding: 15px 8px; border: 1px solid #3e3441; background: #08090e; }
+  .film::before, .film::after { content: ''; position: absolute; left: 0; right: 0; height: 5px; background: repeating-linear-gradient(90deg, transparent 0 8px, rgb(160 139 154 / 40%) 8px 14px, transparent 14px 22px); }
+  .film::before { top: 4px; }
+  .film::after { bottom: 4px; }
+  .frame { position: relative; flex: 1; min-width: 0; height: 80px; background: radial-gradient(circle at 66% 25%, rgb(184 122 70 / 25%), transparent 45%), linear-gradient(#181c2b, #303046); }
+  .frame::before { content: ''; position: absolute; top: 25%; left: 65%; width: 2px; height: 70%; background: #83776c; }
+  .frame::after { content: ''; position: absolute; top: 25%; left: 60%; width: 12px; height: 6px; border-radius: 50%; background: #e9b36a; box-shadow: 0 0 15px 6px rgb(233 179 106 / 25%); }
+  .frame:nth-child(2) { filter: brightness(1.2); }
+  .frame:nth-child(3)::after { left: 30%; top: 40%; width: 6px; height: 6px; }
+  .film-title { margin: 12px 0 0 10px; font: 20px/1.3 var(--serif); color: var(--text); text-shadow: 0 0 8px #100b11; }
+  @media (max-width: 400px) { .frame { height: 64px; } .film-title { font-size: 18px; } }
+</style>

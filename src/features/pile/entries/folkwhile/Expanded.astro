@@ -1,0 +1,75 @@
+---
+/**
+ * Folkwhile, expanded: the same village given room to be inhabited. Both captures are in the markup, the night one
+ * stacked over the day one and faded out, so Daylight / After dark only toggles a class (and never swaps a src or
+ * waits for a lazy load). The time note sits on the ground above the strip; the copy follows. On phones the frame
+ * crops around the inhabited centre instead of shrinking the whole desktop edge into an illegible line.
+ */
+import { Image } from 'astro:assets';
+import type { PileEntry } from '../../catalogue';
+import day from './village-day.png';
+import night from './village-night.png';
+
+interface Props {
+  entry: PileEntry;
+  hid: string;
+}
+const { entry, hid } = Astro.props;
+const WIDTHS = [640, 960, 1280];
+const SIZES = '(max-width: 540px) 160vw, (max-width: 1100px) 92vw, 960px';
+---
+
+<div class="fw" data-interaction={entry.id}>
+  <h3 id={hid} class="e-h fw-h">{entry.data.title}</h3>
+  <div class="fw-scene" data-scene>
+    <span class="fw-note">The place we make.</span>
+    <div class="fw-views">
+      <Image
+        src={day}
+        width={1280}
+        height={260}
+        widths={WIDTHS}
+        sizes={SIZES}
+        alt="Folkwhile by day: a row of red-roofed cottages along a path, a big tree, a stone garden, a wooden workshop and a watchtower, with villagers gathered around a campfire."
+        class="fw-view"
+        data-view="day"
+      />
+      <Image
+        src={night}
+        width={1280}
+        height={260}
+        widths={WIDTHS}
+        sizes={SIZES}
+        alt="Folkwhile after dark: the same cottages with lit windows and smoking chimneys, lanterns along the path, and the campfire burned down to embers."
+        class="fw-view fw-view-night"
+        data-view="night"
+        aria-hidden="true"
+      />
+    </div>
+  </div>
+  <div class="fw-controls" data-controls hidden>
+    <button type="button" aria-pressed="true" data-time="day">Daylight</button>
+    <button type="button" aria-pressed="false" data-time="night">After dark</button>
+  </div>
+  <div class="fw-copy"><slot /></div>
+</div>
+
+<style>
+  .fw { max-width: 960px; font-family: var(--sans); }
+  .fw-h { font: 750 clamp(28px, 3vw, 36px)/1.1 'Nunito', var(--sans); color: #f2d399; }
+  .fw-scene { position: relative; overflow: hidden; margin-top: 18px; padding-top: 60px; border-radius: 7px; background: linear-gradient(#30413c, #647158); }
+  .fw-scene.night { background: linear-gradient(#111622, #292f32); }
+  .fw-note { position: absolute; top: 16px; left: 20px; font: 15px/1.3 'Nunito', var(--sans); color: #fcf4dc; }
+  .fw-views { position: relative; }
+  .fw-view { display: block; width: 100%; height: auto; }
+  .fw-view-night { position: absolute; inset: 0; opacity: 0; transition: opacity .3s ease; }
+  .fw-scene.night .fw-view-night { opacity: 1; }
+  .fw-controls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .fw-controls button { min-height: 38px; padding: 8px 13px; border: 1px solid rgb(255 255 255 / 16%); border-radius: 6px; background: rgb(255 255 255 / 3%); color: var(--text); font: 13px var(--sans); cursor: pointer; }
+  .fw-controls button[aria-pressed=true] { background: #e4d4b9; color: #1b2026; border-color: #e4d4b9; }
+  @media (max-width: 540px) {
+    .fw-scene { padding-top: 72px; }
+    .fw-views { width: 160%; max-width: none; margin-left: -30%; }
+    .fw-controls button { min-height: 44px; }
+  }
+</style>

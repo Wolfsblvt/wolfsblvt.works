@@ -1,0 +1,27 @@
+---
+/** PresenceCue, compact: a small purple cue badge, the presence it set ("Making things.") and where it came from. */
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+}
+const { entry } = Astro.props;
+---
+
+<div class="pc">
+  <span class="pc-name">{entry.data.title}</span>
+  <div class="pc-signal">
+    <span class="pc-dot" aria-hidden="true"></span>
+    <span class="pc-words"><span class="pc-title">Making things.</span><span class="pc-sub">iPhone Focus → Discord</span></span>
+  </div>
+</div>
+
+<style>
+  .pc { padding: 20px 20px 16px; background: #241a2d; border: 1px solid #4c385d; border-radius: 45px 45px 16px 16px; font-family: var(--sans); color: var(--text); }
+  .pc-name { display: block; margin: 0 0 16px; font-size: 14px; line-height: 1.4; }
+  .pc-signal { display: flex; align-items: center; gap: 12px; }
+  .pc-dot { flex: none; width: 22px; height: 22px; border-radius: 50%; background: #d4ace9; box-shadow: 0 0 0 6px rgb(212 172 233 / 8%); }
+  .pc-words { min-width: 0; }
+  .pc-title { display: block; font: 400 20px/1.25 var(--serif); }
+  .pc-sub { display: block; margin-top: 3px; font-size: 11px; line-height: 1.4; color: #c9b8d1; }
+</style>

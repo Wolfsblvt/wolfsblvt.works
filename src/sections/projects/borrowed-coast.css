@@ -1,0 +1,44 @@
+/* Borrowed Coast, in its own world: Night Chart tokens (umber margin, chart ink, deep sea), Alegreya and Alegreya Sans. */
+.bc {
+  --bc-margin: #1c1a15; --bc-ink: #efe6cf; --bc-ink-2: #b9b199; --bc-ink-3: #847e6b; --bc-water-ink: #84a7a2; --bc-sea: #0e1f24; --bc-line: rgb(185 174 146 / 32%);
+  --bc-serif: 'Alegreya', 'Iowan Old Style', Georgia, serif; --bc-sans: 'Alegreya Sans', 'Gill Sans', 'Segoe UI', sans-serif;
+  position: relative; display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.4fr); gap: 36px clamp(32px, 5vw, 72px); align-items: center;
+  padding: clamp(32px, 4.5vw, 56px) clamp(24px, 4vw, 56px); border-radius: 4px; background: var(--bc-margin); box-shadow: 0 0 0 1px var(--bc-line), 0 40px 80px -50px rgb(0 0 0 / 80%);
+  color: var(--bc-ink); font: 400 15px/1.45 var(--bc-sans);
+}
+.bc-kicker { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 14px; font: 500 14px var(--bc-sans); letter-spacing: .06em; text-transform: uppercase; color: var(--bc-ink-2); }
+.bc-standing { font: italic 400 14px var(--bc-serif); letter-spacing: 0; text-transform: none; color: var(--bc-ink-3); }
+.bc-h { margin: 18px 0 0; font: 500 clamp(32px, 3.6vw, 48px)/1.08 var(--bc-serif); letter-spacing: -.01em; color: var(--bc-ink); text-wrap: balance; }
+.bc-sub { margin: 16px 0 0; font: 400 clamp(17px, 1.4vw, 19px)/1.45 var(--bc-sans); color: var(--bc-ink-2); max-width: 34ch; }
+.bc-report { margin: 30px 0 0; padding: 0 0 0 16px; border-left: 2px solid var(--bc-water-ink); font-family: var(--bc-serif); }
+.bc-report p { margin: 0; font-size: clamp(18px, 1.5vw, 21px); line-height: 1.35; font-style: italic; color: var(--bc-ink); }
+.bc-report footer { margin-top: 8px; font: 500 13px var(--bc-sans); letter-spacing: .04em; color: var(--bc-ink-3); }
+
+/* The window: one crop, three ways of knowing it. The stacked captures crossfade; only the pressed mode shows. */
+.bc-coast { position: relative; margin: 0; padding: 0; border: 0; min-width: 0; }
+.bc-stage { position: relative; aspect-ratio: 760 / 540; overflow: hidden; background: var(--bc-sea); box-shadow: 0 0 0 1px var(--bc-line); }
+.bc-img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: cover; opacity: 0; transition: opacity .48s ease; }
+.bc-coast:has(#bc-chart:checked) .bc-img[data-mode=chart], .bc-coast:has(#bc-watch:checked) .bc-img[data-mode=watch], .bc-coast:has(#bc-nations:checked) .bc-img[data-mode=nations] { opacity: 1; }
+/* The game's own mode nav: ink on margin, the pressed mode inverted. */
+.bc-modes { position: absolute; right: 14px; bottom: 14px; display: grid; gap: 2px; padding: 3px; background: rgb(28 26 21 / 94%); box-shadow: 0 0 0 1px rgb(185 174 146 / 30%); }
+.bc-mode { display: flex; align-items: center; gap: 9px; padding: 7px 10px; cursor: pointer; color: var(--bc-ink-2); font: 500 14px var(--bc-sans); user-select: none; }
+.bc-mode span { flex: 1; min-width: 64px; }
+.bc-mode svg { flex: none; }
+.bc-mode:hover { color: var(--bc-ink); background: rgb(239 230 207 / 5%); }
+.bc-coast:has(#bc-chart:checked) .bc-mode[data-mode=chart], .bc-coast:has(#bc-watch:checked) .bc-mode[data-mode=watch], .bc-coast:has(#bc-nations:checked) .bc-mode[data-mode=nations] { background: var(--bc-ink); color: var(--bc-margin); }
+.bc-coast:has(#bc-chart:focus-visible) .bc-mode[data-mode=chart], .bc-coast:has(#bc-watch:focus-visible) .bc-mode[data-mode=watch], .bc-coast:has(#bc-nations:focus-visible) .bc-mode[data-mode=nations] { outline: 2px solid var(--cyan); outline-offset: 1px; }
+/* One line of chart lettering beneath: what the pressed mode is, in the game's words. */
+.bc-caption { margin: 10px 2px 0; min-height: 1.4em; font: italic 400 15.5px/1.4 var(--bc-serif); color: var(--bc-ink-2); }
+.bc-caption span { display: none; }
+.bc-caption b { font-style: normal; font-weight: 500; color: var(--bc-ink); }
+.bc-window:has(#bc-chart:checked) .bc-caption [data-mode=chart], .bc-window:has(#bc-watch:checked) .bc-caption [data-mode=watch], .bc-window:has(#bc-nations:checked) .bc-caption [data-mode=nations] { display: inline; }
+
+@media (max-width: 960px) {
+  .bc { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .bc { padding: 28px 20px 24px; }
+  .bc-modes { position: static; grid-auto-flow: column; justify-content: start; margin-top: 8px; box-shadow: none; padding: 0; background: none; }
+  .bc-mode span { min-width: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .bc-img { transition: none; } }

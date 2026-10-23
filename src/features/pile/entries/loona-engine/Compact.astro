@@ -1,0 +1,22 @@
+---
+/** Loona Engine, compact: the little device on its dock, at rest, with the name beneath it. */
+import type { PileEntry } from '../../catalogue';
+import Device from './Device.astro';
+
+interface Props {
+  entry: PileEntry;
+}
+const { entry } = Astro.props;
+const { title } = entry.data;
+---
+
+<div class="le">
+  <div class="le-dock"><Device /></div>
+  <span class="le-name">{title}</span>
+</div>
+
+<style>
+  .le { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 14px 10px 6px; border-radius: 50% 50% 40% 40% / 60% 60% 30% 30%; background: radial-gradient(ellipse at 50% 62%, rgb(57 92 97 / 22%), transparent 68%); }
+  .le-dock { --le-u: .56px; }
+  .le-name { font: 400 19px/1.2 var(--serif); text-shadow: 0 0 8px #100b11; }
+</style>

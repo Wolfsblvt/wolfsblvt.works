@@ -1,7 +1,8 @@
 ---
 /**
- * The home page: one long walk. Hi, What (diffdevil), Why, more project windows, Who, Help, Whoa (the Pile and
- * Endless) and Hello?. The Worker adds today's per-browser pile seed to [data-pile] in production.
+ * The home page: one long walk. Hi, What (diffdevil), Why, the other four project windows (Borrowed Coast, smolpng,
+ * Karaokebarr, Lunescence), Who, Help, Whoa (the Pile and Endless) and Hello?. The Worker adds today's per-browser
+ * pile seed to [data-pile] in production.
  */
 import site from '../../site.config.mjs';
 import Pile from '../features/pile/Pile.astro';
@@ -9,9 +10,10 @@ import Base from '../layouts/Base.astro';
 import Hello from '../sections/Hello.astro';
 import Help from '../sections/Help.astro';
 import Hero from '../sections/Hero.astro';
+import BorrowedCoast from '../sections/projects/BorrowedCoast.astro';
 import Diffdevil from '../sections/projects/Diffdevil.astro';
+import Karaokebarr from '../sections/projects/Karaokebarr.astro';
 import Lunescence from '../sections/projects/Lunescence.astro';
-import Shikkuri from '../sections/projects/Shikkuri.astro';
 import Smolpng from '../sections/projects/Smolpng.astro';
 import Who from '../sections/Who.astro';
 import Why from '../sections/Why.astro';
@@ -79,11 +81,12 @@ const structuredData = {
     <Why />
     <div id="what2">
       <div class="frame sec lift" style="padding-bottom:4px">
-        <p class="guide" style="margin-bottom:6px">Here are some curated projects we are working on.</p>
+        <p class="guide" style="margin-bottom:6px">A few more things I want you to see.</p>
         <div data-reveal="write"><div class="scribble" style="font-size:19px;transform:rotate(-2deg);width:max-content">not all of them are ready. yet.</div></div>
       </div>
+      <BorrowedCoast />
       <Smolpng />
-      <Shikkuri />
+      <Karaokebarr />
       <Lunescence />
     </div>
     <Who />

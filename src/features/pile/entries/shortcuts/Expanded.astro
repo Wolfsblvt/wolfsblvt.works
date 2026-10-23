@@ -1,0 +1,130 @@
+---
+/**
+ * There’s probably a shortcut for that, expanded: the slip becomes a small translucent cheat sheet. Obsidian / Chrome
+ * chooses the context, Find an action searches the visible examples, Pin / Unpin moves an action between Keep close
+ * and Worth learning. Every row of both contexts is in the markup; interaction.ts only shows, hides and moves them,
+ * so the Obsidian sheet is complete and readable before any script runs.
+ */
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+  hid: string;
+}
+const { entry, hid } = Astro.props;
+const { title } = entry.data;
+const uid = `pile-${entry.id}`;
+
+type Context = 'obsidian' | 'chrome';
+interface Action {
+  context: Context;
+  order: number;
+  id: string;
+  name: string;
+  chord: string;
+  pinned: boolean;
+}
+const ACTIONS: readonly Action[] = [
+  { context: 'obsidian', order: 0, id: 'palette', name: 'Command palette', chord: 'Ctrl P', pinned: true },
+  { context: 'obsidian', order: 1, id: 'note', name: 'Find a note', chord: 'Ctrl O', pinned: false },
+  { context: 'obsidian', order: 2, id: 'search', name: 'Search your notes', chord: 'Ctrl Shift F', pinned: false },
+  { context: 'chrome', order: 0, id: 'restore', name: 'Reopen the closed tab', chord: 'Ctrl Shift T', pinned: true },
+  { context: 'chrome', order: 1, id: 'address', name: 'Go to the address bar', chord: 'Ctrl L', pinned: false },
+  { context: 'chrome', order: 2, id: 'find', name: 'Find on this page', chord: 'Ctrl F', pinned: false },
+];
+const GROUPS = [
+  { key: 'pinned', title: 'Keep close', pinned: true },
+  { key: 'learn', title: 'Worth learning', pinned: false },
+] as const;
+const INITIAL: Context = 'obsidian';
+---
+
+<div class="sc">
+  <h3 id={hid} class="e-h sc-h">{title}</h3>
+  <div class="sc-grid">
+    <div class="sheet" data-interaction={entry.id}>
+      <div class="ctx">
+        <span class="label">Your little cheat sheet</span>
+        <label class="sr" for={`${uid}-context`}>Shortcut context</label>
+        <select id={`${uid}-context`} data-switch hidden>
+          <option value="obsidian">Obsidian</option>
+          <option value="chrome">Chrome</option>
+        </select>
+      </div>
+      <label class="search-label" for={`${uid}-search`} hidden>Find an action</label>
+      <input class="search" id={`${uid}-search`} type="search" placeholder="What are you trying to do?" autocomplete="off" data-search hidden />
+      <div class="groups">
+        {GROUPS.map((group) => (
+          <div class="group" data-group={group.key}>
+            <h4>{group.title}</h4>
+            <ul>
+              {ACTIONS.filter((action) => action.pinned === group.pinned).map((action) => (
+                <li
+                  class="row"
+                  data-id={action.id}
+                  data-context={action.context}
+                  data-order={action.order}
+                  data-name={action.name}
+                  data-chord={action.chord}
+                  hidden={action.context !== INITIAL}
+                >
+                  <span class="name">{action.name}</span>
+                  <span class="chord"><kbd>{action.chord}</kbd></span>
+                  <button type="button" class="pin" aria-pressed={action.pinned ? 'true' : 'false'} aria-label={`${action.pinned ? 'Unpin' : 'Pin'} ${action.name}`} hidden>
+                    {action.pinned ? 'Unpin' : 'Pin'}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+        <p class="empty" data-empty hidden>Nothing on this little slip. Try another word.</p>
+      </div>
+      <p class="feedback" role="status" data-feedback>A familiar action. A small thing to learn.</p>
+    </div>
+    <div class="sc-copy"><slot /></div>
+  </div>
+</div>
+
+<style>
+  .sc { font-family: var(--sans); }
+  .sc-h { font: 400 clamp(28px, 3vw, 40px)/1.15 var(--serif); letter-spacing: -.02em; max-width: 22ch; text-wrap: balance; }
+  .sc-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 28px 56px; align-items: start; margin-top: 26px; }
+  @media (max-width: 880px) { .sc-grid { grid-template-columns: 1fr; } }
+
+  .sheet { position: relative; max-width: 560px; padding: 25px; border: 1px solid rgb(232 204 208 / 23%); border-radius: 18px; background: linear-gradient(125deg, rgb(57 48 59 / 87%), rgb(34 38 48 / 91%)); box-shadow: 0 25px 50px rgb(0 0 0 / 20%); color: var(--text); }
+  .sheet::before { content: ''; position: absolute; left: 14px; right: 14px; top: -8px; height: 9px; border: 1px solid rgb(202 187 180 / 15%); border-bottom: 0; border-radius: 12px 12px 0 0; background: #221c25; }
+  .ctx { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .label { font-size: 11px; letter-spacing: .15em; text-transform: uppercase; color: var(--rose); }
+  select { max-width: 55%; min-height: 44px; padding: 8px 24px 8px 9px; border: 1px solid #807483; border-radius: 7px; background: #231d28; color: var(--text); font: 13px var(--sans); cursor: pointer; }
+  .search-label { display: block; margin-top: 25px; font-size: 12px; color: var(--text-soft); }
+  .search { box-sizing: border-box; width: 100%; margin-top: 7px; padding: 11px 13px; border: 1px solid rgb(136 117 134 / 44%); border-radius: 7px; background: rgb(16 15 24 / 65%); color: var(--text); font: 15px var(--sans); }
+  .search::placeholder { color: #c0aeb8; }
+  .groups { min-height: 243px; margin-top: 23px; }
+  .group h4 { margin: 17px 0 6px; font: 400 10px var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--rose); }
+  .group ul { margin: 0; padding: 0; list-style: none; }
+  .row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding: 9px 0; border-top: 1px solid rgb(233 205 213 / 10%); }
+  .name { font-size: 14px; }
+  .chord { font-size: 12px; color: #dfd0d5; }
+  kbd { display: inline-block; padding: 2px 7px; border: 1px solid currentColor; border-bottom-width: 3px; border-radius: 4px; font: 500 11px/1.55 var(--sans); white-space: nowrap; }
+  .pin { min-width: 44px; min-height: 44px; border: 0; border-radius: 5px; background: rgb(243 232 220 / 3%); color: var(--text-soft); font: 11px var(--sans); cursor: pointer; }
+  .pin:hover { background: rgb(243 232 220 / 9%); }
+  .pin[aria-pressed='true'] { background: rgb(239 142 161 / 13%); color: #f5bdcd; }
+  .empty { margin: 0; padding: 30px 0; font-size: 14px; color: var(--text-soft); }
+  .feedback { min-height: 18px; margin: 15px 0 0; font-size: 11px; color: var(--text-soft); }
+
+  @media (max-width: 850px) {
+    .sheet { padding: 19px; }
+    .row { gap: 7px; }
+    .name { font-size: 12px; }
+    .chord { font-size: 10px; }
+    kbd { padding: 2px 4px; }
+  }
+  @media (max-width: 360px) {
+    .sheet { padding: 16px; }
+    .row { grid-template-columns: minmax(0, 1fr) auto; gap: 3px; }
+    .chord { grid-column: 1; grid-row: 2; }
+    .pin { grid-column: 2; grid-row: 1 / 3; }
+    .groups { min-height: 290px; }
+  }
+</style>

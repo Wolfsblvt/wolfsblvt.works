@@ -1,14 +1,45 @@
 ---
-/** smolpng's window. Placeholder voice and branding until its own window is authored. */
+/**
+ * smolpng's window: version B of the D-1 design, "ice plane, coral cut", which Wolf chose. A light window inside the
+ * dark walk: smolpng is light-first and speaks in its own palette (leaned on Gura's official colours) and in Nunito.
+ * Squishling's full ASCII drawing is the mascot's command-line form; the commissioned illustration joins it later.
+ * The drop is an illustration with a finished state, not a tool: nothing on this page compresses anything.
+ */
+import './smolpng.css';
 ---
 
-<section class="frame lift" data-placeholder="project-window" style="padding-top:clamp(56px,8vh,90px)" aria-labelledby="smol-h">
-  <div class="smol">
-    <div class="smol-win" data-reveal="fade">
-      <h2 id="smol-h" class="smol-h">Make images smol.</h2>
-      <p style="margin:18px 0 0;font-size:18px;line-height:1.5;max-width:36ch">smolpng: local-first image compression for people, scripts, and agents.</p>
-      <span class="btn btn-solid btn-off" style="margin-top:24px" aria-disabled="true" title="smolpng doesn’t have a public home yet">Explore smolpng →</span>
+<section class="frame lift smol-frame" aria-labelledby="smol-h">
+  <div class="smol-win" data-reveal="smol">
+    <div class="smol-grid">
+      <div class="smol-copy">
+        <p class="smol-kicker"><span class="smol-wip">Work in progress</span></p>
+        <h2 id="smol-h" class="smol-h">Make images <em>smol.</em></h2>
+        <p class="smol-sub">Big pictures. Little fuss.</p>
+        <p class="smol-body">For the screenshot that won’t send and the photo that won’t fit. Give it a little squish and get on with your day.</p>
+        <p class="smol-body">We’re building smolpng to be wherever you need it: a drop on your desktop, a shortcut on your phone, a little website of your own—even a helping paw for your agents.</p>
+        <div class="smol-actions">
+          <a class="smol-btn" href="https://github.com/Wolfsblvt/smolpng">Source on GitHub →</a>
+          <span class="smol-btn smol-btn-off" aria-disabled="true" title="smolpng’s website is still being made">Website coming</span>
+        </div>
+      </div>
+      <div class="smol-stage">
+        <div class="smol-mascot">
+          <div class="smol-blob"><pre class="smol-ascii" role="img" aria-label="Squishling, drawn in ASCII: a round creature with narrowed happy eyes, holding a picture against its chest with both hands">     ( ¬ω¬ )
+  /╭───────╮\
+ (_) ○╱╲_ (_)
+   ╰───────╯╲_⌒)</pre></div>
+          <p class="smol-meet"><strong>Meet Squishling.</strong> Will squish for headpats.</p>
+          <p class="smol-meet-sub">We’ve commissioned a VTuber for their illustrated look. The ASCII cutie is staying, too.</p>
+        </div>
+        <figure class="smol-drop" role="img" aria-label="A camera photo dropped on smolpng comes back beside the original as a much smaller copy: 657 KB in, 287 KB out.">
+          <div class="smol-zone">
+            <div class="smol-chip smol-chip-in"><span>camera.jpg</span><span class="smol-chip-size">657 KB</span></div>
+            <div class="smol-chip smol-chip-out"><span>camera.smol.jpg</span><span class="smol-chip-size">287 KB</span></div>
+            <div class="smol-stamp">−56%</div>
+          </div>
+          <figcaption>much smoller.</figcaption>
+        </figure>
+      </div>
     </div>
-    <div class="squish" role="img" aria-label="Placeholder for the commissioned Squishling artwork">Squishling, hugging an oversized image inward. Commissioned art pending; artist credited here.</div>
   </div>
 </section>

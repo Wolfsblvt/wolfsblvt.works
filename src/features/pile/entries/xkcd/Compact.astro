@@ -1,0 +1,24 @@
+---
+/** xkcd Reading Tracker, compact: a small blue-grey bookmark with the extension's own icon and its hook. */
+import { Image } from 'astro:assets';
+import type { PileEntry } from '../../catalogue';
+import icon from './icon.png';
+
+interface Props {
+  entry: PileEntry;
+}
+const { entry } = Astro.props;
+---
+
+<div class="bm">
+  <Image src={icon} alt="" width={56} height={56} class="bm-icon" />
+  <span class="bm-name">{entry.data.title}</span>
+  <span class="bm-hook">You were here.</span>
+</div>
+
+<style>
+  .bm { display: grid; gap: 8px; padding: 18px 16px 20px; background: #17252c; border-radius: 7px 7px 1px 1px; border-bottom: 5px solid #78a2b2; font-family: var(--sans); color: var(--text); }
+  .bm-icon { display: block; width: 52px; height: 52px; border-radius: 12px; }
+  .bm-name { font-weight: 600; font-size: 15px; line-height: 1.3; }
+  .bm-hook { font-family: var(--serif); font-size: 19px; line-height: 1.3; color: #c6e8ef; }
+</style>

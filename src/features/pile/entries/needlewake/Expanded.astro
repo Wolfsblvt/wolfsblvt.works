@@ -1,0 +1,63 @@
+---
+/**
+ * Needlewake, expanded: one half-hour of work as a usage interval, 38% to 46%, with the associated and the
+ * unassigned share of that change side by side. The unknown part stays in the picture, hatched. No interaction.
+ */
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+  hid: string;
+}
+const { entry, hid } = Astro.props;
+---
+
+<div class="nw">
+  <h3 id={hid} class="e-h nw-h">{entry.data.title}</h3>
+  <div class="nw-scene">
+    <div class="nw-top">
+      <div><span class="kicker">One half-hour of work</span><div class="nw-range">14:00 — 14:30</div></div>
+      <div class="nw-change">+8 <span>pp observed</span></div>
+    </div>
+    <svg class="nw-chart" viewBox="0 0 560 140" preserveAspectRatio="none" role="img" aria-label="Subscription usage rises from 38 percent at 14:00 to 46 percent at 14:30, an increase of 8 percentage points.">
+      <path d="M5 115H555M5 65H555M5 15H555" fill="none" stroke="#5b4438" stroke-width="1" stroke-dasharray="2 5" />
+      <path d="M5 115H90L140 108H195L245 76H290L355 25H430L490 15H555V135H5Z" fill="#eca557" fill-opacity=".05" />
+      <path d="M5 115H90L140 108H195L245 76H290L355 25H430L490 15H555" fill="none" stroke="#eca557" stroke-width="3" />
+      <circle cx="245" cy="76" r="5" fill="#eca557" />
+      <circle cx="355" cy="25" r="5" fill="#eca557" />
+    </svg>
+    <div class="nw-ends"><span>38%</span><span>46%</span></div>
+    <div class="nw-split" role="img" aria-label="6.5 percentage points associated; 1.5 percentage points unassigned"><span class="nw-known"></span><span class="nw-unknown"></span></div>
+    <dl class="nw-key">
+      <div><dt>Associated</dt><dd>6.5 pp</dd><dd class="nw-note">Three session families active</dd></div>
+      <div><dt>Unassigned</dt><dd>1.5 pp</dd><dd class="nw-note">Still part of the story</dd></div>
+    </dl>
+  </div>
+  <div class="nw-copy"><slot /></div>
+</div>
+
+<style>
+  .nw { max-width: 640px; font-family: var(--sans); }
+  .nw-h { font: 500 clamp(26px, 2.8vw, 34px)/1.15 var(--serif); letter-spacing: -.01em; }
+  .nw-scene { margin: 26px 0 0; padding: 24px 0; border-top: 1px solid #684739; border-bottom: 1px solid #684739; background: linear-gradient(180deg, rgb(42 27 22 / 11%), transparent); }
+  .nw-top { display: flex; justify-content: space-between; align-items: center; gap: 18px; }
+  .nw-range { margin-top: 4px; font: 18px/1.5 var(--mono); color: var(--text); }
+  .nw-change { font: 400 36px/1 var(--serif); color: var(--orange); text-align: right; white-space: nowrap; }
+  .nw-change span { display: block; margin-top: 5px; font: 11px/1.5 var(--sans); color: var(--text-soft); }
+  .nw-chart { display: block; width: 100%; height: 140px; margin: 28px 0 0; }
+  .nw-ends { display: flex; justify-content: space-between; font: 12px/1.5 var(--mono); color: #ceb8ab; }
+  .nw-split { display: flex; gap: 3px; height: 10px; margin: 25px 0 14px; }
+  .nw-known { width: 81.25%; background: var(--orange); }
+  .nw-unknown { box-sizing: border-box; width: 18.75%; border: 1px solid #a28e80; background: repeating-linear-gradient(135deg, transparent 0 3px, #a28e80 3px 4px); }
+  .nw-key { display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; margin: 0; }
+  .nw-key div { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; font: 12px/1.5 var(--sans); }
+  .nw-key dt { color: #edc59c; }
+  .nw-key div:last-child dt { color: var(--text-soft); }
+  .nw-key dd { margin: 0; color: var(--text); }
+  .nw-key .nw-note { grid-column: 1 / -1; font-size: 11px; color: #baa69a; }
+  .nw-copy { margin-top: 6px; }
+  @media (max-width: 600px) {
+    .nw-range { font-size: 14px; }
+    .nw-key { grid-template-columns: 1fr; gap: 14px; }
+  }
+</style>

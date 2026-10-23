@@ -1,10 +1,11 @@
 /**
  * Loads the Pile's collection in Endless order and validates the small executable contract: unique safe ids, every
- * entry ordered exactly once, related-entry links that resolve, ticket destinations that are URL links, and supported
- * link schemes. Errors name the entry and field.
+ * entry ordered exactly once, related-entry links that resolve, ticket destinations that are URL links, supported
+ * link schemes, and no scene without its entry. Errors name the entry and field.
  */
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { ENDLESS_ORDER } from './order';
+import { SCENE_IDS } from './scenes';
 
 export type PileEntry = CollectionEntry<'pile'>;
 export type PileForm = PileEntry['data']['form'];
@@ -38,6 +39,9 @@ export async function loadCatalogue(): Promise<PileEntry[]> {
     if (seen.has(id)) problems.push(`order.ts: "${id}" is listed twice`);
     seen.add(id);
     if (!byId.has(id)) problems.push(`order.ts: "${id}" has no entry in src/content/pile/`);
+  }
+  for (const id of SCENE_IDS) {
+    if (!byId.has(id)) problems.push(`entries/${id}/: has a scene but no entry in src/content/pile/`);
   }
   if (problems.length) throw new Error(`The Pile's collection is invalid:\n- ${problems.join('\n- ')}`);
 

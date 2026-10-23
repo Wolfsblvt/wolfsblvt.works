@@ -1,0 +1,38 @@
+---
+/**
+ * Shikkuri, expanded: the same door with the short passage beside it. The door's line becomes the headline, one
+ * sentence per row, and the entry's paragraphs follow in the copy block. The door is not an invitation to log in,
+ * request access or wait for anything.
+ */
+import type { PileEntry } from '../../catalogue';
+import Door from './Door.astro';
+
+interface Props {
+  entry: PileEntry;
+  hid: string;
+}
+const { entry, hid } = Astro.props;
+const { title, form } = entry.data;
+const caption = form.kind === 'door' ? form.caption : '';
+const lines = caption.split(/(?<=[.!?])\s+/);
+---
+
+<div class="sk">
+  <Door size="expanded" label="A closed blue-green door. A small paper note on its face says An evening to play, above three small game-box spines." />
+  <div class="sk-words">
+    <h3 id={hid} class="e-h sk-h">{title}</h3>
+    <p class="sk-hook">{lines.map((line) => <span class="sk-hook-line">{line}</span>)}</p>
+    <slot />
+  </div>
+</div>
+
+<style>
+  .sk { display: flex; align-items: center; gap: clamp(28px, 5vw, 60px); max-width: 720px; padding: 12px 0 20px; }
+  .sk-words { min-width: 0; }
+  .sk-h { font: 500 clamp(26px, 2.8vw, 34px)/1.15 var(--serif); letter-spacing: -.01em; }
+  .sk-hook { margin: 12px 0 0; font: 400 clamp(20px, 2vw, 24px)/1.35 var(--serif); color: var(--text); font-variation-settings: 'opsz' 24; }
+  .sk-hook-line { display: block; }
+  @media (max-width: 560px) {
+    .sk { flex-direction: column; align-items: flex-start; gap: 24px; }
+  }
+</style>

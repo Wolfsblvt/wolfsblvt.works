@@ -1,4 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
+import { ENDLESS_ORDER } from '../../src/features/pile/order';
 
 const endlessHeight = (page: Page) => page.locator('[data-endless-outer]').evaluate((el) => el.getBoundingClientRect().height);
 
@@ -104,7 +105,7 @@ test.describe('without JavaScript', () => {
   test('every entry is readable and every address works natively', async ({ page }) => {
     await page.goto('/');
     await expect(page.locator('[data-endless-outer]')).toBeVisible();
-    await expect(page.locator('.e-item')).toHaveCount(19);
+    await expect(page.locator('.e-item')).toHaveCount(ENDLESS_ORDER.length);
     await expect(page.locator('[data-pile-static-open]')).toHaveAttribute('href', '#endless');
     await page.goto('/#pile-receipt');
     await expect(page.locator('#pile-receipt')).toBeInViewport();

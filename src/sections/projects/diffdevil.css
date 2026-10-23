@@ -1,0 +1,40 @@
+/* diffdevil, in its own world: the product's own type (IBM Plex), colours and captures. */
+.dd { background: #151922; border-top: 1px solid #484d58; border-bottom: 1px solid #484d58; font-family: 'IBM Plex Sans', sans-serif; color: #f0f2f5; padding: 64px 0 60px; }
+.dd-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 36px 64px; align-items: center; }
+.dd-origin { font-size: 13px; color: #828690; margin-bottom: 22px; max-width: 46ch; }
+.dd-logo { height: clamp(48px, 6vw, 72px); width: auto; display: block; }
+.dd-tag { margin: 26px 0 0; font-size: clamp(26px, 2.6vw, 36px); line-height: 1.1; letter-spacing: -.015em; font-weight: 600; }
+.dd-sub { margin: 12px 0 0; font-size: 20px; line-height: 1.4; color: #b4b7be; }
+.dd-body { margin: 16px 0 0; font-size: 15px; line-height: 1.65; color: #b4b7be; max-width: 46ch; }
+.dd-btn { display: inline-flex; align-items: center; min-height: 40px; margin-top: 28px; padding: 0 18px; border-radius: 6px; background: #f061ba; color: #0c0f17; font: 600 14px 'IBM Plex Sans', sans-serif; text-decoration: none; }
+.dd-btn:hover { background: #ff7fcb; color: #0c0f17; }
+.dd-k { display: block; font: 500 11px/1.3 'IBM Plex Mono', monospace; letter-spacing: .08em; text-transform: uppercase; color: #828690; }
+
+/* The counting idea: GitHub's two counters, quieter, then the one number diffdevil gives you. */
+.dd-compare { margin: 0; display: grid; grid-template-columns: auto auto 1fr; align-items: center; gap: 18px 22px; padding: 26px 28px 20px; background: #0c0f17; border: 1px solid #2c303a; border-radius: 10px; }
+.dd-counts { display: block; margin-top: 8px; font: 500 clamp(22px, 2.2vw, 30px)/1 'IBM Plex Mono', monospace; color: #b4b7be; white-space: nowrap; }
+.dd-counts .a { color: #8fd6aa; }
+.dd-counts .d { color: #ff9fb0; }
+.dd-arrow { font-size: 26px; color: #4d5260; }
+.dd-n { display: inline-block; margin-top: 2px; font: 600 clamp(56px, 6vw, 84px)/1 'IBM Plex Sans', sans-serif; letter-spacing: -.04em; color: #f0f2f5; }
+.dd-w { display: inline-block; margin-left: 12px; font: 600 clamp(18px, 1.8vw, 24px)/1 'IBM Plex Sans', sans-serif; color: #f061ba; }
+.dd-compare figcaption { grid-column: 1 / -1; padding-top: 12px; border-top: 1px solid #2c303a; font-size: 13px; color: #828690; }
+.js .dd-changed { opacity: 0; transform: translateY(10px); transition: opacity .6s ease .35s, transform .6s ease .35s; }
+.js [data-on] .dd-changed { opacity: 1; transform: none; }
+@media (max-width: 460px) { .dd-compare { grid-template-columns: 1fr; gap: 14px; } .dd-arrow { transform: rotate(90deg); width: max-content; } }
+
+/* The App: the meaningful expansion. */
+.dd-app { margin-top: 64px; display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.6fr); gap: 28px 48px; align-items: center; }
+.dd-app h3 { margin: 10px 0 0; font-size: clamp(28px, 3vw, 40px); line-height: 1.05; letter-spacing: -.02em; font-weight: 600; }
+.dd-app p { margin: 14px 0 0; font-size: 15px; line-height: 1.6; color: #b4b7be; max-width: 42ch; }
+.dd-shot { display: block; width: 100%; height: auto; border-radius: 10px; border: 1px solid #2c303a; box-shadow: 0 30px 60px -30px rgb(0 0 0 / 70%); }
+@media (max-width: 900px) { .dd-app { grid-template-columns: 1fr; } }
+
+/* The extension: a quieter third note. */
+.dd-ext { margin-top: 44px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 20px 40px; align-items: center; }
+.dd-ext-shot { display: block; width: min(100%, 440px); height: auto; border-radius: 8px; border: 1px solid #2c303a; }
+.dd-ext-line { margin: 0; font-size: 20px; font-weight: 600; line-height: 1.3; }
+.dd-ext-line span { display: block; margin-top: 6px; font-size: 14px; font-weight: 400; color: #828690; }
+@media (max-width: 720px) { .dd-ext { grid-template-columns: 1fr; } }
+
+@media (prefers-reduced-motion: reduce) { .js .dd-changed { opacity: 1 !important; transform: none !important; } }

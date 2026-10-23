@@ -1,0 +1,39 @@
+---
+/**
+ * GitHub Agent Faces, compact: the title, the hook on two lines, and three initial portraits in their own colours
+ * beside the names they stand for.
+ */
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+}
+const { entry } = Astro.props;
+const voices = [
+  ['Nyxara', 'nyxara'],
+  ['Katja', 'katja'],
+  ['Juno', 'juno'],
+] as const;
+---
+
+<div class="faces">
+  <span class="name">{entry.data.title}</span>
+  <span class="hook">Same account.<br />Different voices.</span>
+  <span class="voices">
+    {voices.map(([voice, tone]) => <span class="voice"><span class:list={['initial', tone]} aria-hidden="true">{voice.charAt(0)}</span>{voice}</span>)}
+  </span>
+</div>
+
+<style>
+  .faces { display: grid; padding: 8px 8px 10px; font-family: var(--sans); color: var(--text); text-shadow: 0 0 8px #100b11; }
+  .name { font-weight: 600; font-size: 16px; line-height: 1.3; }
+  .hook { margin-top: 9px; font-family: var(--serif); font-size: 18px; line-height: 1.4; }
+  .voices { display: grid; gap: 8px; margin-top: 16px; }
+  .voice { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+  .initial { display: inline-grid; place-items: center; flex: none; width: 28px; height: 28px; border-radius: 50%; background: #adbcf2; color: #17131c; font-weight: 600; font-size: 12px; text-shadow: none; }
+  .katja { background: #ebbb79; }
+  .juno { background: #d3afd9; }
+  @media (max-width: 560px) {
+    .voices { display: flex; flex-wrap: wrap; gap: 13px; }
+  }
+</style>

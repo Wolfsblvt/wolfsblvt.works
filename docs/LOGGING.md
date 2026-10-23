@@ -28,6 +28,8 @@ state), no analytics and no product telemetry.
 | --- | --- | --- |
 | `contact.submission` | exactly once per POST to the contact service, on every exit path | `stage` names where it ended: `sent`, `sent-copy-failed`, `internal-send-failed`, or a refusal (`disabled`, `body-too-large`, `bad-request`, `origin`, `content-type`, `honeypot`, `form-token`, `rate-limited`, `rate-unavailable`, `validation`, `turnstile`) |
 
+| `site.worker.error` | once when the site Worker fails unexpectedly and answers with the 503 page | the error's name and message, truncated; never the request, its headers or any visitor content |
+
 Page views produce no application event. The home page's pile seed is computed and discarded; nothing about it is
 logged.
 

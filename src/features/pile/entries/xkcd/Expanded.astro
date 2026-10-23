@@ -1,0 +1,48 @@
+---
+/**
+ * xkcd Reading Tracker, expanded: the same bookmark beside an authored reading state ("Continue at #328") and the quiet
+ * Browse / All / Unread / Favorites strip. The strip is display content, not controls; the real actions are the links.
+ */
+import { Image } from 'astro:assets';
+import type { PileEntry } from '../../catalogue';
+import icon from './icon.png';
+
+interface Props {
+  entry: PileEntry;
+  hid: string;
+}
+const { entry, hid } = Astro.props;
+const { title, form } = entry.data;
+---
+
+<div class="xk">
+  <div class="xk-head">
+    <span class="kicker">{form.kind === 'chip' ? form.platform : ''}</span>
+    <h3 id={hid} class="e-h xk-h">{title}</h3>
+  </div>
+  <div class="xk-book">
+    <Image src={icon} alt="" width={68} height={68} class="xk-icon" />
+    <div>
+      <strong>Continue at #328</strong>
+      <small>#327 · Read · Favorite</small>
+    </div>
+  </div>
+  <div class="xk-modes" aria-hidden="true"><span>Browse</span><span>All</span><span>Unread</span><span>Favorites</span></div>
+  <div class="xk-copy"><slot /></div>
+</div>
+
+<style>
+  .xk { max-width: 620px; font-family: var(--sans); }
+  .xk-h { margin-top: 8px; font: 500 clamp(26px, 2.8vw, 34px)/1.15 var(--serif); letter-spacing: -.01em; }
+  .xk-book { display: flex; align-items: center; gap: 18px; margin-top: 22px; padding: 20px; background: #d4e3e6; color: #15232a; border-left: 5px solid var(--cyan); }
+  .xk-icon { display: block; width: 68px; height: 68px; border-radius: 14px; flex: none; }
+  .xk-book strong { display: block; font-size: 21px; font-weight: 500; }
+  .xk-book small { display: block; margin-top: 4px; font-size: 13px; }
+  .xk-modes { display: flex; flex-wrap: wrap; gap: 8px 22px; padding: 12px 20px; background: #e7eff0; color: #263b44; font-size: 13px; }
+  .xk-modes span:first-child { color: #4b626a; }
+  @media (max-width: 560px) {
+    .xk-book { gap: 12px; padding: 16px 12px; }
+    .xk-book strong { font-size: 18px; }
+    .xk-icon { width: 50px; height: 50px; }
+  }
+</style>

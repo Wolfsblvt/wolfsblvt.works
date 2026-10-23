@@ -10,7 +10,8 @@ Wolf's private data. It carries only what is specific to this repository.
 
 Read [docs/VISION.md](docs/VISION.md) for what the site is for and [docs/DECISIONS.md](docs/DECISIONS.md) before
 changing how anything looks or behaves: most of the design is deliberate in ways the code can't explain. The design
-canvas in `design/the-walk/project/` and maintained identity masters in `brand/source/works/` are the design sources.
+canvas in `design/the-walk/project/` and maintained identity masters in `brand/source/works/` are the design sources;
+the five project windows live in `src/sections/projects/` and the Pile's entry scenes in `src/features/pile/entries/`.
 `design/marks/` preserves the co-design record; `brand/bundle/works/` is the sole consumer identity root. A change that departs from
 them is a decision to record, not a cleanup. [docs/PROJECT-MAP.md](docs/PROJECT-MAP.md) says where things live.
 [The asset catalogue](assets/README.md) points to the canonical SVG, PNG and animated files. Website production reads
@@ -29,6 +30,7 @@ npm run dev:worker          # built site behind the Worker, http://localhost:878
 npm run check               # the canonical verification: types, unit and workerd tests, build, output check
 npm run qa                  # browser suite (Playwright, Chromium)
 npm run check:publish       # what still blocks publication
+npm run build:contact-only  # the first launch step: the contact page and its assets, nothing else
 ```
 
 [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) has every command, the generated files and the publication checklist.
@@ -64,8 +66,10 @@ on it.
 - **Secrets.** `.dev.vars` is local and ignored. Real secrets are set by Wolf Ops with `wrangler secret put`.
 - **Deployment.** `wrangler.jsonc` is deliberately dormant (no account, routes or domains). Deploying, adding routes,
   changing DNS or Cloudflare settings is Wolf Ops work, not part of changes here.
-- **Placeholders.** Illustrative Pile pieces, fixture values and `data-placeholder` windows must stay visibly marked.
-  `npm run check:publish` refuses a public build while any remain; don't silence it.
+- **Showcase, not audit.** A composed scene, an authored number, a mock interaction or an imagined moment is finished
+  public content: no "illustrative", "fixture" or "not built" captions, no `illustrative: true`, one short standing
+  line per project at most. `illustrative: true` and `data-placeholder` mean unreplaced design-time scaffolding only,
+  which `npm run check:publish` refuses; don't silence it, replace the scaffolding.
 - **Generated files.** `artifacts/`, `public/fonts/`, the favicons, Yoru's sheets and `src/generated/` are build output.
   The social cards in `public/social/` are committed; re-render them with `npm run cards`.
 

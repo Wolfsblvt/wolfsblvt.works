@@ -1,20 +1,21 @@
 ---
-title: "xkcd tracker"
+title: "xkcd Reading Tracker"
 form:
   kind: chip
-  mark:
-    letter: "x"
-    tint: "#73cae3"
   platform: "Chrome extension"
 daily:
   include: true
   footprint: small
-subline: "Remembers which xkcd comics you’ve already read."
+subline: "You were here."
 links:
+  - id: store
+    kind: app
+    label: "Add to Chrome"
+    href: "https://chromewebstore.google.com/detail/xkcd-reading-tracker/daemkaclgpcpeekkhnnkleeajbhnbkmd"
   - id: src
     kind: source
     label: "Source on GitHub"
     href: "https://github.com/Wolfsblvt/xkcd-reading-tracker"
 ---
 
-[One or two sentences from Wolf: what it does once installed, and whether it is ready to use.]
+Keep your place, save the good ones, and carry on reading—right on xkcd.

@@ -1,0 +1,61 @@
+---
+/**
+ * Shikkuri, alternative expanded (the interactive set's game-sleeve specimen). Not registered: files under alt/ are
+ * not discovered by the Pile; a comparison page imports this directly and mounts alt/interaction.ts on the element
+ * marked data-interaction. Same props as a regular expanded scene, and the copy block arrives through the default
+ * slot in the same way. A late-evening panel: the words left, and right a game sleeve whose mood the visitor can
+ * choose (Quiet, Curious, One more round). The buttons stay hidden until the interaction mounts; at rest the quiet
+ * sleeve is complete.
+ */
+import type { PileEntry } from '../../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+  hid: string;
+}
+const { entry, hid } = Astro.props;
+const { title } = entry.data;
+---
+
+<div class="gs" data-interaction={`${entry.id}-alt`}>
+  <div class="gs-words">
+    <h3 id={hid} class="e-h gs-h">{title}</h3>
+    <slot />
+  </div>
+  <div class="gs-show">
+    <span class="gs-back" aria-hidden="true"></span>
+    <div class="gs-art" data-art data-mood="quiet" data-label="somewhere quiet" role="img" aria-label="A game sleeve: a warm moon above a quiet green landscape."></div>
+    <p class="gs-mood" data-mood-copy aria-live="polite">A little room to wander.</p>
+    <div class="gs-moods" role="group" aria-label="Choose the feeling of the evening" data-moods hidden>
+      <button type="button" data-mood="quiet" aria-pressed="true">Quiet</button>
+      <button type="button" data-mood="curious" aria-pressed="false">Curious</button>
+      <button type="button" data-mood="again" aria-pressed="false">One more round</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .gs { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 25px; align-items: center; max-width: 920px; min-height: 560px; padding: 56px 48px; border: 1px solid #3b554d; border-radius: 14px; background: linear-gradient(125deg, #223830, #142a2c 56%, #1b2430); font-family: var(--sans); }
+  .gs-words { min-width: 0; }
+  .gs-h { font: 500 clamp(26px, 2.8vw, 34px)/1.15 var(--serif); letter-spacing: -.01em; color: #e2e4ce; }
+  .gs-words :global(.e-body p) { color: #c3d0c7; }
+  .gs-words :global(.e-std) { color: #a1bbb0; }
+  .gs-show { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; min-height: 445px; }
+  .gs-back { position: absolute; left: calc(50% - 37px); top: 39px; box-sizing: border-box; width: 213px; height: 277px; border: 10px solid #b7a9bc; border-bottom-width: 36px; box-shadow: 0 15px 25px rgb(0 0 0 / 40%); transform: translateX(-50%) rotate(-11deg); background: radial-gradient(circle at 36% 29%, #e5b4b0 0 13%, transparent 13.5%), linear-gradient(115deg, transparent 28%, #423751 28.5% 36%, transparent 36.5% 73%, #423751 73.5% 80%, transparent 80.5%), linear-gradient(#87748e, #55475f); }
+  .gs-art { position: absolute; left: 50%; top: 16px; box-sizing: border-box; width: 224px; height: 294px; border: 11px solid #dbd9ba; border-bottom-width: 48px; box-shadow: 0 18px 36px rgb(0 0 0 / 40%); transform: translateX(-50%) rotate(5deg); transition: transform .25s ease; background: radial-gradient(circle at 69% 26%, #f3e3b9 0 10%, transparent 10.5%), linear-gradient(155deg, transparent 51%, #45675a 51.5% 68%, #213f3c 68.5% 79%, #172e31 79.5%), linear-gradient(#677e77, #b9c0a1); }
+  .gs-art::after { content: attr(data-label); position: absolute; left: 0; right: 0; bottom: -34px; text-align: center; font: 400 14px var(--serif); color: #33433a; }
+  .gs-art[data-mood="curious"] { border-color: #c9b9cc; transform: translateX(-50%) rotate(-3deg); background: radial-gradient(circle at 40% 35%, #dfaeaa 0 14%, transparent 14.5%), linear-gradient(105deg, transparent 30%, #392f50 30.5% 38%, transparent 38.5% 70%, #392f50 70.5% 76%, transparent 76.5%), linear-gradient(#89768e, #4c425f); }
+  .gs-art[data-mood="again"] { border-color: #dfc79d; transform: translateX(-50%) rotate(8deg); background: linear-gradient(135deg, transparent 35%, #e0aa72 35.5% 43%, transparent 43.5% 59%, #c15b59 59.5% 68%, transparent 68.5%), radial-gradient(circle at 30% 30%, #f8d38b 0 12%, transparent 12.5%), #473b39; }
+  .gs-mood { margin: 0 0 18px; min-height: 27px; text-align: center; font: 400 17px var(--serif); color: #e2e4ce; }
+  .gs-moods { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+  .gs-moods button { appearance: none; cursor: pointer; min-height: 42px; padding: 9px 13px; border: 1px solid #5d7869; border-radius: 30px; background: #132722; color: var(--text); font: 500 11px var(--sans); }
+  .gs-moods button[aria-pressed="true"] { background: #d8dbc1; border-color: #d8dbc1; color: #25372e; }
+  @media (max-width: 720px) {
+    .gs { grid-template-columns: 1fr; gap: 10px; min-height: 0; padding: 31px 24px 25px; }
+    .gs-show { min-height: 424px; }
+    .gs-art { top: 12px; width: 205px; height: 272px; }
+    .gs-back { left: calc(50% - 24px); top: 32px; width: 194px; height: 251px; }
+    .gs-moods button { padding: 9px 11px; font-size: 10px; }
+    .gs-mood { font-size: 16px; }
+  }
+</style>

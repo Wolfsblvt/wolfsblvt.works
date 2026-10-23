@@ -1,0 +1,129 @@
+---
+/**
+ * Lighthouse globe, expanded: the sea-level view is the reward (a low horizon, the Moon, restrained reflection, one
+ * or two distant human lights); the globe is where a place was found. Globe / From the sea switches the two panes
+ * (sea by default), Moonlight / Coastal lights switch independently, and with both off the scene goes almost
+ * completely dark on purpose while the controls stay readable. The copy follows. SVG ids carry the `lg-` prefix.
+ */
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+  hid: string;
+}
+const { entry, hid } = Astro.props;
+---
+
+<div class="lg" data-interaction={entry.id}>
+  <h3 id={hid} class="e-h lg-h">{entry.data.title}</h3>
+  <div class="lg-globe" data-pane="globe" hidden>
+    <svg viewBox="0 0 220 220" role="img" aria-label="A globe of lights with a point selected on the water.">
+      <defs>
+        <linearGradient id="lg-globe-fill" x1="0" y1="0" x2="1" y2="1">
+          <stop stop-color="#285263"/>
+          <stop offset=".55" stop-color="#102b3c"/>
+          <stop offset="1" stop-color="#050d19"/>
+        </linearGradient>
+      </defs>
+      <circle cx="110" cy="110" r="91" fill="url(#lg-globe-fill)" stroke="#526d80" stroke-width="1"/>
+      <g fill="none" stroke="#668397" opacity=".25">
+        <ellipse cx="110" cy="110" rx="49" ry="91"/>
+        <ellipse cx="110" cy="110" rx="76" ry="91"/>
+        <ellipse cx="110" cy="110" rx="91" ry="35"/>
+        <ellipse cx="110" cy="110" rx="91" ry="68"/>
+        <path d="M19 110h182M110 19v182"/>
+      </g>
+      <path d="M82 26c29 34 21 62 39 79s41 12 57 37" fill="none" stroke="#edc889" stroke-width="1.2" opacity=".6"/>
+      <g fill="#f3d8a4">
+        <circle cx="86" cy="32" r="2"/>
+        <circle cx="97" cy="50" r="2.5"/>
+        <circle cx="101" cy="64" r="1.5"/>
+        <circle cx="105" cy="83" r="2"/>
+        <circle cx="120" cy="104" r="3"/>
+        <circle cx="137" cy="114" r="1.5"/>
+        <circle cx="157" cy="121" r="2.5"/>
+        <circle cx="171" cy="134" r="1.7"/>
+        <circle cx="178" cy="143" r="2"/>
+      </g>
+      <circle cx="138" cy="142" r="10" fill="none" stroke="#e6c486" stroke-dasharray="2 3"/>
+      <circle cx="138" cy="142" r="2.5" fill="#e6c486"/>
+    </svg>
+  </div>
+  <div class="lg-sea" data-pane="sea" data-sea>
+    <svg viewBox="0 0 700 340" role="img" aria-label="A view from dark water toward a few distant coastal lights beneath the Moon.">
+      <defs>
+        <radialGradient id="lg-moon-halo">
+          <stop stop-color="#aabccf" stop-opacity=".23"/>
+          <stop offset="1" stop-color="#aabccf" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="lg-water-fill" x1="0" y1="0" x2="0" y2="1">
+          <stop stop-color="#193244"/>
+          <stop offset="1" stop-color="#060c13"/>
+        </linearGradient>
+      </defs>
+      <rect width="700" height="340" fill="#05080d"/>
+      <g class="lg-moon">
+        <circle cx="469" cy="91" r="150" fill="url(#lg-moon-halo)"/>
+        <circle cx="469" cy="78" r="15" fill="#d3d6cd"/>
+        <circle cx="476" cy="73" r="15" fill="#101925"/>
+        <g fill="#cad5db" opacity=".7">
+          <circle cx="111" cy="51" r="1"/>
+          <circle cx="218" cy="104" r=".7"/>
+          <circle cx="354" cy="51" r=".7"/>
+          <circle cx="570" cy="30" r=".8"/>
+          <circle cx="616" cy="113" r=".6"/>
+        </g>
+        <path d="M0 197Q75 195 146 197t142 0 142 0 142 0 128 0v143H0z" fill="url(#lg-water-fill)"/>
+        <g fill="none" stroke="#a3bac7" opacity=".26" stroke-linecap="round">
+          <path d="M451 212h23m-36 12h51m-60 14h62m-84 20h100m-107 17h93m-118 22h145m-143 19h161"/>
+          <path d="M34 233h40m39-15h31m453 36h49M64 289h42m80-27h36" opacity=".2"/>
+        </g>
+      </g>
+      <path d="M0 197l29-4 29 3 45-4 39 4 56-6 38 7 62-3 28 4 51-4 44 3 57-5 44 6 61-5 54 5 63-4v8H0z" fill="#05080b"/>
+      <g class="lg-coast">
+        <g fill="#f3cea0">
+          <circle cx="176" cy="194" r="1.7"/>
+          <circle cx="184" cy="196" r=".7"/>
+          <circle cx="523" cy="196" r=".8"/>
+          <circle cx="548" cy="197" r=".5"/>
+        </g>
+        <path d="M175 202l-1 7m3 6l-2 7" stroke="#edc088" stroke-width="1" opacity=".3"/>
+      </g>
+    </svg>
+    <p class="lg-caption" data-caption aria-live="polite">From the sea</p>
+  </div>
+  <div class="lg-controls" data-controls hidden>
+    <div class="lg-views" role="group" aria-label="Viewpoint">
+      <button type="button" aria-pressed="false" data-view="globe">Globe</button>
+      <button type="button" aria-pressed="true" data-view="sea">From the sea</button>
+    </div>
+    <div class="lg-lights" data-lights>
+      <label><input type="checkbox" data-light="moon" checked /> Moonlight</label>
+      <label><input type="checkbox" data-light="coast" checked /> Coastal lights</label>
+    </div>
+  </div>
+  <div class="lg-copy"><slot /></div>
+</div>
+
+<style>
+  .lg { max-width: 720px; font-family: var(--sans); }
+  .lg-h { font: 500 clamp(26px, 2.8vw, 34px)/1.15 var(--serif); letter-spacing: -.01em; }
+  .lg-globe { display: flex; align-items: center; justify-content: center; min-height: 260px; margin-top: 18px; padding: 12px; border-radius: 7px; background: #08131d; }
+  .lg-globe svg { display: block; width: 235px; height: 235px; }
+  .lg-sea { position: relative; overflow: hidden; min-height: 250px; margin-top: 18px; border-radius: 7px; background: #05080c; }
+  .lg-sea svg { display: block; width: 100%; height: auto; }
+  .lg-moon, .lg-coast { transition: opacity .3s ease; }
+  .lg-sea.moon-off .lg-moon, .lg-sea.coast-off .lg-coast { opacity: 0; }
+  .lg-caption { position: absolute; left: 20px; bottom: 15px; z-index: 1; margin: 0; font: 12px/1.5 var(--mono); color: #b4bcc3; }
+  .lg-controls { margin-top: 14px; }
+  .lg-views, .lg-lights { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .lg-lights { gap: 8px 22px; margin-top: 6px; }
+  .lg-views button { min-height: 38px; padding: 8px 13px; border: 1px solid rgb(255 255 255 / 16%); border-radius: 6px; background: rgb(255 255 255 / 3%); color: var(--text); font: 13px var(--sans); cursor: pointer; }
+  .lg-views button[aria-pressed=true] { background: #e4d4b9; color: #1b2026; border-color: #e4d4b9; }
+  .lg-lights label { display: flex; align-items: center; gap: 8px; padding: 8px 0; font-size: 13px; cursor: pointer; }
+  .lg-lights input { width: 16px; height: 16px; margin: 0; accent-color: #ecd6ad; }
+  @media (max-width: 540px) {
+    .lg-sea svg { width: 145%; max-width: none; margin-left: -22.5%; }
+    .lg-views button, .lg-lights label { min-height: 44px; }
+  }
+</style>

@@ -1,0 +1,34 @@
+---
+/**
+ * Baumhaus, expanded: the same door with room around it and the one sentence. The plaque carries the title legibly,
+ * so the heading is for assistive technology only. Nothing opens and nothing more is said.
+ */
+import type { PileEntry } from '../../catalogue';
+import Door from './Door.astro';
+
+interface Props {
+  entry: PileEntry;
+  hid: string;
+}
+const { entry, hid } = Astro.props;
+const { title, form } = entry.data;
+const caption = form.kind === 'door' ? form.caption : '';
+---
+
+<div class="bh">
+  <Door title={title} size="expanded" label={`A closed wooden door with a ${title} nameplate and a thin line of warm light beneath it.`} />
+  <div class="bh-words">
+    <h3 id={hid} class="e-h sr">{title}</h3>
+    <p class="bh-line">{caption}</p>
+    <slot />
+  </div>
+</div>
+
+<style>
+  .bh { display: flex; align-items: center; gap: clamp(28px, 5vw, 56px); max-width: 640px; padding: 12px 0 20px; }
+  .bh-words { min-width: 0; }
+  .bh-line { margin: 0; font: italic 400 clamp(20px, 2vw, 24px)/1.45 var(--serif); color: var(--text-soft); max-width: 24ch; text-wrap: pretty; font-variation-settings: 'opsz' 24; }
+  @media (max-width: 560px) {
+    .bh { flex-direction: column; align-items: flex-start; gap: 22px; }
+  }
+</style>

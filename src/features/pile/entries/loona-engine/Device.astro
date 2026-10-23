@@ -1,0 +1,38 @@
+---
+/**
+ * Loona Engine's little desk companion: a phone on a small dock, two blue eyes on its screen and a quiet smile. The
+ * compact object and the Endless window share it; a parent sets `--le-u` to scale it. Adding `is-looking` to the
+ * device turns it a little towards the visitor; the transition is dropped under reduced motion so the pose simply
+ * changes.
+ */
+interface Props {
+  /** What the device looks like, for assistive technology; without a label it is decoration beside its words. */
+  label?: string;
+}
+const { label } = Astro.props;
+const a11y = label ? { role: 'img' as const, 'aria-label': label } : { 'aria-hidden': 'true' as const };
+---
+
+<div class="le-device" data-device {...a11y}>
+  <span class="le-neck"></span>
+  <span class="le-base"></span>
+  <span class="le-phone"><span class="le-screen"><span class="le-eyes"><i></i><i></i></span><span class="le-smile"></span></span></span>
+</div>
+
+<style>
+  .le-device { --u: var(--le-u, 1px); position: relative; flex: none; width: calc(230 * var(--u)); height: calc(320 * var(--u)); }
+  .le-neck { position: absolute; left: calc(91 * var(--u)); bottom: calc(24 * var(--u)); width: calc(48 * var(--u)); height: calc(77 * var(--u)); border-radius: calc(18 * var(--u)); background: linear-gradient(90deg, #57666e, #a3ada9, #485962); transform: rotate(-5deg); }
+  .le-base { position: absolute; left: calc(15 * var(--u)); bottom: 0; width: calc(200 * var(--u)); height: calc(58 * var(--u)); border-radius: 50% 50% 30% 30%; background: linear-gradient(#a9b7b2, #7b9292 55%, #3b555c); box-shadow: calc(8 * var(--u)) calc(14 * var(--u)) calc(26 * var(--u)) rgb(0 0 0 / 32%); }
+  .le-base::before { content: ''; position: absolute; left: calc(88 * var(--u)); top: calc(31 * var(--u)); width: calc(25 * var(--u)); height: 3px; border-radius: 3px; background: #b4e4d0; }
+  .le-phone { position: absolute; left: calc(25 * var(--u)); top: 0; display: block; box-sizing: border-box; width: calc(180 * var(--u)); height: calc(256 * var(--u)); padding: calc(7 * var(--u)); border-radius: calc(31 * var(--u)); background: linear-gradient(110deg, #bac8c9, #697d85); box-shadow: calc(10 * var(--u)) calc(13 * var(--u)) calc(20 * var(--u)) rgb(0 0 0 / 32%); transform: rotate(-5deg); transform-origin: 50% 92%; transition: transform .28s ease; }
+  .le-screen { position: relative; display: block; height: 100%; overflow: hidden; border-radius: calc(25 * var(--u)); background: radial-gradient(ellipse at 50% 76%, #123d4e, #0a1521 75%); box-shadow: inset 0 0 0 1px #06161f; }
+  .le-screen::before { content: ''; position: absolute; left: 50%; top: calc(9 * var(--u)); width: calc(55 * var(--u)); height: calc(13 * var(--u)); border-radius: 20px; background: #070b10; transform: translateX(-50%); }
+  .le-eyes { position: absolute; top: calc(90 * var(--u)); left: calc(35 * var(--u)); right: calc(35 * var(--u)); display: flex; gap: calc(27 * var(--u)); transition: transform .2s ease; }
+  .le-eyes i { display: block; width: calc(32 * var(--u)); height: calc(42 * var(--u)); border-radius: 40%; background: #94e6e8; box-shadow: 0 0 calc(18 * var(--u)) rgb(109 219 228 / 27%); }
+  .le-smile { position: absolute; top: calc(154 * var(--u)); left: calc(76 * var(--u)); width: calc(17 * var(--u)); height: calc(7 * var(--u)); border-bottom: 2px solid #8bd9d5; border-radius: 50%; }
+  .le-device.is-looking .le-phone { transform: rotate(8deg); }
+  .le-device.is-looking .le-eyes { transform: translate(calc(8 * var(--u)), calc(2 * var(--u))); }
+  @media (prefers-reduced-motion: reduce) {
+    .le-phone, .le-eyes { transition: none; }
+  }
+</style>

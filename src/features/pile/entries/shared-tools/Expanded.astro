@@ -1,0 +1,86 @@
+---
+/**
+ * Tools behind the tools, expanded: the hook under the title, then three tool rows. Each has its one line, its own
+ * small material (the Forgehand issue/PR slip, the Starlight Works documentation specimen, the labelled glyph gallery)
+ * and its own Explore link beside it.
+ */
+import Icon from '../../../../components/Icon.astro';
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+  hid: string;
+}
+const { entry, hid } = Astro.props;
+const gallery = [
+  ['Chart', 'borrowed-coast/chart'],
+  ['Changed', 'diffdevil/changed'],
+  ['Raw churn', 'diffdevil/raw-churn'],
+  ['Policy bands', 'diffdevil/bands'],
+  ['Works', 'wolfsblvt/works'],
+  ['Signpost', 'wolfsblvt/signpost'],
+] as const;
+---
+
+<div class="st">
+  <h3 id={hid} class="e-h st-h">{entry.data.title}</h3>
+  <slot />
+  <div class="tools">
+    <section class="tool">
+      <h4>Forgehand</h4>
+      <p>The routine around GitHub issues and pull requests.</p>
+      <div class="forge"><span class="forge-mark" aria-hidden="true">#</span><span>issues<br />pull requests</span></div>
+      <a class="lk" href="https://github.com/Wolfsblvt/forgehand">Explore Forgehand<span aria-hidden="true"> ↗</span></a>
+    </section>
+    <section class="tool">
+      <h4>Starlight Works</h4>
+      <p>Linked sidebar groups and GitHub-style alerts for Astro Starlight.</p>
+      <div class="docs">
+        <div class="doc-nav"><b>Guide <Icon ui="lucide:chevron-down" size={14} /></b><span>Start</span><span>Advanced</span></div>
+        <div class="doc-alerts">
+          <div class="doc-alert"><b>Note</b>A little context, right where it helps.</div>
+          <div class="doc-alert tip"><b>Tip</b>The next useful detail.</div>
+        </div>
+      </div>
+      <a class="lk" href="https://github.com/Wolfsblvt/starlight-works">Explore Starlight Works<span aria-hidden="true"> ↗</span></a>
+    </section>
+    <section class="tool">
+      <h4>Wolfsblvt Icons</h4>
+      <p>Shared icons, from interface details to product marks.</p>
+      <div class="glyphs">
+        {gallery.map(([label, name]) => <div class="glyph"><Icon product={name} size={35} /><span>{label}</span></div>)}
+      </div>
+      <a class="lk" href="https://github.com/Wolfsblvt/wolfsblvt-icons">Explore Wolfsblvt Icons<span aria-hidden="true"> ↗</span></a>
+    </section>
+  </div>
+</div>
+
+<style>
+  .st { max-width: 720px; font-family: var(--sans); }
+  .st-h { font: 500 clamp(26px, 2.8vw, 34px)/1.15 var(--serif); letter-spacing: -.01em; }
+  .tools { display: grid; gap: 27px; margin-top: 25px; }
+  .tool { min-width: 0; padding-left: 17px; border-left: 2px solid #ab6d86; }
+  .tool h4 { margin: 0; font-size: 17px; font-weight: 500; line-height: 1.4; }
+  .tool p { max-width: 60ch; margin: 5px 0 11px; font-size: 14px; line-height: 1.6; color: var(--text-soft); }
+  .forge { display: flex; align-items: center; gap: 15px; margin: 0 0 14px; padding: 14px 17px; background: #2b2228; color: #efc6d7; }
+  .forge-mark { font-size: 32px; line-height: 1; color: var(--orange); }
+  .forge span:last-child { font: 12px/1.8 var(--mono); }
+  .docs { display: grid; grid-template-columns: 130px 1fr; gap: 20px; margin: 14px 0; padding: 18px; background: #171c25; color: #e4e8ef; }
+  .doc-nav { display: grid; align-content: start; gap: 9px; padding-right: 17px; border-right: 1px solid #3c4656; font-size: 13px; }
+  .doc-nav b { display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 500; }
+  .doc-nav span { padding-left: 10px; color: #bcc7d9; }
+  .doc-alerts { display: grid; gap: 13px; min-width: 0; }
+  .doc-alert { padding: 9px 12px; background: #24314a; border-left: 3px solid #94b6f4; font-size: 13px; line-height: 1.6; }
+  .doc-alert b { display: block; font-size: 14px; font-weight: 500; color: #b9d1ff; }
+  .doc-alert.tip { background: #223a2d; border-color: #a6d2ae; }
+  .doc-alert.tip b { color: #b3dfbb; }
+  .glyphs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px 15px; margin: 19px 0 21px; }
+  .glyph { display: grid; justify-items: center; gap: 9px; min-width: 0; font-size: 12px; text-align: center; color: #e6c6d5; overflow-wrap: anywhere; }
+  .glyph span { color: #d9c9d2; }
+  @media (max-width: 560px) {
+    .docs { grid-template-columns: 1fr; gap: 16px; padding: 14px; }
+    .doc-nav { padding: 0 0 13px; border-right: 0; border-bottom: 1px solid #3c4656; }
+    .glyphs { gap: 18px 9px; }
+    .glyph { font-size: 11px; }
+  }
+</style>

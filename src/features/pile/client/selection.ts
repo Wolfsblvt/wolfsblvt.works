@@ -15,8 +15,9 @@ export interface ManifestEntry {
 }
 
 const WEIGHT: Record<Footprint, number> = { small: 1, medium: 2, large: 3 };
-/** Footprint budget for one day's pile, tuned on the canvas against the real piece sizes. */
-export const BUDGET = 20;
+/** Footprint budget for one day's pile. Tuned against the real collection: solid objects need more air than the
+ * canvas's airy thoughts did, so a day shows eight to ten pieces, not a dozen. */
+export const BUDGET = 16;
 /** Forms eligible to be today's pick: those that read well a little larger, on top. */
 const PICKABLE: readonly Kind[] = ['thought', 'site', 'artifact', 'lineage', 'chip'];
 
@@ -62,26 +63,27 @@ export function dealPile(entries: readonly ManifestEntry[], dateKey: string, see
   return { key, featured, pile };
 }
 
-/** [width as a fraction of the stage, minimum px, maximum px]; a zero fraction means a fixed width. */
-const WIDTH: Record<Kind, readonly [number, number, number]> = {
-  thought: [0.3, 250, 380],
-  note: [0, 210, 240],
-  chip: [0, 150, 150],
-  artifact: [0.24, 270, 320],
-  lineage: [0, 260, 270],
-  door: [0, 160, 160],
-  specimen: [0, 220, 220],
-  site: [0, 270, 280],
+/**
+ * [width as a fraction of the stage, minimum px, maximum px] by footprint. The footprint is the authored size of the
+ * object; the form only decides its tilt. Scenes are composed to these widths.
+ */
+const WIDTH: Record<Footprint, readonly [number, number, number]> = {
+  small: [0.19, 170, 240],
+  medium: [0.27, 250, 340],
+  large: [0.37, 320, 460],
 };
 /** Height estimates before a piece has been measured. */
-export const ESTIMATED_HEIGHT: Record<Kind, number> = { thought: 120, note: 120, chip: 170, artifact: 110, lineage: 110, door: 250, specimen: 84, site: 90 };
-const TILT: Record<Kind, number> = { thought: 3, note: 9, chip: 7, artifact: 5, lineage: 6, door: 3, specimen: 10, site: 6 };
+export const ESTIMATED_HEIGHT: Record<Footprint, number> = { small: 150, medium: 200, large: 250 };
+const TILT: Record<Kind, number> = { thought: 3, note: 7, chip: 6, artifact: 4, lineage: 5, door: 3, specimen: 4, site: 5 };
 
-export function pieceWidth(kind: Kind, stageWidth: number, featured: boolean): number {
-  const [fraction, min, max] = WIDTH[kind];
-  const base = Math.round(Math.min(fraction ? clamp(stageWidth * fraction, min, max) : min, stageWidth * 0.92));
-  return featured ? Math.round(Math.min(stageWidth * 0.92, Math.max(base * 1.3, 330))) : base;
+export function pieceWidth(footprint: Footprint, stageWidth: number, featured: boolean): number {
+  const [fraction, min, max] = WIDTH[footprint];
+  const base = Math.round(Math.min(clamp(stageWidth * fraction, min, max), stageWidth * 0.92));
+  return featured ? Math.round(Math.min(stageWidth * 0.92, Math.max(base * 1.15, 330))) : base;
 }
+
+/** Breathing room kept between a piece and whatever settles onto it. */
+const GAP = 18;
 
 export interface Placement {
   id: string;
@@ -110,14 +112,14 @@ export function packPile(
   const placements: Placement[] = [];
   pile.pile.forEach((entry, order) => {
     const featured = entry === pile.featured;
-    const width = pieceWidth(entry.kind, W, featured);
-    const height = heightOf(entry.id, width) ?? ESTIMATED_HEIGHT[entry.kind];
+    const width = pieceWidth(entry.footprint, W, featured);
+    const height = heightOf(entry.id, width) ?? ESTIMATED_HEIGHT[entry.footprint];
     if (featured) {
       const x = clamp((W - width) / 2 + (rnd() - 0.5) * W * 0.36, 0, Math.max(0, W - width));
       const y = 34;
       const c0 = Math.max(0, Math.floor(x / 8));
       const c1 = Math.min(cols - 1, Math.ceil((x + width) / 8));
-      for (let c = c0; c <= c1; c++) sky[c] = y + height;
+      for (let c = c0; c <= c1; c++) sky[c] = y + height + GAP;
       placements.push({ id: entry.id, x: Math.round(x), y, rotate: round1((rnd() - 0.5) * 3), width, height, order, featured: true });
       return;
     }
@@ -134,8 +136,9 @@ export function packPile(
       if (!best || score < best.score) best = { x: cx, y: landing, c0, c1, score };
     }
     const b = best!;
-    const y = Math.max(0, b.y - (b.y > 0 ? Math.min(height * 0.2, 40) : 0)) + rnd() * 18;
-    for (let c = b.c0; c <= b.c1; c++) sky[c] = y + height;
+    // A small, uneven settle onto the piece below: a little overlap reads as piled, more reads as clutter.
+    const y = Math.max(0, b.y - (b.y > 0 ? Math.min(height * 0.06, 12) : 0)) + rnd() * 14;
+    for (let c = b.c0; c <= b.c1; c++) sky[c] = y + height + GAP;
     placements.push({ id: entry.id, x: Math.round(b.x), y: Math.round(y), rotate: round1((rnd() - 0.5) * TILT[entry.kind]), width, height, order, featured: false });
   });
   const height = placements.reduce((max, p) => Math.max(max, p.y + p.height), 0) + 40;

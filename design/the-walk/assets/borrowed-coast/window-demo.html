@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Borrowed Coast · Walk window study</title>
+<style>
+  /* Night Chart tokens, carried from the ratified v15 design (night-chart.css). */
+  :root { --margin:#1c1a15; --ink:#efe6cf; --ink-2:#b9b199; --ink-3:#847e6b; --water-ink:#84a7a2; --intent:#f2a83b; --sea-1:#0e1f24;
+          --serif:'Alegreya','Iowan Old Style',Georgia,serif; --sans:'Alegreya Sans','Gill Sans','Segoe UI',sans-serif; }
+  html,body { margin:0; background:var(--margin); color:var(--ink); font:400 15px/1.45 var(--sans); }
+  .window { max-width: 980px; margin: 48px auto; padding: 0 16px; }
+  /* The window itself: one crop of the coast, three ways of knowing it. */
+  .coast { position: relative; aspect-ratio: 760 / 540; overflow: hidden; box-shadow: 0 0 0 1px rgba(185,174,146,.32); background: var(--sea-1); }
+  .coast img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity .48s ease; }
+  .coast img.on { opacity: 1; }
+  /* The game's own mode switcher, verbatim grammar: ink on margin, pressed mode inverted, keys 1 2 3. */
+  .modes { position: absolute; right: 14px; bottom: 14px; display: grid; gap: 2px; padding: 3px; background: rgba(28,26,21,.94); box-shadow: 0 0 0 1px rgba(185,174,146,.3); }
+  .modes button { display: flex; align-items: center; gap: 9px; border: 0; background: none; padding: 7px 10px; cursor: pointer; color: var(--ink-2); font: 500 14px var(--sans); text-align: left; }
+  .modes button span { flex: 1; min-width: 64px; }
+  .modes button:hover { color: var(--ink); background: rgba(239,230,207,.05); }
+  .modes button[aria-pressed=true] { background: var(--ink); color: var(--margin); }
+  .modes button[aria-pressed=true] kbd { color: var(--margin); border-color: rgba(28,26,21,.4); }
+  .modes button:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
+  .modes svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  kbd { font: 500 11px var(--sans); color: var(--ink-3); border: 1px solid rgba(185,174,146,.3); padding: 0 4px; }
+  /* One line of chart lettering beneath; what the pressed mode is, in the game's words. */
+  .caption { margin: 10px 2px 0; font: italic 400 15.5px/1.4 var(--serif); color: var(--ink-2); min-height: 1.4em; }
+  .caption b { font-style: normal; font-weight: 500; color: var(--ink); }
+  @media (max-width: 560px) { .modes { position: static; grid-auto-flow: column; justify-content: start; margin-top: 8px; box-shadow: none; padding: 0; } .modes button span { min-width: 0; } .modes kbd { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .coast img { transition: none; } }
+</style></head>
+<body>
+<div class="window">
+  <div class="coast" id="coast">
+    <img class="on" src="assets/window-chart.png" alt="The Borrowed Sea at ebb tide: dark graded water between umber islands, a fight at The Narrows, an ark moored at Lantern Reach." data-mode="chart">
+    <img src="assets/window-watch.png" alt="The same coast in Watch mode: your harbors and ships throw soft lamplight; foreign ships seen recently show as white light with when they were last seen." data-mode="watch">
+    <img src="assets/window-nations.png" alt="The same coast in Nations mode: each nation's held coast in its colour, control marks on the harbors." data-mode="nations">
+    <nav class="modes" aria-label="Chart view">
+      <button data-mode="chart" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3C4 5.8 4.2 7.4 5.7 8.7C6.9 9.7 7.5 10.5 7.5 11.8C7.5 13.2 6.5 14 5.5 15.1C4.3 16.5 4 18.1 4 21"/><path d="M20 3C20 5.6 19.7 7 18.5 8.3C17.5 9.4 17 10.4 17 11.8C17 13.2 17.8 14.1 18.6 15.1C19.6 16.4 20 17.9 20 21"/><path d="M10.5 4C12.5 5.3 11.8 7.4 13 8.9C14 10.3 13.8 12 12.7 13.7C11.7 15.3 11.4 17.3 13 20"/></svg><span>Chart</span><kbd>1</kbd></button>
+      <button data-mode="watch" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17c4-6 12-6 16 0"/><path d="M6 19c4-3 8-3 12 0"/><circle cx="12" cy="14" r="2"/><path d="M12 4v4"/><path d="M7 7l2 2"/><path d="M17 7l-2 2"/></svg><span>Watch</span><kbd>2</kbd></button>
+      <button data-mode="nations" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V6l5 2-5 2"/><path d="M12 20V4l6 2-6 2"/><path d="M19 20v-8l-4 2 4 2"/><path d="M3 20c3-2 6-2 9 0s6 2 9 0"/></svg><span>Nations</span><kbd>3</kbd></button>
+    </nav>
+  </div>
+  <p class="caption" id="caption"></p>
+</div>
+<script>
+  // Three stills, one crop; the switch is the game's own mode nav. Keys 1, 2, 3 work as in the game.
+  const words = { chart: '<b>Chart.</b> The water is the rules: deep channels, tidal shallows, and where the fight is.',
+                  watch: '<b>Watch.</b> What you know: your harbors and ships throw lamplight; what you have seen shows as white light.',
+                  nations: '<b>Nations.</b> Who holds which coast, in their colour, and what each harbor is worth.' };
+  const coast = document.getElementById('coast'), caption = document.getElementById('caption');
+  const show = mode => {
+    for (const img of coast.querySelectorAll('img')) img.classList.toggle('on', img.dataset.mode === mode);
+    for (const b of coast.querySelectorAll('.modes button')) b.setAttribute('aria-pressed', String(b.dataset.mode === mode));
+    caption.innerHTML = words[mode];
+  };
+  coast.querySelectorAll('.modes button').forEach(b => b.addEventListener('click', () => show(b.dataset.mode)));
+  document.addEventListener('keydown', e => { const m = { '1': 'chart', '2': 'watch', '3': 'nations' }[e.key]; if (m && !e.metaKey && !e.ctrlKey) show(m); });
+  show('chart');
+</script>
+</body></html>

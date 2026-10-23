@@ -88,6 +88,11 @@ exists only inside the outlined marks and never ships as a web font.
 **Why.** One warm, readable serif for the walk; one neutral sans for controls; one honest handwriting for the person.
 Everything else belongs to the project it sits in.
 
+**Addendum, 2026-10-23.** Four more faces are self-hosted and used only inside their project's window: Nunito
+(smolpng), Bricolage Grotesque and Atkinson Hyperlegible Next (Karaokebarr), Alegreya and Alegreya Sans (Borrowed
+Coast). Squishling's ASCII drawing uses the system's own monospace so its box-drawing strokes and its ASCII share one
+face; it is the mascot's command-line form, not a web font.
+
 **Rejected.** A red accent for the current-section dot and underlines (it fought the palette).
 
 ### Handwriting is Wolf's voice, used sparingly
@@ -241,7 +246,8 @@ reading screen or device values in the browser (that is access to the device and
 
 ### The current pile pieces and project windows are placeholders
 
-**Date:** 2026-10-14 · **Status:** Current
+**Date:** 2026-10-14 · **Status:** Superseded on 2026-10-23 by "Composed scenes are content; only unreplaced
+scaffolding is a placeholder". The marks and the publication gate remain; the content they guarded has been authored.
 
 The site is built first, with clearly marked illustrative pile pieces and project windows. The real pieces and each
 project's own branding and voice are authored afterwards, inside the site's content, as ordinary additions.
@@ -256,6 +262,66 @@ pieces visible.
 **Consequence.** Placeholders are marked in source (`illustrative: true` on Pile pieces, `data-placeholder` on project
 windows, `pending` on privacy facts, the operator fixture) and visibly on the page. `npm run check:publish` refuses a
 public build while any remain, so "launching with placeholders" can't happen by accident.
+
+### Composed scenes are content; only unreplaced scaffolding is a placeholder
+
+**Date:** 2026-10-23 · **Status:** Current
+
+A constructed game map, a Disc label, an authored reading state, a stream receipt with its figures, a mock interaction
+or an imagined scene is a finished public specimen. It carries no "illustrative", "fixture", "example data" or "not
+built" caption, in text, alt text or aria labels, and no `illustrative: true`. A project's standing is said once, in
+one short line ("Work in progress", "In development", "Early concept", "Idea", "Private project"), and some tiny
+pieces say nothing at all. `illustrative: true` and `data-placeholder` now mean exactly one thing: design-time
+scaffolding that has not been replaced, which the publication gate still refuses.
+
+**Why.** Wolf, 22 October 2026: "This is a showcase. Why do I need to correct all the sessions that we showcase stuff
+and make it look interesting, not create a research and source-based factual claim list that a lawyer will check."
+Numbers inside a clearly composed design are not production metrics, and the page must not read like an audit.
+
+**Rejected.** Per-card fixture labels and evidence tables; a recreated disclaimer layer; disabling the publication
+guard while scaffolding survives. Legal-operator fixtures, pending hosting facts, placeholder keys and dead
+destinations keep their factual obligations: those are different from illustrative art.
+
+### Pile entries carry their own scenes; size follows the footprint
+
+**Date:** 2026-10-23 · **Status:** Current
+
+An entry that its form's default can't carry (a village, an atlas, a sea, a machine) adds `Compact.astro` and/or
+`Expanded.astro` under `src/features/pile/entries/<id>/`, found by file, not by a registry line; behaviour is an
+`interaction.ts` beside them, bundled as a lazy import and mounted once the entry approaches the viewport in an open
+Endless. A compact scene renders inside the object's single link and holds no controls; an expanded scene places
+exactly one title heading and decides where the shared copy block (hook, paragraphs, standing, links) sits. The desk
+sizes a compact object by its authored `footprint` (small, medium, large); the form only decides its tilt and its
+default presentation. The catalogue refuses a scene folder without an entry.
+
+**Why.** Twenty-nine admitted subjects with their own material cannot be eight uniform shells; the technical plan
+reserved exactly this seam. Discovery by file keeps authoring an ordinary addition. Width by footprint lets a wide
+village strip and a small door share one packer without a per-kind table that no longer described the objects.
+
+**Rejected.** A page-builder, a scene engine or a CMS; smuggling scene fields into the content schema; a registry
+module that every new scene has to edit. The generic die specimen (`ex-dice`) and the other `ex-*` pieces are retired.
+
+### Endless opens in a mixed order
+
+**Date:** 2026-10-23 · **Status:** Current
+
+The first Endless order is deliberately mixed: it opens with understandable objects, alternates screen-like material
+with paper, worlds and quiet, and lets the moth and the closed door end the collection. It is not grouped by the kind
+of project, and it is not a navigation contract: lines may move while every subject and address survives.
+
+**Why.** Grouping by provenance (small tools, growing products, games, private doors, fragments) would turn Endless into
+the co-design's filing system. The visitor should meet variety.
+
+### Tera's fragment waits for one exact inclusion decision
+
+**Date:** 2026-10-23 · **Status:** Current
+
+The tiny `.mpreg` thought attributed to Tera is a 29th admitted subject with one open condition: her credit and the
+exact public words. Until Wolf resolves it, the entry is not in the collection or in `ENDLESS_ORDER`, and no
+"permission pending" card stands in for it. The other 28 publish.
+
+**Why.** A quotation credited to a named person is the one piece with a condition of its own; the plan keeps it
+explicit rather than letting it hold the rest hostage or disappear.
 
 ### Pile pieces are a content collection with a fixed Endless order
 
@@ -293,11 +359,108 @@ browser.
 **Date:** 2026-10-14 · **Status:** Current
 
 Works narrates between the projects; inside a project's window the project speaks for itself in its own type, colour
-and words. diffdevil's window uses its exact theme, with its own borders, and an illustrative terminal.
+and words. diffdevil's window uses its exact theme and its own borders; since 2026-10-23 it leads with the counting
+idea (GitHub +3 / −2, diffdevil 3 Changed), then the App's own Overview capture under "diffdevil, with a memory." and a
+quieter glimpse of the Chrome extension. Each window keeps its stylesheet beside its component in
+`src/sections/projects/`.
 
 **Why.** Works is the guide on the walk, not a wrapper that turns every product into the same card.
 
-**Rejected.** One uniform Works card style for every project.
+**Rejected.** One uniform Works card style for every project; a pretend CLI transcript as diffdevil's visual; an
+exhaustive feature tour.
+
+### The five windows: diffdevil, Borrowed Coast, smolpng, Karaokebarr, Lunescence
+
+**Date:** 2026-10-23 · **Status:** Current
+
+The walk introduces five projects in this order, with the Why interlude after diffdevil and one shared guide line ("A
+few more things I want you to see." with "not all of them are ready. yet." in Wolf's hand) before the other four. Each
+window carries its own introduction; no narrator paragraph precedes every project. Shikkuri left the walk and became a
+closed door in the Pile.
+
+**Why.** The consolidated co-design (room #916) settled the five and their order. Shikkuri is paused and private; a
+door says that better than a window that had to invent a shelf.
+
+### smolpng's window is light inside the dark-only site
+
+**Date:** 2026-10-23 · **Status:** Current
+
+smolpng is light-first, so its window is a light plane (version B of the D-1 design: ice and periwinkle field, one
+coral cut, Nunito, Squishling's full ASCII on a white shape, the drop → squish → result illustration ending in "much
+smoller."). Its palette is scoped to the window and leans on Gura's official colours without copying any artwork.
+
+**Why.** Wolf: "B completely. It's better than A." The Vision says a project speaks in its own colour inside its
+window; a light window is the strongest form of that. The site stays dark only; this is one project's room.
+
+**Rejected.** Version A (paper and hoodie, Albert Sans); a global light theme; a "Local-first" front line. Ease,
+cuteness and the whole journey lead; local processing belongs in the product's own help.
+
+### smolpng's source link is live; its website button waits
+
+**Date:** 2026-10-23 · **Status:** Current. Supersedes "smolpng's button stays disabled until it has a public home"
+
+The window links "Source on GitHub" to the public repository and shows "Website coming" visibly off.
+
+**Why.** The repository is public, so the earlier decision met its reopen condition. The website does not exist yet.
+
+### Karaokebarr leads with the song's journey; the Disc supports
+
+**Date:** 2026-10-23 · **Status:** Current
+
+The window's main event is request → preparation → ready on the device: "Remember this one? Can we sing it?", a
+Telegram message or a YouTube link, music, video, lyrics and notes coming together, and the living-room player
+saying "Ready to sing." The native "See how a song gets ready" disclosure carries the three steps. A smaller Disc
+("Friday, the loud one · 12 songs · 2026") keeps its real hole, proportions and printed label beneath. The brand is
+unchanged: the K/disc mark, Ink, Warm Paper, Apricot, Mint and Lilac, Bricolage Grotesque and Atkinson Hyperlegible
+Next. The window has no outbound destination; the project's repository is private.
+
+**Why.** Wolf's correction of the first co-design: the Disc had displaced the product's purpose. The D-1 board's Disc
+lifecycle animation was already coded, which is not a reason to keep it as the hero.
+
+**Rejected.** The Disc lifecycle (draft → saved → burned) as the main animation; "Disc concept · illustrative
+collection" and other captions under the object; stripping "12 songs · 2026" from the label.
+
+### Lunescence carries its settled verbal brand with an open visual identity
+
+**Date:** 2026-10-23 · **Status:** Current
+
+The window is an open three-part typographic composition: The identity shines through. Embody. Express. Evolve. The
+Express scene is set like a passage from a play; the Lunescence Workshop ("Shape what shines through.") sits beside it
+with the "That look. Keep that." exchange; "Inside the Workshop" is a native disclosure underneath. One "Early concept"
+line. The frame is Works' own Literata and Albert Sans: no moon, no celestial theme, no logo, no fixed character.
+
+**Why.** Wolf: "You have my full authorization to completely replace or rewrite how we showcase Lunescence there, and
+make it like.. the actual project I envisioned." The verbal brand was settled in the founding conversation; visual
+openness does not erase it.
+
+**Rejected.** The provisional moon and the three-line scene with a seconds-long reveal; a narrow "AI companion" pitch
+that hid the Workshop; a new wordmark.
+
+### Borrowed Coast: one crop of the coast, three ways of knowing it
+
+**Date:** 2026-10-23 · **Status:** Current
+
+The window shows the same patch of the Borrowed Sea in Chart, Watch and Nations, switched with the game's own mode
+nav (its chart, watch and nations glyphs from `@wolfsblvt/icons`), in the game's Night Chart tokens and Alegreya type,
+with one line of chart lettering naming the pressed mode and one captain's report as the human detail. The switch is
+three radio buttons and CSS, so it works without JavaScript and under reduced motion. The three captures are the
+originals from the game's Night Chart v15 reference, kept in `design/the-walk/assets/borrowed-coast/`.
+
+**Why.** The comparison only reads when the place stays fixed; three different maps side by side lose the one thing
+the game does that nothing else does. The images are large and the crop is identical across modes on purpose.
+
+**Rejected.** Embedding the live prototype; an invented wordmark; a label beneath each view; "Design study · fictional
+campaign" captions.
+
+### diffdevil keeps its canonical link
+
+**Date:** 2026-10-23 · **Status:** Current
+
+The window's "Explore diffdevil →" goes to `https://diffdevil.dev/` from the first launch, although the product site's
+publication follows this one.
+
+**Why.** Wolf selected it explicitly; publication order is Ops follow-through, not a reason to swap in a temporary
+GitHub button and undo it later.
 
 ### Support is the shared Works sponsor section
 
@@ -410,7 +573,7 @@ leave the design out yet."
 
 ### GitHub Sponsors is set up after the site, before publication
 
-**Date:** 2026-10-14 · **Status:** Current
+**Date:** 2026-10-14 · **Status:** Done. Sponsors was read back as live by Wolf Ops on 2026-10-22
 
 The Help section links GitHub Sponsors and Ko-fi as designed. Sponsors itself isn't set up yet: Wolf was waiting for
 the finished Works site, its voice and branding before creating it, which made it a circular dependency. The site
@@ -505,6 +668,37 @@ facts, the placeholder Turnstile key and any dependency from a local path, and l
 
 **Why.** The real operator data must never be needed to work on the site, and placeholder content must never reach
 the public by accident.
+
+### Contact goes live first; the site follows
+
+**Date:** 2026-10-23 · **Status:** Current
+
+The legal operator's additional direct contact is the live contact form, and the publication build refuses to say
+"provisioned" before that route is operated and read back. So the first launch is two deployments of the same Worker:
+first a contact-only build (`npm run build:contact-only`: the ordinary build pruned to the contact page, its assets,
+the 404 and the 503, with no home, legal pages or sitemap, and a robots.txt that disallows everything) with only
+`contact.wolfsblvt.works` routed; Ops reads the form back with one identified submission and flips the pointer; then
+the publication build with both hosts routed. `workers_dev` and preview URLs are off, so a build is never public on
+a provider hostname Ops did not route.
+
+**Why.** Wolf Ops' Saturday sequence (Juno, #916) and the Leitsatz legal default: no live-form claim before the form
+is live, and the guard stays on. A contact-only build keeps the first step from exposing fixture legal pages under the
+contact host, which the whole build would have done.
+
+**Rejected.** Weakening the legal guard; a host-scoped response in the Worker (the Worker does not run first for every
+path on the contact host, so static fixture pages would still have been reachable).
+
+### The Worker answers its own failures with the 503 page
+
+**Date:** 2026-10-23 · **Status:** Current
+
+An unexpected error in the Worker is caught once, at the top, and answered with the site's own 503 page from the
+assets (status 503, `Retry-After`, no caching), or a plain line if the assets are unavailable too. The log line
+carries the error's name and message only.
+
+**Why.** The zone is on Cloudflare's free plan, which cannot serve a custom page for provider-level errors; what the
+application itself can catch should at least fail in the site's voice. Provider-edge failures in front of the Worker
+remain a priced fork for Wolf.
 
 ### The footer's Site column follows the Works website defaults
 

@@ -1,0 +1,36 @@
+---
+/**
+ * SimklBridge, expanded: the same note, a little larger and still taped, beside the entry's words (hook, paragraph,
+ * standing and the upstream link through the copy block). On wide screens the note sits left; on narrow ones it
+ * follows the words.
+ */
+import type { PileEntry } from '../../catalogue';
+import Note from './Note.astro';
+
+interface Props {
+  entry: PileEntry;
+  hid: string;
+}
+const { entry, hid } = Astro.props;
+const { title } = entry.data;
+---
+
+<div class="sb">
+  <div class="sb-words">
+    <h3 id={hid} class="e-h sb-h">{title}</h3>
+    <slot />
+  </div>
+  <div class="sb-paper"><Note size="expanded" /></div>
+</div>
+
+<style>
+  .sb { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: clamp(28px, 5vw, 60px); align-items: center; max-width: 880px; padding: 16px 12px 20px 2px; }
+  .sb-paper { grid-column: 1; grid-row: 1; padding: 8px 12px 14px 0; }
+  .sb-words { grid-column: 2; grid-row: 1; min-width: 0; }
+  .sb-h { font: 500 clamp(26px, 2.8vw, 34px)/1.15 var(--serif); letter-spacing: -.01em; }
+  @media (max-width: 700px) {
+    .sb { grid-template-columns: 1fr; gap: 30px; }
+    .sb-paper, .sb-words { grid-column: auto; grid-row: auto; }
+    .sb-paper { padding: 8px 12px 14px 4px; }
+  }
+</style>

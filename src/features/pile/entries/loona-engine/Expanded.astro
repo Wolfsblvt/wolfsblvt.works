@@ -1,0 +1,46 @@
+---
+/**
+ * Loona Engine, expanded: the entry's words beside the device on its desk, with one deliberate action below it.
+ * "Look this way" is hidden until interaction.ts mounts; without JavaScript the device simply rests. The words
+ * (hook, paragraph, standing, the upstream link) come through the copy block.
+ */
+import type { PileEntry } from '../../catalogue';
+import Device from './Device.astro';
+
+interface Props {
+  entry: PileEntry;
+  hid: string;
+}
+const { entry, hid } = Astro.props;
+const { title } = entry.data;
+---
+
+<div class="le" data-interaction={entry.id}>
+  <div class="le-words">
+    <h3 id={hid} class="e-h le-h">{title}</h3>
+    <slot />
+  </div>
+  <div class="le-stage">
+    <div class="le-desk"><Device label="A phone on a small desk dock, with two curious blue eyes." /></div>
+    <div class="le-control">
+      <button type="button" class="le-btn" data-look hidden>Look this way</button>
+      <output class="le-say" data-look-response></output>
+    </div>
+  </div>
+</div>
+
+<style>
+  .le { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 48px); align-items: center; max-width: 900px; padding: 12px 0 8px; background: radial-gradient(ellipse at 72% 48%, rgb(38 80 94 / 25%), transparent 52%); }
+  .le-words { min-width: 0; }
+  .le-h { font: 500 clamp(26px, 2.8vw, 34px)/1.15 var(--serif); letter-spacing: -.01em; }
+  .le-stage { display: flex; flex-direction: column; align-items: center; }
+  .le-desk { --le-u: 1px; display: flex; justify-content: center; width: 100%; padding: 16px 0 36px; border-bottom: 1px solid #3c4b50; }
+  .le-control { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 16px; }
+  .le-btn { appearance: none; cursor: pointer; min-height: 44px; padding: 10px 18px; border: 1px solid #52636b; border-radius: 30px; background: #1b2a32; color: var(--text); font: 500 13px var(--sans); }
+  .le-btn:hover { background: #273d46; }
+  .le-say { min-width: 30px; font: italic 400 17px var(--serif); color: #9dd1d5; }
+  @media (max-width: 720px) {
+    .le { grid-template-columns: 1fr; gap: 20px; }
+    .le-desk { --le-u: .85px; }
+  }
+</style>

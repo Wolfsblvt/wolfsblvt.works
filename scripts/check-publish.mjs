@@ -65,7 +65,7 @@ if (!existsSync(join(out, 'index.html'))) {
 const manual = [
   `GitHub Sponsors is live at ${site.sponsors.github} (the Help section links it).`,
   site.links.bluesky ? null : 'Bluesky: set site.links.bluesky when the profile exists, or keep the slot visibly unavailable.',
-  'Wolf Ops: routes for wolfsblvt.works and contact.wolfsblvt.works, secrets, Turnstile widget, Email Service senders, the 503 custom error page; see docs/DEVELOPMENT.md, "Publication".',
+  'Wolf Ops: the contact-first launch, then routes for wolfsblvt.works and contact.wolfsblvt.works, secrets, the sending domain and the retained log route; see docs/DEVELOPMENT.md, "Publication".',
 ].filter(Boolean);
 
 if (refusals.length) {

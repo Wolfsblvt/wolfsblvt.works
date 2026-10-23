@@ -1,0 +1,117 @@
+---
+/**
+ * Straight to the camera roll, expanded: a phone's share sheet beside a small paper camera roll. Play the trip
+ * places the chosen scene into the fourth photo space and Back to the post resets it; inside the scene, Save to
+ * Photos becomes In the roll. The whole picture is CSS; the trip is a class on the stage, finite, with no loop.
+ */
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+  hid: string;
+}
+const { entry, hid } = Astro.props;
+const { title } = entry.data;
+---
+
+<div class="sc">
+  <h3 id={hid} class="e-h sc-h">{title}</h3>
+  <div class="sc-grid">
+    <div class="art" data-interaction={entry.id}>
+      <div class="stage" data-stage role="img" aria-label="A moonlit scene in a phone share sheet, beside a small camera-roll photo stack. The chosen scene is ready to travel into the roll.">
+        <span class="route">a much shorter trip</span>
+        <div class="phone">
+          <div class="phone-top"><span>THE GOOD BIT</span><span>00:08</span></div>
+          <div class="scene"></div>
+          <div class="sources"><span>Reddit</span><span>Twitter</span></div>
+          <div class="share">
+            <p>Keep this one.</p>
+            <div class="choice" data-choice>Save to Photos</div>
+          </div>
+        </div>
+        <div class="roll">
+          <div class="roll-title">Camera roll</div>
+          <div class="roll-grid">
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile new"><div class="scene"></div></div>
+          </div>
+          <span class="roll-caption">there you are.</span>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="btn btn-line" type="button" data-play hidden>Play the trip</button>
+        <button class="plain" type="button" data-reset hidden>Back to the post</button>
+      </div>
+      <p class="sr" role="status" data-status></p>
+    </div>
+    <div class="sc-copy"><slot /></div>
+  </div>
+</div>
+
+<style>
+  .sc { font-family: var(--sans); }
+  .sc-h { font: 400 clamp(28px, 3vw, 40px)/1.15 var(--serif); letter-spacing: -.02em; max-width: 22ch; text-wrap: balance; }
+  .sc-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 28px 56px; align-items: start; margin-top: 26px; }
+  @media (max-width: 880px) { .sc-grid { grid-template-columns: 1fr; } }
+
+  .art { max-width: 560px; }
+  .stage { position: relative; display: flex; justify-content: center; align-items: center; gap: 24px; min-height: 440px; }
+  .route { position: absolute; right: 6%; top: 15%; font: 17px var(--serif); color: var(--rose); transform: rotate(6deg); }
+  .phone { position: relative; box-sizing: border-box; width: 215px; min-width: 170px; padding: 22px 12px 13px; border: 2px solid #8a7986; border-radius: 28px; background: #201b24; box-shadow: 10px 18px 30px rgb(0 0 0 / 25%); }
+  .phone::before { content: ''; position: absolute; left: calc(50% - 22px); top: 10px; width: 44px; height: 4px; border-radius: 3px; background: #746771; }
+  .phone-top { display: flex; justify-content: space-between; padding: 0 4px 12px; font-size: 10px; letter-spacing: .1em; color: #cebbc9; }
+  .scene { position: relative; overflow: hidden; background: linear-gradient(155deg, #30374e, #66526a 55%, #b48372); }
+  .scene::before { content: ''; position: absolute; right: 23%; top: 20%; width: 34px; height: 34px; border-radius: 50%; background: #f5e5b7; box-shadow: 0 0 45px rgb(247 211 138 / 40%); }
+  .scene::after { content: ''; position: absolute; inset: 65% -5% -10%; background: #252635; clip-path: polygon(0 33%, 20% 14%, 35% 43%, 62% 0, 90% 30%, 100% 20%, 100% 100%, 0 100%); }
+  .phone .scene { height: 167px; border-radius: 5px; }
+  .sources { display: flex; gap: 6px; margin: 12px 0; font-size: 10px; color: #cdbac7; }
+  .sources span { padding: 2px 9px; border: 1px solid rgb(124 101 122 / 53%); border-radius: 12px; }
+  .share { margin-top: 12px; padding: 15px 11px; border-radius: 10px; background: #302936; }
+  .share p { margin: 0 0 12px; font: 18px var(--serif); }
+  .choice { padding: 10px 8px; border: 1px solid rgb(181 131 162 / 27%); border-radius: 6px; background: #644257; color: #ffe0e9; font-size: 12px; }
+  .roll { position: relative; box-sizing: border-box; width: 155px; flex-shrink: 0; padding: 13px 10px 27px; background: #eadcc6; color: #31232c; box-shadow: 6px 15px 26px rgb(0 0 0 / 40%); transform: rotate(6deg); }
+  .roll::before { content: ''; position: absolute; inset: 3px -5px -3px; background: #ad9c8b; z-index: -1; transform: rotate(-5deg); }
+  .roll-title { padding-bottom: 8px; font-size: 11px; color: #66484d; }
+  .roll-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+  .tile { height: 58px; background: linear-gradient(135deg, #b18472, #756782 55%, #343c4d); }
+  .tile:nth-child(2) { background: linear-gradient(30deg, #d1b68d, #769e9c); }
+  .tile:nth-child(3) { background: linear-gradient(70deg, #49486a, #ba8182); }
+  .tile.new { position: relative; box-sizing: border-box; border: 1px dashed #9a8878; background: #cdbca7; }
+  .tile .scene { width: 100%; height: 100%; }
+  .tile .scene::before { width: 13px; height: 13px; }
+  .tile.new .scene { opacity: 0; transform: translateY(-12px); }
+  .stage.saved .tile.new .scene { opacity: 1; transform: none; transition: opacity 220ms, transform 380ms ease; }
+  .stage.saved .choice { background: #476454; color: #f1eadc; }
+  .roll-caption { position: absolute; left: 10px; bottom: 7px; font: italic 12px var(--serif); }
+  .controls { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+  .plain { min-height: 44px; padding: 6px; border: 0; background: transparent; color: var(--text); font: 12px var(--sans); text-decoration: underline; text-underline-offset: 4px; cursor: pointer; }
+  .plain:hover { color: var(--cyan); }
+
+  @media (max-width: 850px) {
+    .stage { gap: 15px; min-height: 400px; }
+    .phone { width: 190px; min-width: 155px; }
+    .roll { width: 120px; }
+    .tile { height: 45px; }
+    .route { right: 0; top: 6%; }
+  }
+  @media (max-width: 640px) {
+    .stage { gap: 23px; min-height: 390px; }
+    .phone { width: 195px; min-width: 0; flex-shrink: 1; }
+    .phone .scene { height: 153px; }
+    .roll { width: 130px; }
+    .tile { height: 48px; }
+    .route { top: 0; right: 0; }
+  }
+  @media (max-width: 360px) {
+    .stage { gap: 12px; min-height: 380px; }
+    .phone { padding-left: 9px; padding-right: 9px; }
+    .phone .scene { height: 133px; }
+    .sources { gap: 4px; }
+    .sources span { padding: 2px 7px; }
+    .roll { width: 102px; padding: 9px 7px 27px; }
+    .tile { height: 37px; }
+    .route { font-size: 15px; }
+  }
+</style>

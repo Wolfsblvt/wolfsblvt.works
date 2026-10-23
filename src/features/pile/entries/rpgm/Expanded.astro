@@ -1,0 +1,39 @@
+---
+/**
+ * RPG Maker script export, expanded: the three slips become three numbered sheets with a faint line texture, set
+ * slightly off true, then the copy.
+ */
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+  hid: string;
+}
+const { entry, hid } = Astro.props;
+const sheets = [
+  ['01', 'a door'],
+  ['02', 'a condition'],
+  ['03', 'a consequence'],
+] as const;
+---
+
+<div class="rp">
+  <h3 id={hid} class="e-h rp-h">{entry.data.title}</h3>
+  <div class="sheets">
+    {sheets.map(([number, line]) => (
+      <div class="sheet"><small>{number}</small>{line}<span class="lines" aria-hidden="true"></span></div>
+    ))}
+  </div>
+  <slot />
+</div>
+
+<style>
+  .rp { max-width: 620px; font-family: var(--sans); }
+  .rp-h { font: 500 clamp(26px, 2.8vw, 34px)/1.15 var(--serif); letter-spacing: -.01em; }
+  .sheets { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 25px; }
+  .sheet { flex: 1; min-width: 135px; padding: 20px 16px 23px; background: #cbbda0; color: #2b2926; border-bottom: 4px solid #988c73; font: 15px/1.7 var(--mono); }
+  .sheet:nth-child(2) { transform: rotate(-1.3deg); }
+  .sheet:nth-child(3) { transform: rotate(.8deg); }
+  .sheet small { display: block; margin-bottom: 16px; font-size: 11px; color: #665c49; }
+  .lines { display: block; max-width: 110px; height: 40px; margin-top: 20px; background: repeating-linear-gradient(to bottom, rgb(147 134 106 / 53%) 0, rgb(147 134 106 / 53%) 2px, transparent 2px, transparent 11px); }
+</style>

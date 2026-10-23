@@ -1,0 +1,31 @@
+---
+/**
+ * Shikkuri's closed door: a blue-green door with a slightly crooked paper note taped to its face ("An evening to
+ * play.") above three small game-box spines. The compact object and the Endless window share it; `size` scales the
+ * whole door through `--u`. It stays closed.
+ */
+interface Props {
+  size?: 'compact' | 'expanded';
+  /** What the door looks like, for assistive technology; without a label the door is decoration beside its words. */
+  label?: string;
+}
+const { size = 'compact', label } = Astro.props;
+const a11y = label ? { role: 'img' as const, 'aria-label': label } : { 'aria-hidden': 'true' as const };
+---
+
+<div class:list={['sk-door', `sk-${size}`]} {...a11y}>
+  <span class="sk-slip">An evening<br />to play.<span class="sk-spines"><i></i><i></i><i></i></span></span>
+</div>
+
+<style>
+  .sk-door { --u: 1px; position: relative; box-sizing: border-box; flex: none; width: calc(150 * var(--u)); height: calc(201 * var(--u)); background: #36464d; border: calc(9 * var(--u)) solid #667573; border-bottom: 0; border-radius: calc(3 * var(--u)) calc(3 * var(--u)) 0 0; transform: rotate(2deg); box-shadow: 0 calc(16 * var(--u)) calc(24 * var(--u)) calc(-10 * var(--u)) rgb(0 0 0 / 75%); }
+  .sk-door::after { content: ''; position: absolute; right: calc(13 * var(--u)); top: calc(113 * var(--u)); width: calc(7 * var(--u)); height: calc(21 * var(--u)); border-radius: calc(3 * var(--u)); background: #c3c1a0; box-shadow: 1px 2px 1px #1b242d; }
+  .sk-slip { position: absolute; left: calc(9 * var(--u)); right: calc(9 * var(--u)); top: calc(34 * var(--u)); display: block; padding: calc(15 * var(--u)) calc(7 * var(--u)) calc(13 * var(--u)); background: #e9e2cb; color: #272722; font: italic 400 calc(17 * var(--u))/1.12 var(--serif); text-align: center; transform: rotate(-5deg); box-shadow: 0 3px 3px rgb(23 36 33 / 33%); }
+  .sk-slip::before { content: ''; position: absolute; top: calc(-7 * var(--u)); left: calc(29 * var(--u)); width: calc(37 * var(--u)); height: calc(13 * var(--u)); background: rgb(182 178 140 / 66%); transform: rotate(6deg); }
+  .sk-spines { display: flex; justify-content: center; align-items: flex-end; gap: calc(4 * var(--u)); height: calc(25 * var(--u)); margin-top: calc(13 * var(--u)); }
+  .sk-spines i { display: block; width: calc(13 * var(--u)); height: calc(21 * var(--u)); background: #739388; border-top: 2px solid #456455; box-shadow: inset 1px 0 rgb(255 255 255 / 31%); }
+  .sk-spines i:nth-child(2) { height: calc(25 * var(--u)); background: #d9a87b; border-color: #ab7444; }
+  .sk-spines i:nth-child(3) { height: calc(19 * var(--u)); background: #a9a4c8; border-color: #78738d; }
+  .sk-expanded { --u: 1.3px; }
+  @media (max-width: 560px) { .sk-expanded { --u: 1.05px; } }
+</style>

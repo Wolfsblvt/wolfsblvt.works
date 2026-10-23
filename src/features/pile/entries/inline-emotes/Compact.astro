@@ -1,0 +1,26 @@
+---
+/** A little face. Right there, compact: one sentence with one tiny inline face, and the title underneath. */
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+}
+const { entry } = Astro.props;
+---
+
+<div class="chat">
+  <span class="line">That worked. <span class="emote" aria-hidden="true"><span class="arm"></span><span class="arm"></span></span></span>
+  <small>{entry.data.title}</small>
+</div>
+
+<style>
+  .chat { padding: 12px 0 12px 16px; border-left: 2px solid rgb(239 142 161 / 36%); font: 21px/1.6 var(--serif); color: var(--text); text-shadow: 0 0 8px #100b11; }
+  .line { display: block; }
+  small { display: block; margin-top: 10px; font: 12px var(--sans); color: var(--text-soft); }
+  .emote { display: inline-block; position: relative; width: 1.22em; height: 1.14em; margin: 0 .12em; vertical-align: -.18em; border-radius: 45% 47% 40% 42%; background: #edb567; box-shadow: inset -.08em -.09em #c48447; color: #39212c; text-shadow: none; }
+  .emote::before { content: ''; position: absolute; left: 25%; top: 40%; width: .11em; height: .12em; border-radius: 50%; background: currentColor; box-shadow: .39em 0 currentColor; }
+  .emote::after { content: ''; position: absolute; left: 40%; top: 61%; width: .24em; height: .12em; border-bottom: .06em solid currentColor; border-radius: 0 0 50% 50%; }
+  .arm { position: absolute; top: 32%; width: .13em; height: .51em; border-radius: 8px; background: inherit; }
+  .arm:first-child { left: -.08em; transform: rotate(-28deg); }
+  .arm:last-child { right: -.08em; transform: rotate(28deg); }
+</style>

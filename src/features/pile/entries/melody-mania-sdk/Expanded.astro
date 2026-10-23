@@ -1,0 +1,85 @@
+---
+/**
+ * Melody Mania SDK, expanded: one plum panel. The title and the entry's words up top; the miniature singing stage
+ * ("One more?", notes on five lines, "A little change to the whole night."); the workshop's range and the lighting
+ * switch; then the lineage line from the original game. The switch is hidden until interaction.ts mounts; the rose
+ * treatment is the complete resting state. The upstream link itself comes through the copy block.
+ */
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+  hid: string;
+}
+const { entry, hid } = Astro.props;
+const { title, form } = entry.data;
+const lineage = form.kind === 'lineage' ? form : null;
+const ROSE = 'A singing stage with plum curtains and coloured notes arranged across five lines. Above them: One more? Below: a little change to the whole night.';
+const MIDNIGHT = 'A singing stage with midnight-blue curtains and mint notes arranged across five lines. Above them: One more? Below: a little change to the whole night.';
+---
+
+<div class="mm" data-interaction={entry.id}>
+  <div class="mm-top">
+    <h3 id={hid} class="e-h mm-h">{title}</h3>
+    <div class="mm-copy"><slot /></div>
+  </div>
+  <div class="mm-stage" data-stage role="img" aria-label={ROSE} data-label-midnight={MIDNIGHT}>
+    <span class="mm-word">One more?</span>
+    <span class="mm-lanes"><i class="mm-n1"></i><i class="mm-n2"></i><i class="mm-n3"></i><i class="mm-n4"></i><i class="mm-n5"></i><i class="mm-n6"></i></span>
+    <span class="mm-phrase">A little change to the whole night.</span>
+  </div>
+  <div class="mm-foot">
+    <div class="mm-range"><span>Small tweaks</span><span>New effects</span><span>Bigger ideas</span></div>
+    <button type="button" class="mm-btn" data-lights hidden>Try the midnight lights</button>
+  </div>
+  {lineage && (
+    <div class="mm-lineage">
+      <b>{lineage.from}</b><span class="mm-rule" aria-hidden="true"></span><span>{lineage.relationship}</span><span class="mm-meaning">Built on someone else’s good thing.</span>
+    </div>
+  )}
+</div>
+
+<style>
+  .mm { max-width: 920px; overflow: hidden; border: 1px solid #654057; border-radius: 14px; background: linear-gradient(135deg, #321b32, #171521 70%); font-family: var(--sans); }
+  .mm-top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px 48px; align-items: end; padding: 44px 48px 32px; }
+  .mm-h { font: 400 clamp(32px, 4vw, 50px)/1.08 var(--serif); letter-spacing: -.03em; }
+  .mm-copy { min-width: 0; }
+  .mm-copy :global(.e-sub) { margin-top: 0; }
+  .mm-stage { position: relative; min-height: 300px; margin: 0 26px; overflow: hidden; border: 1px solid #57405c; border-radius: 8px; background: radial-gradient(ellipse at 30% 0, rgb(217 97 165 / 25%), transparent 60%), radial-gradient(ellipse at 75% 0, rgb(113 77 190 / 25%), transparent 50%), #191321; transition: background .2s; }
+  .mm-stage::before, .mm-stage::after { content: ''; position: absolute; top: 0; bottom: 0; width: 36px; z-index: 2; background: repeating-linear-gradient(90deg, #43263e 0 10px, #593049 11px 18px, #332135 20px 28px); clip-path: polygon(0 0, 100% 0, 70% 65%, 100% 100%, 0 100%); }
+  .mm-stage::before { left: 0; }
+  .mm-stage::after { right: 0; transform: scaleX(-1); }
+  .mm-word { display: block; padding: 25px 55px 0; text-align: center; font: italic 400 27px/1.2 var(--serif); color: #f3d8ed; }
+  .mm-lanes { position: absolute; left: 12%; right: 12%; top: 95px; height: 102px; background: repeating-linear-gradient(0deg, transparent 0 24px, #674b68 24px 25px); border-bottom: 1px solid #674b68; }
+  .mm-lanes i { position: absolute; height: 10px; border-radius: 5px; background: #efb3cb; box-shadow: 0 0 12px rgb(239 179 203 / 15%); transition: background .2s; }
+  .mm-lanes .mm-n1 { top: 49px; left: 2%; width: 10%; }
+  .mm-lanes .mm-n2 { top: 24px; left: 14%; width: 17%; background: #97d9e5; }
+  .mm-lanes .mm-n3 { top: 49px; left: 33%; width: 9%; }
+  .mm-lanes .mm-n4 { top: 74px; left: 44%; width: 17%; background: #e6b673; }
+  .mm-lanes .mm-n5 { top: 49px; left: 64%; width: 9%; }
+  .mm-lanes .mm-n6 { top: 0; left: 75%; width: 21%; background: #bba1e7; }
+  .mm-phrase { position: absolute; left: 55px; right: 55px; bottom: 28px; text-align: center; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: #d0b6cf; }
+  .mm-stage.cool { background: radial-gradient(ellipse at 70% 0, rgb(103 187 201 / 21%), transparent 65%), #121c27; }
+  .mm-stage.cool::before, .mm-stage.cool::after { background: repeating-linear-gradient(90deg, #1c3b4b 0 10px, #2d5262 11px 18px, #182f3e 20px 28px); }
+  .mm-stage.cool .mm-lanes i { background: #b6e0c8; }
+  .mm-stage.cool .mm-lanes .mm-n2, .mm-stage.cool .mm-lanes .mm-n6 { background: #8ecedf; }
+  .mm-foot { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 20px 48px 28px; }
+  .mm-range { display: flex; flex-wrap: wrap; gap: 18px; font-size: 11px; color: #d5b7d0; }
+  .mm-btn { appearance: none; cursor: pointer; min-height: 44px; padding: 10px 18px; border: 1px solid #805576; border-radius: 30px; background: #39243c; color: var(--text); font: 500 12px var(--sans); }
+  .mm-btn:hover { background: #4b2f4e; }
+  .mm-lineage { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 22px 48px; border-top: 1px solid #4c3348; font-size: 12px; color: #c3a3b9; }
+  .mm-lineage b { font-weight: 500; color: #ead8e4; }
+  .mm-rule { flex: 0 1 30px; height: 1px; background: #8f6382; }
+  .mm-meaning { margin-left: auto; color: #bd9bb4; }
+  @media (max-width: 720px) {
+    .mm-top { grid-template-columns: 1fr; gap: 16px; padding: 30px 24px 22px; }
+    .mm-stage { min-height: 275px; margin: 0 13px; }
+    .mm-word { padding-top: 23px; font-size: 23px; }
+    .mm-lanes { left: 16%; right: 16%; top: 83px; }
+    .mm-phrase { left: 35px; right: 35px; bottom: 29px; font-size: 10px; }
+    .mm-foot { flex-direction: column; align-items: flex-start; gap: 15px; padding: 18px 24px 24px; }
+    .mm-range { gap: 14px; font-size: 10px; }
+    .mm-lineage { gap: 8px; padding: 20px 24px; font-size: 11px; }
+    .mm-meaning { flex-basis: 100%; margin: 4px 0 0; }
+  }
+</style>

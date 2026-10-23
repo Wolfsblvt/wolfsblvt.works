@@ -1,0 +1,28 @@
+---
+/**
+ * Baumhaus's closed door: planked timber in a pale frame, a small plaque with the name, a brass knob and a thin warm
+ * line beneath. The compact object and the Endless window share it; `size` scales the whole door through `--u`.
+ * It stays closed: no knock, no handle to try, nothing behind it.
+ */
+interface Props {
+  title: string;
+  size?: 'compact' | 'expanded';
+  /** What the door looks like, for assistive technology; without a label the door is decoration beside its words. */
+  label?: string;
+}
+const { title, size = 'compact', label } = Astro.props;
+const a11y = label ? { role: 'img' as const, 'aria-label': label } : { 'aria-hidden': 'true' as const };
+---
+
+<div class:list={['bh-door', `bh-${size}`]} {...a11y}>
+  <span class="bh-plaque">{title}</span>
+</div>
+
+<style>
+  .bh-door { --u: 1px; position: relative; box-sizing: border-box; flex: none; width: calc(133 * var(--u)); height: calc(201 * var(--u)); border: calc(9 * var(--u)) solid #c7b299; border-bottom: 0; border-radius: calc(3 * var(--u)) calc(3 * var(--u)) 0 0; background: repeating-linear-gradient(90deg, #493a2d 0, #514131 calc(1 * var(--u)), #514131 calc(27 * var(--u)), #30271f calc(28 * var(--u)), #4b3d2f calc(29 * var(--u))); box-shadow: 0 calc(16 * var(--u)) calc(24 * var(--u)) calc(-10 * var(--u)) rgb(0 0 0 / 75%); }
+  .bh-door::before { content: ''; position: absolute; right: calc(12 * var(--u)); top: calc(107 * var(--u)); width: calc(9 * var(--u)); height: calc(9 * var(--u)); border-radius: 50%; background: #aa8a45; box-shadow: inset calc(-2 * var(--u)) calc(-2 * var(--u)) calc(2 * var(--u)) #66532e; }
+  .bh-door::after { content: ''; position: absolute; left: 0; bottom: 0; width: 100%; height: calc(3 * var(--u)); background: #ebc69b; box-shadow: 0 calc(4 * var(--u)) calc(14 * var(--u)) calc(3 * var(--u)) rgb(242 191 129 / 38%); }
+  .bh-plaque { position: absolute; left: calc(10 * var(--u)); right: calc(10 * var(--u)); top: calc(39 * var(--u)); padding: calc(5 * var(--u)) calc(2 * var(--u)); background: #c1ae8f; color: #322a21; font: italic 400 calc(15 * var(--u))/1.2 var(--serif); text-align: center; box-shadow: 1px 2px 3px rgb(27 22 28 / 32%); }
+  .bh-expanded { --u: 1.35px; }
+  @media (max-width: 560px) { .bh-expanded { --u: 1.1px; } }
+</style>

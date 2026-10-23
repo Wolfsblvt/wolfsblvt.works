@@ -1,0 +1,38 @@
+---
+/**
+ * Trailer Lens, compact: the product mark and name on a dark panel, the hook, three readable trailer rows that each
+ * mean something different, and the small reference line beneath them.
+ */
+import type { PileEntry } from '../../catalogue';
+import mark from './mark.svg?url';
+
+interface Props {
+  entry: PileEntry;
+}
+const { entry } = Astro.props;
+const rows = [
+  ['Co-author', 'Alex'],
+  ['Reviewed by', 'Robin'],
+  ['Tested by', 'Casey'],
+] as const;
+---
+
+<div class="lens">
+  <span class="line"><img src={mark} alt="" width="26" height="26" class="mark" /><span class="name">{entry.data.title}</span></span>
+  <span class="hook">There’s more in that commit.</span>
+  <span class="rows">{rows.map(([meaning, value]) => <span class="row"><em>{meaning}</em><b>{value}</b></span>)}</span>
+  <span class="ref">Fixes #42 · Component: reader</span>
+</div>
+
+<style>
+  .lens { display: grid; padding: 17px 18px 18px; background: #1b2027; border-left: 3px solid #d77741; font-family: var(--sans); color: var(--text); }
+  .line { display: flex; align-items: center; gap: 9px; }
+  .mark { display: block; width: 26px; height: 26px; flex: none; }
+  .name { font-weight: 600; font-size: 16px; line-height: 1.3; }
+  .hook { margin-top: 9px; font-family: var(--serif); font-size: 19px; line-height: 1.4; }
+  .rows { display: grid; gap: 5px; margin-top: 18px; font-size: 13px; }
+  .row { display: flex; align-items: baseline; gap: 10px; }
+  .row em { min-width: 83px; font-style: normal; color: #b5c2d0; }
+  .row b { font-weight: 400; color: #f5e8dc; }
+  .ref { display: block; margin-top: 12px; font: 12px/1.7 var(--mono); color: #f0b992; }
+</style>

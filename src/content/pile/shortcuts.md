@@ -1,12 +1,14 @@
 ---
 title: "There’s probably a shortcut for that."
 form:
-  kind: thought
+  kind: note
+  preset: short-slip
+  lettering: handwritten
 daily:
   include: true
-  footprint: large
-subline: "Useful shortcuts while you’re using an app or a website."
+  footprint: medium
+subline: "The useful keys, right where you need them."
 standing: "Concept"
 ---
 
-An idea for finding a quicker way without stopping to read the manual. Search for what you need, keep useful shortcuts visible, and save others for a time when you actually want to learn them.
+Find an action, pin the one you keep forgetting, leave something new for later.

@@ -1,0 +1,67 @@
+---
+/**
+ * Karaokebarr's window: the song's journey is the main event. Somebody on the couch asks "Remember this one? Can we
+ * sing it?", sends a Telegram message or a YouTube link, Karaokebarr finds or prepares the music, video, lyrics and
+ * notes, and a few minutes later the living-room player says "Ready to sing." The Disc is a supporting pleasure
+ * beneath it. Brand, tokens and the Disc recipe are Karaokebarr's own (the mark is a byte copy of the product's).
+ */
+import markUrl from '../../../design/the-walk/assets/karaokebarr-mark.svg?url';
+import './karaokebarr.css';
+---
+
+<section class="frame sec lift" aria-labelledby="kb-h">
+  <div class="kb-win kb-root" data-reveal="kb">
+    <div class="kb-grid">
+      <div class="kb-copy">
+        <p class="kb-eyebrow">Self-hosted karaoke automation</p>
+        <h2 id="kb-h" class="kb-lockup"><img class="kb-mark" src={markUrl} alt="" width="64" height="64" /><span>Karaokebarr</span></h2>
+        <p class="kb-tag">Your music. Ready to sing.</p>
+        <p class="kb-ask">“Remember this one? Can we sing it?”</p>
+        <p class="kb-body">Send a Telegram message or paste a YouTube link. Karaokebarr finds or prepares the song, puts the music, video, lyrics and notes together, and gets it onto your karaoke device.</p>
+        <div class="kb-standing"><span class="kb-badge kb-badge-unknown">In development</span></div>
+        <details class="kb-more">
+          <summary>See how a song gets ready</summary>
+          <div class="kb-more-body">
+            <p><strong>Find or create what’s missing.</strong> Match the request to existing karaoke material, or prepare the missing lyrics, timing and notes.</p>
+            <p><strong>Make it singable.</strong> Bring the audio, video and chart together, then check their alignment and compatibility.</p>
+            <p><strong>Put it where you sing.</strong> Deliver the finished song to the selected karaoke player.</p>
+          </div>
+        </details>
+      </div>
+
+      <ol class="kb-journey" aria-label="How a song gets ready">
+        <li class="kb-step kb-step-ask">
+          <span class="kb-step-n" aria-hidden="true">1</span>
+          <div class="kb-bubble">Can we sing this?</div>
+          <div class="kb-ways"><span class="kb-way">Telegram message</span><span class="kb-way">YouTube link</span></div>
+        </li>
+        <li class="kb-step kb-step-prep">
+          <span class="kb-step-n" aria-hidden="true">2</span>
+          <div class="kb-prep"><span class="kb-part">music</span><span class="kb-part">video</span><span class="kb-part">lyrics</span><span class="kb-part">notes</span></div>
+          <div class="kb-prep-line">Karaokebarr takes it from here.</div>
+        </li>
+        <li class="kb-step kb-step-ready">
+          <span class="kb-step-n" aria-hidden="true">3</span>
+          <div class="kb-player">
+            <span class="kb-player-room">Living room</span>
+            <strong>Ready to sing.</strong>
+            <span class="kb-player-sub">A few minutes later.</span>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div class="kb-disc-row">
+      <div class="kb-scene">
+        <div class="kb-disc-wrap kb-disc-shadow" role="img" aria-label="A Disc called Friday, the loud one: twelve songs, 2026, with its own printed label.">
+          <div class="kb-disc kb-disc-hover kb-label-coast"><div class="kb-disc-title">Friday, the loud one</div><div class="kb-disc-smallprint">12 songs · 2026</div></div>
+        </div>
+      </div>
+      <div class="kb-disc-copy">
+        <p class="kb-disc-h">Keep a whole evening together.</p>
+        <p class="kb-body">Make a Disc for the songs that belong together: your own label, notes and running order.</p>
+        <p class="kb-disc-cap">Friday, the loud one · 12 songs · 2026</p>
+      </div>
+    </div>
+  </div>
+</section>

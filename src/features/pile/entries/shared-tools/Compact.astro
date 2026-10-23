@@ -1,0 +1,33 @@
+---
+/**
+ * Tools behind the tools, compact: the title and hook on a dark ruled panel, the three tool names, and a strip of six
+ * catalogue glyphs from Wolfsblvt Icons.
+ */
+import Icon from '../../../../components/Icon.astro';
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+}
+const { entry } = Astro.props;
+const tools = ['Forgehand', 'Starlight Works', 'Wolfsblvt Icons'];
+const glyphs = ['borrowed-coast/chart', 'diffdevil/changed', 'diffdevil/raw-churn', 'diffdevil/bands', 'wolfsblvt/works', 'wolfsblvt/signpost'];
+---
+
+<div class="bundle">
+  <span class="name">{entry.data.title}</span>
+  <span class="hook">Some of the work becomes tools for the next thing.</span>
+  <span class="tools">{tools.map((tool) => <span>{tool}</span>)}</span>
+  <span class="fan" aria-hidden="true">{glyphs.map((glyph) => <Icon product={glyph} size={27} />)}</span>
+</div>
+
+<style>
+  .bundle { display: grid; padding: 17px 16px 20px; background: #201d24; border-top: 1px solid #655161; border-bottom: 1px solid #655161; font-family: var(--sans); color: var(--text); }
+  .name { font-weight: 600; font-size: 16px; line-height: 1.3; }
+  .hook { max-width: 29ch; margin-top: 9px; font-family: var(--serif); font-size: 18px; line-height: 1.4; }
+  .tools { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 17px; font-size: 12px; color: #e5bdcc; }
+  .fan { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; margin-top: 19px; color: #e6c6d5; }
+  @media (max-width: 560px) {
+    .fan { gap: 14px; }
+  }
+</style>

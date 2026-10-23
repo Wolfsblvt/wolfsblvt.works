@@ -42,7 +42,7 @@ These are soft starting ranges, not validation limits, mandatory fields, or a re
 | Sub-line | Orient the reader quickly. | About 6–18 words: what it is, what it does, who it is for, or its unusual premise. |
 | Explanatory paragraph | Add useful understanding. | Usually 30–75 words and one paragraph. A second short paragraph is justified only by a distinct useful thought. |
 | Wolf scribble | Add a personal observation, preference, reservation, joke, or sketch. | Often 3–14 words, or one small drawing. Optional. |
-| Standing | Prevent a real misunderstanding about readiness or what is shown. | One plain phrase when needed. Examples: “Concept”, “Illustrative example”, or a specific current limitation. |
+| Standing | Prevent a real misunderstanding about readiness. | One plain phrase, at most once per entry, when needed. Examples: “Concept”, “In development”, “Private project”. Not a caption under the visual. |
 | Visual or example | Show something more effectively than another paragraph. | Usually one focal addition: screenshot, image, SVG, small chart, snippet, brand asset, or specimen. |
 | Cross-links | Offer meaningful onward routes. | Existing destinations only; as many as are useful, without a quota or empty placeholders. |
 
@@ -183,7 +183,7 @@ Keep independent project branding most expressive in Endless. The compact assort
 
 Supply meaningful image descriptions, relevant captions and credit. Decorative tape, underlines, flourishes, and purely atmospheric lighting do not need to become screen-reader prose. A chart or diagram needs an understandable textual account of its meaningful result.
 
-Current product sources own facts, releases, links, assets, and disclosure. Illustrative fixtures stay labelled. Do not include private notes, unused private assets, or withheld paragraphs in a public payload merely because CSS hides them.
+Current product sources own facts, releases, links, assets, and disclosure. A composed scene, authored numbers, names, dates and interface contents are finished public content and carry no “illustrative”, “fixture” or “not built” caption (Wolf, 22 October 2026; see Decisions). `illustrative: true` marks unreplaced design-time scaffolding only. Do not include private notes, unused private assets, or withheld paragraphs in a public payload merely because CSS hides them.
 
 ## Give Endless rhythm without turning it into a directory
 
@@ -208,7 +208,7 @@ Daily selection and placement belong to the shared host. An ordinary entry autho
 1. Establish the real subject, useful public standing, available assets, and appropriate disclosure.
 2. Choose its stable ID and physical form. Write the compact encounter as one link to Endless.
 3. Choose the useful additional dimension: orientation, paragraph, scribble, image, example, relationship, interaction, links, or deliberate quiet.
-4. Use a fitting default window or author one local component. Keep navigation, anchors, and mode state with the shared host.
+4. Use a fitting default window or author a scene: `Compact.astro` and/or `Expanded.astro` under `src/features/pile/entries/<id>/`, found by file, plus `interaction.ts` beside them for behaviour. A compact scene renders inside the object's single link and holds no controls; an expanded scene places exactly one title heading and puts the shared copy block where its composition wants it. Keep navigation, anchors, and mode state with the shared host.
 5. Add genuine destinations and credits. Keep unconfirmed claims and private material out of the public entry.
 6. Place the entry in the curated Endless order and decide whether it is eligible for the daily Pile.
 7. Inspect both views among their neighbours, on a narrow screen, with keyboard access, and with reduced motion.

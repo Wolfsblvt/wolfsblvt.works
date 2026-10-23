@@ -1,0 +1,34 @@
+---
+/**
+ * The words every Endless entry may carry after its object: sub-line, the entry's body paragraphs (the default slot),
+ * Wolf's scribble, standing and links. A scene places this block with `<slot />`; the default forms render it after
+ * their object. Nothing here is compulsory: an entry without a field simply omits it.
+ */
+import type { PileEntry } from '../catalogue';
+
+type Link = PileEntry['data']['links'][number];
+
+interface Props {
+  entry: PileEntry;
+  /** The links to list; a form that has already shown one (a ticket stub, a terminal footer) passes the rest. */
+  links?: readonly Link[];
+  /** Notes write the scribble on their paper; everything else shows it here. */
+  scribble?: boolean;
+}
+const { entry, links = entry.data.links, scribble = true } = Astro.props;
+const { subline, standing } = entry.data;
+const note = scribble ? entry.data.scribble : undefined;
+const hasBody = Astro.slots.has('default');
+---
+
+{subline && <p class="e-sub">{subline}</p>}
+{hasBody && <div class="e-body"><slot /></div>}
+{note && <div class="e-scr">{note}</div>}
+{standing && <p class="e-std">{standing}</p>}
+{links.length > 0 && (
+  <div class="e-links">
+    {links.map((link) => 'href' in link
+      ? <a class="lk" href={link.href}>{link.label}<span aria-hidden="true"> ↗</span></a>
+      : <a class="lk" href={`#pile-${link.entry.id}`} data-pile-link={link.entry.id}>{link.label}<span aria-hidden="true"> →</span></a>)}
+  </div>
+)}

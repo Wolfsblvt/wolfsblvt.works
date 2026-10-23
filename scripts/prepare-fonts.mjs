@@ -11,6 +11,7 @@ const cssOut = join(root, 'src', 'styles', 'fonts.generated.css');
 const SUBSETS = ['latin', 'latin-ext'];
 
 // family: the name the site's CSS uses; css: the Fontsource stylesheet whose rules are filtered by subset.
+// The first six are the Works walk; the rest belong to one project window each and are used only there.
 const FONTS = [
   { family: 'Literata', pkg: '@fontsource-variable/literata', css: ['opsz.css', 'opsz-italic.css'], format: 'woff2-variations' },
   { family: 'Albert Sans', pkg: '@fontsource-variable/albert-sans', css: ['wght.css'], format: 'woff2-variations' },
@@ -18,6 +19,14 @@ const FONTS = [
   { family: 'IBM Plex Sans', pkg: '@fontsource/ibm-plex-sans', css: ['400.css', '600.css'], format: 'woff2' },
   { family: 'IBM Plex Mono', pkg: '@fontsource/ibm-plex-mono', css: ['400.css', '500.css'], format: 'woff2' },
   { family: 'Special Elite', pkg: '@fontsource/special-elite', css: ['400.css'], format: 'woff2' },
+  // smolpng's window (Wolf chose version B: the rounder face)
+  { family: 'Nunito', pkg: '@fontsource-variable/nunito', css: ['wght.css'], format: 'woff2-variations' },
+  // Karaokebarr's brand: display and interface faces
+  { family: 'Bricolage Grotesque', pkg: '@fontsource-variable/bricolage-grotesque', css: ['opsz.css'], format: 'woff2-variations' },
+  { family: 'Atkinson Hyperlegible Next', pkg: '@fontsource/atkinson-hyperlegible-next', css: ['400.css', '500.css', '600.css', '700.css'], format: 'woff2' },
+  // Borrowed Coast's chart lettering and interface
+  { family: 'Alegreya', pkg: '@fontsource-variable/alegreya', css: ['wght.css', 'wght-italic.css'], format: 'woff2-variations' },
+  { family: 'Alegreya Sans', pkg: '@fontsource/alegreya-sans', css: ['400.css', '500.css', '700.css'], format: 'woff2' },
 ];
 
 rmSync(outDir, { recursive: true, force: true });

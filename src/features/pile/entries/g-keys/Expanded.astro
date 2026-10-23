@@ -1,0 +1,135 @@
+---
+/**
+ * G-keys, with a purpose, expanded: the strip stands upright and each key can be pressed to inspect its meaning in
+ * the chosen foreground app (Obsidian or Chrome). G1 is Atlas and shows all five meanings; G5 is agent access with
+ * its small entrance. The display describes the action and never claims an app opened. Every meaning of both contexts
+ * is in the markup; interaction.ts only shows one, so G5 in Obsidian reads complete before any script runs.
+ */
+import type { PileEntry } from '../../catalogue';
+
+interface Props {
+  entry: PileEntry;
+  hid: string;
+}
+const { entry, hid } = Astro.props;
+const { title } = entry.data;
+const uid = `pile-${entry.id}`;
+
+interface Context {
+  id: 'obsidian' | 'chrome';
+  name: string;
+  /** G1..G5 as [meaning, one line about it]. */
+  keys: readonly (readonly [string, string])[];
+}
+const CONTEXTS: readonly Context[] = [
+  {
+    id: 'obsidian',
+    name: 'Obsidian',
+    keys: [
+      ['Atlas', 'The map of what these keys mean here.'],
+      ['Quick Switcher', 'Find a note without leaving the keyboard.'],
+      ['Search notes', 'Look through the words in your vault.'],
+      ['Command palette', 'Find the action you came here to do.'],
+      ['Agent access', 'A fresh conversation, close at hand.'],
+    ],
+  },
+  {
+    id: 'chrome',
+    name: 'Chrome',
+    keys: [
+      ['Atlas', 'The map of what these keys mean here.'],
+      ['Obsidian', 'Your notes, close at hand.'],
+      ['Reopen a tab', 'Bring back the tab you just closed.'],
+      ['Tab search', 'Find the page you already have open.'],
+      ['Agent access', 'A fresh conversation, close at hand.'],
+    ],
+  },
+];
+const INITIAL = { context: 'obsidian', key: 5 } as const;
+const KEY_NUMBERS = [1, 2, 3, 4, 5] as const;
+---
+
+<div class="sc">
+  <h3 id={hid} class="e-h sc-h">{title}</h3>
+  <div class="sc-grid">
+    <div class="scene" data-interaction={entry.id}>
+      <div class="strip-col">
+        <div class="strip" role="group" aria-label="Inspect the five G-key meanings">
+          {KEY_NUMBERS.map((n) => (
+            <button type="button" class="gkey" data-key={n} aria-pressed={n === INITIAL.key ? 'true' : 'false'} disabled>G{n}</button>
+          ))}
+        </div>
+        <p class="caption">Logitech G-keys</p>
+      </div>
+      <div class="detail">
+        <span class="label" data-key-number>G{INITIAL.key} · a familiar way in</span>
+        <div class="content" aria-live="polite">
+          {CONTEXTS.map((context) => context.keys.map(([meaning, line], index) => (
+            <div class="meaning" data-context={context.id} data-key={index + 1} hidden={!(context.id === INITIAL.context && index + 1 === INITIAL.key)}>
+              <p class="name">{meaning}</p>
+              <p class="line">{line}</p>
+              {index === 0 && (
+                <ul class="map">
+                  {context.keys.map(([name], j) => <li><strong>G{j + 1}</strong>{name}</li>)}
+                </ul>
+              )}
+              {index === 2 && <p class="else">Anywhere else, a terminal.</p>}
+              {index === 4 && <div class="question">What’s on your mind?</div>}
+            </div>
+          )))}
+        </div>
+        <label class="ctx" for={`${uid}-context`} hidden>
+          In the foreground
+          <select id={`${uid}-context`} data-switch>
+            {CONTEXTS.map((context) => <option value={context.id}>{context.name}</option>)}
+          </select>
+        </label>
+      </div>
+    </div>
+    <div class="sc-copy"><slot /></div>
+  </div>
+</div>
+
+<style>
+  .sc { font-family: var(--sans); }
+  .sc-h { font: 400 clamp(28px, 3vw, 40px)/1.15 var(--serif); letter-spacing: -.02em; max-width: 22ch; text-wrap: balance; }
+  .sc-grid { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 28px 56px; align-items: start; margin-top: 26px; }
+  @media (max-width: 880px) { .sc-grid { grid-template-columns: 1fr; } }
+
+  .scene { display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 30px; align-items: center; max-width: 560px; padding-top: 10px; }
+  .strip { display: flex; flex-direction: column; gap: 12px; padding: 15px; border: 1px solid #625664; border-bottom: 7px solid #09090d; border-radius: 13px; background: linear-gradient(140deg, #3c3741, #15151d); box-shadow: 10px 15px 30px rgb(0 0 0 / 30%); transform: rotate(-3deg); }
+  .gkey { box-sizing: border-box; width: 100%; min-height: 57px; border: 1px solid #6e5c71; border-bottom: 5px solid #08080c; border-radius: 6px; background: linear-gradient(130deg, #50414f, #25222c); box-shadow: inset 0 1px rgb(178 156 170 / 15%); color: #c5b5ca; font: 16px var(--sans); cursor: pointer; transition: transform 120ms, color 120ms, background 120ms; }
+  .gkey:disabled { cursor: default; }
+  .gkey[aria-pressed='true'] { color: #ffcedb; border-color: #ba7b98; background: linear-gradient(130deg, #614357, #342331); box-shadow: 0 0 18px rgb(239 142 161 / 14%), inset 0 1px rgb(239 170 203 / 33%); }
+  .gkey:not(:disabled):active { transform: translateY(3px); }
+  .caption { margin: 18px 0 0; font-size: 12px; color: var(--text-soft); text-align: center; }
+  .detail { min-height: 260px; padding: 4px 0 4px 24px; border-left: 1px solid rgb(239 142 161 / 42%); }
+  .label { font-size: 11px; letter-spacing: .15em; text-transform: uppercase; color: var(--text-soft); }
+  .content { min-height: 152px; }
+  .name { margin: 13px 0; font: 400 25px/1.2 var(--serif); color: var(--text); }
+  .line { min-height: 48px; margin: 0; font-size: 14px; line-height: 1.55; color: var(--text-soft); }
+  .map { margin: 14px 0 0; padding: 0; list-style: none; font-size: 12px; line-height: 1.8; color: var(--text-soft); }
+  .map strong { margin-right: 12px; font-weight: 400; color: var(--rose); }
+  .else { margin: 10px 0 0; font-size: 12px; color: var(--text-faint); }
+  .question { margin-top: 22px; padding: 17px 13px; border: 1px solid rgb(239 142 161 / 24%); border-radius: 9px; font: italic 17px var(--serif); color: #d9b8c5; }
+  .ctx { display: block; width: 100%; margin-top: 22px; font-size: 11px; color: var(--text-soft); }
+  .ctx select { display: block; width: 100%; max-width: 190px; min-height: 44px; margin-top: 6px; padding: 7px 12px; border: 1px solid #6d5d70; border-radius: 7px; background: #231b27; color: var(--text); font: 13px var(--sans); cursor: pointer; }
+
+  @media (max-width: 850px) {
+    .scene { grid-template-columns: 86px minmax(0, 1fr); gap: 18px; }
+    .strip { padding: 12px; }
+    .detail { padding-left: 18px; }
+  }
+  @media (max-width: 640px) {
+    .scene { grid-template-columns: 90px minmax(0, 1fr); gap: 28px; max-width: 400px; }
+    .strip { transform: rotate(-2deg); }
+    .detail { min-height: 280px; }
+  }
+  @media (max-width: 360px) {
+    .scene { grid-template-columns: 77px minmax(0, 1fr); gap: 18px; }
+    .strip { padding: 10px; }
+    .gkey { min-height: 54px; }
+    .detail { padding-left: 14px; }
+    .name { font-size: 22px; }
+  }
+</style>

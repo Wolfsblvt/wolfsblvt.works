@@ -1,0 +1,27 @@
+---
+/** TunnelTend, compact: a small dark terminal card with the approved lockup, `tunneltend status` and its three rows. */
+import type { PileEntry } from '../../catalogue';
+import lockup from './lockup.svg?url';
+
+interface Props {
+  entry: PileEntry;
+}
+const { entry } = Astro.props;
+---
+
+<div class="tt">
+  <img class="tt-lockup" src={lockup} alt={entry.data.title} width="701" height="121" />
+  <code class="tt-cmd"><span class="tt-shell">&gt;</span> tunneltend status</code>
+  <div class="tt-row"><span>notes</span><span class="tt-ok">connected</span></div>
+  <div class="tt-row"><span>media</span><span class="tt-ok">connected</span></div>
+  <div class="tt-row"><span>sandbox</span><span>stopped by you</span></div>
+</div>
+
+<style>
+  .tt { padding: 20px; background: #191821; border: 1px solid #46404e; border-radius: 5px; box-shadow: 0 7px 25px rgb(0 0 0 / 25%); font-family: var(--mono); color: #f0edf3; }
+  .tt-lockup { display: block; width: 180px; max-width: 100%; height: auto; margin: 0 0 21px; }
+  .tt-cmd { display: block; margin: 0 0 12px; padding: 0; background: none; font: 13px/1.5 var(--mono); color: #f0edf3; white-space: normal; }
+  .tt-shell { color: #79cad9; }
+  .tt-row { display: flex; justify-content: space-between; gap: 14px; padding: 5px 0; font: 11px/1.5 var(--mono); color: #c6bfce; }
+  .tt-ok { color: #8cd6b0; }
+</style>
