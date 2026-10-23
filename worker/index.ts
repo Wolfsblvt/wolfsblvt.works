@@ -8,7 +8,7 @@
  *                            /contact/  a permanent redirect to the contact host
  *
  * Outside production (wrangler dev, previews) the contact page also answers at /contact/ on the same host, so the
- * whole journey can be exercised locally.
+ * whole journey can be exercised locally. An unexpected failure answers with the site's own 503 page.
  */
 import { CONTACT_HOST } from '../shared/contact-contract';
 import type { ContactEnv } from './contact/env';
@@ -17,6 +17,7 @@ import { prepareContactPage } from './contact/form-page';
 import { handleContactSubmission } from './contact/handler';
 import { createContactServices } from './contact/services';
 import { pileSeed } from './pile-seed';
+import { unavailable } from './unavailable';
 
 export interface Env extends ContactEnv {
   ASSETS: Fetcher;
@@ -34,21 +35,29 @@ const SECURITY_HEADERS: Record<string, string> = {
 
 export default {
   async fetch(request, env): Promise<Response> {
-    const url = new URL(request.url);
-    const production = env.ENVIRONMENT_NAME === 'production';
-    const contactHost = url.hostname === CONTACT_HOST;
-    const contactPath = url.pathname === '/contact' || url.pathname === '/contact/';
-
-    if (contactHost && url.pathname === '/') return contact(request, env, url);
-    if (contactHost && contactPath) return Response.redirect(`https://${CONTACT_HOST}/${url.search}`, 301);
-    if (contactPath) {
-      if (production) return Response.redirect(`https://${CONTACT_HOST}/${url.search}`, 301);
-      return contact(request, env, url);
+    try {
+      return await route(request, env);
+    } catch (error) {
+      return unavailable(request, env.ASSETS, error, SECURITY_HEADERS);
     }
-    if (url.pathname === '/' && (request.method === 'GET' || request.method === 'HEAD')) return home(request, env);
-    return env.ASSETS.fetch(request);
   },
 } satisfies ExportedHandler<Env>;
+
+async function route(request: Request, env: Env): Promise<Response> {
+  const url = new URL(request.url);
+  const production = env.ENVIRONMENT_NAME === 'production';
+  const contactHost = url.hostname === CONTACT_HOST;
+  const contactPath = url.pathname === '/contact' || url.pathname === '/contact/';
+
+  if (contactHost && url.pathname === '/') return contact(request, env, url);
+  if (contactHost && contactPath) return Response.redirect(`https://${CONTACT_HOST}/${url.search}`, 301);
+  if (contactPath) {
+    if (production) return Response.redirect(`https://${CONTACT_HOST}/${url.search}`, 301);
+    return contact(request, env, url);
+  }
+  if (url.pathname === '/' && (request.method === 'GET' || request.method === 'HEAD')) return home(request, env);
+  return env.ASSETS.fetch(request);
+}
 
 async function contact(request: Request, env: Env, url: URL): Promise<Response> {
   if (request.method === 'POST') {

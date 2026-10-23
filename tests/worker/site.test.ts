@@ -76,3 +76,24 @@ describe('static pages', () => {
     expect(await response.text()).toContain('Off the path.');
   });
 });
+
+describe('when the Worker itself fails', () => {
+  it('answers with the site’s own 503 page from the assets', async () => {
+    const { unavailable } = await import('../../worker/unavailable');
+    const assets = { fetch: async () => new Response('<!doctype html><title>Something broke</title>', { headers: { 'Content-Type': 'text/html' } }) } as unknown as Fetcher;
+    const response = await unavailable(new Request('https://wolfsblvt.works/'), assets, new Error('boom'), { 'X-Content-Type-Options': 'nosniff' });
+    expect(response.status).toBe(503);
+    expect(response.headers.get('Retry-After')).toBe('120');
+    expect(response.headers.get('Cache-Control')).toBe('no-store');
+    expect(response.headers.get('X-Content-Type-Options')).toBe('nosniff');
+    expect(await response.text()).toContain('Something broke');
+  });
+
+  it('still answers plainly when the assets are gone too', async () => {
+    const { unavailable } = await import('../../worker/unavailable');
+    const assets = { fetch: async () => { throw new Error('no assets'); } } as unknown as Fetcher;
+    const response = await unavailable(new Request('https://wolfsblvt.works/'), assets, new Error('boom'));
+    expect(response.status).toBe(503);
+    expect(response.headers.get('Content-Type')).toContain('text/plain');
+  });
+});

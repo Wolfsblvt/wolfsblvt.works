@@ -9,6 +9,10 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "wolfsblvt-works",
   "main": "./worker/index.ts",
+  // Only the routed hosts serve this Worker: no workers.dev hostname and no preview URLs, so a build is never public
+  // anywhere Ops did not route it (the contact-first launch step relies on this).
+  "workers_dev": false,
+  "preview_urls": false,
   "compatibility_date": "2026-08-15",
   "assets": {
     "directory": "./artifacts/site",
@@ -37,12 +41,12 @@
   "observability": { "enabled": true },
   "env": {
     "production": {
-      // Secrets (wrangler secret put): TURNSTILE_SECRET_KEY, CONTACT_FORM_SECRET. The site key placeholder makes the
-      // contact service refuse to send until the real widget is configured.
+      // Secrets (wrangler secret put): TURNSTILE_SECRET_KEY, CONTACT_FORM_SECRET. The site key is the public half of
+      // the production managed Turnstile widget for contact.wolfsblvt.works (Wolf Ops, 2026-10-22).
       "vars": {
         "ENVIRONMENT_NAME": "production",
         "BUILD_VERSION": "unset",
-        "TURNSTILE_SITE_KEY": "REPLACE_WITH_PRODUCTION_TURNSTILE_SITE_KEY",
+        "TURNSTILE_SITE_KEY": "0x4AAAAAAFhYd5w_dqZnD-fl",
         "CONTACT_INBOX": "contact@wolfsblvt.works",
         "CONTACT_SENDING_ENABLED": "true"
       },
