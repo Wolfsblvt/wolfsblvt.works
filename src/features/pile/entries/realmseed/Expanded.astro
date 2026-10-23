@@ -15,74 +15,79 @@ const { entry, hid } = Astro.props;
 
 <div class="rs" data-interaction={entry.id}>
   <h3 id={hid} class="e-h rs-h">{entry.data.title}</h3>
-  <div class="rs-scene" data-scene>
-    <div class="rs-heading">While you were away<small>The country has a history.</small></div>
-    <svg class="rs-art" viewBox="0 0 600 365" role="img" aria-label="Small places connected by luminous roots, with a new path across the country.">
-      <g transform="translate(0 25)">
-        <g fill="none" stroke-linecap="round">
-          <path d="M85 245Q147 200 200 165T306 129Q380 95 475 155M202 165q5 69 99 109M306 129q-11-49 49-82M378 128q4 67 102 115" stroke="#283b35" stroke-width="25"/>
-          <path d="M85 245Q147 200 200 165T306 129Q380 95 475 155M202 165q5 69 99 109M306 129q-11-49 49-82M378 128q4 67 102 115" stroke="#5d7160" stroke-width="2"/>
-        </g>
-        <g fill="#253b34" stroke="#577064" stroke-width="1.3">
-          <path d="M63 220l69-38 59 22 25 41-60 43-82-20z"/>
-          <path d="M154 137l61-42 83 30 5 64-67 28-70-23z"/>
-          <path d="M297 83l69-31 78 31 17 67-60 42-76-30z"/>
-          <path d="M425 183l64-23 58 31-2 59-59 25-63-39z"/>
-          <path d="M254 245l58-33 68 25-7 51-74 17-51-24z"/>
-        </g>
-        <g fill="none" stroke="#ad9d76" stroke-width="2" opacity=".55">
-          <path d="M98 241l105-68 134-57 147 103M209 175l99 91M341 118l-5-36"/>
-        </g>
-        <g fill="#879875" stroke="#101d19" stroke-width="2">
-          <circle cx="93" cy="221" r="10"/>
-          <circle cx="126" cy="250" r="9"/>
-          <circle cx="269" cy="166" r="12"/>
-          <circle cx="420" cy="108" r="14"/>
-          <circle cx="502" cy="237" r="12"/>
-          <circle cx="278" cy="266" r="9"/>
-          <circle cx="315" cy="288" r="8"/>
-        </g>
-        <g fill="#b0a17b" stroke="#192721" stroke-width="2">
-          <path d="M190 154l27-16 26 17v25l-27 14-26-14z"/>
-          <path d="M331 110l27-15 31 18v24l-28 15-30-17z"/>
-          <path d="M466 213l20-13 24 14v22l-23 14-21-16z"/>
-        </g>
-        <g fill="#596658" stroke="#1b2b24" stroke-width="2">
-          <path d="M181 155l36-28 36 28-36 14z"/>
-          <path d="M322 112l36-30 41 32-38 16z"/>
-          <path d="M458 215l28-25 33 26-32 14z"/>
-        </g>
-        <g fill="#efd09a">
-          <path d="M211 171h8v12h-8zM355 131h8v12h-8zM482 228h7v10h-7z"/>
-          <circle cx="308" cy="255" r="4"/>
-        </g>
-        <g stroke="#72664b" stroke-width="3">
-          <path d="M238 187l18 9M233 195l18 9M229 203l18 9"/>
-        </g>
-        <g fill="#c9b59a">
-          <circle cx="193" cy="181" r="3"/>
-          <circle cx="374" cy="158" r="3"/>
-          <circle cx="320" cy="259" r="3"/>
-        </g>
-        <g class="rs-path">
-          <path d="M228 178Q280 205 342 157" fill="none" stroke-width="4"/>
-          <circle cx="228" cy="178" r="12" fill="none" stroke-width="2"/>
-          <circle cx="342" cy="157" r="16" fill="none" stroke-width="2"/>
-        </g>
-      </g>
-    </svg>
-    <p class="rs-caption" data-caption aria-live="polite">A garden. A hearth. A way between them.</p>
+  <div class="e-side rs-side">
+    <div class="e-side-scene">
+      <div class="rs-scene" data-scene>
+        <div class="rs-heading">While you were away<small>The country has a history.</small></div>
+        <svg class="rs-art" viewBox="0 0 600 365" role="img" aria-label="Small places connected by luminous roots, with a new path across the country.">
+          <g transform="translate(0 25)">
+            <g fill="none" stroke-linecap="round">
+              <path d="M85 245Q147 200 200 165T306 129Q380 95 475 155M202 165q5 69 99 109M306 129q-11-49 49-82M378 128q4 67 102 115" stroke="#283b35" stroke-width="25"/>
+              <path d="M85 245Q147 200 200 165T306 129Q380 95 475 155M202 165q5 69 99 109M306 129q-11-49 49-82M378 128q4 67 102 115" stroke="#5d7160" stroke-width="2"/>
+            </g>
+            <g fill="#253b34" stroke="#577064" stroke-width="1.3">
+              <path d="M63 220l69-38 59 22 25 41-60 43-82-20z"/>
+              <path d="M154 137l61-42 83 30 5 64-67 28-70-23z"/>
+              <path d="M297 83l69-31 78 31 17 67-60 42-76-30z"/>
+              <path d="M425 183l64-23 58 31-2 59-59 25-63-39z"/>
+              <path d="M254 245l58-33 68 25-7 51-74 17-51-24z"/>
+            </g>
+            <g fill="none" stroke="#ad9d76" stroke-width="2" opacity=".55">
+              <path d="M98 241l105-68 134-57 147 103M209 175l99 91M341 118l-5-36"/>
+            </g>
+            <g fill="#879875" stroke="#101d19" stroke-width="2">
+              <circle cx="93" cy="221" r="10"/>
+              <circle cx="126" cy="250" r="9"/>
+              <circle cx="269" cy="166" r="12"/>
+              <circle cx="420" cy="108" r="14"/>
+              <circle cx="502" cy="237" r="12"/>
+              <circle cx="278" cy="266" r="9"/>
+              <circle cx="315" cy="288" r="8"/>
+            </g>
+            <g fill="#b0a17b" stroke="#192721" stroke-width="2">
+              <path d="M190 154l27-16 26 17v25l-27 14-26-14z"/>
+              <path d="M331 110l27-15 31 18v24l-28 15-30-17z"/>
+              <path d="M466 213l20-13 24 14v22l-23 14-21-16z"/>
+            </g>
+            <g fill="#596658" stroke="#1b2b24" stroke-width="2">
+              <path d="M181 155l36-28 36 28-36 14z"/>
+              <path d="M322 112l36-30 41 32-38 16z"/>
+              <path d="M458 215l28-25 33 26-32 14z"/>
+            </g>
+            <g fill="#efd09a">
+              <path d="M211 171h8v12h-8zM355 131h8v12h-8zM482 228h7v10h-7z"/>
+              <circle cx="308" cy="255" r="4"/>
+            </g>
+            <g stroke="#72664b" stroke-width="3">
+              <path d="M238 187l18 9M233 195l18 9M229 203l18 9"/>
+            </g>
+            <g fill="#c9b59a">
+              <circle cx="193" cy="181" r="3"/>
+              <circle cx="374" cy="158" r="3"/>
+              <circle cx="320" cy="259" r="3"/>
+            </g>
+            <g class="rs-path">
+              <path d="M228 178Q280 205 342 157" fill="none" stroke-width="4"/>
+              <circle cx="228" cy="178" r="12" fill="none" stroke-width="2"/>
+              <circle cx="342" cy="157" r="16" fill="none" stroke-width="2"/>
+            </g>
+          </g>
+        </svg>
+        <p class="rs-caption" data-caption aria-live="polite">A garden. A hearth. A way between them.</p>
+      </div>
+      <div class="rs-controls" data-controls hidden>
+        <button type="button" aria-pressed="false" data-path>Follow the new path</button>
+      </div>
+    </div>
+    <div class="e-side-copy"><slot /></div>
   </div>
-  <div class="rs-controls" data-controls hidden>
-    <button type="button" aria-pressed="false" data-path>Follow the new path</button>
-  </div>
-  <div class="rs-copy"><slot /></div>
 </div>
 
 <style>
-  .rs { max-width: 720px; font-family: var(--sans); }
+  .rs { font-family: var(--sans); }
   .rs-h { font: 500 clamp(26px, 2.8vw, 34px)/1.15 var(--serif); letter-spacing: -.01em; }
-  .rs-scene { position: relative; overflow: hidden; margin-top: 18px; padding: 18px 12px 5px; border-radius: 7px; background: #0a0d12; border: 1px solid #1d242e; }
+  .rs-side { margin-top: 18px; }
+  .rs-scene { position: relative; overflow: hidden; max-width: 720px; padding: 18px 12px 5px; border-radius: 7px; background: #0a0d12; border: 1px solid #1d242e; }
   .rs-heading { position: absolute; top: 18px; left: 21px; z-index: 2; font: 500 16px/1.3 var(--sans); color: #ecebe6; }
   .rs-heading small { display: block; font: 12px/1.6 var(--sans); color: #c9c5b8; }
   .rs-art { display: block; width: 100%; height: auto; }

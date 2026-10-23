@@ -19,18 +19,23 @@ const sheets = [
 
 <div class="rp">
   <h3 id={hid} class="e-h rp-h">{entry.data.title}</h3>
-  <div class="sheets">
-    {sheets.map(([number, line]) => (
-      <div class="sheet"><small>{number}</small>{line}<span class="lines" aria-hidden="true"></span></div>
-    ))}
+  <div class="e-side rp-side">
+    <div class="e-side-scene">
+      <div class="sheets">
+        {sheets.map(([number, line]) => (
+          <div class="sheet"><small>{number}</small>{line}<span class="lines" aria-hidden="true"></span></div>
+        ))}
+      </div>
+    </div>
+    <div class="e-side-copy"><slot /></div>
   </div>
-  <slot />
 </div>
 
 <style>
-  .rp { max-width: 620px; font-family: var(--sans); }
+  .rp { font-family: var(--sans); }
   .rp-h { font: 500 clamp(26px, 2.8vw, 34px)/1.15 var(--serif); letter-spacing: -.01em; }
-  .sheets { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 25px; }
+  .rp-side { margin-top: 25px; }
+  .sheets { display: flex; flex-wrap: wrap; gap: 15px; max-width: 620px; }
   .sheet { flex: 1; min-width: 135px; padding: 20px 16px 23px; background: #cbbda0; color: #2b2926; border-bottom: 4px solid #988c73; font: 15px/1.7 var(--mono); }
   .sheet:nth-child(2) { transform: rotate(-1.3deg); }
   .sheet:nth-child(3) { transform: rotate(.8deg); }

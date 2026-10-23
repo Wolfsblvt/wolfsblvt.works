@@ -6,6 +6,7 @@
  * game's Night Chart v15 reference (design/the-walk/assets/borrowed-coast/).
  */
 import { Image } from 'astro:assets';
+import Anchor from '../../components/Anchor.astro';
 import Icon from '../../components/Icon.astro';
 import chart from '../../../design/the-walk/assets/borrowed-coast/window-chart.png';
 import nations from '../../../design/the-walk/assets/borrowed-coast/window-nations.png';
@@ -31,8 +32,9 @@ const MODES = [
 ] as const;
 ---
 
-<section class="frame sec lift" aria-labelledby="bc-h">
+<section id="borrowed-coast" class="frame sec lift" aria-labelledby="bc-h">
   <div class="bc" data-reveal="fade">
+    <Anchor id="borrowed-coast" name="Borrowed Coast" />
     <div class="bc-copy">
       <p class="bc-kicker">Borrowed Coast <span class="bc-standing">In development</span></p>
       <h2 id="bc-h" class="bc-h">Your capital is a ship. The coast is only borrowed.</h2>
@@ -51,6 +53,7 @@ const MODES = [
             <Image class="bc-img" data-mode={mode.id} src={mode.image} alt={mode.alt} widths={[760, 1140, 1520]} sizes="(min-width: 960px) 58vw, 100vw" loading="lazy" />
           ))}
         </div>
+        <div class="bc-hint" aria-hidden="true"><span class="scribble">click</span><svg viewBox="0 0 70 24" width="70" height="24"><path d="M3 14 C 20 6, 38 18, 62 11" fill="none" stroke="#ef8ea1" stroke-width="1.8" stroke-linecap="round"></path><path d="M54 5 L63 11 L54 18" fill="none" stroke="#ef8ea1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
         <div class="bc-modes">
           {MODES.map((mode) => (
             <label class="bc-mode" for={`bc-${mode.id}`} data-mode={mode.id}><Icon product={mode.icon} size={16} strokeWidth={1.7} /><span>{mode.label}</span></label>

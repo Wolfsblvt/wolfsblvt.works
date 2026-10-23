@@ -123,6 +123,11 @@ a:hover { color: var(--cyan); }
 .lk { display: inline-flex; align-items: center; gap: 7px; min-height: 36px; padding: 0 14px; border-radius: 999px; border: 1px solid rgb(243 232 220 / 18%); font: 13.5px var(--sans); color: var(--text); text-decoration: none; }
 .lk:hover { border-color: var(--cyan); color: var(--cyan); }
 
+/* A window's own address: a small # in its corner that travels there and copies the link */
+.anchor { position: absolute; right: 10px; top: 8px; z-index: 2; width: 38px; height: 38px; display: grid; place-items: center; border-radius: 8px; font: 600 17px var(--mono); color: inherit; opacity: .35; text-decoration: none; transition: opacity .2s, color .2s; }
+.anchor:hover, .anchor:focus-visible { opacity: 1; color: var(--cyan); }
+[id] { scroll-margin-top: 92px; }
+
 /* A destination that doesn't exist yet: shown, but not a link */
 .btn-off { opacity: .45; cursor: default; }
 .btn-off:hover { transform: none; }

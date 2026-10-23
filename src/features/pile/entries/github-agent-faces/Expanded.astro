@@ -20,26 +20,32 @@ const voices = [
 
 <div class="af" data-interaction={entry.id}>
   <h3 id={hid} class="e-h af-h">{entry.data.title}</h3>
-  <div class="conversation" data-conversation>
-    {voices.map(([voice, tone]) => (
-      <div class="row" data-name={voice}>
-        <span class:list={['initial', tone]} aria-hidden="true" data-initial>{voice.charAt(0)}</span>
-        <div>
-          <span class="voice-name" data-voice-name>{voice}</span>
-          <span class="voice-origin" data-voice-origin>via Wolfsblvt</span>
-        </div>
+  <div class="e-side af-side">
+    <div class="e-side-scene af-scene">
+      <div class="conversation" data-conversation>
+        {voices.map(([voice, tone]) => (
+          <div class="row" data-name={voice}>
+            <span class:list={['initial', tone]} aria-hidden="true" data-initial>{voice.charAt(0)}</span>
+            <div>
+              <span class="voice-name" data-voice-name>{voice}</span>
+              <span class="voice-origin" data-voice-origin>via Wolfsblvt</span>
+            </div>
+          </div>
+        ))}
       </div>
-    ))}
+      <button type="button" class="control" data-faces-toggle hidden>Show raw markers</button>
+      <span class="sr" data-live aria-live="polite"></span>
+    </div>
+    <div class="e-side-copy"><slot /></div>
   </div>
-  <button type="button" class="control" data-faces-toggle hidden>Show raw markers</button>
-  <span class="sr" data-live aria-live="polite"></span>
-  <slot />
 </div>
 
 <style>
-  .af { max-width: 620px; font-family: var(--sans); }
+  .af { font-family: var(--sans); }
   .af-h { font: 500 clamp(26px, 2.8vw, 34px)/1.15 var(--serif); letter-spacing: -.01em; }
-  .conversation { display: grid; gap: 18px; margin-top: 22px; padding: 20px; background: #181c24; }
+  .af-side { margin-top: 22px; }
+  .af-scene { max-width: 620px; }
+  .conversation { display: grid; gap: 18px; padding: 20px; background: #181c24; }
   .row { display: flex; align-items: center; gap: 12px; min-width: 0; }
   .initial { display: inline-grid; place-items: center; flex: none; width: 38px; height: 38px; border-radius: 50%; background: #adbcf2; color: #17131c; font-weight: 600; font-size: 15px; transition: background-color .18s ease; }
   .katja { background: #ebbb79; }

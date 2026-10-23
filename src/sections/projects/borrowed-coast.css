@@ -1,4 +1,5 @@
 /* Borrowed Coast, in its own world: Night Chart tokens (umber margin, chart ink, deep sea), Alegreya and Alegreya Sans. */
+.bc .anchor { color: var(--bc-ink); }
 .bc {
   --bc-margin: #1c1a15; --bc-ink: #efe6cf; --bc-ink-2: #b9b199; --bc-ink-3: #847e6b; --bc-water-ink: #84a7a2; --bc-sea: #0e1f24; --bc-line: rgb(185 174 146 / 32%);
   --bc-serif: 'Alegreya', 'Iowan Old Style', Georgia, serif; --bc-sans: 'Alegreya Sans', 'Gill Sans', 'Segoe UI', sans-serif;
@@ -27,18 +28,29 @@
 .bc-mode:hover { color: var(--bc-ink); background: rgb(239 230 207 / 5%); }
 .bc-coast:has(#bc-chart:checked) .bc-mode[data-mode=chart], .bc-coast:has(#bc-watch:checked) .bc-mode[data-mode=watch], .bc-coast:has(#bc-nations:checked) .bc-mode[data-mode=nations] { background: var(--bc-ink); color: var(--bc-margin); }
 .bc-coast:has(#bc-chart:focus-visible) .bc-mode[data-mode=chart], .bc-coast:has(#bc-watch:focus-visible) .bc-mode[data-mode=watch], .bc-coast:has(#bc-nations:focus-visible) .bc-mode[data-mode=nations] { outline: 2px solid var(--cyan); outline-offset: 1px; }
+/* Wolf's hand, so the game's nav reads as the control it is and not as part of the capture. */
+.bc-hint { position: absolute; right: 138px; bottom: 34px; display: flex; align-items: center; gap: 4px; pointer-events: none; filter: drop-shadow(0 2px 6px rgb(0 0 0 / 70%)); }
+.bc-hint .scribble { font-size: 20px; line-height: 1; transform: rotate(-6deg); text-shadow: 0 0 10px #05080c; }
 /* One line of chart lettering beneath: what the pressed mode is, in the game's words. */
 .bc-caption { margin: 10px 2px 0; min-height: 1.4em; font: italic 400 15.5px/1.4 var(--bc-serif); color: var(--bc-ink-2); }
 .bc-caption span { display: none; }
 .bc-caption b { font-style: normal; font-weight: 500; color: var(--bc-ink); }
 .bc-window:has(#bc-chart:checked) .bc-caption [data-mode=chart], .bc-window:has(#bc-watch:checked) .bc-caption [data-mode=watch], .bc-window:has(#bc-nations:checked) .bc-caption [data-mode=nations] { display: inline; }
 
+@media (min-width: 1640px) {
+  /* Room beside the window: the hint steps out past the panel and points back at the nav. The threshold leaves the
+     hint whole inside the viewport and keeps it out of Yoru's lane along the right edge. */
+  .bc-hint { right: auto; left: calc(100% + 14px); bottom: 38px; flex-direction: row-reverse; }
+  .bc-hint svg { transform: scaleX(-1); }
+  .bc-hint .scribble { transform: rotate(4deg); }
+}
 @media (max-width: 960px) {
   .bc { grid-template-columns: 1fr; }
 }
 @media (max-width: 560px) {
   .bc { padding: 28px 20px 24px; }
   .bc-modes { position: static; grid-auto-flow: column; justify-content: start; margin-top: 8px; box-shadow: none; padding: 0; background: none; }
+  .bc-hint { display: none; }
   .bc-mode span { min-width: 0; }
 }
 @media (prefers-reduced-motion: reduce) { .bc-img { transition: none; } }

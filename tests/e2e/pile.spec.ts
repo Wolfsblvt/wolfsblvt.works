@@ -14,16 +14,25 @@ test('opening scatters the pile and grows Endless over time, then gathers back',
   const toggle = page.locator('[data-pile-toggle]');
   await expect(toggle).toHaveText('There’s more. A lot more.');
   expect(await endlessHeight(page)).toBe(0);
-  // A real height reveal, not an instant jump: sample the height every frame while it opens.
+  // A real height reveal, not an instant jump: sample the height every frame while it opens. The window starts when
+  // the height first moves, so a slow click under suite load cannot end it before the reveal begins.
   const sampling = page.evaluate(() => new Promise<number[]>((resolve) => {
     const outer = document.querySelector('[data-endless-outer]')!;
     const heights: number[] = [];
     const t0 = performance.now();
-    const tick = () => { heights.push(outer.getBoundingClientRect().height); if (performance.now() - t0 < 2500) requestAnimationFrame(tick); else resolve(heights); };
+    let moved: number | null = null;
+    const tick = () => {
+      const h = outer.getBoundingClientRect().height;
+      heights.push(h);
+      if (moved === null && h > 0) moved = performance.now();
+      const now = performance.now();
+      if (moved === null ? now - t0 < 15000 : now - moved < 2500) requestAnimationFrame(tick);
+      else resolve(heights);
+    };
     requestAnimationFrame(tick);
   }));
   await toggle.click();
-  await expect(page).toHaveURL(/#endless$/);
+  await expect(page).toHaveURL(/#whoa$/);
   const heights = await sampling;
   const final = heights[heights.length - 1]!;
   expect(final).toBeGreaterThan(2000);
@@ -34,8 +43,10 @@ test('opening scatters the pile and grows Endless over time, then gathers back',
   await expect(toggle).toHaveAttribute('aria-expanded', 'true');
 
   await toggle.click();
-  await expect(page).toHaveURL(/#pile$/);
-  await expect.poll(() => endlessHeight(page), { timeout: 5000 }).toBe(0);
+  await expect(page).toHaveURL(/#whoa$/);
+  // Closing travels back to the threshold first (up to 2.2s), then retracts (1.1s); under suite load the frames that
+  // carry it can arrive late, so the wait is generous without weakening what it proves.
+  await expect.poll(() => endlessHeight(page), { timeout: 15000 }).toBe(0);
   await expect(page.locator('[data-pile-stage]')).not.toHaveClass(/scattered/);
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
 });
@@ -121,5 +132,28 @@ test.describe('reduced motion', () => {
     await expect(page.locator('.empty-note')).toBeVisible();
     await page.locator('[data-pile-toggle]').click();
     expect(await endlessHeight(page)).toBe(0);
+  });
+});
+
+test.describe('addresses', () => {
+  test('a project window’s address arrives with the eased journey, under the header', async ({ page }) => {
+    await page.goto('/#karaokebarr');
+    await expect.poll(() => page.locator('#karaokebarr').evaluate((el) => Math.round(el.getBoundingClientRect().top)), { timeout: 10000 }).toBeLessThan(200);
+    expect(await page.locator('#karaokebarr').evaluate((el) => el.getBoundingClientRect().top)).toBeGreaterThan(40);
+    // The address comes back once the journey has arrived.
+    await expect(page).toHaveURL(/#karaokebarr$/);
+  });
+
+  test('a loosely written entry address opens the entry and settles on the canonical one', async ({ page }) => {
+    await page.goto('/#noreplyyet');
+    await expect(page).toHaveURL(/#pile-no-reply-yet$/, { timeout: 8000 });
+    await expect(page.locator('#pile-no-reply-yet h3')).toBeFocused({ timeout: 10000 });
+  });
+
+  test('the # in a window’s corner puts its address in the bar', async ({ page }) => {
+    await page.goto('/');
+    await page.locator('[data-anchor-link="smolpng"]').click();
+    await expect(page).toHaveURL(/#smolpng$/);
+    await expect.poll(() => page.locator('#smolpng').evaluate((el) => Math.round(el.getBoundingClientRect().top)), { timeout: 8000 }).toBeLessThan(200);
   });
 });

@@ -1,0 +1,36 @@
+---
+/**
+ * Tera's fragment, compact: a tiny torn scrap with the file extension, an editorial question mark, and nek0tera's
+ * credit with her picture and where to find her. The credit is decoration here; the links live in the expansion.
+ */
+import { Image } from 'astro:assets';
+import type { PileEntry } from '../../catalogue';
+import Icon from '../../../../components/Icon.astro';
+import avatar from './nek0tera.jpg';
+
+interface Props {
+  entry: PileEntry;
+}
+const { entry } = Astro.props;
+---
+
+<div class="scrap">
+  <span class="ext">{entry.data.title}</span>
+  <span class="q" aria-hidden="true">?</span>
+  <span class="credit">
+    <Image src={avatar} alt="" width={28} height={28} class="face" />
+    <span class="who">nek0tera</span>
+    <span class="where" aria-hidden="true"><Icon ui="lucide:twitch" size={13} /><Icon ui="lucide:twitter" size={13} /></span>
+  </span>
+</div>
+
+<style>
+  .scrap { position: relative; display: grid; gap: 12px; box-sizing: border-box; width: 100%; padding: 26px 24px 16px; background: #eadcc6; color: #382831; transform: rotate(-4deg); box-shadow: 5px 14px 28px rgb(0 0 0 / 40%); clip-path: polygon(0 0, 100% 2%, 99% 96%, 92% 100%, 85% 97%, 76% 99%, 66% 97%, 55% 100%, 45% 98%, 34% 99%, 24% 97%, 12% 100%, 0 98%); }
+  .scrap::before { content: ''; position: absolute; top: 0; left: 8px; right: 8px; border-top: 2px solid #cbbba6; }
+  .ext { font: 400 32px/1 'Special Elite', var(--mono); letter-spacing: -.05em; }
+  .q { position: absolute; right: 12px; top: 10px; font: italic 400 44px/1 var(--serif); color: #a24361; transform: rotate(15deg); }
+  .credit { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .face { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
+  .who { font: italic 400 14px var(--serif); color: #5e3f4a; }
+  .where { display: inline-flex; gap: 6px; color: #77515b; }
+</style>

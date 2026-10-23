@@ -5,11 +5,31 @@
  * Squishling's full ASCII drawing is the mascot's command-line form; the commissioned illustration joins it later.
  * The drop is an illustration with a finished state, not a tool: nothing on this page compresses anything.
  */
+import Anchor from '../../components/Anchor.astro';
 import './smolpng.css';
+
+// Wolf's exact bytes. Each run of glyphs outside ASCII sits in a cell exactly as wide as that many characters of the
+// primary face, so a fallback font for one stroke (the arc, on most systems) can never push the rest of its line out
+// of alignment, and a run of box strokes stays one unbroken line.
+const SQUISHLING = `     ( ¬ω¬ )
+  /╭───────╮\\
+ (_) ○╱╲_ (_)
+   ╰───────╯╲_⌒)`;
+const runs = SQUISHLING.split('\n').map((line) => {
+  const out: { text: string; cell: boolean }[] = [];
+  for (const ch of line) {
+    const cell = ch.charCodeAt(0) > 0x7e;
+    const last = out.at(-1);
+    if (last && last.cell === cell) last.text += ch;
+    else out.push({ text: ch, cell });
+  }
+  return out;
+});
 ---
 
-<section class="frame lift smol-frame" aria-labelledby="smol-h">
+<section id="smolpng" class="frame lift smol-frame" aria-labelledby="smol-h">
   <div class="smol-win" data-reveal="smol">
+    <Anchor id="smolpng" name="smolpng" />
     <div class="smol-grid">
       <div class="smol-copy">
         <p class="smol-kicker"><span class="smol-wip">Work in progress</span></p>
@@ -24,10 +44,7 @@ import './smolpng.css';
       </div>
       <div class="smol-stage">
         <div class="smol-mascot">
-          <div class="smol-blob"><pre class="smol-ascii" role="img" aria-label="Squishling, drawn in ASCII: a round creature with narrowed happy eyes, holding a picture against its chest with both hands">     ( ¬ω¬ )
-  /╭───────╮\
- (_) ○╱╲_ (_)
-   ╰───────╯╲_⌒)</pre></div>
+          <div class="smol-blob"><pre class="smol-ascii" role="img" aria-label="Squishling, drawn in ASCII: a round creature with narrowed happy eyes, holding a picture against its chest with both hands">{runs.map((line, i) => <>{line.map((run) => run.cell ? <span class="g" style={`width:${[...run.text].length}ch`}>{run.text}</span> : run.text)}{i < runs.length - 1 ? '\n' : ''}</>)}</pre></div>
           <p class="smol-meet"><strong>Meet Squishling.</strong> Will squish for headpats.</p>
           <p class="smol-meet-sub">We’ve commissioned a VTuber for their illustrated look. The ASCII cutie is staying, too.</p>
         </div>

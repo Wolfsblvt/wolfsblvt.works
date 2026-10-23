@@ -38,15 +38,15 @@ const structuredData = {
   structuredData={structuredData}
 >
   <script slot="head" is:inline>
-    // The Pile's bootstrap. It marks the document so the collapsed Pile doesn't flash open, and holds a shared
-    // #endless or #pile-<id> address so the browser doesn't jump before the animated journey. If the controller
-    // hasn't acknowledged within 2 s, it restores the address and shows the plain collection with working anchors.
+    // The walk's bootstrap. It marks the document so the collapsed Pile doesn't flash open, and holds a shared
+    // address (#endless, #pile-<id>, or a section or project window) so the browser doesn't jump before the
+    // animated journey. If nothing has acknowledged within 2 s, it restores the address and lets the browser jump.
     (function () {
       var d = document.documentElement, b = { hash: null };
       window.__pileBoot = b;
       d.classList.add('pile-boot');
       try {
-        if (/^#(endless|pile-[a-z0-9]+(?:-[a-z0-9]+)*)$/.test(location.hash)) {
+        if (/^#(endless|pile-[a-z0-9]+(?:-[a-z0-9]+)*|hi|what|why|who|help|whoa|hello|diffdevil|borrowed-coast|smolpng|karaokebarr|lunescence)$/.test(location.hash)) {
           b.hash = location.hash; b.url = location.href; b.state = history.state; b.restoration = history.scrollRestoration;
           history.scrollRestoration = 'manual';
           history.replaceState(history.state, '', location.href.replace(/#.*$/, ''));

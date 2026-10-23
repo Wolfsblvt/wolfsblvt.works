@@ -15,46 +15,51 @@ const { entry, hid } = Astro.props;
 
 <div class="ss">
   <h3 id={hid} class="e-h ss-h">{entry.data.title}</h3>
-  <div class="ss-stage" data-interaction={entry.id}>
-    <div class="controls" role="group" aria-label="Machine postures" data-enhancement hidden>
-      <button type="button" aria-pressed="false" data-shift="play">Play</button>
-      <button type="button" aria-pressed="true" data-shift="work">Work</button>
-      <button type="button" aria-pressed="false" data-shift="sleep">Sleep</button>
-    </div>
-    <div class="machine" data-machine-mode="work">
-      <div class="case">
-        <div class="case-top"><span>sOS / SECOND SHIFT</span><span class="power" aria-hidden="true"></span></div>
-        <div class="display">
-          <span class="display-mode" data-machine-label>WORK</span>
-          <strong class="display-title" data-machine-title>The house has a few jobs.</strong>
-          <span class="display-detail" data-machine-detail>Useful services. Background jobs. The box you already own.</span>
+  <div class="e-side ss-side">
+    <div class="e-side-scene">
+      <div class="ss-stage" data-interaction={entry.id}>
+        <div class="controls" role="group" aria-label="Machine postures" data-enhancement hidden>
+          <button type="button" aria-pressed="false" data-shift="play">Play</button>
+          <button type="button" aria-pressed="true" data-shift="work">Work</button>
+          <button type="button" aria-pressed="false" data-shift="sleep">Sleep</button>
         </div>
-        <div class="jobs">
-          <div><span>Home services</span><b data-service-posture>Available</b></div>
-          <div><span>Background jobs</span><b data-jobs-posture>Making progress</b></div>
-          <div><span>Gaming</span><b data-gaming-posture>Ready when you are</b></div>
-        </div>
-        <div class="foot">
-          <div class="vents" aria-hidden="true"></div>
-          <div class="lamps"><span data-lamp="play">PLAY</span><span data-lamp="work" class="lit">WORK</span><span data-lamp="sleep">SLEEP</span></div>
+        <div class="machine" data-machine-mode="work">
+          <div class="case">
+            <div class="case-top"><span>sOS / SECOND SHIFT</span><span class="power" aria-hidden="true"></span></div>
+            <div class="display">
+              <span class="display-mode" data-machine-label>WORK</span>
+              <strong class="display-title" data-machine-title>The house has a few jobs.</strong>
+              <span class="display-detail" data-machine-detail>Useful services. Background jobs. The box you already own.</span>
+            </div>
+            <div class="jobs">
+              <div><span>Home services</span><b data-service-posture>Available</b></div>
+              <div><span>Background jobs</span><b data-jobs-posture>Making progress</b></div>
+              <div><span>Gaming</span><b data-gaming-posture>Ready when you are</b></div>
+            </div>
+            <div class="foot">
+              <div class="vents" aria-hidden="true"></div>
+              <div class="lamps"><span data-lamp="play">PLAY</span><span data-lamp="work" class="lit">WORK</span><span data-lamp="sleep">SLEEP</span></div>
+            </div>
+          </div>
+          <p class="caption" aria-live="polite" aria-atomic="true" data-machine-caption>Useful work, on the machine you already own.</p>
         </div>
       </div>
-      <p class="caption" aria-live="polite" aria-atomic="true" data-machine-caption>Useful work, on the machine you already own.</p>
     </div>
+    <div class="e-side-copy"><slot /></div>
   </div>
-  <div class="ss-copy"><slot /></div>
 </div>
 
 <style>
-  .ss { max-width: 660px; font-family: var(--sans); }
+  .ss { font-family: var(--sans); }
   .ss-h { font: 500 clamp(26px, 2.8vw, 34px)/1.15 var(--serif); letter-spacing: -.01em; }
 
-  .controls { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 13px; }
+  .ss-side { margin-top: 22px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 28px; }
   .controls[hidden] { display: none; }
   .controls button { min-height: 44px; padding: 9px 15px; border: 1px solid #65545c; border-radius: 4px; background: transparent; font: 13px/1.4 var(--sans); color: #e8d9cb; cursor: pointer; }
   .controls button[aria-pressed="true"] { color: #19141a; background: #f0d7b7; border-color: #f0d7b7; }
 
-  .machine { --machine-light: #edbc70; max-width: 630px; margin: 28px 0 0; }
+  .machine { --machine-light: #edbc70; max-width: 630px; margin: 0; }
   .machine[data-machine-mode="play"] { --machine-light: #c29cf0; }
   .machine[data-machine-mode="sleep"] { --machine-light: #7ca9ba; }
 
@@ -82,8 +87,6 @@ const { entry, hid } = Astro.props;
   .lamps .lit::before { background: var(--machine-light); box-shadow: 0 0 9px color-mix(in srgb, var(--machine-light) 40%, transparent); }
 
   .caption { margin: 24px auto 0; padding: 0 4px; font: italic 15px/1.5 var(--serif); text-align: center; color: #d0c2bc; }
-
-  .ss-copy { margin-top: 10px; }
 
   @media (max-width: 600px) {
     .controls { gap: 7px; }

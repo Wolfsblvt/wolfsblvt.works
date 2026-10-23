@@ -14,32 +14,37 @@ const { entry, hid } = Astro.props;
 
 <div class="nw">
   <h3 id={hid} class="e-h nw-h">{entry.data.title}</h3>
-  <div class="nw-scene">
-    <div class="nw-top">
-      <div><span class="kicker">One half-hour of work</span><div class="nw-range">14:00 — 14:30</div></div>
-      <div class="nw-change">+8 <span>pp observed</span></div>
+  <div class="e-side nw-side">
+    <div class="e-side-scene">
+      <div class="nw-scene">
+        <div class="nw-top">
+          <div><span class="kicker">One half-hour of work</span><div class="nw-range">14:00 — 14:30</div></div>
+          <div class="nw-change">+8 <span>pp observed</span></div>
+        </div>
+        <svg class="nw-chart" viewBox="0 0 560 140" preserveAspectRatio="none" role="img" aria-label="Subscription usage rises from 38 percent at 14:00 to 46 percent at 14:30, an increase of 8 percentage points.">
+          <path d="M5 115H555M5 65H555M5 15H555" fill="none" stroke="#5b4438" stroke-width="1" stroke-dasharray="2 5" />
+          <path d="M5 115H90L140 108H195L245 76H290L355 25H430L490 15H555V135H5Z" fill="#eca557" fill-opacity=".05" />
+          <path d="M5 115H90L140 108H195L245 76H290L355 25H430L490 15H555" fill="none" stroke="#eca557" stroke-width="3" />
+          <circle cx="245" cy="76" r="5" fill="#eca557" />
+          <circle cx="355" cy="25" r="5" fill="#eca557" />
+        </svg>
+        <div class="nw-ends"><span>38%</span><span>46%</span></div>
+        <div class="nw-split" role="img" aria-label="6.5 percentage points associated; 1.5 percentage points unassigned"><span class="nw-known"></span><span class="nw-unknown"></span></div>
+        <dl class="nw-key">
+          <div><dt>Associated</dt><dd>6.5 pp</dd><dd class="nw-note">Three session families active</dd></div>
+          <div><dt>Unassigned</dt><dd>1.5 pp</dd><dd class="nw-note">Still part of the story</dd></div>
+        </dl>
+      </div>
     </div>
-    <svg class="nw-chart" viewBox="0 0 560 140" preserveAspectRatio="none" role="img" aria-label="Subscription usage rises from 38 percent at 14:00 to 46 percent at 14:30, an increase of 8 percentage points.">
-      <path d="M5 115H555M5 65H555M5 15H555" fill="none" stroke="#5b4438" stroke-width="1" stroke-dasharray="2 5" />
-      <path d="M5 115H90L140 108H195L245 76H290L355 25H430L490 15H555V135H5Z" fill="#eca557" fill-opacity=".05" />
-      <path d="M5 115H90L140 108H195L245 76H290L355 25H430L490 15H555" fill="none" stroke="#eca557" stroke-width="3" />
-      <circle cx="245" cy="76" r="5" fill="#eca557" />
-      <circle cx="355" cy="25" r="5" fill="#eca557" />
-    </svg>
-    <div class="nw-ends"><span>38%</span><span>46%</span></div>
-    <div class="nw-split" role="img" aria-label="6.5 percentage points associated; 1.5 percentage points unassigned"><span class="nw-known"></span><span class="nw-unknown"></span></div>
-    <dl class="nw-key">
-      <div><dt>Associated</dt><dd>6.5 pp</dd><dd class="nw-note">Three session families active</dd></div>
-      <div><dt>Unassigned</dt><dd>1.5 pp</dd><dd class="nw-note">Still part of the story</dd></div>
-    </dl>
+    <div class="e-side-copy"><slot /></div>
   </div>
-  <div class="nw-copy"><slot /></div>
 </div>
 
 <style>
-  .nw { max-width: 640px; font-family: var(--sans); }
+  .nw { font-family: var(--sans); }
   .nw-h { font: 500 clamp(26px, 2.8vw, 34px)/1.15 var(--serif); letter-spacing: -.01em; }
-  .nw-scene { margin: 26px 0 0; padding: 24px 0; border-top: 1px solid #684739; border-bottom: 1px solid #684739; background: linear-gradient(180deg, rgb(42 27 22 / 11%), transparent); }
+  .nw-side { margin-top: 26px; }
+  .nw-scene { max-width: 640px; padding: 24px 0; border-top: 1px solid #684739; border-bottom: 1px solid #684739; background: linear-gradient(180deg, rgb(42 27 22 / 11%), transparent); }
   .nw-top { display: flex; justify-content: space-between; align-items: center; gap: 18px; }
   .nw-range { margin-top: 4px; font: 18px/1.5 var(--mono); color: var(--text); }
   .nw-change { font: 400 36px/1 var(--serif); color: var(--orange); text-align: right; white-space: nowrap; }
@@ -55,7 +60,6 @@ const { entry, hid } = Astro.props;
   .nw-key div:last-child dt { color: var(--text-soft); }
   .nw-key dd { margin: 0; color: var(--text); }
   .nw-key .nw-note { grid-column: 1 / -1; font-size: 11px; color: #baa69a; }
-  .nw-copy { margin-top: 6px; }
   @media (max-width: 600px) {
     .nw-range { font-size: 14px; }
     .nw-key { grid-template-columns: 1fr; gap: 14px; }

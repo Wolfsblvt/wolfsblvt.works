@@ -1,19 +1,21 @@
 ---
 /**
- * diffdevil's window: the project speaks in its own type, colour and words. The hook is its counting idea (GitHub
- * +3 / −2, diffdevil 3 Changed), the App is the meaningful expansion ("diffdevil, with a memory.") and the Chrome
- * extension a quieter third note. The captures are the product website's own.
+ * diffdevil's window: a strip, not a page. The project speaks in its own type, colour and words. The hook is its
+ * counting idea (GitHub +3 / −2, diffdevil 3 Changed), the App is the meaningful expansion ("diffdevil, with a
+ * memory.") with the product website's own Overview capture, and the Chrome extension a quieter one-line third note.
  */
 import { Image } from 'astro:assets';
 import site from '../../../site.config.mjs';
 import lockupUrl from '../../../design/the-walk/assets/diffdevil-lockup-dark.svg?url';
 import overview from '../../../design/the-walk/assets/diffdevil/app-overview.png';
-import report from '../../../design/the-walk/assets/diffdevil/extension-report.png';
+import Anchor from '../../components/Anchor.astro';
+import Icon from '../../components/Icon.astro';
 import './diffdevil.css';
 ---
 
-<div class="dd" data-reveal="dd">
+<div id="diffdevil" class="dd" data-reveal="dd">
   <div class="frame dd-grid">
+    <Anchor id="diffdevil" name="diffdevil" />
     <div>
       <div class="dd-origin">I wanted a size label that counted changed lines as changed lines.</div>
       <h2 id="dd-h" style="margin:0"><img class="dd-logo" src={lockupUrl} alt="diffdevil" width="240" height="72" /></h2>
@@ -41,26 +43,16 @@ import './diffdevil.css';
       <span class="dd-k">diffdevil GitHub App</span>
       <h3>diffdevil, with a memory.</h3>
       <p>See how pull requests move through your repositories: what changed, what merged, how big the work was, and how the story looks over time. Checks and labels are only the beginning.</p>
+      <p class="dd-ext-line"><Icon product="diffdevil/changed" size={18} /><span><strong>See Changed directly inside GitHub.</strong> The Chrome extension, where you already review.</span></p>
+      <a class="dd-ext-btn" href={`${site.links.diffdevil}/extension/`}><Icon ui="lucide:chrome" size={15} /> Add to Chrome</a>
     </div>
     <Image
       class="dd-shot"
       src={overview}
       alt="The diffdevil App Overview across seven repositories: merged pull requests in the last 30 days against the period before, opened and open work, time to merge, median Changed and raw churn, then the change-volume chart split into modified, added-only and deleted-only lines."
-      widths={[640, 960, 1280, 1600]}
-      sizes="(min-width: 900px) 60vw, 100vw"
+      widths={[640, 960, 1280]}
+      sizes="(min-width: 900px) 52vw, 100vw"
       loading="lazy"
     />
-  </div>
-
-  <div class="frame dd-ext">
-    <Image
-      class="dd-ext-shot"
-      src={report}
-      alt="The diffdevil analysis report open on a GitHub pull request: 178 changed, its decomposition, raw additions and deletions, files and coverage, the size policy selecting M and the label it would choose."
-      widths={[480, 720, 960]}
-      sizes="(min-width: 900px) 40vw, 100vw"
-      loading="lazy"
-    />
-    <p class="dd-ext-line">See Changed directly inside GitHub.<span>The Chrome extension, where you already review.</span></p>
   </div>
 </div>

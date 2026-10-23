@@ -6,11 +6,13 @@
  * beneath it. Brand, tokens and the Disc recipe are Karaokebarr's own (the mark is a byte copy of the product's).
  */
 import markUrl from '../../../design/the-walk/assets/karaokebarr-mark.svg?url';
+import Anchor from '../../components/Anchor.astro';
 import './karaokebarr.css';
 ---
 
-<section class="frame sec lift" aria-labelledby="kb-h">
+<section id="karaokebarr" class="frame sec lift" aria-labelledby="kb-h">
   <div class="kb-win kb-root" data-reveal="kb">
+    <Anchor id="karaokebarr" name="Karaokebarr" />
     <div class="kb-grid">
       <div class="kb-copy">
         <p class="kb-eyebrow">Self-hosted karaoke automation</p>

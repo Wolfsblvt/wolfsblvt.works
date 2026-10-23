@@ -2,37 +2,41 @@
 /**
  * Lunescence's window: the founding-context encounter. The settled verbal brand carries it (The identity shines
  * through. Embody. Express. Evolve.) while the visual identity stays deliberately open: Works' own Literata and Albert
- * Sans are the temporary frame, there is no moon, logo or character. Express is a passage from a play; Evolve puts the
- * Workshop beside it; "Inside the Workshop" is a native disclosure underneath.
+ * Sans are the temporary frame, there is no moon, logo or character. The opening and the summary share the first row;
+ * Embody and Express stack on the left beside Evolve's Workshop; "Inside the Workshop" is a native disclosure beneath.
  */
+import Anchor from '../../components/Anchor.astro';
 import './lunescence.css';
 ---
 
-<section class="frame sec lift" aria-labelledby="lune-h">
+<section id="lunescence" class="frame sec lift" aria-labelledby="lune-h">
   <div class="lune" data-reveal="lune">
+    <Anchor id="lunescence" name="Lunescence" />
     <header class="lune-open">
-      <p class="lune-kicker">Lunescence <span class="lune-standing">Early concept</span></p>
-      <h2 id="lune-h" class="lune-h">The identity shines through.</h2>
+      <div>
+        <p class="lune-kicker">Lunescence <span class="lune-standing">Early concept</span></p>
+        <h2 id="lune-h" class="lune-h">The identity shines through.</h2>
+      </div>
       <p class="lune-sum">Lunescence lets you give a companion, assistant, or character a body, voice, and way of expressing themselves, then keep shaping that presence together over time.</p>
-      <p class="lune-me">My starting point is an AI companion with an expressive 3D presence: someone to talk with, think alongside, make things with, or simply share a quiet evening with.</p>
     </header>
 
     <div class="lune-three">
-      <section class="lune-e lune-embody" aria-labelledby="lune-e1">
-        <h3 id="lune-e1" class="lune-eh">Embody.</h3>
-        <p class="lune-ep">Give an identity a body, a voice, and a way to be here.</p>
-      </section>
-
-      <section class="lune-e lune-express" aria-labelledby="lune-e2">
-        <h3 id="lune-e2" class="lune-eh">Express.</h3>
-        <p class="lune-ep">Let personality show in the timing of a reply, a glance, a change in posture—the small habits you start to recognize.</p>
-        <div class="lune-scene">
-          <p>You make an awful joke.</p>
-          <p>A pause. A sideways glance.</p>
-          <p>The beginning of a smile.</p>
-          <p>You start laughing before the reply.</p>
-        </div>
-      </section>
+      <div class="lune-col">
+        <section class="lune-e lune-embody" aria-labelledby="lune-e1">
+          <h3 id="lune-e1" class="lune-eh">Embody.</h3>
+          <p class="lune-ep">Give an identity a body, a voice, and a way to be here.</p>
+        </section>
+        <section class="lune-e lune-express" aria-labelledby="lune-e2">
+          <h3 id="lune-e2" class="lune-eh">Express.</h3>
+          <p class="lune-ep">Let personality show in the timing of a reply, a glance, a change in posture—the small habits you start to recognize.</p>
+          <div class="lune-scene">
+            <p>You make an awful joke.</p>
+            <p>A pause. A sideways glance.</p>
+            <p>The beginning of a smile.</p>
+            <p>You start laughing before the reply.</p>
+          </div>
+        </section>
+      </div>
 
       <section class="lune-e lune-evolve" aria-labelledby="lune-e3">
         <h3 id="lune-e3" class="lune-eh">Evolve.</h3>

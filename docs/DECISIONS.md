@@ -42,6 +42,11 @@ in front, a wavy progress path fills along the header's bottom edge, and the cur
 **Why.** Contact must be findable without hovering, and the other words stay playful without becoming riddles. The
 crossed-out correction is the same gesture as the hero's strike-through, so the site teaches its own handwriting once.
 
+**Addendum, 2026-10-24.** The path fills across the words: while you read a section, the fill runs from its word's
+start to the next word's start, so the whole Pile, Endless included, stays inside "Whoa" however long it grows, and
+"Hello?" only fills at the end. Before, the fill was linear in page height and reached the end while you were still
+in the Pile (Wolf: "it needs to scale the last part of the bar to the pile section").
+
 **Rejected.** Custom tooltips and native `title` tooltips (they hide the personality and don't work on touch);
 crossing out every label (Contact's correction would lose its meaning); plain section names (correct and lifeless).
 
@@ -90,8 +95,10 @@ Everything else belongs to the project it sits in.
 
 **Addendum, 2026-10-23.** Four more faces are self-hosted and used only inside their project's window: Nunito
 (smolpng), Bricolage Grotesque and Atkinson Hyperlegible Next (Karaokebarr), Alegreya and Alegreya Sans (Borrowed
-Coast). Squishling's ASCII drawing uses the system's own monospace so its box-drawing strokes and its ASCII share one
-face; it is the mascot's command-line form, not a web font.
+Coast). Squishling's ASCII drawing is set in Consolas, the face Wolf drew it in, then Menlo, DejaVu Sans Mono and the
+system's own monospace; each run of its non-ASCII glyphs sits in a cell exactly as wide as that many characters of the
+primary face, so a fallback font for one stroke (the arc, on most systems) cannot push a line out of alignment. It is
+the mascot's command-line form, not a web font.
 
 **Rejected.** A red accent for the current-section dot and underlines (it fought the palette).
 
@@ -134,6 +141,10 @@ where he runs off with a sent message.
 like the same place.
 
 **Rejected.** Yoru inside the marks or the sponsor banner; the marks stay his own and so does he.
+
+**Addendum, 2026-10-24.** Yoru is in one place at a time. Once he has left the hero's perch, the perch stays an empty
+line and the caption is gone for good; scrolling back up does not teleport him home. Wolf: "He literally lives in the
+site."
 
 ## The header and the marks
 
@@ -312,16 +323,53 @@ of project, and it is not a navigation contract: lines may move while every subj
 **Why.** Grouping by provenance (small tools, growing products, games, private doors, fragments) would turn Endless into
 the co-design's filing system. The visitor should meet variety.
 
-### Tera's fragment waits for one exact inclusion decision
+### Tera's fragment is in, credited to nek0tera
 
-**Date:** 2026-10-23 · **Status:** Current
+**Date:** 2026-10-24 · **Status:** Current
 
-The tiny `.mpreg` thought attributed to Tera is a 29th admitted subject with one open condition: her credit and the
-exact public words. Until Wolf resolves it, the entry is not in the collection or in `ENDLESS_ORDER`, and no
-"permission pending" card stands in for it. The other 28 publish.
+The `.mpreg` thought is the 29th entry (`mpreg`): a tiny torn scrap with the extension and an editorial question
+mark on the desk, and in Endless the whole line in her words, "Can someone not make a file extension like .mpreg?",
+credited to nek0tera with her Twitch profile picture and links to her Twitch and X. Wolf asked her and wants the
+credit to promote her, on the compact object as well as the expansion. The picture is fetched by hand from her
+channel page's own `og:image` (`npm run credits`) and committed; the build fetches nothing.
 
-**Why.** A quotation credited to a named person is the one piece with a condition of its own; the plan keeps it
-explicit rather than letting it hold the rest hostage or disappear.
+**Why.** Wolf, 24 October 2026: "Tera's fragment we'll add as defined. I asked her for permission. We'll also use this
+note to shill her Twitch and Twitter." A committed picture keeps the build reproducible and offline; refreshing it is
+an ordinary content update.
+
+**Rejected.** Fetching the avatar at build or deploy time (a third-party dependency in every build, and Twitch's
+API needs credentials); a "permission pending" card.
+
+### The P-4 taste choices: the quiet door and the request note
+
+**Date:** 2026-10-24 · **Status:** Current
+
+Wolf chose the quiet blue-green door for Shikkuri over the game-sleeve specimen, and the taped request note for
+SimklBridge over the poster chip, after seeing both pairs rendered in the Works context. The alternatives were built
+for the comparison and removed afterwards; the Returns in #916 keep them.
+
+### Each project window has its own address
+
+**Date:** 2026-10-24 · **Status:** Current
+
+`#diffdevil`, `#borrowed-coast`, `#smolpng`, `#karaokebarr` and `#lunescence` (and the section words) arrive with
+the walk's eased journey instead of the browser's jump, held before first paint like a Pile address. Each window
+carries a small `#` in its corner that travels there, puts the address in the bar and copies the link. Pile addresses
+are forgiving: `#noreplyyet` and `#no-reply-yet` resolve to `#pile-no-reply-yet`. The Pile's public address is `#whoa`,
+the header's own word, whether it is open or closed; `#endless` and `#pile` are still understood but internal.
+
+**Why.** Wolf: "Each section needs anchors that I can link people to." Linking straight to a project is how the site
+will mostly be shared. On the Pile: "we said "endless" is only internal. The public anchor is `#whoa` for the pile.
+[...] if you expand and collapse the pile, it is still called `#whoa`."
+
+### smolpng and TunnelTend are registered contact products
+
+**Date:** 2026-10-24 · **Status:** Current
+
+The picker lists smolpng after diffdevil (walk order) and TunnelTend after it (the named Pile pieces), both without
+a glyph until `@wolfsblvt/icons` carries one, with their repositories as the way back.
+
+**Why.** Wolf, 24 October 2026. TunnelTend's own publication waits on this form; smolpng's repository is public.
 
 ### Pile pieces are a content collection with a fixed Endless order
 
@@ -361,8 +409,9 @@ browser.
 Works narrates between the projects; inside a project's window the project speaks for itself in its own type, colour
 and words. diffdevil's window uses its exact theme and its own borders; since 2026-10-23 it leads with the counting
 idea (GitHub +3 / −2, diffdevil 3 Changed), then the App's own Overview capture under "diffdevil, with a memory." and a
-quieter glimpse of the Chrome extension. Each window keeps its stylesheet beside its component in
-`src/sections/projects/`.
+quieter glimpse of the Chrome extension; since 2026-10-24 that glimpse carries "Add to Chrome" with the browser's glyph,
+pointing at the product site's extension page until a Web Store listing exists. Each window keeps its stylesheet beside
+its component in `src/sections/projects/`.
 
 **Why.** Works is the guide on the walk, not a wrapper that turns every product into the same card.
 
@@ -444,7 +493,9 @@ The window shows the same patch of the Borrowed Sea in Chart, Watch and Nations,
 nav (its chart, watch and nations glyphs from `@wolfsblvt/icons`), in the game's Night Chart tokens and Alegreya type,
 with one line of chart lettering naming the pressed mode and one captain's report as the human detail. The switch is
 three radio buttons and CSS, so it works without JavaScript and under reduced motion. The three captures are the
-originals from the game's Night Chart v15 reference, kept in `design/the-walk/assets/borrowed-coast/`.
+originals from the game's Night Chart v15 reference, kept in `design/the-walk/assets/borrowed-coast/`. A "click" in
+Wolf's hand points at the mode nav so it reads as the control it is and not as part of the capture; on screens 1640px
+and wider it steps out to the right of the window, where there is room for it clear of Yoru's lane.
 
 **Why.** The comparison only reads when the place stays fixed; three different maps side by side lose the one thing
 the game does that nothing else does. The images are large and the crop is identical across modes on purpose.

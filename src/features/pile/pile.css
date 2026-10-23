@@ -125,6 +125,10 @@ button.die:not(:disabled):hover { transform: rotate(-10deg); }
 .e-node { border-radius: 14px; padding: 18px 20px; }
 .e-door { display: flex; gap: 36px; align-items: center; }
 .e-door .pd-arch { width: 190px; height: 284px; border-radius: 95px 95px 3px 3px; flex: none; }
+/* A scene's visual beside its copy once there is room; stacked, visual first, below that. */
+.e-side { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; align-items: start; }
+.e-side-copy > :first-child { margin-top: 0; }
+@media (min-width: 960px) { .e-side { grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 28px 48px; } .e-side-copy { padding-top: 6px; } }
 .back-pile { position: fixed; left: clamp(12px, 2.5vw, 32px); bottom: 22px; z-index: 45; display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 16px; border-radius: 999px; background: rgb(33 23 32 / 92%); border: 1px solid rgb(243 232 220 / 18%); font: 600 13.5px var(--sans); color: var(--text); text-decoration: none; box-shadow: 0 10px 24px rgb(0 0 0 / 35%); transition: opacity .3s ease, transform .3s ease; }
 .back-pile.hide { opacity: 0; transform: translateY(12px); pointer-events: none; visibility: hidden; }
 @media (prefers-reduced-motion: reduce) { .breathe { animation: none; } }

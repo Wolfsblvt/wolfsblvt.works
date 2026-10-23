@@ -16,22 +16,26 @@ const { entry, hid } = Astro.props;
 
 <div class="tt">
   <h3 id={hid} class="e-h sr">{entry.data.title}</h3>
-  <div class="tt-scene">
-    <img class="tt-lockup" src={lockup} alt={entry.data.title} width="701" height="121" />
-    <div class="tt-title"><span>PowerShell</span><span aria-hidden="true">—</span></div>
-    <code class="tt-cmd"><span class="tt-shell">&gt;</span> tunneltend status</code>
-    <dl class="tt-rows">
-      <div><dt>notes</dt><dd class="tt-ok">connected</dd></div>
-      <div><dt>media</dt><dd class="tt-ok">connected</dd></div>
-      <div><dt>sandbox</dt><dd>stopped by you</dd></div>
-    </dl>
-    <p class="tt-foot">Two connections. One less thing on your mind.</p>
+  <div class="e-side">
+    <div class="e-side-scene">
+      <div class="tt-scene">
+        <img class="tt-lockup" src={lockup} alt={entry.data.title} width="701" height="121" />
+        <div class="tt-title"><span>PowerShell</span><span aria-hidden="true">—</span></div>
+        <code class="tt-cmd"><span class="tt-shell">&gt;</span> tunneltend status</code>
+        <dl class="tt-rows">
+          <div><dt>notes</dt><dd class="tt-ok">connected</dd></div>
+          <div><dt>media</dt><dd class="tt-ok">connected</dd></div>
+          <div><dt>sandbox</dt><dd>stopped by you</dd></div>
+        </dl>
+        <p class="tt-foot">Two connections. One less thing on your mind.</p>
+      </div>
+    </div>
+    <div class="e-side-copy"><slot /></div>
   </div>
-  <div class="tt-copy"><slot /></div>
 </div>
 
 <style>
-  .tt { max-width: 620px; font-family: var(--sans); }
+  .tt { font-family: var(--sans); }
   .tt-scene {
     max-width: 590px;
     padding: 28px 30px 0;
@@ -52,7 +56,6 @@ const { entry, hid } = Astro.props;
   .tt-rows dd { color: #b4c3cb; }
   .tt-rows .tt-ok { color: #8cd6b0; }
   .tt-foot { margin: 0; padding: 13px 0 16px; border-top: 1px solid #34434d; font: 12px/1.6 var(--sans); color: #a6bec8; }
-  .tt-copy { margin-top: 6px; }
   @media (max-width: 600px) {
     .tt-scene { padding: 22px 19px 0; }
   }

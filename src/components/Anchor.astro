@@ -1,0 +1,13 @@
+---
+/**
+ * A window's own address: a small `#` in its corner that travels there along the walk, puts `#<id>` in the address
+ * bar and copies the link. Each project window on the walk carries one, so people can link straight to a project.
+ */
+interface Props {
+  id: string;
+  name: string;
+}
+const { id, name } = Astro.props;
+---
+
+<a class="anchor" href={`#${id}`} aria-label={`Link to ${name}`} title={`Link to ${name}`} data-anchor-link={id}>#</a>

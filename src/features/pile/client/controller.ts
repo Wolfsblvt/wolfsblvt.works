@@ -2,7 +2,8 @@
  * The Pile's single mutation boundary: today's pile, its packing, opening Endless (the pieces scatter down, the
  * document gains its real height), closing it (travel back to the threshold first, then retract and gather), the
  * journeys to entries, browser history, and the cold shared-link bootstrap. Entry code never scrolls the page or
- * touches this state; it asks through navigateToEntry.
+ * touches this state; it asks through navigateToEntry. The pile's public address is #whoa whether it is open or
+ * closed (the nav's own word); entries are #pile-<id>; #endless and #pile are internal and still understood.
  *
  * Built to docs/pile/pile-technical-plan.md, adapted to the canvas's in-place scatter (no flight layer).
  */
@@ -19,7 +20,7 @@ interface PileHistory {
   target: string | null;
 }
 
-interface BootState {
+export interface BootState {
   hash: string | null;
   url?: string;
   state?: unknown;
@@ -35,6 +36,8 @@ declare global {
 }
 
 const OWNED_HASH = /^#(endless|pile|pile-[a-z0-9]+(?:-[a-z0-9]+)*)$/;
+/** `#noreplyyet`, `#no-reply-yet` and `#pile-no-reply-yet` all mean the same entry. */
+const loose = (value: string) => value.toLowerCase().replace(/^#?(pile-)?/, '').replace(/[^a-z0-9]/g, '');
 
 export function mountPile(): void {
   const section = document.querySelector<HTMLElement>('[data-pile]');
@@ -70,6 +73,8 @@ function start(section: HTMLElement, manifest: ManifestEntry[], boot: BootState)
   const introHeading = q<HTMLElement>('.end-h')!;
   const back = document.querySelector<HTMLAnchorElement>('[data-pile-back]');
   const known = new Set(manifest.map((entry) => entry.id));
+  const byLoose = new Map(manifest.map((entry) => [loose(entry.id), entry.id]));
+  const resolve = (id: string) => (known.has(id) ? id : byLoose.get(loose(id)) ?? id);
 
   // ---------- today's pile, frozen for this visit ----------
   const dateKey = berlinDateKey();
@@ -137,14 +142,15 @@ function start(section: HTMLElement, manifest: ManifestEntry[], boot: BootState)
   new ResizeObserver(() => layout()).observe(stage);
   document.fonts?.ready.then(() => { heights.clear(); layout(); });
 
-  // The pile settles with a small, uneven drop once it is properly in view.
+  // The pile settles with a small, uneven drop once its top has come well into view (past the lower 28 % of the
+  // viewport). A share of the stage would not do: on a phone the stage is several screens tall.
   if (!built && 'IntersectionObserver' in window) {
     const io = new IntersectionObserver((entries) => {
       if (!entries.some((e) => e.isIntersecting)) return;
       io.disconnect();
       setTimeout(() => { built = true; layout(); }, 80);
       setTimeout(() => { settled = true; }, 2600);
-    }, { threshold: 0.35, rootMargin: '0px 0px -12% 0px' });
+    }, { threshold: 0, rootMargin: '0px 0px -28% 0px' });
     io.observe(stage);
   } else {
     built = settled = true;
@@ -350,7 +356,7 @@ function start(section: HTMLElement, manifest: ManifestEntry[], boot: BootState)
   let pendingTarget: Target = null;
 
   const openToIntro = async (push: boolean) => {
-    if (push) writeState({ open: true, target: null }, '#endless');
+    if (push) writeState({ open: true, target: null }, '#whoa');
     pendingTarget = { kind: 'intro' };
     await open();
     if (pendingTarget?.kind !== 'intro') return;
@@ -358,7 +364,8 @@ function start(section: HTMLElement, manifest: ManifestEntry[], boot: BootState)
     arrive(introHeading, await travelTo(() => documentTop(introHeading) - headerOffset()));
   };
 
-  const openToEntry = async (id: string, push: boolean) => {
+  const openToEntry = async (requested: string, push: boolean) => {
+    const id = resolve(requested);
     if (!known.has(id)) {
       unknownNote.hidden = false;
       if (push) writeState({ open: true, target: id }, `#pile-${id}`);
@@ -381,13 +388,13 @@ function start(section: HTMLElement, manifest: ManifestEntry[], boot: BootState)
   };
 
   const close = async () => {
-    writeState({ open: false, target: null }, '#pile');
+    writeState({ open: false, target: null }, '#whoa');
     pendingTarget = null;
     if (scrollY > documentTop(threshold) + innerHeight * 0.5) {
       const result = await travelTo(() => documentTop(threshold) - headerOffset());
       if (result === 'cancelled') {
         // The visitor took over: leave Endless open and say so in the address.
-        writeState({ open: true, target: null }, '#endless', true);
+        writeState({ open: true, target: null }, '#whoa', true);
         return;
       }
     }
@@ -398,7 +405,7 @@ function start(section: HTMLElement, manifest: ManifestEntry[], boot: BootState)
   toggle.addEventListener('click', () => {
     if (mode === 'open' || mode === 'opening') void close();
     else {
-      writeState({ open: true, target: null }, '#endless');
+      writeState({ open: true, target: null }, '#whoa');
       void open();
     }
   });
@@ -466,7 +473,12 @@ function start(section: HTMLElement, manifest: ManifestEntry[], boot: BootState)
   addEventListener('hashchange', () => {
     if (readState()) return;
     const match = OWNED_HASH.exec(location.hash);
-    if (!match) return;
+    if (!match) {
+      // A loosely written entry address typed in place: open it and settle on the canonical one.
+      const aliased = location.hash ? byLoose.get(loose(location.hash)) : undefined;
+      if (aliased) { writeState({ open: true, target: aliased }, `#pile-${aliased}`, true); void openToEntry(aliased, false); }
+      return;
+    }
     const target = match[1]!;
     if (target === 'pile') return;
     if (target === 'endless') void openToIntro(false);
@@ -508,15 +520,21 @@ function start(section: HTMLElement, manifest: ManifestEntry[], boot: BootState)
 
   // ---------- arrival ----------
   const initial = readState();
-  if (boot.hash) {
+  const held = boot.hash && OWNED_HASH.test(boot.hash) ? boot.hash : null;
+  const alias = !boot.hash && location.hash && !OWNED_HASH.test(location.hash) ? byLoose.get(loose(location.hash)) : undefined;
+  if (held) {
     // A cold shared link: restore the exact address, then open and travel once the board is ready.
     try {
       history.replaceState(boot.state ?? null, '', boot.url);
     } catch { /* keep going */ }
     const restore = () => { try { if (boot.restoration) history.scrollRestoration = boot.restoration; } catch { /* ignore */ } };
-    const target = boot.hash.slice(1);
+    const target = held.slice(1);
     const journey = target === 'endless' ? openToIntro(false) : openToEntry(target.slice('pile-'.length), false);
     void journey.finally(restore);
+  } else if (alias) {
+    // A loosely written entry address: open it and settle on the canonical one.
+    writeState({ open: true, target: alias }, `#pile-${alias}`, true);
+    void openToEntry(alias, false);
   } else if (initial?.open) {
     // A reload or full-document return to an open state: restore it without a fresh entrance.
     settle(true);

@@ -1,34 +1,34 @@
 /* Lunescence: an open, three-part typographic composition in the Works faces. The verbal brand is settled; the
    visual identity is deliberately not. No moon, no palette of its own, no wordmark. */
-.lune { position: relative; border: 1px solid rgb(115 202 227 / 14%); border-radius: 4px; background: var(--canvas-cool); padding: clamp(32px, 5vw, 72px) clamp(24px, 5vw, 72px); overflow: hidden; }
+.lune { position: relative; border: 1px solid rgb(115 202 227 / 14%); border-radius: 4px; background: var(--canvas-cool); padding: clamp(28px, 4vw, 56px) clamp(24px, 4.5vw, 64px) clamp(28px, 4vw, 52px); overflow: hidden; }
+.lune-open { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 20px clamp(32px, 5vw, 72px); align-items: end; }
 .lune-kicker { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 14px; font: 600 12.5px var(--sans); letter-spacing: .16em; text-transform: uppercase; color: #9cc9d9; }
 .lune-standing { font: italic 400 14px var(--serif); letter-spacing: 0; text-transform: none; color: #8fa3b0; }
-.lune-h { margin: 18px 0 0; font-weight: 300; font-size: clamp(38px, 4.8vw, 68px); line-height: 1; letter-spacing: -.03em; font-variation-settings: 'opsz' 72; max-width: 14ch; text-wrap: balance; }
-.lune-sum { margin: 26px 0 0; font-size: clamp(19px, 1.6vw, 23px); line-height: 1.45; color: var(--text); max-width: 46ch; text-wrap: pretty; font-variation-settings: 'opsz' 24; }
-.lune-me { margin: 14px 0 0; font-size: clamp(16px, 1.3vw, 18px); line-height: 1.6; color: #c9d4dc; max-width: 52ch; text-wrap: pretty; }
+.lune-h { margin: 16px 0 0; font-weight: 300; font-size: clamp(36px, 4.4vw, 62px); line-height: 1; letter-spacing: -.03em; font-variation-settings: 'opsz' 72; max-width: 12ch; text-wrap: balance; }
+.lune-sum { margin: 0; font-size: clamp(17px, 1.45vw, 20px); line-height: 1.5; color: var(--text); max-width: 44ch; text-wrap: pretty; font-variation-settings: 'opsz' 24; }
 
-/* The three E's are the structure: Embody short, Express spacious, Evolve beside it with the Workshop. */
-.lune-three { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: clamp(28px, 4vw, 56px) clamp(32px, 5vw, 72px); margin-top: clamp(40px, 5vw, 64px); }
-.lune-embody { grid-column: 1 / -1; max-width: 48ch; }
-.lune-eh { margin: 0; font-weight: 300; font-size: clamp(30px, 3.4vw, 46px); line-height: 1; letter-spacing: -.03em; font-variation-settings: 'opsz' 72; color: var(--text); }
+/* The three E's are the structure: Embody and Express stacked on the left, Evolve with the Workshop beside them. */
+.lune-three { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: clamp(24px, 3vw, 40px) clamp(32px, 5vw, 72px); margin-top: clamp(32px, 4vw, 52px); }
+.lune-col { display: grid; gap: clamp(24px, 3vw, 40px); align-content: start; }
+.lune-eh { margin: 0; font-weight: 300; font-size: clamp(28px, 3vw, 42px); line-height: 1; letter-spacing: -.03em; font-variation-settings: 'opsz' 72; color: var(--text); }
 .lune-eh::first-letter { color: #9cc9d9; }
-.lune-ep { margin: 12px 0 0; font-size: 17px; line-height: 1.55; color: #c9d4dc; max-width: 44ch; text-wrap: pretty; }
-.lune-scene { margin: 28px 0 0 clamp(0px, 2vw, 28px); padding-left: 20px; border-left: 1px solid rgb(115 202 227 / 25%); }
-.lune-scene p { margin: 0; font-size: clamp(21px, 2.1vw, 28px); line-height: 1.5; letter-spacing: -.01em; color: var(--text); font-variation-settings: 'opsz' 36; }
-.lune-scene p + p { margin-top: .35em; }
+.lune-ep { margin: 10px 0 0; font-size: 16.5px; line-height: 1.5; color: #c9d4dc; max-width: 44ch; text-wrap: pretty; }
+.lune-scene { margin: 22px 0 0 clamp(0px, 2vw, 24px); padding-left: 20px; border-left: 1px solid rgb(115 202 227 / 25%); }
+.lune-scene p { margin: 0; font-size: clamp(20px, 1.9vw, 26px); line-height: 1.45; letter-spacing: -.01em; color: var(--text); font-variation-settings: 'opsz' 36; }
+.lune-scene p + p { margin-top: .3em; }
 .lune-scene p:nth-child(2) { padding-left: 1.2em; }
 .lune-scene p:nth-child(3) { padding-left: 2.4em; }
-.lune-shop { margin-top: 26px; padding: 22px 24px 24px; border-radius: 6px; background: rgb(115 202 227 / 5%); border: 1px solid rgb(115 202 227 / 14%); }
-.lune-shop-name { margin: 0; font: 600 13px var(--sans); letter-spacing: .12em; text-transform: uppercase; color: #9cc9d9; }
-.lune-shop-tag { margin: 6px 0 0; font-weight: 300; font-size: clamp(22px, 2.2vw, 30px); line-height: 1.1; letter-spacing: -.02em; font-variation-settings: 'opsz' 48; }
-.lune-shop-p { margin: 14px 0 0; font-size: 16px; line-height: 1.6; color: #c9d4dc; text-wrap: pretty; }
-.lune-dialog { margin: 18px 0 0; padding: 0; display: grid; gap: 8px; }
+.lune-shop { margin-top: 20px; padding: 20px 22px 22px; border-radius: 6px; background: rgb(115 202 227 / 5%); border: 1px solid rgb(115 202 227 / 14%); }
+.lune-shop-name { margin: 0; font: 600 12.5px var(--sans); letter-spacing: .12em; text-transform: uppercase; color: #9cc9d9; }
+.lune-shop-tag { margin: 6px 0 0; font-weight: 300; font-size: clamp(22px, 2.1vw, 28px); line-height: 1.1; letter-spacing: -.02em; font-variation-settings: 'opsz' 48; }
+.lune-shop-p { margin: 12px 0 0; font-size: 15.5px; line-height: 1.55; color: #c9d4dc; text-wrap: pretty; }
+.lune-dialog { margin: 16px 0 0; padding: 0; display: grid; gap: 8px; }
 .lune-dialog div { display: grid; grid-template-columns: 7.5em minmax(0, 1fr); gap: 0 12px; align-items: baseline; }
 .lune-dialog dt { font: 600 12px var(--sans); letter-spacing: .1em; text-transform: uppercase; color: #8fa3b0; }
-.lune-dialog dd { margin: 0; font-size: 18px; line-height: 1.4; color: var(--text); }
+.lune-dialog dd { margin: 0; font-size: 17px; line-height: 1.4; color: var(--text); }
 
 /* Depth: a working website disclosure under the composition, in normal page flow. */
-.lune-more { margin-top: clamp(32px, 4vw, 48px); max-width: 60ch; }
+.lune-more { margin-top: clamp(24px, 3vw, 36px); max-width: 60ch; }
 .lune-more summary { display: inline-flex; align-items: center; gap: 10px; min-height: 40px; padding: 0 16px; border-radius: 999px; border: 1px solid rgb(243 232 220 / 24%); font: 600 14.5px var(--sans); color: var(--text); cursor: pointer; list-style: none; transition: border-color .2s, color .2s; }
 .lune-more summary::-webkit-details-marker { display: none; }
 .lune-more summary::after { content: '+'; display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; border: 1px solid rgb(243 232 220 / 22%); font-size: 13px; }
@@ -44,8 +44,9 @@
 .js [data-on] .lune-express { opacity: 1; transition-delay: .6s; }
 .js [data-on] .lune-evolve { opacity: 1; transition-delay: 1.2s; }
 
-@media (max-width: 860px) {
-  .lune-three { grid-template-columns: 1fr; }
+@media (max-width: 900px) {
+  .lune-open, .lune-three { grid-template-columns: 1fr; }
+  .lune-h { max-width: 14ch; }
   .lune-scene { margin-left: 0; }
 }
 @media (prefers-reduced-motion: reduce) { .js .lune-e { opacity: 1 !important; } }

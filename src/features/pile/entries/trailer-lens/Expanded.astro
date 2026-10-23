@@ -31,29 +31,34 @@ const original = [
 
 <div class="tl">
   <h3 id={hid} class="e-h tl-h">{entry.data.title}</h3>
-  <div class="commit">
-    <div class="line"><img src={mark} alt="" width="26" height="26" class="mark" /><span>Trailer Lens</span></div>
-    <p class="subject">Keep the reading position on return</p>
-    <dl class="rows">
-      {rows.map(([meaning, value, meta]) => (
-        <>
-          <dt>{meaning}</dt>
-          <dd class:list={{ meta }}>{value}</dd>
-        </>
-      ))}
-    </dl>
-    <details>
-      <summary>Original trailer text</summary>
-      <pre set:text={original}></pre>
-    </details>
+  <div class="e-side tl-side">
+    <div class="e-side-scene">
+      <div class="commit">
+        <div class="line"><img src={mark} alt="" width="26" height="26" class="mark" /><span>Trailer Lens</span></div>
+        <p class="subject">Keep the reading position on return</p>
+        <dl class="rows">
+          {rows.map(([meaning, value, meta]) => (
+            <>
+              <dt>{meaning}</dt>
+              <dd class:list={{ meta }}>{value}</dd>
+            </>
+          ))}
+        </dl>
+        <details>
+          <summary>Original trailer text</summary>
+          <pre set:text={original}></pre>
+        </details>
+      </div>
+    </div>
+    <div class="e-side-copy"><slot /></div>
   </div>
-  <slot />
 </div>
 
 <style>
-  .tl { max-width: 640px; font-family: var(--sans); }
+  .tl { font-family: var(--sans); }
   .tl-h { font: 500 clamp(26px, 2.8vw, 34px)/1.15 var(--serif); letter-spacing: -.01em; }
-  .commit { margin-top: 22px; padding: 18px; background: #171c23; border: 1px solid #414955; }
+  .tl-side { margin-top: 22px; }
+  .commit { max-width: 640px; padding: 18px; background: #171c23; border: 1px solid #414955; }
   .line { display: flex; align-items: center; gap: 9px; font-size: 14px; color: var(--text-soft); }
   .mark { display: block; width: 26px; height: 26px; flex: none; }
   .subject { margin: 13px 0 19px; font-size: 17px; color: #f1e3d8; }

@@ -29,6 +29,10 @@ test('the pile packs every chosen piece inside the screen', async ({ page }) => 
   await page.goto('/');
   await page.locator('#pile').scrollIntoViewIfNeeded();
   await expect(page.locator('html')).toHaveClass(/pile-on/);
+  // The pieces drop into place once the stage itself comes into view; measure them settled, as a visitor sees them.
+  await page.locator('[data-pile-stage]').scrollIntoViewIfNeeded();
+  await expect.poll(() => page.locator('.pi:not([hidden])').evaluateAll((els) => els.every((el) => el.style.opacity === '1')), { timeout: 8000 }).toBe(true);
+  await page.waitForTimeout(1200);
   const outside = await page.locator('.pi:not([hidden])').evaluateAll((els) =>
     els.filter((el) => { const r = el.getBoundingClientRect(); return r.left < -4 || r.right > innerWidth + 4; }).length,
   );

@@ -2,7 +2,8 @@
  * The public contact contract shared by the browser integration and the Worker.
  *
  * One source keeps the Works contact page, server validation and mail formatting in agreement.
- * Values here are product meaning ratified in emergency-meeting#500; change them there first.
+ * Values here are product meaning ratified in emergency-meeting#500 (smolpng and TunnelTend added by Wolf in #916,
+ * 2026-10-24); change them there first.
  * Moved here from Wolfsblvt/wolfsblvt.com (accepted foundation 98a85f8) when the service joined the Works site.
  */
 
@@ -35,6 +36,8 @@ export type CategoryValue = (typeof CATEGORIES)[number]['value'];
 export const PRODUCTS = [
   { slug: 'wolfsblvt-works', label: 'Wolfsblvt Works website' },
   { slug: 'diffdevil', label: 'diffdevil' },
+  { slug: 'smolpng', label: 'smolpng' },
+  { slug: 'tunneltend', label: 'TunnelTend' },
   { slug: 'wolfsblvt-com', label: 'wolfsblvt.com website' },
   { slug: 'agents', label: "Wolf's Agents" },
 ] as const;

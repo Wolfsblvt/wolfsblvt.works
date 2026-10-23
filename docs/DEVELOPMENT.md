@@ -43,6 +43,7 @@ random string for `CONTACT_FORM_SECRET`. It is ignored by Git; real values never
 | Browser QA: build, then Playwright against a local Worker on port 8788 | `npm run qa` |
 | Browser QA in Firefox and WebKit too | `QA_ALL_BROWSERS=1 npm run qa` |
 | Re-render the social cards | `npm run cards` |
+| Refresh the committed profile pictures of people credited in the Pile | `npm run credits` |
 | Publication gate on its own | `npm run check:publish` |
 | Publication build | `npm run build:production` |
 | Contact-first launch build (the contact page, its assets, the 404 and the 503; nothing else) | `npm run build:contact-only` |
@@ -110,7 +111,9 @@ Produced by the build, ignored by Git, never edited by hand:
 
 **Committed on purpose:** `public/social/home.png` and `public/social/contact.png`. They are rendered by
 `npm run cards` with Playwright and the site's own fonts, and kept in Git so the build doesn't need a browser. Re-render
-and commit them when the hero copy, the lockup or a card's line changes.
+and commit them when the hero copy, the lockup or a card's line changes. The same goes for the profile pictures of
+people credited in the Pile (`src/features/pile/entries/mpreg/nek0tera.jpg`): `npm run credits` fetches them from
+their own public pages; commit the result.
 
 ## Common paths
 
@@ -165,7 +168,6 @@ The content is authored and the site is deliberately not yet published. Before i
 - GitHub Sponsors is live at `https://github.com/sponsors/Wolfsblvt` (read back by Wolf Ops on 2026-10-22).
 - Bluesky: `links.bluesky` in `site.config.mjs` is set when the profile exists. Until then the slot shows as visibly
   unavailable, which is fine to publish.
-- Tera's `.mpreg` fragment: included with her credit, or left out; it is not in the collection until Wolf decides.
 
 **The first launch, in order (Wolf Ops, #916):**
 

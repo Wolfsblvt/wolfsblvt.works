@@ -16,34 +16,39 @@ const { entry, hid } = Astro.props;
 
 <div class="rw" data-interaction={entry.id}>
   <h3 id={hid} class="e-h rw-h">{entry.data.title}</h3>
-  <div class="rw-scene">
-    <svg class="rw-art" viewBox="0 0 280 160" role="img" aria-label="A selected stone wall on the modding workbench.">
-      <ellipse cx="140" cy="134" rx="104" ry="18" fill="#060b10" fill-opacity=".33"/>
-      <path d="M45 61l80-36 114 40-79 39z" fill="#90908a"/>
-      <path d="M45 61v47l115 43v-47z" fill="#5e6667"/>
-      <path d="M160 104v47l79-39V65z" fill="#424e54"/>
-      <g fill="none" stroke="#28353a" stroke-width="3">
-        <path d="M45 85l115 43 79-40M82 75v23m39-8v24M78 99v22m41-7v22M187 90v24m27-37v24m-38 22v20m27-34v20M85 43l113 41M164 39l-78 37"/>
-      </g>
-      <path d="M37 58l88-40 122 44v56l-87 42-123-46z" fill="none" stroke="#f2b35f" stroke-width="1.5" stroke-dasharray="4 5"/>
-    </svg>
-    <div class="rw-panel">
-      <div class="rw-micro">Wall · Hit points</div>
-      <div class="rw-value" data-value aria-live="polite">350</div>
-      <div class="rw-source">One object.<br />One deliberate change.</div>
+  <div class="e-side rw-side">
+    <div class="e-side-scene">
+      <div class="rw-scene">
+        <svg class="rw-art" viewBox="0 0 280 160" role="img" aria-label="A selected stone wall on the modding workbench.">
+          <ellipse cx="140" cy="134" rx="104" ry="18" fill="#060b10" fill-opacity=".33"/>
+          <path d="M45 61l80-36 114 40-79 39z" fill="#90908a"/>
+          <path d="M45 61v47l115 43v-47z" fill="#5e6667"/>
+          <path d="M160 104v47l79-39V65z" fill="#424e54"/>
+          <g fill="none" stroke="#28353a" stroke-width="3">
+            <path d="M45 85l115 43 79-40M82 75v23m39-8v24M78 99v22m41-7v22M187 90v24m27-37v24m-38 22v20m27-34v20M85 43l113 41M164 39l-78 37"/>
+          </g>
+          <path d="M37 58l88-40 122 44v56l-87 42-123-46z" fill="none" stroke="#f2b35f" stroke-width="1.5" stroke-dasharray="4 5"/>
+        </svg>
+        <div class="rw-panel">
+          <div class="rw-micro">Wall · Hit points</div>
+          <div class="rw-value" data-value aria-live="polite">350</div>
+          <div class="rw-source">One object.<br />One deliberate change.</div>
+        </div>
+      </div>
+      <div class="rw-controls" data-controls hidden>
+        <button type="button" aria-pressed="true" data-version="before">Before</button>
+        <button type="button" aria-pressed="false" data-version="after">After</button>
+      </div>
     </div>
+    <div class="e-side-copy rw-copy"><slot /></div>
   </div>
-  <div class="rw-controls" data-controls hidden>
-    <button type="button" aria-pressed="true" data-version="before">Before</button>
-    <button type="button" aria-pressed="false" data-version="after">After</button>
-  </div>
-  <div class="rw-copy"><slot /></div>
 </div>
 
 <style>
-  .rw { max-width: 640px; font-family: var(--sans); }
+  .rw { font-family: var(--sans); }
   .rw-h { font: 500 clamp(26px, 2.8vw, 34px)/1.15 var(--serif); letter-spacing: -.01em; }
-  .rw-scene { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: center; margin-top: 18px; padding: 20px; border-radius: 7px; background: #181f25; border: 1px solid #4a565f; }
+  .rw-side { margin-top: 18px; }
+  .rw-scene { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: center; max-width: 640px; padding: 20px; border-radius: 7px; background: #181f25; border: 1px solid #4a565f; }
   .rw-art { display: block; width: 100%; height: auto; }
   .rw-micro { font: 500 11px/1.5 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--text); }
   .rw-value { margin: 10px 0; font: 400 46px/1.2 var(--mono); font-variant-numeric: tabular-nums; color: #f2b35f; }

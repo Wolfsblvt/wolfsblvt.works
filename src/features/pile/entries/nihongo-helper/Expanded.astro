@@ -16,19 +16,24 @@ const { entry, hid } = Astro.props;
 
 <div class="nh">
   <h3 id={hid} class="e-h nh-h">{entry.data.title}</h3>
-  <div class="surface">
-    <div class="host"><Image src={sillytavern} alt="" width={27} height={27} densities={[1, 2]} class="st" /><span>SillyTavern</span></div>
-    <p class="ja" lang="ja"><span class="word"><ruby>星<rt>ほし</rt></ruby></span>がきれいですね。</p>
-    <div class="gloss"><span lang="ja">星 · ほし</span><span>star</span></div>
-    <label class="readings"><input type="checkbox" checked />Show readings</label>
+  <div class="e-side nh-side">
+    <div class="e-side-scene">
+      <div class="surface">
+        <div class="host"><Image src={sillytavern} alt="" width={27} height={27} densities={[1, 2]} class="st" /><span>SillyTavern</span></div>
+        <p class="ja" lang="ja"><span class="word"><ruby>星<rt>ほし</rt></ruby></span>がきれいですね。</p>
+        <div class="gloss"><span lang="ja">星 · ほし</span><span>star</span></div>
+        <label class="readings"><input type="checkbox" checked />Show readings</label>
+      </div>
+    </div>
+    <div class="e-side-copy"><slot /></div>
   </div>
-  <slot />
 </div>
 
 <style>
-  .nh { max-width: 620px; font-family: var(--sans); }
+  .nh { font-family: var(--sans); }
   .nh-h { font: 500 clamp(26px, 2.8vw, 34px)/1.15 var(--serif); letter-spacing: -.01em; }
-  .surface { margin-top: 22px; padding: 18px 22px 21px; background: #e9dfc9; color: #2e2828; }
+  .nh-side { margin-top: 22px; }
+  .surface { max-width: 620px; padding: 18px 22px 21px; background: #e9dfc9; color: #2e2828; }
   .host { display: flex; align-items: center; gap: 8px; padding-bottom: 12px; border-bottom: 1px solid #bfb299; font-size: 12px; line-height: 1.4; }
   .st { display: block; width: 27px; height: 27px; flex: none; object-fit: contain; }
   .ja { margin: 20px 0 13px; font-family: 'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif; font-size: clamp(25px, 4.5vw, 32px); line-height: 1.9; }

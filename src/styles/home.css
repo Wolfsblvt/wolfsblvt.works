@@ -48,6 +48,13 @@
 .why-seq[data-on] .s4 > * { animation: write 1.1s cubic-bezier(.2, .7, .2, 1) 3.55s forwards; }
 @media (max-width: 640px) { .emph { white-space: normal; } }
 
+/* ---------- the way past the windows: offset and uneven, not a parallel line of items ---------- */
+@media (min-width: 1000px) {
+  .smol-frame .smol-win { margin-left: clamp(0px, 7vw, 110px); }
+  .kb-win { margin-right: clamp(0px, 6vw, 96px); }
+  .lune { margin-left: clamp(0px, 4vw, 64px); margin-right: clamp(0px, 1.5vw, 24px); }
+}
+
 /* ---------- who ---------- */
 .who { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 40px 72px; align-items: start; }
 @media (max-width: 900px) { .who { grid-template-columns: 1fr; } }

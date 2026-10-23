@@ -1,0 +1,49 @@
+---
+/**
+ * Tera's fragment, expanded: the whole line on the scrap, in her words (supplied by Wolf, 2026-10-24), and the person
+ * it came from: nek0tera, her picture, and the two places she can be found. No explainer and no standing line.
+ */
+import { Image } from 'astro:assets';
+import type { PileEntry } from '../../catalogue';
+import Icon from '../../../../components/Icon.astro';
+import avatar from './nek0tera.jpg';
+
+interface Props {
+  entry: PileEntry;
+  hid: string;
+}
+const { entry, hid } = Astro.props;
+---
+
+<div class="stage">
+  <div class="scrap">
+    <h3 id={hid} class="e-h quote">“Can someone not make a file extension like <em>{entry.data.title}</em>?”</h3>
+    <p class="by">— nek0tera</p>
+  </div>
+  <div class="person">
+    <Image src={avatar} alt="nek0tera’s profile picture" width={72} height={72} class="face" />
+    <div>
+      <p class="from">a thought from</p>
+      <p class="who">nek0tera</p>
+      <p class="links">
+        <a class="lk" href="https://www.twitch.tv/nek0tera"><Icon ui="lucide:twitch" size={15} /> Twitch</a>
+        <a class="lk" href="https://x.com/nek0tera"><Icon ui="lucide:twitter" size={15} /> X</a>
+      </p>
+    </div>
+  </div>
+</div>
+<slot />
+
+<style>
+  .stage { display: flex; flex-wrap: wrap; align-items: center; gap: 36px 56px; padding: 16px 0 8px; }
+  .scrap { position: relative; display: grid; gap: 14px; width: max-content; min-width: 214px; max-width: min(100%, 30ch); padding: 30px 30px 22px; background: #eadcc6; color: #382831; transform: rotate(-2deg); box-shadow: 5px 14px 28px rgb(0 0 0 / 40%); clip-path: polygon(0 0, 100% 2%, 99% 96%, 92% 100%, 85% 97%, 76% 99%, 66% 97%, 55% 100%, 45% 98%, 34% 99%, 24% 97%, 12% 100%, 0 98%); }
+  .scrap::before { content: ''; position: absolute; top: 0; left: 8px; right: 8px; border-top: 2px solid #cbbba6; }
+  .quote { margin: 0; font: 400 clamp(19px, 1.8vw, 24px)/1.35 'Special Elite', var(--mono); text-wrap: pretty; }
+  .quote em { font-style: normal; color: #a24361; letter-spacing: -.04em; }
+  .by { margin: 0; font: italic 400 15px var(--serif); color: #5e3f4a; justify-self: end; }
+  .person { display: flex; align-items: center; gap: 18px; }
+  .face { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 2px rgb(243 232 220 / 14%); }
+  .from { margin: 0; font: 600 12px var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--text-faint); }
+  .who { margin: 4px 0 0; font-size: 24px; line-height: 1.1; letter-spacing: -.01em; }
+  .links { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; }
+</style>

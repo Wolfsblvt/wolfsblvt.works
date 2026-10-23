@@ -7,14 +7,16 @@
   --smol-marine: #33739d; --smol-marine-deep: #24547b; --smol-marine-light: #448bad;
   --smol-ice: #9cc9d9; --smol-periwinkle: #93a9c9; --smol-coral: #be4449; --smol-coral-soft: #e16f73; --smol-peach: #feeddd;
   --smol-sans: 'Nunito', 'Albert Sans', system-ui, sans-serif;
-  /* Squishling's box-drawing strokes need one mono face for every glyph, so the system's own mono comes first. */
-  --smol-ascii: ui-monospace, 'Cascadia Mono', Consolas, Menlo, 'DejaVu Sans Mono', monospace;
+  /* Squishling was drawn in Consolas and reads right there; Menlo and DejaVu Sans Mono share its proportions.
+     Each non-ASCII glyph sits in one cell (below), so whichever face draws a stroke, the columns hold. */
+  --smol-ascii: Consolas, Menlo, 'DejaVu Sans Mono', 'Cascadia Mono', ui-monospace, monospace;
   position: relative; box-sizing: border-box; border-radius: 36px; overflow: hidden;
   background: linear-gradient(160deg, var(--smol-ice-plane) 0%, var(--smol-paper-cool) 58%, var(--smol-paper) 100%);
   color: var(--smol-ink); font-family: var(--smol-sans);
   padding: clamp(28px, 4vw, 52px) clamp(24px, 5vw, 60px);
   box-shadow: 0 30px 80px -30px rgb(51 115 157 / 40%), 0 0 0 1px rgb(243 232 220 / 8%);
 }
+.smol-win .anchor { color: var(--smol-ink-quiet); }
 .smol-win::before { content: ''; position: absolute; left: 0; top: 14%; bottom: 14%; width: 5px; border-radius: 0 4px 4px 0; background: var(--smol-coral); }
 .smol-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: clamp(24px, 4vw, 56px); align-items: center; }
 .smol-kicker { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 0 0 20px; font: 700 12px/1 var(--smol-sans); letter-spacing: .14em; text-transform: uppercase; color: var(--smol-ink-quiet); }
@@ -34,7 +36,9 @@
 .smol-stage { display: grid; gap: 18px; justify-items: center; }
 .smol-mascot { display: grid; justify-items: center; gap: 10px; text-align: center; }
 .smol-blob { display: grid; place-items: center; padding: clamp(18px, 2.6vw, 30px) clamp(20px, 3vw, 36px); border-radius: 48% 52% 46% 54% / 56% 44% 56% 44%; background: #fff; border: 2px dashed var(--smol-ice); }
-.smol-ascii { margin: 0; font: 500 clamp(17px, 2.4vw, 30px)/1.15 var(--smol-ascii); color: var(--smol-ink); white-space: pre; letter-spacing: 0; }
+.smol-ascii { margin: 0; font: 400 clamp(17px, 2.4vw, 30px)/1.15 var(--smol-ascii); font-variant-ligatures: none; color: var(--smol-ink); white-space: pre; letter-spacing: 0; }
+/* Each run of glyphs outside ASCII sits in exactly that many cells of the primary face, whichever font draws it. */
+.smol-ascii .g { display: inline-block; text-align: center; }
 .smol-meet { margin: 6px 0 0; font-size: 16px; line-height: 1.35; color: var(--smol-ink); max-width: 30ch; }
 .smol-meet strong { font-weight: 800; }
 .smol-meet-sub { margin: 0; font-size: 13.5px; line-height: 1.45; color: var(--smol-ink-quiet); max-width: 34ch; }

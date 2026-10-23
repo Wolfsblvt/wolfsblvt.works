@@ -19,54 +19,59 @@ const { title, form } = entry.data;
     <span class="kicker">{form.kind === 'chip' ? form.platform : ''}</span>
     <h3 id={hid} class="e-h pc-h">{title}</h3>
   </div>
-  <div class="pc-stage" data-interaction={entry.id}>
-    <div class="controls" role="group" aria-label="Presence cues" data-enhancement hidden>
-      <button type="button" aria-pressed="true" data-cue="work">Work Focus</button>
-      <button type="button" aria-pressed="false" data-cue="play">Game opens</button>
-      <button type="button" aria-pressed="false" data-cue="away">Quiet hours</button>
-    </div>
-    <div class="scene" data-cue-mode="work" data-manual="false">
-      <div class="phone">
-        <span class="phone-top" aria-hidden="true"></span>
-        <span class="phone-time">09:41</span>
-        <span class="phone-source" data-cue-source>iPhone Focus</span>
-        <strong class="phone-label" data-cue-label>Work</strong>
-        <span class="phone-state" data-cue-state>Focus is on</span>
-      </div>
-      <div class="bridge" aria-hidden="true"><span></span><b>→</b><span></span></div>
-      <div class="card">
-        <div class="card-label">Discord</div>
-        <div class="profile">
-          <span class="avatar" aria-hidden="true">W<span class="light"></span></span>
-          <div><strong class="profile-name">Someone making things</strong><span class="profile-status" data-cue-status>Do not disturb</span></div>
+  <div class="e-side pc-side">
+    <div class="e-side-scene">
+      <div class="pc-stage" data-interaction={entry.id}>
+        <div class="controls" role="group" aria-label="Presence cues" data-enhancement hidden>
+          <button type="button" aria-pressed="true" data-cue="work">Work Focus</button>
+          <button type="button" aria-pressed="false" data-cue="play">Game opens</button>
+          <button type="button" aria-pressed="false" data-cue="away">Quiet hours</button>
         </div>
-        <div class="rich">
-          <span class="rich-k">Rich Presence</span>
-          <strong class="rich-title" data-cue-rich>Making things.</strong>
-          <span class="rich-detail" data-cue-rich-detail>Room for a little concentration.</span>
+        <div class="scene" data-cue-mode="work" data-manual="false">
+          <div class="phone">
+            <span class="phone-top" aria-hidden="true"></span>
+            <span class="phone-time">09:41</span>
+            <span class="phone-source" data-cue-source>iPhone Focus</span>
+            <strong class="phone-label" data-cue-label>Work</strong>
+            <span class="phone-state" data-cue-state>Focus is on</span>
+          </div>
+          <div class="bridge" aria-hidden="true"><span></span><b>→</b><span></span></div>
+          <div class="card">
+            <div class="card-label">Discord</div>
+            <div class="profile">
+              <span class="avatar" aria-hidden="true">W<span class="light"></span></span>
+              <div><strong class="profile-name">Someone making things</strong><span class="profile-status" data-cue-status>Do not disturb</span></div>
+            </div>
+            <div class="rich">
+              <span class="rich-k">Rich Presence</span>
+              <strong class="rich-title" data-cue-rich>Making things.</strong>
+              <span class="rich-detail" data-cue-rich-detail>Room for a little concentration.</span>
+            </div>
+            <span class="owner" data-cue-owner>Following Work Focus</span>
+          </div>
         </div>
-        <span class="owner" data-cue-owner>Following Work Focus</span>
+        <div class="manual" data-enhancement hidden>
+          <button type="button" aria-pressed="false" data-manual-toggle>Set my own: Taking a break.</button>
+          <span>You get the last word.</span>
+        </div>
+        <p class="sr" aria-live="polite" aria-atomic="true" data-cue-announcement>Work Focus. Discord: Do not disturb. Rich Presence: Making things.</p>
       </div>
     </div>
-    <div class="manual" data-enhancement hidden>
-      <button type="button" aria-pressed="false" data-manual-toggle>Set my own: Taking a break.</button>
-      <span>You get the last word.</span>
-    </div>
-    <p class="sr" aria-live="polite" aria-atomic="true" data-cue-announcement>Work Focus. Discord: Do not disturb. Rich Presence: Making things.</p>
+    <div class="e-side-copy"><slot /></div>
   </div>
-  <div class="pc-copy"><slot /></div>
 </div>
 
 <style>
-  .pc { max-width: 680px; font-family: var(--sans); }
+  .pc { font-family: var(--sans); }
   .pc-h { margin-top: 8px; font: 500 clamp(26px, 2.8vw, 34px)/1.15 var(--serif); letter-spacing: -.01em; }
 
-  .controls { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 13px; }
+  .pc-side { margin-top: 22px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 25px; }
   .controls[hidden], .manual[hidden] { display: none; }
   .controls button, .manual button { min-height: 44px; padding: 9px 15px; border: 1px solid #65545c; border-radius: 4px; background: transparent; font: 13px/1.4 var(--sans); color: #e8d9cb; cursor: pointer; }
   .controls button[aria-pressed="true"] { color: #19141a; background: #f0d7b7; border-color: #f0d7b7; }
 
-  .scene { --cue-color: #e68998; display: grid; grid-template-columns: 155px 44px minmax(0, 1fr); align-items: center; max-width: 650px; margin: 25px 0 0; }
+  .scene { --cue-color: #e68998; display: grid; grid-template-columns: 155px 44px minmax(0, 1fr); align-items: center; max-width: 650px; margin: 0; }
   .scene[data-cue-mode="play"] { --cue-color: #91d1aa; }
   .scene[data-cue-mode="away"] { --cue-color: #8f899a; }
   .scene[data-manual="true"] { --cue-color: #e5bc73; }
@@ -108,8 +113,6 @@ const { title, form } = entry.data;
   .manual button { padding: 10px 13px; border-color: #64526d; font-size: 12px; color: #e6d8ee; text-align: left; }
   .manual button[aria-pressed="true"] { border-color: #d5ae7a; color: #f1cf9d; background: rgb(75 56 42 / 40%); }
   .manual > span { font: italic 12px/1.4 var(--serif); color: #cbb5d8; }
-
-  .pc-copy { margin-top: 10px; }
 
   @media (max-width: 600px) {
     .controls { gap: 7px; }

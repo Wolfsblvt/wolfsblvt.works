@@ -5,9 +5,12 @@
  */
 import { clamp, round1 } from '../lib/shape';
 import { documentTop, headerOffset, isPlainClick, reducedMotion, showToast, travelTo, whenInView } from './runtime';
+import type { BootState } from '../features/pile/client/controller';
 import { header } from './site';
 
 const SECTIONS = ['hi', 'what', 'why', 'what2', 'who', 'help', 'whoa', 'hello'] as const;
+const WORDS = ['hi', 'what', 'why', 'who', 'help', 'whoa', 'hello'] as const;
+const SECTION_HASH = /^#(hi|what|why|who|help|whoa|hello|diffdevil|borrowed-coast|smolpng|karaokebarr|lunescence)$/;
 
 function mountWalkSpy(): void {
   const hero = document.querySelector<HTMLElement>('[data-hero]');
@@ -75,13 +78,32 @@ function mountWalkSpy(): void {
     let now = 'hi';
     for (const id of SECTIONS) if (t[id] !== undefined && t[id]! <= y) now = id;
     if (scrollY + vh >= docH - 4) now = 'hello';
-    // Progress: before the pile 0..0.84, the pile and its continuation 0.84..0.95 (slow when open), closing to 1.
-    const pileTop = threshold ? documentTop(threshold) : t.whoa ?? docH;
-    const a = Math.max(1, pileTop - vh * 0.3);
-    const b = Math.max(a + 1, (t.hello ?? docH) - vh * 0.4);
+    // Progress follows the words: while you read a section, the path fills across that section's word, so the
+    // whole Pile, Endless included, stays inside "Whoa" however long it grows.
+    if (threshold) t.whoa = documentTop(threshold);
+    const w = wordStarts();
+    const segments: [number, number, number][] = [];
+    const spans: Record<string, [number, number]> = {
+      hi: [0, w.what], what: [w.what, w.why], why: [w.why, (w.why + w.who) / 2], what2: [(w.why + w.who) / 2, w.who],
+      who: [w.who, w.help], help: [w.help, w.whoa], whoa: [w.whoa, w.hello], hello: [w.hello, 1],
+    };
+    const ordered = SECTIONS.filter((id) => t[id] !== undefined);
+    ordered.forEach((id, i) => {
+      const next = ordered[i + 1];
+      segments.push([t[id]!, next ? t[next]! : docH - vh, i]);
+    });
     const maxY = Math.max(1, docH - vh);
-    const s = scrollY;
-    const p = s <= a ? (s / a) * 0.84 : s <= b ? 0.84 + ((s - a) / (b - a)) * 0.11 : 0.95 + ((s - b) / Math.max(1, maxY - b)) * 0.05;
+    const s = Math.min(scrollY, maxY);
+    let p = 1;
+    for (const [top, end, i] of segments) {
+      const start = i === 0 ? 0 : top - vh * 0.35;
+      const stop = i === ordered.length - 1 ? maxY : end - vh * 0.35;
+      if (s <= stop) {
+        const [from, to] = spans[ordered[i]!]!;
+        p = from + (to - from) * clamp((s - start) / Math.max(1, stop - start), 0, 1);
+        break;
+      }
+    }
     header?.setProgress(clamp(p, 0, 1));
     header?.setSettle(clamp(scrollY / Math.max(1, (hero?.offsetHeight ?? 700) * 0.75), 0, 1));
     const navId = now === 'what2' ? 'what' : now;
@@ -98,6 +120,18 @@ function mountWalkSpy(): void {
   addEventListener('scroll', schedule, { passive: true });
   addEventListener('resize', schedule);
   update();
+}
+
+/** Where each nav word begins along the header's path, 0..1; equal slices when the full nav is not laid out. */
+function wordStarts(): Record<(typeof WORDS)[number], number> {
+  const nav = document.querySelector<HTMLElement>('[data-nav]');
+  const out = {} as Record<(typeof WORDS)[number], number>;
+  const width = nav?.offsetWidth ?? 0;
+  WORDS.forEach((id, i) => {
+    const item = nav?.querySelector<HTMLElement>(`[data-nav-item="${id}"]`);
+    out[id] = width > 0 && item ? item.offsetLeft / width : i / WORDS.length;
+  });
+  return out;
 }
 
 /** Nav words travel along the walk with the eased curve; the address follows without a native jump. */
@@ -118,7 +152,8 @@ function mountNavTravel(): void {
 
 /**
  * Yoru: on the hero until it scrolls away, then he follows along at the edge, sits, dozes, runs off when clicked and
- * comes back, and naps on the footer. Caption wipes away the first time he leaves, writes back when the hero returns.
+ * comes back, and naps on the footer. He is in one place at a time: once he has left the perch, the perch stays an
+ * empty line and the caption is gone; scrolling back up does not teleport him home.
  */
 function mountYoru(): void {
   const heroSpot = document.querySelector<HTMLElement>('[data-yoru-hero]');
@@ -162,25 +197,17 @@ function mountYoru(): void {
     }, 40);
   };
 
-  let capGone = false;
   new IntersectionObserver((entries) => {
     const visible = entries[0]!.isIntersecting;
     // The first report can arrive before a real scroll; only a real scroll away counts.
     if (!visible && scrollY < 80) return;
-    if (visible && capGone && cap) {
-      capGone = false;
-      cap.hidden = false;
-      cap.classList.remove('wiping');
-      cap.classList.add('back');
-    }
     if (!visible && state === 'hero') {
-      if (cap && !capGone) {
+      if (cap) {
         cap.classList.add('wiping');
-        setTimeout(() => { capGone = true; cap.hidden = true; }, 700);
+        setTimeout(() => { cap.hidden = true; }, 700);
       }
       enter();
     }
-    if (visible && ['sit', 'in', 'doze', 'pre'].includes(state)) { clearTimeout(timer); set('hero'); }
   }, { threshold: 0.05 }).observe(hero);
 
   new IntersectionObserver((entries) => {
@@ -263,8 +290,42 @@ function mountDiscord(): void {
   });
 }
 
+/** Each project window's # travels there, puts the address in the bar and copies the link. */
+function mountAnchors(): void {
+  document.addEventListener('click', (event) => {
+    const link = (event.target as Element).closest<HTMLAnchorElement>('[data-anchor-link]');
+    if (!link || !isPlainClick(event)) return;
+    const target = document.getElementById(link.dataset.anchorLink!);
+    if (!target) return;
+    event.preventDefault();
+    try { history.pushState(history.state, '', `#${target.id}`); } catch { /* keep the journey */ }
+    void travelTo(() => documentTop(target) - headerOffset());
+    navigator.clipboard?.writeText(location.href).then(() => showToast('Link copied'), () => {});
+  });
+}
+
+/** A cold arrival at a section or project window: the eased journey instead of the browser's jump. */
+function mountArrival(): void {
+  const boot = (window as Window & { __pileBoot?: BootState }).__pileBoot;
+  if (!boot?.hash || !SECTION_HASH.test(boot.hash)) return;
+  const id = boot.hash.slice(1);
+  const target = id === 'whoa' ? document.querySelector('[data-pile-threshold]') : document.getElementById(id);
+  const restore = () => {
+    try {
+      history.replaceState(boot.state ?? null, '', boot.url);
+      if (boot.restoration) history.scrollRestoration = boot.restoration;
+    } catch { /* ignore */ }
+  };
+  if (!target) { restore(); return; }
+  const go = () => travelTo(() => (id === 'hi' ? 0 : documentTop(target) - headerOffset())).finally(restore);
+  if (document.fonts?.ready) void document.fonts.ready.then(() => setTimeout(go, 120));
+  else setTimeout(go, 120);
+}
+
 mountWalkSpy();
 mountNavTravel();
+mountAnchors();
+mountArrival();
 mountYoru();
 mountChat();
 mountDiscord();
