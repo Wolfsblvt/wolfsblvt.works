@@ -131,7 +131,8 @@ delete it; same-page and cross-tab deletion clears remembered behaviour, and pag
 Valid cross-tab records update the current resident and keepsakes without writing back or replaying the greeting.
 Read-only rooms derive settled wariness while preserving the stored encounter day. On phones the nook note uses its
 own footer flow space; on wider screens it sits beside him. A Coast visit from the wide margin uses the same offscreen
-travel as section bands, because a hop cannot reach the safe interior of the window.
+travel as section bands, because a hop cannot reach the safe interior of the window. Proximity is measured to the
+window's visible edge, separately from the interior landing position that keeps him clear of its controls.
 A contact message exists only as two emails. The contact service's log event and Cloudflare's own request logs
 are the only records; [Logging](LOGGING.md) describes them.
 

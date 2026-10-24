@@ -368,7 +368,7 @@ export function mountResident(): void {
         }
         const scene = places.find((p) => p.id === 'coast')!.surface();
         const here = places.find((p) => p.id === 'lane')!.surface();
-        if (scene && here && resident.state.place === 'lane' && Math.abs(scene.y - here.y) < 160 && here.left - scene.right < 420) ask('coast');
+        if (scene && here && resident.state.place === 'lane' && Math.abs(scene.y - here.y) < 160 && here.left - docRect(coast).right < 420) ask('coast');
       });
     }
   }
