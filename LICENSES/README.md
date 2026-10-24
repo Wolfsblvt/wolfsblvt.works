@@ -16,7 +16,7 @@ Original prose is licensed under [Creative Commons Attribution 4.0 International
 
 ## Reserved: the marks, Yoru and other artwork
 
-The Wolfsblvt Works marks (the WOLFSBLVT / WORKS lockups, the icon and its corners, the handwritten WORKS, the sponsor artwork and their motion), Yoru, the agent avatars, the diffdevil identity, the social cards and every other piece of artwork in this repository are reserved. That covers `brand/bundle/works/`, `design/marks/`, `design/the-walk/assets/`, `references/avatars/`, `public/social/` and the projections the build generates from them (favicons, app icons, Yoru's spritesheets). Their appearance in AGPL code or CC BY prose grants no right to use them; the names and marks identify Wolfsblvt Works and its projects.
+The Wolfsblvt Works marks (the WOLFSBLVT / WORKS lockups, the icon and its corners, the handwritten WORKS, the sponsor artwork and their motion), Yoru, the agent avatars, the diffdevil identity, the social cards and every other piece of artwork in this repository are reserved. That covers `brand/bundle/works/`, `design/marks/`, `design/the-walk/assets/`, `design/yoru/`, `docs/assets/readme/` images, `references/avatars/`, `public/social/` and the projections the build generates from them (favicons, app icons, Yoru's spritesheets). Their appearance in AGPL code or CC BY prose grants no right to use them; the names and marks identify Wolfsblvt Works and its projects.
 
 The compact `wolfsblvt/works` and `wolfsblvt/signpost` glyphs are a separate case: they are distributed by [`@wolfsblvt/icons`](https://github.com/Wolfsblvt/wolfsblvt-icons) under MIT, and the site renders them from that package.
 

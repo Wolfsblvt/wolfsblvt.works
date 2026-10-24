@@ -4,8 +4,8 @@
 
 How to build, run, test and prepare the Wolfsblvt Works website for publication on a fresh clone: the toolchain, the
 static dev server and the local Worker, the three test layers, what the build generates, how to reset, the everyday
-changes (Pile pieces, contact products, icons, social cards), and the publication checklist that has to be clear before
-the site goes public. It owns the local bootstrap, run and test boundary. Hosting adoption itself is Wolf Ops work;
+changes (Pile pieces, contact products, icons, social cards), and the publication checks. It owns the local bootstrap,
+run and test boundary. Hosting adoption itself is Wolf Ops work;
 this guide lists what that work has to provide.
 
 ## Prerequisites
@@ -115,7 +115,8 @@ Produced by the build, ignored by Git, never edited by hand:
 `npm run cards` with Playwright and the site's own fonts, and kept in Git so the build doesn't need a browser. Re-render
 and commit them when the hero copy, the lockup or a card's line changes. The same goes for the profile pictures of
 people credited in the Pile (`src/features/pile/entries/mpreg/nek0tera.jpg`): `npm run credits` fetches them from
-their own public pages; commit the result.
+their own public pages; commit the result. README captures and Yoru's greeting are also committed intentionally;
+[README media](assets/readme/README.md) records their sources and reproduction.
 
 ## Common paths
 
@@ -169,7 +170,8 @@ when that route is proved.
 
 ## Publication
 
-The content is authored and the site is deliberately not yet published. Before it goes public, all of this must hold.
+Before a production deployment, all of the applicable checks below must hold. The first-launch sequence also keeps
+contact provisioning ahead of the full public build; this guide describes the procedure, not a deployment receipt.
 
 **Content and copy** (refused by `npm run check:publish` until done):
 

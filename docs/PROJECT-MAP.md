@@ -37,6 +37,8 @@ together.
 | `src/components/WorksSponsor.astro`, `src/styles/sponsor.css` | The website's sponsor binding and host styling | Reuses the canonical bundle rather than duplicating its artwork |
 | `references/` | The palette handoff and the collaborators' avatar sources | Design inputs kept for provenance |
 | `docs/pile/` | How to write Pile pieces, how the Pile should feel, and its technical plan | The Pile's design record, kept beside the other durable docs |
+| `docs/README.md`, `docs/exploring-works.md` | The documentation map and visitor guide | The root README introduces the site; these keep its explanations and reading routes discoverable |
+| `docs/assets/readme/` | The README's site capture, Yoru greeting and their source record | Small entrance media, distinct from reusable identity exports |
 | `LICENSES/` | The licence texts and the path-by-path licence map | Several licences apply; one place says which covers what |
 
 ## Entry points

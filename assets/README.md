@@ -3,7 +3,7 @@
 ## Meaning
 
 Approved identity files for a README, profile, product credit or shared sponsor invitation. The sole consumer root is
-[brand/bundle/works/](../brand/bundle/works/). Design/source paths are not a second reuse API. The site is unpublished.
+[brand/bundle/works/](../brand/bundle/works/). Design/source paths are not a second reuse API.
 
 ![Wolfsblvt Works](../brand/bundle/works/assets/lockup-default/on-dark.svg)
 
@@ -35,7 +35,8 @@ A GitHub README uses a picture with the pinned `assets/lockup-default/on-dark.sv
 `assets/lockup-default/on-light.svg` fallback, alt text “Wolfsblvt Works” and links outside the image. Use the same
 pattern for `assets/sponsor-banner/`, with enabled support links separately. Avoid floating main URLs.
 
-The future published mirror is `/brand/works/` on Works. It serves display-only surfaces deliberately following the
+The [published mirror](https://wolfsblvt.works/brand/works/manifest.json) is at `https://wolfsblvt.works/brand/works/`.
+It serves display-only surfaces deliberately following the
 current identity; product runtimes vendor tokens, CSS, fonts and components at build time.
 
 ## Maintenance and rights
