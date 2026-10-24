@@ -1,0 +1,34 @@
+{
+  "family": "nook",
+  "subject": "prop",
+  "title": "His nook",
+  "description": "Where Yoru lives, in the footer: a warm resting place first, a small hut later (Wolf, 2026-10-24: nook first, hut later). The cushion is where he curls up; keepsakes from the places he has visited gather beside it, one per discovered scene, only for a visitor who turned remembering on.",
+  "propDescription": "Things in Yoru's nook, painted in the same painterly anime-fantasy style as Yoru himself, with dark outlines and a restrained palette of charcoal, deep plum, copper, gold and small cyan accents. Cosy and a little worn, as if well used.",
+  "cell": { "width": 320, "height": 160 },
+  "pivot": { "x": 160, "y": 150 },
+  "clips": [
+    {
+      "id": "cushion",
+      "frames": 1,
+      "durations": [1000],
+      "scale": { "frame": 0, "pixels": 230, "dimension": "width" },
+      "action": "His bed: a low, round floor cushion seen slightly from above and from the front, in deep plum velvet with thin gold piping, softly dented in the middle where someone small often sleeps. Over one side lies a folded blanket in the same fabric as Yoru's capelet: deep plum with fine gold constellation lines and a thin gold edge. Nothing else: no character, no floor, no shadow.",
+      "beats": ["The cushion with the folded star-map blanket, resting on the floor line."],
+      "selected": "20261024T033025-5117fa70"
+    },
+    {
+      "id": "keepsakes",
+      "frames": 4,
+      "durations": [1000, 1000, 1000, 1000],
+      "scale": { "frame": 0, "pixels": 56, "dimension": "height" },
+      "action": "Four small keepsakes Yoru brought home from places he visited, each a single object about the size of his paw, standing on the floor line, one per frame. They are not all the same object; each frame is a different keepsake.",
+      "beats": [
+        "A tiny rolled-up sea chart tied with a thin copper cord, a corner of dark teal water and pale coastline showing at its edge.",
+        "A smooth dark river pebble with one fine gold line around it.",
+        "A small brass ship's lantern charm, its glass a soft cyan.",
+        "A single dark feather with a copper-to-blue tip, like the tuft of his tail."
+      ],
+      "selected": "20261024T033255-db7156b8"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "family": "nook",
+  "title": "His nook",
+  "sheet": "nook.webp",
+  "cell": {
+    "width": 320,
+    "height": 160
+  },
+  "pivot": {
+    "x": 160,
+    "y": 150
+  },
+  "displayScale": 0.5,
+  "clips": {
+    "cushion": {
+      "row": 0,
+      "frames": 1,
+      "durations": [
+        1000
+      ],
+      "loop": false
+    },
+    "keepsakes": {
+      "row": 1,
+      "frames": 4,
+      "durations": [
+        1000,
+        1000,
+        1000,
+        1000
+      ],
+      "loop": false
+    }
+  }
+}

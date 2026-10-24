@@ -13,12 +13,8 @@
       "frames": 8,
       "ground": "first",
       "durations": [400, 260, 260, 300, 240, 240, 300, 400],
-      "prop": {
-        "name": "ladder",
-        "description": "A small folding wooden ladder: when folded it is a compact bundle about the size of his forearm; unfolded it is a straight ladder about twice his height with evenly spaced rungs."
-      },
       "scale": { "frame": 0, "height": 1 },
-      "action": "Yoru stands at the very edge of a ledge, the edge just in front of his toes towards the left edge of the image; the ledge is not drawn, and below his feet there is only background. He looks down over the edge, reaches under his capelet, pulls out the folded ladder, unfolds it, and hooks its top over the edge so the ladder hangs straight down below the level of his feet, slightly towards the left. A deliberate, faintly smug bit of unnecessary effort.",
+      "action": "Yoru stands at the very edge of a ledge, the edge just in front of his toes towards the left edge of the image; the ledge is not drawn and below his feet there is only background. He looks down over the edge, reaches under his capelet, pulls out the folded ladder from the attached reference, unfolds it, and hooks its top over the edge so it hangs straight down below the level of his feet, slightly towards the left. The ladder is drawn as the real wooden ladder in every frame. A deliberate, faintly smug bit of unnecessary effort.",
       "beats": [
         "Standing at the edge in three-quarter view facing the left edge of the image, looking down over it.",
         "One paw reaching under his capelet.",
@@ -28,19 +24,26 @@
         "The ladder fully unfolded, held by its top, its bottom hanging below his feet.",
         "Hooking the top of the ladder over the edge in front of his toes; the ladder hangs straight down below the edge.",
         "Letting go, standing back upright beside the hooked ladder, satisfied."
+      ],
+      "references": [
+        {
+          "frame": "ladder-prop/open#0",
+          "role": "The ladder, unfolded: draw exactly this ladder, same shape, rungs, hinges and hooks."
+        },
+        { "frame": "ladder-prop/folded#0", "role": "The same ladder folded into its bundle." }
       ]
     },
     {
       "id": "mount",
       "frames": 6,
-      "ground": "first",
+      "ground": "scenery",
       "durations": [260, 220, 220, 240, 220, 260],
       "prop": {
         "name": "ladder",
-        "description": "The small wooden ladder, hooked over the edge in front of his toes and hanging straight down below it."
+        "description": "The folding ladder, unfolded, hooked over the ledge's left corner and hanging straight down from it. A straight ladder with two rails and evenly spaced rungs, the same shape as the attached ladder reference, never an A-frame."
       },
       "scale": { "frame": 0, "match": "produce#-1", "height": 1 },
-      "action": "Yoru gets onto the hooked ladder: he turns round with his back to the drop, steps backwards over the edge, finds the top rungs with his hind feet and grips the ladder's top with his front paws. Careful and precise. The ledge is not drawn.",
+      "action": "Yoru gets onto the hooked ladder: standing on the ledge beside its left corner, he turns round with his back to the drop, steps backwards off the corner onto the top rungs, grips the ladder with his front paws and lowers himself until his head is below the ledge's top edge. Careful and precise.",
       "beats": [
         "Standing beside the hooked ladder at the edge, looking down at it.",
         "Turning round so his back faces the drop, glancing over his shoulder.",
@@ -48,6 +51,16 @@
         "Both hind feet on the top rungs, front paws gripping the ladder's top.",
         "Lowering himself, body now below the level of the edge, paws on the ladder.",
         "On the ladder below the edge, holding on, ready to climb down."
+      ],
+      "scenery": {
+        "name": "ledge",
+        "description": "The ledge he stands on: a plain flat-topped block filling the right part of the image, its top edge level with his feet in the first frame and its left edge a sharp corner just in front of his toes. Below and to the left of that corner is the drop."
+      },
+      "references": [
+        {
+          "frame": "ladder-prop/open#0",
+          "role": "The ladder, unfolded: draw exactly this ladder, same shape, rungs, hinges and hooks."
+        }
       ]
     },
     {
@@ -59,7 +72,7 @@
       "durations": 180,
       "prop": {
         "name": "ladder",
-        "description": "A straight section of the wooden ladder, vertical, with evenly spaced rungs, passing behind Yoru from the top of the frame to the bottom."
+        "description": "A straight vertical section of the folding ladder, two rails and evenly spaced rungs, passing behind Yoru from the top of the image to the bottom, the same shape as the attached ladder reference."
       },
       "scale": { "frame": 0, "match": "mount#-1", "height": 1 },
       "action": "Yoru climbs down the ladder, seen from the side, his back to the open side. A repeating cycle that moves him down by exactly one rung: one paw and the opposite foot reach down to the next rung while the others hold, then they swap. His body stays the same size; the rungs stay evenly spaced and do not stretch.",
@@ -68,16 +81,22 @@
         "Left front paw and right hind foot reaching down to the next rung.",
         "Holding on again, one rung lower.",
         "Right front paw and left hind foot reaching down to the next rung."
+      ],
+      "references": [
+        {
+          "frame": "ladder-prop/open#0",
+          "role": "The ladder, unfolded: draw exactly this ladder, same shape, rungs, hinges and hooks."
+        }
       ]
     },
     {
       "id": "dismount",
       "frames": 5,
-      "ground": "last",
+      "ground": "scenery",
       "durations": [220, 220, 200, 240, 360],
       "prop": {
         "name": "ladder",
-        "description": "The bottom section of the wooden ladder, standing on the ground."
+        "description": "The bottom section of the folding ladder, standing on the ground, the same shape as the attached ladder reference."
       },
       "scale": { "frame": 0, "match": "climb#0", "height": 1 },
       "action": "Yoru reaches the bottom of the ladder: last rungs, one foot down to the ground, the other, lets go, turns round and stands upright on the ground beside the ladder. A small settle on landing.",
@@ -87,18 +106,24 @@
         "Both feet on the ground, front paws still on the ladder.",
         "Letting go and turning round, knees slightly bent.",
         "Standing upright on the ground beside the ladder, composed."
+      ],
+      "scenery": {
+        "name": "ground",
+        "description": "The ground at the bottom of the ladder: a plain flat block along the bottom of the image, its top edge the floor he steps onto."
+      },
+      "references": [
+        {
+          "frame": "ladder-prop/open#0",
+          "role": "The ladder, unfolded: draw exactly this ladder, same shape, rungs, hinges and hooks."
+        }
       ]
     },
     {
       "id": "stow",
       "frames": 6,
       "durations": [300, 240, 240, 240, 260, 400],
-      "prop": {
-        "name": "ladder",
-        "description": "The small folding wooden ladder: standing beside him at first, then folded into a compact bundle he holds, then tucked away under his capelet where it can no longer be seen."
-      },
       "scale": { "frame": 0, "match": "dismount#-1", "height": 1 },
-      "action": "Yoru puts the ladder away: he unhooks it and lifts it down, folds it into a compact bundle, and tucks it under his capelet, then smooths the capelet as if there had never been a ladder. In the last frame no ladder is visible at all.",
+      "action": "Yoru puts the ladder away: standing beside it on the ground, he lifts it down, folds it at its hinges into the bundle from the attached reference, and tucks it under his capelet, then smooths the capelet as if there had never been a ladder. The ladder is drawn as the real wooden ladder; in the last frame no ladder is visible at all.",
       "beats": [
         "Standing beside the ladder, reaching up to it.",
         "Lifting the ladder down, holding it upright in front of him.",
@@ -106,6 +131,13 @@
         "Holding the folded bundle in both paws.",
         "Tucking the bundle under his capelet.",
         "Standing upright, smoothing his capelet, no ladder anywhere."
+      ],
+      "references": [
+        {
+          "frame": "ladder-prop/open#0",
+          "role": "The ladder, unfolded: draw exactly this ladder, same shape, rungs, hinges and hooks."
+        },
+        { "frame": "ladder-prop/folded#0", "role": "The same ladder folded into its bundle." }
       ]
     }
   ]

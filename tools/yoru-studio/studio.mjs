@@ -18,7 +18,7 @@ import sharp from 'sharp';
 import { generate, ROUTE } from './lib/codex.mjs';
 import { keyMask, keyResidue, matteKey, parseHex } from './lib/matte.mjs';
 import { crop, placeFrames, solidBounds, splitFrames } from './lib/register.mjs';
-import { clipDurations, clipLayout, clipPrompt, identityLock, KEY, loadFamily, makeGuide, paths, PROP_KEY, saveFamily, STANDING_HEIGHT } from './lib/spec.mjs';
+import { clipDurations, clipLayout, clipPrompt, identityLock, KEY, loadFamily, makeGuide, paths, PROP_KEY, saveFamily, SCENERY_KEY, STANDING_HEIGHT } from './lib/spec.mjs';
 import { writeContact, writePreview } from './lib/preview.mjs';
 import { alphaMask, colourSignature, matchScale, shiftCell, signatureDistance, stabilize } from './lib/align.mjs';
 
@@ -42,12 +42,16 @@ async function cmdGenerate(familyId, clipId) {
   const lock = identityLock(P.character);
   mkdirSync(P.guides, { recursive: true });
   const guide = await makeGuide(clip, family.cell, join(P.guides, `${familyId}-${clipId}.png`));
+  const isProp = family.subject === 'prop';
+  const style = join(P.reference, 'style-standing.png');
   const attachments = [
-    { path: join(P.reference, 'canonical-base.png'), role: 'Canonical identity reference: this is exactly what Yoru looks like.' },
     // The canonical base fixes who he is; the style anchor fixes how he is drawn now. Without it roughly a third of
-    // generations drifted to a more ornate, pink-eared cat.
-    ...(existsSync(join(P.reference, 'style-standing.png'))
-      ? [{ path: join(P.reference, 'style-standing.png'), role: 'Style reference: Yoru as he is drawn now. Match this exact rendering style, line work, proportions, ear shape, colours and level of detail in every frame.' }]
+    // generations drifted to a more ornate, pink-eared cat. A prop gets only the style: it belongs in his world.
+    ...(isProp ? [] : [{ path: join(P.reference, 'canonical-base.png'), role: 'Canonical identity reference: this is exactly what Yoru looks like.' }]),
+    ...(existsSync(style)
+      ? [{ path: style, role: isProp
+        ? 'Rendering style reference only: the painterly style, line work and palette of the world this prop belongs to. Do not draw this character.'
+        : 'Style reference: Yoru as he is drawn now. Match this exact rendering style, line work, proportions, ear shape, colours and level of detail in every frame.' }]
       : []),
     { path: guide, role: 'Layout guide, for slot count, spacing and the shared floor line only. Do not draw any of its lines, boxes or colours.' },
     ...(await Promise.all((clip.references ?? []).map(resolveReference))),
@@ -159,9 +163,13 @@ async function processRun(family, clip, dir) {
   const { width, height } = info;
   const key = parseHex(family.key ?? KEY);
   // A clip with a prop has it painted in the prop key colour: removed like the background, its place remembered.
+  // Scenery the action needs (the ledge he climbs down from) is painted in its own key colour the same way: removed,
+  // and its top edge can serve as the clip's floor.
   const propKey = clip.prop ? parseHex(family.propKey ?? PROP_KEY) : null;
+  const sceneryKey = clip.scenery ? parseHex(SCENERY_KEY) : null;
   const propMask = propKey ? keyMask(data, width, height, propKey) : null;
-  const matte = matteKey(data, width, height, propKey ? [key, propKey] : key);
+  const sceneryMask = sceneryKey ? keyMask(data, width, height, sceneryKey) : null;
+  const matte = matteKey(data, width, height, [key, propKey, sceneryKey].filter(Boolean));
   const rgba = matte.data;
   const layout = clipLayout(clip);
   const warnings = [];
@@ -193,9 +201,12 @@ async function processRun(family, clip, dir) {
   if (ground !== 'frame') {
     // Poses that leave the floor keep their height relative to one floor instead of each landing on it: the clip's
     // lowest foot ('clip', for hops), the first frame's feet ('first', stepping down off a ledge) or the last's ('last').
+    // ...or the top of the scenery painted in each frame ('scenery': the ledge stays put while he steps off it).
     const bottoms = frames.map((f) => f.bounds.top + f.bounds.height);
-    const floor = ground === 'first' ? bottoms[0] : ground === 'last' ? bottoms.at(-1) : Math.max(...bottoms);
-    placed.forEach((p, i) => { p.top -= Math.round((floor - (frames[i].bounds.top + frames[i].bounds.height)) * scaleAt(i)); });
+    const floors = ground === 'scenery' && sceneryMask
+      ? frames.map((f, i) => channelBounds(sceneryMask, width, layout, f, i)?.top ?? bottoms[i])
+      : frames.map(() => (ground === 'first' ? bottoms[0] : ground === 'last' ? bottoms.at(-1) : Math.max(...bottoms)));
+    placed.forEach((p, i) => { p.top -= Math.round((floors[i] - bottoms[i]) * scaleAt(i)); });
     placed.forEach((p) => { p.clipped = p.left < 0 || p.top < 0 || p.left + p.width > family.cell.width || p.top + p.height > family.cell.height; });
   }
 
@@ -228,13 +239,15 @@ async function processRun(family, clip, dir) {
   const residue = keyResidue(rgba, width, height, key);
   if (residue > 50) warnings.push(`${residue} edge pixels still lean magenta`);
   const ref = await canonicalRef();
-  const drift = signatureDistance(colourSignature(rgba, width * height), colourSignature(ref.rgba, ref.width * ref.height));
+  // Drift is measured against Yoru's colours; a prop has its own.
+  const drift = family.subject === 'prop' ? 0 : signatureDistance(colourSignature(rgba, width * height), colourSignature(ref.rgba, ref.width * ref.height));
   if (drift > DRIFT_LIMIT) warnings.push(`colours drift from the canonical Yoru (${drift.toFixed(2)})`);
   else if (drift > DRIFT_LIMIT - 0.07) warnings.push(`check the colours: close to drifting (${drift.toFixed(2)})`);
   const props = propMask ? frames.map((f, i) => propPlacement(propMask, width, layout, f, i, placed[i], scaleAt(i), offsets[i])) : undefined;
+  const scenery = sceneryMask ? frames.map((f, i) => propPlacement(sceneryMask, width, layout, f, i, placed[i], scaleAt(i), offsets[i])) : undefined;
   await writeContact(dir, family.cell, family.pivot, await standingCell(), props);
   if (props?.some((p) => !p)) warnings.push(`prop missing in frame(s) ${props.flatMap((p, i) => (p ? [] : [i + 1])).join(', ')}`);
-  return writeReport(dir, { scale, endScale, heights, offsets, props, drift, warnings, edgePixels: matte.edgePixels, residue, placed });
+  return writeReport(dir, { scale, endScale, heights, offsets, props, scenery, drift, warnings, edgePixels: matte.edgePixels, residue, placed });
 }
 
 /**
@@ -242,6 +255,15 @@ async function processRun(family, clip, dir) {
  * to the frame whose slot (column, and grid row band) they fall in.
  */
 function propPlacement(mask, width, layout, f, i, p, scale, dx) {
+  const b = channelBounds(mask, width, layout, f, i);
+  if (!b) return null;
+  const toX = (x) => Math.round(p.left + (x - f.bounds.left) * scale + dx);
+  const toY = (y) => Math.round(p.top + (y - f.bounds.top) * scale);
+  return { left: toX(b.left), top: toY(b.top), right: toX(b.right), bottom: toY(b.bottom), cx: toX(b.cx), cy: toY(b.cy) };
+}
+
+/** Bounds and centre of a key channel within one frame's slot and grid row, in strip x and row-local y. */
+function channelBounds(mask, width, layout, f, i) {
   const slotWidth = width / layout.cols;
   const col = i % layout.cols;
   const x0 = Math.floor(col * slotWidth), x1 = Math.floor((col + 1) * slotWidth);
@@ -254,10 +276,7 @@ function propPlacement(mask, width, layout, f, i, p, scale, dx) {
       sx += x; sy += ly; n++;
     }
   }
-  if (n < 50) return null;
-  const toX = (x) => Math.round(p.left + (x - f.bounds.left) * scale + dx);
-  const toY = (y) => Math.round(p.top + (y - f.bounds.top) * scale);
-  return { left: toX(minX), top: toY(minY), right: toX(maxX + 1), bottom: toY(maxY + 1), cx: toX(sx / n), cy: toY(sy / n) };
+  return n < 50 ? null : { left: minX, top: minY, right: maxX + 1, bottom: maxY + 1, cx: sx / n, cy: sy / n };
 }
 
 /**
@@ -320,6 +339,8 @@ async function clampToCell(sprite, p, cell) {
 async function resolveScale(family, clip, frames, warnings) {
   const s = clip.scale ?? { frame: 0, height: 1 };
   const anchor = frames.at(s.frame ?? 0);
+  // A prop has a size of its own, in master pixels, along its width or height.
+  if (s.pixels) return s.pixels / (s.dimension === 'width' ? anchor.bounds.width : anchor.bounds.height);
   const byHeight = (STANDING_HEIGHT * (s.height ?? 1)) / anchor.bounds.height;
   if (s.match) {
     const m = /^(?:([\w-]+)\/)?([\w-]+)#(-?\d+)$/.exec(s.match);

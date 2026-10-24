@@ -518,6 +518,12 @@ export class Resident {
     this.#place = link.to;
     this.#at = link.arrive;
     this.#arrivedAt = this.#clock.now();
+    // A scene he has visited is remembered (only when remembering is on), and its keepsake can appear in his nook.
+    const a = this.#acquaintance;
+    if (a && place(this.#world, link.to).kind === 'guest' && !a.discovered.includes(link.to)) {
+      this.#acquaintance = { ...a, discovered: [...a.discovered, link.to] };
+      this.#trace(`discovered ${link.to}`);
+    }
     this.#follow();
   }
 

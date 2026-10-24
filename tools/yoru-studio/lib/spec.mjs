@@ -12,6 +12,9 @@ export const KEY = '#FF00FF';
 /** The prop channel's key colour; see processRun in studio.mjs. */
 export const PROP_KEY = '#00FF00';
 
+/** The scenery channel's key colour, for the part of the site an action needs drawn (a ledge). */
+export const SCENERY_KEY = '#0000FF';
+
 export function paths(root) {
   const design = join(root, 'design', 'yoru');
   const work = join(root, 'artifacts', 'yoru-studio');
@@ -123,9 +126,17 @@ export function clipPrompt({ lock, family, clip, attachments }) {
     'Attached images, in order:',
     ...attachments.map((a, i) => `${i + 1}. ${a.role}`),
     '',
-    `Create one sprite animation sheet of Yoru: "${clip.id}" (${family.title}), ${grid}. Each frame sits in its own invisible equal slot, the whole body inside the slot with generous padding, no overlap between frames, and the same size and scale for Yoru in every frame. All frames share one floor line, as if standing on the same ground.`,
-    '',
-    `Identity, identical in every frame: ${lock}`,
+    ...(family.subject === 'prop'
+      ? [
+        `Create one sprite sheet of a prop from Yoru's world: "${clip.id}" (${family.title}), ${grid}. Each frame sits in its own invisible equal slot with generous padding, at the same size and scale in every frame, resting on one shared floor line. No character appears.`,
+        '',
+        `Style and world: ${family.propDescription}`,
+      ]
+      : [
+        `Create one sprite animation sheet of Yoru: "${clip.id}" (${family.title}), ${grid}. Each frame sits in its own invisible equal slot, the whole body inside the slot with generous padding, no overlap between frames, and the same size and scale for Yoru in every frame. All frames share one floor line, as if standing on the same ground.`,
+        '',
+        `Identity, identical in every frame: ${lock}`,
+      ]),
     '',
     `Action: ${clip.action}`,
   ];
@@ -143,10 +154,13 @@ export function clipPrompt({ lock, family, clip, attachments }) {
   if (clip.prop) {
     lines.push('', `Prop: ${clip.prop.description} It is painted as a flat, pure green ${PROP_KEY} shape with no shading, outline or texture, exactly where it would be, as a placeholder the real prop replaces later. Its shape and size must be accurate; where Yoru's paws hold it, his paws are in front of the green.`);
   }
+  if (clip.scenery) {
+    lines.push('', `Scenery: ${clip.scenery.description} It is painted as a flat, pure blue ${SCENERY_KEY} shape with no shading, outline or texture, in the same place in every frame, as a placeholder for the real scenery. Yoru stands on or in front of it; where he is in front of it, he covers the blue.`);
+  }
   if (clip.notes) lines.push('', clip.notes);
   lines.push(
     '',
-    `Output: a perfectly flat pure magenta ${KEY} background everywhere outside Yoru${clip.prop ? ' and the green prop' : ''}. No floor, ground line, shadow, glow, motion lines, dust, sparkles, symbols, text, frame borders, guide marks or scenery. No detached effects: everything drawn is part of Yoru or a prop he holds. Keep magenta and close pinks out of Yoru himself; his plum capelet stays a dark, muted plum.`,
+    `Output: a perfectly flat pure magenta ${KEY} background everywhere outside ${family.subject === 'prop' ? 'the prop' : 'Yoru'}${clip.prop ? ' and the green prop' : ''}${clip.scenery ? ' and the blue scenery' : ''}. No floor, ground line, shadow, glow, motion lines, dust, sparkles, symbols, text, frame borders, guide marks or scenery. No detached effects: everything drawn is part of Yoru or a prop he holds. Keep magenta and close pinks out of Yoru himself; his plum capelet stays a dark, muted plum.`,
     '',
     'When the image is done, reply with the single word: done',
   );

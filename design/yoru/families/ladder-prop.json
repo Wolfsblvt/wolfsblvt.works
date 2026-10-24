@@ -1,0 +1,27 @@
+{
+  "family": "ladder-prop",
+  "subject": "prop",
+  "title": "The folding ladder",
+  "description": "The one ladder Yoru carries, as the resident draws it while it hangs over a ledge, and the shape every ladder clip is drawn from. Wolf chose a folding wooden ladder on 2026-10-24.",
+  "propDescription": "A small, slightly too nice folding wooden ladder from Yoru's world, painted in the same painterly anime-fantasy style as Yoru himself with dark outlines: warm dark wood worn smooth, two straight parallel side rails, evenly spaced round rungs, a pair of small brass hinges halfway up where it folds in half, and two small brass hooks at the very top for hanging it over an edge. A straight ladder, never an A-frame step ladder.",
+  "cell": { "width": 160, "height": 480 },
+  "pivot": { "x": 80, "y": 470 },
+  "clips": [
+    {
+      "id": "open",
+      "frames": 1,
+      "durations": [1000],
+      "scale": { "frame": 0, "pixels": 420, "dimension": "height" },
+      "action": "The ladder fully unfolded and straight, standing upright and seen exactly from the front, hooks at the top, nine rungs.",
+      "beats": ["The open ladder, upright, seen from the front, its feet on the floor line."]
+    },
+    {
+      "id": "folded",
+      "frames": 1,
+      "durations": [1000],
+      "scale": { "frame": 0, "pixels": 110, "dimension": "height" },
+      "action": "The same ladder folded in half at its brass hinges into a compact bundle, standing upright, seen from the front, a thin leather strap around it.",
+      "beats": ["The folded ladder bundle, upright, standing on the floor line."]
+    }
+  ]
+}

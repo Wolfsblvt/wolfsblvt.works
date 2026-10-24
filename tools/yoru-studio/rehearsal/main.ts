@@ -35,7 +35,18 @@ const world: World = {
         return pebble ? [{ id: 'pebble', x: pebble.offsetLeft + pebble.offsetWidth / 2 }] : [];
       },
     }),
-    boxPlace('nook', 'nook', '[data-nook]', { restful: true }),
+    {
+      // His nook: the surface is the dent in his cushion, so a nap here is on it.
+      id: 'nook',
+      kind: 'nook',
+      restful: true,
+      surface(): Surface | null {
+        const nook = stage.querySelector<HTMLElement>('[data-nook]');
+        if (!nook) return null;
+        const centre = nook.offsetLeft + nook.offsetWidth / 2;
+        return { left: centre - 28, right: centre + 28, y: nook.offsetTop - 26 };
+      },
+    },
     boxPlace('ledge', 'perch', '[data-ledge]', { restful: true }),
     {
       // Borrowed Coast's window: he sits behind its lower edge, inside its layer, so the frame clips and covers him.
@@ -89,10 +100,37 @@ function trace(line: string): void {
   while (log.childElementCount > 200) log.lastElementChild!.remove();
 }
 
+/** Scenes whose keepsake appears in the nook once he has visited them with remembering on. */
+const KEEPSAKES: Record<string, number> = { coast: 0 };
+
+/** Draws the nook's props with the same player code, holding one frame each. */
+function furnishNook(clips: ClipLibrary): void {
+  const nook = stage.querySelector<HTMLElement>('[data-nook]')!;
+  stage.querySelectorAll('[data-nook-prop]').forEach((el) => el.remove());
+  if (!clips.has('nook/cushion')) return;
+  const centre = nook.offsetLeft + nook.offsetWidth / 2;
+  const place = (clip: string, frame: number, x: number) => {
+    const el = document.createElement('div');
+    el.dataset['nookProp'] = '';
+    el.style.zIndex = '1';
+    stage.append(el);
+    const p = new SpritePlayer(el);
+    el.style.pointerEvents = 'none'; // scenery, not something to poke
+    p.hold(clips.get(clip), frame);
+    p.moveTo(x, nook.offsetTop + 4);
+  };
+  place('nook/cushion', 0, centre);
+  const known = memory.load()?.discovered ?? [];
+  known.filter((id) => id in KEEPSAKES).forEach((id, i) => {
+    if (clips.has('nook/keepsakes')) place('nook/keepsakes', KEEPSAKES[id]!, centre + 80 + i * 26);
+  });
+}
+
 async function boot(): Promise<void> {
   resident?.stop();
   stage.querySelector('[data-yoru]')?.remove();
   const clips = await loadClips();
+  furnishNook(clips);
   const el = document.createElement('button');
   el.type = 'button';
   el.dataset['yoru'] = '';
