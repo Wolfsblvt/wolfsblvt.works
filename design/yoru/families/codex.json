@@ -1,0 +1,77 @@
+{
+  "family": "codex",
+  "title": "The desktop pet's own states",
+  "description": "States only the Codex desktop pet uses, in the new look: a jump, a failure, waiting for the user, and working. The other Codex rows come from the site's families; `npm run yoru -- export-codex` assembles the 8 × 9 pet atlas. Wolf asked for the desktop pet to match the site on 2026-10-24.",
+  "cell": { "width": 256, "height": 240 },
+  "pivot": { "x": 128, "y": 235 },
+  "clips": [
+    {
+      "id": "jumping",
+      "frames": 5,
+      "ground": "clip",
+      "durations": [140, 140, 140, 140, 280],
+      "scale": { "frame": 0, "height": 1 },
+      "action": "Yoru, facing the viewer, does one small, self-satisfied jump straight up in place: anticipation, lift, peak, descent, settle. Vertical motion only through his body position; no shadows, dust or landing marks.",
+      "beats": [
+        "Standing facing the viewer exactly as in the identity reference, knees starting to bend.",
+        "Crouched, ready to spring, a knowing look.",
+        "In the air at the top of the jump, legs tucked, capelet lifting, tail up.",
+        "Coming down, legs reaching for the ground.",
+        "Landed and standing again, composed and a little smug."
+      ],
+      "selected": "20261024T030459-302fa8a2"
+    },
+    {
+      "id": "failed",
+      "frames": 8,
+      "durations": [140, 140, 140, 140, 140, 140, 140, 240],
+      "scale": { "frame": 0, "height": 1 },
+      "action": "Something went wrong. Yoru, facing the viewer, deflates: ears droop, shoulders sag, he sits down heavily with a long-suffering sigh and a flat, unimpressed look, then recovers a little. Readable but not noisy; no tears, symbols, smoke or effects.",
+      "beats": [
+        "Standing facing the viewer as in the identity reference, noticing something went wrong.",
+        "Ears drooping, eyes widening slightly in disbelief.",
+        "Shoulders sagging, head tilting down.",
+        "Sitting down heavily, capelet slumping.",
+        "Seated, a long sigh, eyes closed.",
+        "Seated, one paw over his face.",
+        "Paw coming down, a flat unimpressed look at the viewer.",
+        "Seated, ears half up again, resigned but composed."
+      ],
+      "selected": "20261024T030558-2854c08d"
+    },
+    {
+      "id": "waiting",
+      "frames": 6,
+      "loop": true,
+      "durations": [150, 150, 150, 150, 150, 260],
+      "scale": { "frame": 0, "height": 1 },
+      "action": "Yoru is waiting for the user to answer him. Standing facing the viewer with an expectant, slightly impatient asking look: head tilted, one ear cocked, one paw raised a little as if holding out a question, the tail tip tapping. Distinct from calm idle. No symbols or question marks.",
+      "beats": [
+        "Standing facing the viewer, head tilted, looking expectantly at the viewer.",
+        "One paw raised slightly, palm up, as if asking.",
+        "Ear cocking, eyebrows raised.",
+        "Tail tip tapping, waiting.",
+        "A slow impatient blink.",
+        "Back to the expectant head tilt, paw still raised."
+      ],
+      "selected": "20261024T030650-87b94e17"
+    },
+    {
+      "id": "working",
+      "frames": 6,
+      "loop": true,
+      "durations": [120, 120, 120, 120, 120, 220],
+      "scale": { "frame": 0, "height": 1 },
+      "action": "Yoru is busy working on something: standing facing the viewer, focused, eyes narrowed in concentration, both front paws busy in front of his chest as if sorting or weaving something small and invisible, ears forward. Focused effort, not running or walking; no props, screens or effects.",
+      "beats": [
+        "Standing, focused, paws working in front of his chest, eyes narrowed.",
+        "Paws moving, head tilting slightly to one side.",
+        "Paws moving the other way, ears forward in concentration.",
+        "A quick glance down at his paws.",
+        "Paws working again, tail tip flicking.",
+        "Back to the first focused pose."
+      ],
+      "selected": "20261024T030749-984b53aa"
+    }
+  ]
+}

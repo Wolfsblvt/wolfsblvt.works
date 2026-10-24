@@ -77,6 +77,16 @@ before selecting it. A clean contact sheet does not show jitter, sliding feet or
 | `v1` | The nine May rows, imported from their raw strips and re-cut | Historical; the newer engine draws him differently, so `presence` replaces it |
 | `sleep` | `settle`, `sleep` (loop), `wake` | Selected and packed |
 | `everyday` | walks, turns, sit-down, sit, stand-up, yawn, groom | Selected and packed |
-| `presence` | idle, look, run left and right, wave, hop, think | Generating |
-| `curious` | inspect, nudge off a ledge, bat at something hanging | Generating |
-| `reactions` | unimpressed stare, startle, peek from behind an edge | Generating |
+| `presence` | idle, look, run left and right, wave, hop, think | Selected and packed |
+| `curious` | inspect, nudge off a ledge, bat at something hanging | Selected and packed |
+| `reactions` | unimpressed stare, startle, peek from behind an edge | Selected and packed |
+| `codex` | jumping, failed, waiting, working: the desktop pet's own states | Selected and packed |
+| `ladder` | produce, mount, climb, dismount, stow, with the ladder in the prop channel | First candidates; mount and dismount need a visible ledge, and the ladder needs a prop reference |
+
+Two more things are made from the packed sheets:
+
+- **Codex desktop pet.** `npm run yoru -- export-codex [--install]` assembles the 8 × 9 Codex atlas from the selected
+  clips, one scale per row, and with `--install` replaces `~/.codex/pets/yoru` after keeping the previous pet in
+  `~/.codex/pets-backup/`.
+- **The resident.** `src/features/yoru` is the engine that plays these sheets on the site. `npm run yoru -- serve`
+  also serves a rehearsal at `/rehearsal/` that runs it on a stand-in page, outside the site build.

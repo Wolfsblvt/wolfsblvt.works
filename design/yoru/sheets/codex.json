@@ -1,0 +1,69 @@
+{
+  "family": "codex",
+  "title": "The desktop pet's own states",
+  "sheet": "codex.webp",
+  "cell": {
+    "width": 256,
+    "height": 240
+  },
+  "pivot": {
+    "x": 128,
+    "y": 235
+  },
+  "displayScale": 0.5,
+  "clips": {
+    "jumping": {
+      "row": 0,
+      "frames": 5,
+      "durations": [
+        140,
+        140,
+        140,
+        140,
+        280
+      ],
+      "loop": false
+    },
+    "failed": {
+      "row": 1,
+      "frames": 8,
+      "durations": [
+        140,
+        140,
+        140,
+        140,
+        140,
+        140,
+        140,
+        240
+      ],
+      "loop": false
+    },
+    "waiting": {
+      "row": 2,
+      "frames": 6,
+      "durations": [
+        150,
+        150,
+        150,
+        150,
+        150,
+        260
+      ],
+      "loop": true
+    },
+    "working": {
+      "row": 3,
+      "frames": 6,
+      "durations": [
+        120,
+        120,
+        120,
+        120,
+        120,
+        220
+      ],
+      "loop": true
+    }
+  }
+}

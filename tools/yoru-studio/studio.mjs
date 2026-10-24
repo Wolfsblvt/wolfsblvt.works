@@ -9,6 +9,7 @@
 //   node tools/yoru-studio/studio.mjs preview                                write the studio page
 //   node tools/yoru-studio/studio.mjs serve [--port=4390]                    serve it, fresh on every load
 //   node tools/yoru-studio/studio.mjs montage  <family> [clip] [--strips]    one still of every run, for review
+//   node tools/yoru-studio/studio.mjs export-codex [--install]               the Codex desktop pet from the selected clips
 
 import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join, relative, resolve } from 'node:path';
@@ -406,6 +407,105 @@ async function cmdPack(familyId) {
   console.log(`packed ${clips.length} clips → design/yoru/sheets/${familyId}.webp`);
 }
 
+// ---------- Codex desktop pet ----------
+
+/**
+ * The Codex app's pet contract (hatch-pet references/animation-rows.md): one 1536 × 1872 atlas, 8 × 9 cells of
+ * 192 × 208, rows in this order with these frame counts, unused cells transparent.
+ */
+const CODEX_ROWS = [
+  { state: 'idle', frames: 6, from: 'presence/idle' },
+  { state: 'running-right', frames: 8, from: 'presence/run-right' },
+  { state: 'running-left', frames: 8, from: 'presence/run-left' },
+  { state: 'waving', frames: 4, from: 'presence/wave' },
+  { state: 'jumping', frames: 5, from: 'codex/jumping' },
+  { state: 'failed', frames: 8, from: 'codex/failed' },
+  { state: 'waiting', frames: 6, from: 'codex/waiting' },
+  { state: 'running', frames: 6, from: 'codex/working' },
+  { state: 'review', frames: 6, from: 'presence/think' },
+];
+
+/**
+ * Assembles Yoru's Codex desktop pet from the selected clips: evenly spaced frames to fit each state's count, one
+ * scale per row (never per frame, which made the May pet pop in size), feet on a shared floor. Writes
+ * artifacts/yoru-studio/codex-pet/; with --install, also replaces ~/.codex/pets/yoru after keeping the old pet in
+ * ~/.codex/pets-backup/.
+ */
+async function cmdExportCodex() {
+  const CW = 192, CH = 208;
+  const out = join(P.work, 'codex-pet');
+  mkdirSync(out, { recursive: true });
+  const layers = [];
+  for (const [row, spec] of CODEX_ROWS.entries()) {
+    const [familyId, clipId] = spec.from.split('/');
+    const family = loadFamily(P, familyId);
+    const clip = findClip(family, clipId);
+    if (!clip.selected) throw new Error(`${spec.from} has no selected run for Codex row ${spec.state}`);
+    const n = clip.frames;
+    const picks = Array.from({ length: spec.frames }, (_, i) => (clip.loop ? Math.floor((i * n) / spec.frames) : Math.round((i * (n - 1)) / Math.max(1, spec.frames - 1))));
+    const cells = await Promise.all(picks.map(async (k) => {
+      const { data, info } = await sharp(selectedFrame(familyId, clipId, k)).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+      return { data, info, bounds: solidBounds(data, info.width, info.height) };
+    }));
+    // One scale and offset for the whole row, from the union of its frames around the clip's pivot.
+    const union = cells.reduce((u, c) => ({
+      left: Math.min(u.left, c.bounds.left), top: Math.min(u.top, c.bounds.top),
+      right: Math.max(u.right, c.bounds.left + c.bounds.width), bottom: Math.max(u.bottom, c.bounds.top + c.bounds.height),
+    }), { left: Infinity, top: Infinity, right: -Infinity, bottom: -Infinity });
+    const scale = Math.min(1, (CW - 6) / (union.right - union.left), (CH - 6) / (union.bottom - union.top));
+    const offsetX = Math.round(CW / 2 - ((union.left + union.right) / 2) * scale);
+    const offsetY = Math.round(CH - 3 - union.bottom * scale);
+    for (const [col, c] of cells.entries()) {
+      const resized = await sharp(Buffer.from(c.data), { raw: { width: c.info.width, height: c.info.height, channels: 4 } })
+        .resize(Math.round(c.info.width * scale), Math.round(c.info.height * scale), { kernel: 'lanczos3' }).raw().toBuffer({ resolveWithObject: true });
+      // place the scaled cell so its content lands in the target cell, then crop to the cell
+      const placed = await sharp({ create: { width: CW, height: CH, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+        .composite([{ input: await cropInto(resized, offsetX, offsetY, CW, CH), left: 0, top: 0 }]).png().toBuffer();
+      layers.push({ input: placed, left: col * CW, top: row * CH });
+    }
+    console.log(`${spec.state.padEnd(14)} ← ${spec.from} frames ${picks.join(',')} at ${scale.toFixed(2)}`);
+  }
+  const sheet = join(out, 'spritesheet.webp');
+  await sharp({ create: { width: 8 * CW, height: 9 * CH, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+    .composite(layers).webp({ lossless: true, effort: 6 }).toFile(sheet);
+  const meta = await sharp(sheet).metadata();
+  if (meta.width !== 1536 || meta.height !== 1872) throw new Error(`Codex atlas is ${meta.width}×${meta.height}, not 1536×1872`);
+  const pet = {
+    id: 'yoru',
+    displayName: 'Yoru',
+    description: 'A sharp-eyed nocturnal familiar for Wolf: cozy, stylish, clever, a little sarcastic, and quietly loyal during late-night coding.',
+    spritesheetPath: 'spritesheet.webp',
+  };
+  writeFileSync(join(out, 'pet.json'), `${JSON.stringify(pet, null, 2)}\n`);
+  await sharp(sheet).flatten({ background: '#100b11' }).png().toFile(join(out, 'contact.png'));
+  console.log(`Codex pet → ${out}`);
+
+  if ('install' in flags) {
+    const codexHome = process.env.CODEX_HOME || join(process.env.USERPROFILE ?? process.env.HOME, '.codex');
+    const target = join(codexHome, 'pets', 'yoru');
+    const backup = join(codexHome, 'pets-backup', 'yoru-2026-05-29');
+    if (existsSync(target) && !existsSync(backup)) {
+      mkdirSync(backup, { recursive: true });
+      for (const f of readdirSync(target)) copyFileSync(join(target, f), join(backup, f));
+      console.log(`kept the May pet in ${backup}`);
+    }
+    mkdirSync(target, { recursive: true });
+    copyFileSync(sheet, join(target, 'spritesheet.webp'));
+    copyFileSync(join(out, 'pet.json'), join(target, 'pet.json'));
+    console.log(`installed → ${target}`);
+  }
+}
+
+/** The part of a raw image that falls inside a width × height window placed at (x, y), as PNG. */
+async function cropInto({ data, info }, x, y, width, height) {
+  const left = Math.max(0, -x), top = Math.max(0, -y);
+  const w = Math.min(info.width - left, width - Math.max(0, x)), h = Math.min(info.height - top, height - Math.max(0, y));
+  const piece = await sharp(Buffer.from(data), { raw: { width: info.width, height: info.height, channels: 4 } })
+    .extract({ left, top, width: w, height: h }).png().toBuffer();
+  return sharp({ create: { width, height, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+    .composite([{ input: piece, left: Math.max(0, x), top: Math.max(0, y) }]).png().toBuffer();
+}
+
 // ---------- preview ----------
 
 async function cmdPreview() {
@@ -491,7 +591,7 @@ function findClip(family, clipId) {
 
 // ---------- dispatch, last so every binding above is initialised ----------
 
-const commands = { generate: cmdGenerate, import: cmdImport, process: cmdProcess, select: cmdSelect, pack: cmdPack, preview: cmdPreview, serve: cmdServe, montage: cmdMontage };
+const commands = { generate: cmdGenerate, import: cmdImport, process: cmdProcess, select: cmdSelect, pack: cmdPack, preview: cmdPreview, serve: cmdServe, montage: cmdMontage, 'export-codex': cmdExportCodex };
 if (!commands[command]) {
   console.error(`usage: studio.mjs <${Object.keys(commands).join('|')}> ...`);
   process.exit(2);

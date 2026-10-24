@@ -5,6 +5,7 @@
  */
 import { ClipLibrary, type SheetManifest } from '../../../src/features/yoru/clips';
 import { SpritePlayer } from '../../../src/features/yoru/player';
+import { browserMemory, newAcquaintance, welcomeBack } from '../../../src/features/yoru/memory';
 import { Resident } from '../../../src/features/yoru/resident';
 import type { Place, Surface, World } from '../../../src/features/yoru/world';
 
@@ -57,6 +58,10 @@ async function loadClips(): Promise<ClipLibrary> {
 }
 
 let resident: Resident | null = null;
+const memory = browserMemory((() => { try { return window.localStorage; } catch { return null; } })());
+const today = () => new Date().toISOString().slice(0, 10);
+const rememberBox = document.querySelector<HTMLInputElement>('[data-remember]')!;
+rememberBox.checked = memory.load() !== null;
 let player: SpritePlayer | null = null;
 
 function trace(line: string): void {
@@ -85,6 +90,7 @@ async function boot(): Promise<void> {
     start: { place: 'floor', at: 0.6 },
     seed: Number(document.querySelector<HTMLInputElement>('[data-seed]')!.value) || 1,
     reducedMotion: document.querySelector<HTMLInputElement>('[data-reduced]')!.checked,
+    acquaintance: (() => { const r = memory.load(); return r ? welcomeBack(r, today()) : null; })(),
     trace,
   });
   el.addEventListener('click', () => resident?.poke());
@@ -93,6 +99,21 @@ async function boot(): Promise<void> {
 }
 
 document.querySelector('[data-restart]')!.addEventListener('click', () => void boot());
+rememberBox.addEventListener('change', () => {
+  if (rememberBox.checked) {
+    const fresh = newAcquaintance(today());
+    memory.save(fresh);
+    resident?.setAcquaintance(fresh);
+    trace('remembering on');
+  } else {
+    memory.forget();
+    resident?.setAcquaintance(null);
+    trace('remembering off: forgotten');
+  }
+});
+const keep = () => { const r = resident?.remember(); if (r) memory.save(r); };
+setInterval(keep, 15000);
+addEventListener('pagehide', keep);
 document.querySelector('[data-reduced]')!.addEventListener('change', () => void boot());
 document.querySelector<HTMLInputElement>('[data-tempo]')!.addEventListener('input', (e) => {
   const tempo = Number((e.target as HTMLInputElement).value);
@@ -108,7 +129,8 @@ new ResizeObserver(() => resident?.layoutChanged()).observe(stage);
 setInterval(() => {
   if (!resident) return;
   const s = resident.state;
-  readout.textContent = `${s.place} @ ${s.at.toFixed(2)} · ${s.posture} · rest ${s.rest.toFixed(2)} · curiosity ${s.curiosity.toFixed(2)} · wariness ${s.wariness.toFixed(2)}`;
+  const known = memory.load();
+  readout.textContent = `${s.place} @ ${s.at.toFixed(2)} · ${s.posture} · rest ${s.rest.toFixed(2)} · curiosity ${s.curiosity.toFixed(2)} · wariness ${s.wariness.toFixed(2)}${known ? ` · familiarity ${known.familiarity.toFixed(2)}` : ' · not remembering'}`;
 }, 250);
 
 void boot();

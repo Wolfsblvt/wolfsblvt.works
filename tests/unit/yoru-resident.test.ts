@@ -3,6 +3,7 @@ import { ClipLibrary, type SheetManifest } from '../../src/features/yoru/clips';
 import { SpritePlayer, type Clock } from '../../src/features/yoru/player';
 import { Resident } from '../../src/features/yoru/resident';
 import type { Surface, World } from '../../src/features/yoru/world';
+import { newAcquaintance, type Acquaintance } from '../../src/features/yoru/memory';
 
 /** A manifest with every named clip as a few 100 ms frames. */
 function manifest(family: string, clips: Record<string, number>, loops: string[] = []): { manifest: SheetManifest; sheetUrl: string } {
@@ -44,7 +45,7 @@ function virtualClock(): Clock & { advance(ms: number): void } {
 /** Enough of an element for the player: it only writes styles and data attributes. */
 const fakeElement = () => ({ style: {} as Record<string, string>, dataset: {} as Record<string, string> }) as unknown as HTMLElement;
 
-function setup(seed = 7, surfaces: Record<string, Surface | null> = {}) {
+function setup(seed = 7, surfaces: Record<string, Surface | null> = {}, acquaintance: Acquaintance | null = null) {
   const geometry: Record<string, Surface | null> = {
     floor: { left: 100, right: 700, y: 400 },
     nook: { left: 700, right: 900, y: 400 },
@@ -64,7 +65,7 @@ function setup(seed = 7, surfaces: Record<string, Surface | null> = {}) {
   const element = fakeElement();
   const player = new SpritePlayer(element, clock);
   const trace: string[] = [];
-  const resident = new Resident({ player, clips: library(), world, start: { place: 'floor', at: 0.5 }, seed, clock, trace: (line) => trace.push(line) });
+  const resident = new Resident({ player, clips: library(), world, start: { place: 'floor', at: 0.5 }, seed, clock, acquaintance, trace: (line) => trace.push(line) });
   return { resident, player, clock, trace, geometry, element };
 }
 
@@ -76,14 +77,15 @@ async function live(resident: Resident, clock: Clock, ms: number): Promise<void>
   await new Promise((r) => setTimeout(r, 0));
 }
 
-describe('the resident', () => {
+// Virtual time still yields a macrotask per frame; these lives take a few seconds of real time.
+describe('the resident', { timeout: 20000 }, () => {
   it('chooses the same life from the same seed, and a different one from another', async () => {
     const a = setup(3), b = setup(3), c = setup(4);
     await Promise.all([live(a.resident, a.clock, 30000), live(b.resident, b.clock, 30000), live(c.resident, c.clock, 30000)]);
     expect(a.trace.length).toBeGreaterThan(5);
     expect(a.trace).toEqual(b.trace);
     expect(c.trace).not.toEqual(a.trace);
-  });
+  }, 30000);
 
   it('answers one poke with a look, a second with a startle, a third by leaving and peeking back', async () => {
     const { resident, clock, trace } = setup();
@@ -132,5 +134,20 @@ describe('the resident', () => {
     const frozen = { ...element.style, ...element.dataset };
     for (let i = 0; i < 20; i++) await new Promise((r) => setTimeout(r, 0));
     expect({ ...element.style, ...element.dataset }).toEqual(frozen);
+  });
+
+  it('greets someone he knows with a lazy wave for a first poke, and remembers the calm time', async () => {
+    const known = { ...newAcquaintance('2026-10-24'), familiarity: 0.8 };
+    const { resident, clock, element } = setup(7, {}, known);
+    resident.start();
+    while (clock.now() < 2000) await new Promise((r) => setTimeout(r, 0));
+    resident.poke();
+    const seen = new Set<string>();
+    const t = clock.now();
+    while (clock.now() < t + 1500) { seen.add(element.dataset['clip'] ?? ''); await new Promise((r) => setTimeout(r, 0)); }
+    resident.stop();
+    expect(seen).toContain('presence/wave');
+    expect(seen).not.toContain('reactions/stare');
+    expect(resident.remember()?.familiarity).toBe(0.8); // a poke in the window earns no familiarity
   });
 });

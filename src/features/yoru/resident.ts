@@ -10,6 +10,7 @@
 import { mulberry32 } from '../../lib/shape';
 import type { Clip, ClipLibrary } from './clips';
 import { realClock, SpritePlayer, type Clock } from './player';
+import { spendTime, type Acquaintance } from './memory';
 import { place, route, type Link, type World } from './world';
 
 export type Posture = 'stand' | 'face-left' | 'face-right' | 'sit' | 'curl';
@@ -59,6 +60,8 @@ export interface ResidentOptions {
   reducedMotion?: boolean;
   /** Developer trace for the rehearsal. The site passes nothing: no event log of visitors is kept. */
   trace?: (line: string) => void;
+  /** What he remembers of this visitor, only when they turned remembering on; see memory.ts. */
+  acquaintance?: Acquaintance | null;
 }
 
 interface Behaviour {
@@ -93,6 +96,10 @@ export class Resident {
   #curiosity = 0.4;
   #wariness = 0;
   #pokes: number[] = [];
+  #acquaintance: Acquaintance | null;
+  /** Since the last remember(): time spent together and whether it included poking. */
+  #since = 0;
+  #pokedSince = false;
   #lastRun = new Map<string, number>();
 
   constructor(o: ResidentOptions) {
@@ -103,12 +110,35 @@ export class Resident {
     this.#random = mulberry32(o.seed ?? 1);
     this.#reduced = o.reducedMotion ?? false;
     this.#trace = o.trace ?? (() => {});
+    this.#acquaintance = o.acquaintance ?? null;
+    this.#wariness = this.#acquaintance?.wariness ?? 0;
     this.#place = o.start.place;
     this.#at = o.start.at;
   }
 
   get state(): { place: string; at: number; posture: Posture; rest: number; curiosity: number; wariness: number } {
     return { place: this.#place, at: this.#at, posture: this.#posture, rest: this.#rest, curiosity: this.#curiosity, wariness: this.#wariness };
+  }
+
+  /**
+   * The acquaintance to keep, updated with the time spent together since the last call, or null when remembering is
+   * off. The host saves it; the resident never touches storage.
+   */
+  remember(): Acquaintance | null {
+    if (!this.#acquaintance) return null;
+    const now = this.#clock.now();
+    const updated = spendTime(this.#acquaintance, (now - this.#since) / 60000, this.#pokedSince);
+    this.#acquaintance = { ...updated, wariness: this.#wariness };
+    this.#since = now;
+    this.#pokedSince = false;
+    return this.#acquaintance;
+  }
+
+  /** Remembering was switched on (with a fresh record) or off (null) during the visit. */
+  setAcquaintance(record: Acquaintance | null): void {
+    this.#acquaintance = record;
+    this.#since = this.#clock.now();
+    this.#pokedSince = false;
   }
 
   start(): void {
@@ -129,7 +159,8 @@ export class Resident {
   poke(): void {
     const now = this.#clock.now();
     this.#pokes = [...this.#pokes.filter((t) => now - t < 8000), now];
-    this.#wariness = Math.min(1, this.#wariness + 0.25);
+    this.#wariness = Math.min(1, this.#wariness + 0.25 * (1 - this.#familiarity() * 0.5));
+    this.#pokedSince = true;
     this.#trace(`poke ×${this.#pokes.length}`);
     this.#queued = this.#reaction(this.#pokes.length);
     this.#current?.abort();
@@ -195,6 +226,10 @@ export class Resident {
     return Math.min(1, 0.15 + since / 40000);
   }
 
+  #familiarity(): number {
+    return this.#acquaintance?.familiarity ?? 0;
+  }
+
   /** How settled he feels: someone who just poked him does not get to watch him curl up. */
   #calm(): number {
     return Math.max(0, 1 - this.#wariness * 1.6);
@@ -218,11 +253,12 @@ export class Resident {
     });
     list.push({
       name: 'nap',
-      weight: () => (here.restful && this.#rest > 0.45 && this.#has('settle', 'sleep', 'wake') ? this.#rest * 3 * this.#calm() ** 2 : 0),
+      weight: () => (here.restful && this.#rest > 0.45 && this.#has('settle', 'sleep', 'wake') ? this.#rest * 3 * this.#calm() ** 2 * (this.#acquaintance?.favouritePlace === here.id ? 1.6 : 1) : 0),
       run: async (signal) => {
         await this.#toPosture('curl');
         await this.#loop('sleep', signal, 6 + Math.floor(this.#random() * 6));
         this.#rest = signal.aborted ? this.#rest * 0.6 : 0;
+        if (!signal.aborted && this.#acquaintance) this.#acquaintance = { ...this.#acquaintance, favouritePlace: here.id };
         if (!signal.aborted) await this.#toPosture('stand');
       },
     });
@@ -300,7 +336,9 @@ export class Resident {
           this.#pokes = [];
           return;
         }
-        await this.#once(startled && this.#has('startle') ? 'startle' : 'stare', signal);
+        // Someone he knows well gets a lazy wave for a first poke instead of the stare.
+        const role: Role = startled && this.#has('startle') ? 'startle' : count === 1 && this.#familiarity() > 0.5 && this.#has('wave') ? 'wave' : 'stare';
+        await this.#once(role, signal);
       },
     };
   }
