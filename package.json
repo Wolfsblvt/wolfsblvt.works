@@ -28,7 +28,8 @@
     "test:e2e": "playwright test",
     "qa": "npm run build && playwright test",
     "brand:export": "node scripts/export-brand.mjs",
-    "brand:check": "node tools/brand-bundle/scripts/validate-brand-bundle.mjs brand/bundle/works"
+    "brand:check": "node tools/brand-bundle/scripts/validate-brand-bundle.mjs brand/bundle/works",
+    "yoru": "node tools/yoru-studio/studio.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "3.7.4",

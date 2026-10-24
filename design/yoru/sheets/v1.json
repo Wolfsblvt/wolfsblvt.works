@@ -1,0 +1,136 @@
+{
+  "family": "v1",
+  "title": "The May rows, re-cut",
+  "sheet": "v1.webp",
+  "cell": {
+    "width": 256,
+    "height": 256
+  },
+  "pivot": {
+    "x": 128,
+    "y": 251
+  },
+  "displayScale": 0.5,
+  "clips": {
+    "idle": {
+      "row": 0,
+      "frames": 6,
+      "durations": [
+        280,
+        110,
+        110,
+        140,
+        140,
+        320
+      ],
+      "loop": true
+    },
+    "run-right": {
+      "row": 1,
+      "frames": 8,
+      "durations": [
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        220
+      ],
+      "loop": true
+    },
+    "run-left": {
+      "row": 2,
+      "frames": 8,
+      "durations": [
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        220
+      ],
+      "loop": true
+    },
+    "wave": {
+      "row": 3,
+      "frames": 4,
+      "durations": [
+        140,
+        140,
+        140,
+        280
+      ],
+      "loop": false
+    },
+    "jump": {
+      "row": 4,
+      "frames": 5,
+      "durations": [
+        140,
+        140,
+        140,
+        140,
+        280
+      ],
+      "loop": false
+    },
+    "slump": {
+      "row": 5,
+      "frames": 8,
+      "durations": [
+        140,
+        140,
+        140,
+        140,
+        140,
+        140,
+        140,
+        240
+      ],
+      "loop": false
+    },
+    "waiting": {
+      "row": 6,
+      "frames": 6,
+      "durations": [
+        150,
+        150,
+        150,
+        150,
+        150,
+        260
+      ],
+      "loop": true
+    },
+    "working": {
+      "row": 7,
+      "frames": 6,
+      "durations": [
+        120,
+        120,
+        120,
+        120,
+        120,
+        220
+      ],
+      "loop": true
+    },
+    "review": {
+      "row": 8,
+      "frames": 6,
+      "durations": [
+        150,
+        150,
+        150,
+        150,
+        150,
+        280
+      ],
+      "loop": true
+    }
+  }
+}

@@ -1,0 +1,189 @@
+{
+  "family": "v1",
+  "title": "The May rows, re-cut",
+  "description": "The nine rows Codex generated on 2026-05-29 for the original pet, imported from their raw strips and re-matted on one shared scale. Pose heights are estimates against standing Yoru, checked in the studio preview.",
+  "cell": {
+    "width": 256,
+    "height": 256
+  },
+  "pivot": {
+    "x": 128,
+    "y": 251
+  },
+  "sequences": [
+    [
+      "idle*2",
+      "wave",
+      "idle*2",
+      "review",
+      "waiting"
+    ]
+  ],
+  "clips": [
+    {
+      "id": "idle",
+      "frames": 6,
+      "loop": true,
+      "durations": [
+        280,
+        110,
+        110,
+        140,
+        140,
+        320
+      ],
+      "scale": {
+        "frame": 0,
+        "height": 1
+      },
+      "selected": "may-2026"
+    },
+    {
+      "id": "run-right",
+      "frames": 8,
+      "loop": true,
+      "durations": [
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        220
+      ],
+      "scale": {
+        "frame": 0,
+        "height": 0.82
+      },
+      "ground": "clip",
+      "selected": "may-2026"
+    },
+    {
+      "id": "run-left",
+      "frames": 8,
+      "loop": true,
+      "durations": [
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        120,
+        220
+      ],
+      "scale": {
+        "frame": 0,
+        "height": 0.82
+      },
+      "ground": "clip",
+      "selected": "may-2026"
+    },
+    {
+      "id": "wave",
+      "frames": 4,
+      "durations": [
+        140,
+        140,
+        140,
+        280
+      ],
+      "scale": {
+        "frame": 0,
+        "height": 1
+      },
+      "selected": "may-2026"
+    },
+    {
+      "id": "jump",
+      "frames": 5,
+      "durations": [
+        140,
+        140,
+        140,
+        140,
+        280
+      ],
+      "scale": {
+        "frame": 0,
+        "height": 0.7
+      },
+      "ground": "clip",
+      "selected": "may-2026"
+    },
+    {
+      "id": "slump",
+      "frames": 8,
+      "durations": [
+        140,
+        140,
+        140,
+        140,
+        140,
+        140,
+        140,
+        240
+      ],
+      "scale": {
+        "frame": 0,
+        "height": 1
+      },
+      "selected": "may-2026"
+    },
+    {
+      "id": "waiting",
+      "frames": 6,
+      "loop": true,
+      "durations": [
+        150,
+        150,
+        150,
+        150,
+        150,
+        260
+      ],
+      "scale": {
+        "frame": 0,
+        "height": 1
+      },
+      "selected": "may-2026"
+    },
+    {
+      "id": "working",
+      "frames": 6,
+      "loop": true,
+      "durations": [
+        120,
+        120,
+        120,
+        120,
+        120,
+        220
+      ],
+      "scale": {
+        "frame": 0,
+        "height": 1
+      },
+      "selected": "may-2026"
+    },
+    {
+      "id": "review",
+      "frames": 6,
+      "loop": true,
+      "durations": [
+        150,
+        150,
+        150,
+        150,
+        150,
+        280
+      ],
+      "scale": {
+        "frame": 0,
+        "height": 1
+      },
+      "selected": "may-2026"
+    }
+  ]
+}

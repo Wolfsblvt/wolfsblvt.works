@@ -1,0 +1,141 @@
+{
+  "family": "sleep",
+  "title": "Actually asleep",
+  "description": "Choosing a spot, curling up, sleeping and waking. The curl is a real change of silhouette, not the seated pose rotated. Waking is its own movement, not settling played backwards.",
+  "cell": {
+    "width": 320,
+    "height": 208
+  },
+  "pivot": {
+    "x": 160,
+    "y": 203
+  },
+  "sequences": [
+    [
+      "settle",
+      "sleep*4",
+      "wake"
+    ]
+  ],
+  "clips": [
+    {
+      "id": "settle",
+      "frames": 15,
+      "layout": {
+        "cols": 5,
+        "rows": 3
+      },
+      "inbetweens": 1,
+      "durations": [
+        320,
+        260,
+        260,
+        340,
+        280,
+        300,
+        380,
+        600
+      ],
+      "to": "sleep",
+      "scale": {
+        "frame": 0,
+        "height": 1
+      },
+      "action": "Yoru picks a spot and curls up to sleep. He starts upright as in the identity reference and ends exactly in the attached curled sleeping pose. Each frame moves the pose on by one clear step; his body visibly lowers before it rounds. Seen slightly from the side, ending facing left like the curled reference.",
+      "beats": [
+        "Standing upright as in the identity reference, ears up, glancing down at the ground in front of him.",
+        "Turning his body towards the left, one small step, tail swinging round behind him.",
+        "Starting to sit: hind legs bending, body lowering, tail sweeping forward.",
+        "Sitting upright in profile facing left, capelet settling over his back, ears beginning to relax.",
+        "Leaning forward, front paws reaching down to the ground in front, back starting to round.",
+        "Lying down on his belly, head still raised, eyes half closed, tail beginning to wrap round the front.",
+        "Head lowering onto his tucked front paws, back rounding into a curl, eyes closing, capelet draping over his back.",
+        "Fully curled up asleep, exactly the attached curled pose: head on tucked paws, eyes closed, tail wrapped round the front with the tuft near his nose."
+      ],
+      "references": [
+        {
+          "image": "reference/key-curled.png",
+          "role": "Key pose: the curled sleeping pose the last frame must match exactly."
+        }
+      ]
+    },
+    {
+      "id": "sleep",
+      "frames": 8,
+      "layout": {
+        "cols": 4,
+        "rows": 2
+      },
+      "inbetweens": 1,
+      "loop": true,
+      "durations": [
+        1100,
+        800,
+        1100,
+        900
+      ],
+      "from": "settle",
+      "to": "wake",
+      "scale": {
+        "frame": 0,
+        "match": "settle#-1",
+        "height": 0.62
+      },
+      "action": "Yoru asleep, curled exactly as in the attached curled pose, breathing slowly. The only movement is a very small rise and fall of his back and capelet; head, paws, tail and ears stay where they are. All four frames are the same pose and the same size.",
+      "beats": [
+        "Curled asleep, breathing out: back at its lowest.",
+        "Breathing in: back and capelet very slightly raised.",
+        "Breath held: back at its highest, still very slight.",
+        "Breathing out again: back lowering, the tail tuft shifting by a hair."
+      ],
+      "references": [
+        {
+          "image": "reference/key-curled.png",
+          "role": "Key pose: every frame is this exact curled sleeping pose."
+        }
+      ]
+    },
+    {
+      "id": "wake",
+      "frames": 15,
+      "layout": {
+        "cols": 5,
+        "rows": 3
+      },
+      "inbetweens": 1,
+      "durations": [
+        700,
+        420,
+        360,
+        440,
+        320,
+        340,
+        520,
+        420
+      ],
+      "from": "sleep",
+      "scale": {
+        "frame": 0,
+        "match": "sleep#0",
+        "height": 0.62
+      },
+      "action": "Yoru wakes up. One ear notices something before the rest of him does; he lifts his head, uncurls, has one long stretch and ends upright as in the identity reference, unimpressed and awake. He starts exactly in the attached curled pose, seen from the side facing left.",
+      "beats": [
+        "Curled asleep, exactly the attached curled pose.",
+        "Still curled with eyes closed; one ear lifts and turns.",
+        "Eyes half open, head lifting a little off his paws.",
+        "Head up, looking around sleepily, still lying down; tail unwrapping.",
+        "Front paws pushing up, chest rising, body uncurling.",
+        "Sitting up in profile facing left, capelet sliding back into place.",
+        "One long stretch: front legs reaching forward along the ground, hindquarters raised, tail up.",
+        "Upright again as in the identity reference, half-lidded and a little smug."
+      ],
+      "references": [
+        {
+          "image": "reference/key-curled.png",
+          "role": "Key pose: the curled sleeping pose the first frame must match exactly."
+        }
+      ]
+    }
+  ]
+}
