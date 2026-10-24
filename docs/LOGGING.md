@@ -9,8 +9,9 @@ ever holding what someone wrote. This document owns what those records contain a
 they stay and who can read them. The exact event shape lives in `worker/contact/log.ts` and its tests; the visitor-facing
 account lives on the Privacy and data page.
 
-Standing: the event contract is implemented and tested. Hosting is not adopted yet, so nothing below is configured on
-Cloudflare; the storage and retention sections describe the selected shape and name what Wolf Ops still has to set up.
+Standing: the event contract is implemented and tested. Wolf Ops confirmed the Workers Paid hot surface on 2026-10-24:
+current publication truth is up to 7 days for request logs and contact events. The private retained export is not active;
+12 months remains the selected destination. Public deployment and live event readback remain Wolf Ops work.
 
 ## Purpose classes
 
@@ -61,7 +62,7 @@ with its own record here, and it still never captures message content.
 
 - **Hot surface:** Cloudflare Workers Logs (`observability.enabled` in `wrangler.jsonc`). The event is one JSON line on
   `console.log`, searchable in the dashboard. On the Works account's Workers Paid plan, Workers Logs keeps events for 7
-  days (Cloudflare documentation, 2026-09-22; to be confirmed at adoption).
+  days (provider inputs and plan readback, 2026-10-24; [Workers Logs](https://developers.cloudflare.com/workers/observability/logs/workers-logs/)).
 - **Retained export:** not set up. The Works route for anything kept longer than the hot window is Logpush of Workers
   Trace Events into Cloudflare Pipelines, classified and written to a private R2 bucket partitioned by product,
   environment, class and date, with an R2 lifecycle rule for the retention below. Wolf Ops owns that adoption.
@@ -70,18 +71,22 @@ with its own record here, and it still never captures message content.
 
 ## Retention and deletion
 
-Selected, not yet configured:
+Current publication truth:
+
+- **`contact.submission` events: up to 7 days**, in Workers Logs. No retained export is active.
+- **Cloudflare request logs: up to 7 days** on the current plan, longer only to investigate a specific attack.
+
+Selected retained destination, not yet active:
 
 - **`contact.submission` events: 12 months.** Wolf chose the Works default for security events on 2026-10-14. The event
   is primarily abuse and security evidence (honeypot, token, rate-limit and Turnstile outcomes with the client IP), and
   it also answers "did my message arrive". A 90-day override was proposed, on the grounds that the form has no
-  accounts to compromise, and declined. The retained R2 lifecycle carries 12 months; the 7-day hot window is not the
-  policy.
-- **Cloudflare request logs:** the provider's window (7 days on the current plan), longer only to investigate a specific
-  attack.
+  accounts to compromise, and declined. This becomes current only after Wolf Ops reads back the private R2 route,
+  its 365-day lifecycle and a retained event through the separately recorded owner-confirmation path.
 
-The Privacy and data page states both. Its sentences stay `pending` in `site.config.mjs`, and the publication check
-refuses, until the retained route exists and the values are read back from it.
+The Privacy and data page states the current 7-day window. R2 is not a publication gate. Once the retained route is
+proved, update this document and `site.config.mjs` together before stating 12 months publicly. This preserves the
+selected destination without claiming retention that does not exist (accepted publication direction, 2026-10-24).
 
 Nothing in these records identifies a visitor by name or email, so there is no per-person deletion path to run;
 records expire with their retention.
@@ -108,7 +113,8 @@ switches all sending off without a deploy of new code.
 `src/pages/privacy/index.astro` tells visitors that the hosting provider handles their IP address and request details,
 that the contact service records a technical event about each attempt (time, IP address, topic and project picked,
 outcome) without their name, email, subject or message, and how long each is kept. The retention sentences and the
-hosting facts are `pending` in `site.config.mjs` until they are read back from the deployed setup.
+hosting facts in `site.config.mjs` reflect the confirmed provider inputs; public deployment and live readback remain
+separate Ops evidence.
 
 ## Deliberate omissions and overrides
 

@@ -40,12 +40,51 @@ const canonical = (html) => html.match(/<link rel="canonical" href="([^"]*)"/)?.
 const ogImage = (html) => html.match(/<meta property="og:image" content="([^"]*)"/)?.[1] ?? null;
 
 const EXPECTED = {
-  'index.html': { robots: null, canonical: `${site.url}/`, card: `${site.url}/social/home.png` },
-  'contact/index.html': { robots: null, canonical: site.contactUrl, card: `${site.url}/social/contact.png` },
-  'impressum/index.html': { robots: 'noindex, nosnippet', canonical: `${site.url}/impressum/`, card: null },
-  'privacy/index.html': { robots: 'noindex, nosnippet', canonical: `${site.url}/privacy/`, card: null },
-  '404.html': { robots: 'noindex', canonical: null, card: null },
+  'index.html': {
+    title: site.title,
+    description: site.description,
+    socialTitle: site.title,
+    robots: null, canonical: `${site.url}/`, card: `${site.url}/social/home.png`, sitemap: true,
+  },
+  'contact/index.html': {
+    title: `Contact · ${site.title}`,
+    description: 'Arriving with a thought? Whatever’s on your mind, I’d like to hear it. Write to Wolf at Wolfsblvt Works.',
+    socialTitle: 'Contact',
+    robots: null, canonical: site.contactUrl, card: `${site.url}/social/contact.png`, sitemap: false,
+  },
+  'impressum/index.html': {
+    title: `Impressum · ${site.title}`,
+    description: 'Provider and contact information for wolfsblvt.works.',
+    socialTitle: null,
+    robots: 'noindex, nosnippet', canonical: `${site.url}/impressum/`, card: null, sitemap: false,
+  },
+  'privacy/index.html': {
+    title: `Privacy and data · ${site.title}`,
+    description: 'What happens to your data when you visit wolfsblvt.works, and how to reach me about it.',
+    socialTitle: null,
+    robots: 'noindex, nosnippet', canonical: `${site.url}/privacy/`, card: null, sitemap: false,
+  },
+  '404.html': {
+    title: `Off the path · ${site.title}`,
+    description: 'This address doesn’t lead anywhere on wolfsblvt.works.',
+    socialTitle: null,
+    robots: 'noindex', canonical: null, card: null, sitemap: false,
+  },
+  '503.html': {
+    title: `Something broke · ${site.title}`,
+    description: 'The site should be back shortly. Try again in a minute.',
+    socialTitle: null,
+    robots: 'noindex', canonical: null, card: null, sitemap: false,
+  },
 };
+
+// Exact values and cardinality catch a wrong page identity as well as a missing or duplicate tag.
+function checkValues(path, label, actual, expected) {
+  const values = expected === null ? [] : [expected];
+  if (JSON.stringify(actual) !== JSON.stringify(values)) {
+    fail(`${path} ${label} is ${JSON.stringify(actual)}, expected ${JSON.stringify(values)}.`);
+  }
+}
 
 for (const [path, expected] of Object.entries(EXPECTED)) {
   if (!pages.includes(path)) {
@@ -53,8 +92,14 @@ for (const [path, expected] of Object.entries(EXPECTED)) {
     continue;
   }
   const html = read(path);
-  if (!/<title>[^<]+<\/title>/.test(html)) fail(`${path} has no <title>.`);
-  if (!/<meta name="description" content="[^"]+"/.test(html)) fail(`${path} has no description.`);
+  checkValues(path, 'title', [...html.matchAll(/<title>([^<]*)<\/title>/g)].map((m) => m[1]), expected.title);
+  const meta = (attribute, name) => [...html.matchAll(new RegExp(`<meta ${attribute}="${name}" content="([^"]*)"`, 'g'))].map((m) => m[1]);
+  checkValues(path, 'description', meta('name', 'description'), expected.description);
+  checkValues(path, 'og:title', meta('property', 'og:title'), expected.socialTitle);
+  checkValues(path, 'og:description', meta('property', 'og:description'), expected.socialTitle ? expected.description : null);
+  checkValues(path, 'twitter:title', meta('name', 'twitter:title'), expected.socialTitle);
+  checkValues(path, 'twitter:description', meta('name', 'twitter:description'), expected.socialTitle ? expected.description : null);
+  checkValues(path, 'twitter:image', meta('name', 'twitter:image'), expected.card);
   if (!html.includes('<meta name="darkreader-lock"')) fail(`${path} does not declare darkreader-lock.`);
   if (metaRobots(html) !== expected.robots) fail(`${path} robots is ${metaRobots(html)}, expected ${expected.robots}.`);
   if (canonical(html) !== expected.canonical) fail(`${path} canonical is ${canonical(html)}, expected ${expected.canonical}.`);
@@ -62,7 +107,7 @@ for (const [path, expected] of Object.entries(EXPECTED)) {
   if (expected.card && !existsSync(join(out, new URL(expected.card).pathname))) fail(`${path} points at a missing card ${expected.card}.`);
 }
 
-for (const path of pages.filter((p) => !(p in EXPECTED) && p !== '503.html')) {
+for (const path of pages.filter((p) => !(p in EXPECTED))) {
   fail(`${path} is a page this check does not know; add its expected identity to scripts/check-output.mjs.`);
 }
 
@@ -74,13 +119,16 @@ for (const [name, url] of Object.entries(site.sponsors)) {
 }
 if (/href="#(?:github-sponsors|ko-fi)"/.test(home)) fail('Home contains demonstration sponsor links.');
 
-// The sitemap lists the walk and nothing that is noindex or lives on another host.
+// The sitemap lists only the walk: Contact, both legal pages, 404.html and 503.html are explicitly excluded above.
 const sitemap = existsSync(join(out, 'sitemap-0.xml')) ? read('sitemap-0.xml') : '';
 if (!existsSync(join(out, 'sitemap-index.xml')) || !sitemap) fail('The sitemap is missing.');
 const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
-if (!locs.includes(`${site.url}/`)) fail('The sitemap does not list the home page.');
+const sitemapPages = Object.values(EXPECTED).filter((page) => page.sitemap).map((page) => page.canonical);
+for (const loc of sitemapPages) {
+  if (!locs.includes(loc)) fail(`The sitemap does not list ${loc}.`);
+}
 for (const loc of locs) {
-  if (/\/(impressum|privacy|contact|404)\//.test(loc)) fail(`The sitemap lists ${loc}.`);
+  if (!sitemapPages.includes(loc)) fail(`The sitemap lists excluded or unknown page ${loc}.`);
 }
 
 const robots = existsSync(join(out, 'robots.txt')) ? read('robots.txt') : '';

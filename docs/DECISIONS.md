@@ -597,17 +597,26 @@ context, not a new skin. The chip keeps the way back obvious without a second he
 **Rejected.** Theming the page in each product's colours and type (a per-product design to maintain for every product,
 and the page would stop being recognisably the one Works contact).
 
-### Contact events are kept for 12 months
+### Contact events: 7 days at publication, 12 months remains selected
 
-**Date:** 2026-10-14 · **Status:** Current, not yet configured on Cloudflare
+**Date:** 2026-10-14 · **Status:** Selected destination; publication truth reconciled on 2026-10-24
 
 Each `contact.submission` event (time, IP address, topic and project, every control's outcome, never the message) is
-kept for 12 months in the retained log route, the Works default for security events. The Privacy and data page says so.
+selected for 12 months in the retained log route, the Works default for security events. Current publication truth is
+up to 7 days in Workers Logs; the Privacy and data page states that window. Twelve months becomes current only after
+the private R2 route, its 365-day lifecycle and a retained event are read back. R2 is not a publication gate.
 
 **Why.** Wolf chose the Works default. The event is mostly abuse and security evidence; one retention for the whole
 event keeps it simple.
 
 **Rejected.** 90 days (proposed because the form has no accounts to protect); 30 days (the design's original line).
+
+**Why the publication correction.** Ops confirmed the 7-day hot surface and no retained export. Stating 12 months now
+would describe unconfigured retention. The selected destination remains under Wolf Ops custody through the separate
+owner-confirmation path, without delaying publication or silently reducing the retained outcome.
+
+**Sources.** Wolf Ops' provider readback and the accepted publication direction, 2026-10-24 (attributable records in
+the private publication room); Cloudflare's [Workers Logs retention](https://developers.cloudflare.com/workers/observability/logs/workers-logs/).
 
 ### diffdevil is a registered contact product
 

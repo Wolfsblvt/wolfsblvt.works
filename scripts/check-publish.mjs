@@ -20,7 +20,7 @@ try {
   refuse(`Legal operator: ${error.message}`);
 }
 
-// Privacy and data: every hosting fact has to be confirmed against the deployed setup before it is stated as true.
+// Privacy and data: every hosting fact has to be confirmed against provider evidence before it is stated as true.
 for (const [key, entry] of Object.entries(site.legal.privacy)) {
   if (entry.pending) refuse(`Privacy fact "${key}" is still pending (site.config.mjs legal.privacy.${key}).`);
 }
@@ -65,7 +65,7 @@ if (!existsSync(join(out, 'index.html'))) {
 const manual = [
   `GitHub Sponsors is live at ${site.sponsors.github} (the Help section links it).`,
   site.links.bluesky ? null : 'Bluesky: set site.links.bluesky when the profile exists, or keep the slot visibly unavailable.',
-  'Wolf Ops: the contact-first launch, then routes for wolfsblvt.works and contact.wolfsblvt.works, secrets, the sending domain and the retained log route; see docs/DEVELOPMENT.md, "Publication".',
+  'Wolf Ops: the contact-first launch, then routes for wolfsblvt.works and contact.wolfsblvt.works, secrets, the sending domain and Workers Logs; see docs/DEVELOPMENT.md, "Publication". The selected 12-month retained route is separate and is not a publication gate.',
 ].filter(Boolean);
 
 if (refusals.length) {

@@ -151,7 +151,12 @@ Remove it once the pinned miniflare itself requires `sharp` ≥ 0.35.5 and `undi
 ### Change a hosting fact on the Privacy page
 
 The hosting facts live in `legal.privacy` in `site.config.mjs`. Each entry stays `pending: true`, rendered as a marked
-fixture, until it has been read back from the actual deployment.
+fixture, until confirmed against provider evidence. The six publication facts were confirmed by Wolf Ops on 2026-10-24;
+live readback remains a separate publication step. Current request-log and contact-event retention is up to 7 days in
+Workers Logs.
+Twelve months remains selected, active only after the private R2 route, 365-day lifecycle and a retained event are read
+back. R2 is not a publication gate; update the privacy fact and [Logging](LOGGING.md#retention-and-deletion) together
+when that route is proved.
 
 ## Publication
 
@@ -165,8 +170,9 @@ The content is authored and the site is deliberately not yet published. Before i
 - The legal operator arrives as `WOLFSBLVT_LEGAL_OPERATOR_B64` (base64 of the canonical operator record, schema version
   1), with its contacts provisioned and its additional direct contact (the live form) `provisioned`. The public
   fixture and anything containing its values are refused.
-- Every `legal.privacy` fact in `site.config.mjs` is confirmed against the deployment and set `pending: false`,
-  including the retained log route and its retention from [Logging](LOGGING.md#retention-and-deletion).
+- Every `legal.privacy` fact in `site.config.mjs` is confirmed against provider evidence and set `pending: false`.
+  Publication states the current 7-day retention from [Logging](LOGGING.md#retention-and-deletion); the selected
+  12-month retained route is separate, non-blocking Work.
 - `wrangler.jsonc` carries the production Turnstile site key (it does, since 2026-10-23: the public key of the widget
   Wolf Ops created for `contact.wolfsblvt.works`).
 - Every dependency resolves from the npm registry, never a local path or tarball.
@@ -200,7 +206,8 @@ The content is authored and the site is deliberately not yet published. Before i
   sending domain for the visitor copy (done 2026-10-22; the first real submission proves signing and delivery).
 - Errors: the Worker serves `503.html` itself for failures it can catch. The zone is on the free plan, which cannot
   show a custom page for provider-level errors; that remains a priced choice for Wolf, not a step here.
-- Workers Logs on, and the retained log route from [Logging](LOGGING.md).
+- Workers Logs on (current retention up to 7 days). The private retained route from [Logging](LOGGING.md) is not a
+  publication gate; 12 months must not be claimed until its route, 365-day lifecycle and retained event are read back.
 - After deployment: read back both hosts, the redirect from `wolfsblvt.works/contact/`, the headers on a static page and
   on the home page, a direct `#pile-<id>` link, a real contact submission end to end, and the privacy facts.
 

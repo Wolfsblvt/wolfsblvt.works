@@ -5,7 +5,7 @@ import site from './site.config.mjs';
 // Static output. The Cloudflare Worker in worker/ adds only what static files can't do: the contact service, the
 // per-browser pile seed and response headers. Indexable pages are listed in the sitemap; legal, error and the
 // contact page (served from its own host) are not.
-const SITEMAP_EXCLUDED = ['/impressum/', '/privacy/', '/contact/', '/404/'];
+const SITEMAP_EXCLUDED = ['/impressum/', '/privacy/', '/contact/', '/404/', '/404.html', '/503.html'];
 
 export default defineConfig({
   site: site.url,

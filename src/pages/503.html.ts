@@ -52,6 +52,7 @@ const html = `<!doctype html>
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="${site.themeColor}">
 <title>Something broke · ${site.title}</title>
+<meta name="description" content="The site should be back shortly. Try again in a minute.">
 <style>${css}</style>
 </head>
 <body>

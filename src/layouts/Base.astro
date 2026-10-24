@@ -49,6 +49,7 @@ const {
 } = Astro.props;
 
 const title = page ? `${page} · ${site.title}` : site.title;
+const socialTitle = page ?? site.title;
 const robots = indexing === 'legal' ? 'noindex, nosnippet' : indexing === 'noindex' ? 'noindex' : null;
 const shareable = indexing === 'index';
 const jsonLd = structuredData ? JSON.stringify(structuredData).replaceAll('<', '\\u003c') : null;
@@ -76,7 +77,7 @@ const motionCss = markMotionCss();
       <>
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content={site.title} />
-        <meta property="og:title" content={title} />
+        <meta property="og:title" content={socialTitle} />
         <meta property="og:description" content={description} />
         <meta property="og:url" content={canonical} />
         <meta property="og:locale" content={site.locale} />
@@ -85,6 +86,10 @@ const motionCss = markMotionCss();
         {socialImage && <meta property="og:image:height" content="630" />}
         {socialImage && <meta property="og:image:alt" content={socialImage.alt} />}
         <meta name="twitter:card" content={socialImage ? 'summary_large_image' : 'summary'} />
+        <meta name="twitter:title" content={socialTitle} />
+        <meta name="twitter:description" content={description} />
+        {socialImage && <meta name="twitter:image" content={socialImage.url} />}
+        {socialImage && <meta name="twitter:image:alt" content={socialImage.alt} />}
       </>
     )}
     {jsonLd && <script type="application/ld+json" set:html={jsonLd} />}

@@ -39,23 +39,23 @@ export default {
   },
 
   legal: {
-    lastUpdated: '2026-10-14',
+    lastUpdated: '2026-10-24',
     // Values the Privacy page states about hosting. Each `pending` entry renders as a marked fixture and makes the
-    // publication check refuse until it carries the provider fact read back at deployment.
+    // publication check refuse until it carries the confirmed provider fact. Live readback stays a separate Ops step.
     privacy: {
-      host: { value: 'Cloudflare, Inc.', pending: true },
-      requestLogRetention: { value: 'Request logs are kept by the provider for up to 7 days', pending: true },
+      host: { value: 'Cloudflare, Inc.', pending: false },
+      requestLogRetention: { value: 'Request logs are kept by the provider for up to 7 days', pending: false },
       transferBasis: {
-        value: 'The transfer relies on the EU–US Data Privacy Framework and the provider’s standard contractual clauses',
-        pending: true,
+        value: 'Covered US transfers rely on the EU–US Data Privacy Framework; other restricted transfers use the provider’s standard contractual clauses',
+        pending: false,
       },
       securityCookie: {
         value:
-          'The hosting provider’s security layer may set a short-lived cookie to tell people from bots. It’s strictly necessary to keep the site reachable (§ 25(2) TDDDG) and isn’t used to identify you.',
-        pending: true,
+          'If a security challenge is used, the hosting provider’s security layer may set a short-lived cookie to tell people from bots. It’s strictly necessary to keep the site reachable (§ 25(2) TDDDG) and isn’t used to identify you.',
+        pending: false,
       },
-      turnstile: { value: 'Cloudflare Turnstile', pending: true },
-      contactLogRetention: { value: 'Those records are kept for up to 12 months.', pending: true },
+      turnstile: { value: 'Cloudflare Turnstile', pending: false },
+      contactLogRetention: { value: 'Those records are kept for up to 7 days.', pending: false },
     },
   },
 };
