@@ -823,6 +823,23 @@ the security policy and the licences.
 
 **Why.** Every public Works website carries those routes in its footer, and this site's source is public.
 
+### On a single column, the footer's lists sit centred and the small Walk steps aside on phones
+
+**Date:** 2026-10-25 · **Status:** Current
+
+When the footer collapses to one column (820px and below), the walk and Site lists share one left edge set in the middle
+of the frame, their text still left-aligned, and the social icons follow them, closing the footer as they do on wide
+screens. While there is room (above 480px) the small Walk still frames the lists, and the Site list and icons sit inside
+its lines so they run down beside the links rather than through them. On phones (480px and below) the small Walk is not
+drawn. On a phone, Yoru's "remember you?" note sits straight under the maker line, below his nook on the footer's edge,
+instead of after the last link, and keeps clear of the page Walk's line.
+
+**Why.** Wolf, checking the published site at 375px: "the sections should be centered... Still like left-aligned text,
+but they appear right in the middle. The social links should be below them, like in the normal footer." Of the small
+Walk: "if the lines come reasonably close to the actual walk framing, we just shouldn't render it." Centred on a phone,
+its lines sit a few dozen pixels inside the page's own Walk, and two pairs of lines read as clutter rather than a frame.
+The note at the very end of the page read as detached from Yoru ("That's weird").
+
 ### smolpng's button stays disabled until it has a public home
 
 **Date:** 2026-10-14 · **Status:** Current

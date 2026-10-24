@@ -84,7 +84,7 @@ let offered = false;
 /** Show the Home nook's choice or its stable remembered-state / one-action forget control, once per page. */
 export function offerToRemember(o: {
   layer: HTMLElement;
-  /** A phone's footer gives the note its own flow space instead of covering the maker's words. */
+  /** A phone's footer gives the note its own flow space under the maker's words (footer.css) instead of covering them. */
   inline: HTMLElement;
   place(size: { width: number; height: number }): { left: number; top: number };
   resident: Resident;

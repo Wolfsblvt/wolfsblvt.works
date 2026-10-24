@@ -1,7 +1,9 @@
 ---
 /**
- * The footer: the lockup with the maker line, the walk in plain names beside a small Walk that hugs its labels and
- * runs off the bottom, and the site column (contact, source, licences, legal). Yoru naps here on the home page.
+ * The footer: the lockup with the maker line and the social icons under it, the walk in plain names beside a small
+ * Walk that hugs its labels and runs off the bottom, and the site column (contact, source, licences, legal). On a
+ * single column the two lists sit centred under the maker line and the icons follow them. Yoru naps here on the home
+ * page; on a phone his note joins the column right under the maker line (src/features/yoru/client/remember.ts).
  */
 import site from '../../site.config.mjs';
 import { footerLockup } from '../lib/marks';
@@ -22,21 +24,13 @@ const aria = (key: typeof current) => (current === key ? 'page' : undefined);
 <footer class="site-foot lift" data-footer>
   <div class="frame foot-frame">
     <div class="foot">
-      <div class="foot-col" style="min-width:0">
+      <div class="foot-col foot-brand">
         <a href={home ? '#hi' : `${linkOrigin}/`} class="brand-foot" aria-label="Wolfsblvt Works, back to the start" data-nav-link={home ? 'hi' : undefined} set:html={footerLockup()} />
         <p class="about">{site.description}</p>
         <p>Made by Wolf, with AI agents. Yoru: generated artwork.</p>
-        <div class="icons">
-          <a class="icon-a" href={site.links.maker} aria-label="wolfsblvt.com, about the maker"><Icon ui="lucide:globe" /></a>
-          <a class="icon-a" href={site.links.discordCommunity} aria-label="Discord, Wolfsblvt Works community"><Icon brand="discord" /></a>
-          {site.links.bluesky
-            ? <a class="icon-a" href={site.links.bluesky} aria-label="Bluesky, development updates"><Icon brand="bluesky" /></a>
-            : <span class="icon-a off" role="img" aria-label="Bluesky, not up yet" title="Bluesky: not up yet"><Icon brand="bluesky" /></span>}
-          <a class="icon-a" href={site.links.github} aria-label="GitHub, source code"><Icon brand="github" /></a>
-        </div>
       </div>
-      <nav class="foot-col" aria-label="The walk, in plain names">
-        <div class="foot-h" style="padding-left:34px">The walk</div>
+      <nav class="foot-col foot-walk" aria-label="The walk, in plain names">
+        <div class="foot-h">The walk</div>
         <div class="mini">
           <svg viewBox="0 0 200 480" preserveAspectRatio="none" aria-hidden="true">
             <defs>
@@ -56,7 +50,7 @@ const aria = (key: typeof current) => (current === key ? 'page' : undefined);
           ))}
         </div>
       </nav>
-      <nav class="foot-col" aria-label="Site">
+      <nav class="foot-col foot-site" aria-label="Site">
         <div class="foot-h">Site</div>
         <a href={site.contactUrl} aria-current={aria('contact')}>Contact</a>
         <a href={site.links.source}>Source on GitHub</a>
@@ -65,6 +59,14 @@ const aria = (key: typeof current) => (current === key ? 'page' : undefined);
         <a href={sameSite('/privacy/')} aria-current={aria('privacy')}>Privacy and data</a>
         <a href={sameSite('/impressum/')} aria-current={aria('impressum')}>Impressum</a>
       </nav>
+      <div class="icons">
+        <a class="icon-a" href={site.links.maker} aria-label="wolfsblvt.com, about the maker"><Icon ui="lucide:globe" /></a>
+        <a class="icon-a" href={site.links.discordCommunity} aria-label="Discord, Wolfsblvt Works community"><Icon brand="discord" /></a>
+        {site.links.bluesky
+          ? <a class="icon-a" href={site.links.bluesky} aria-label="Bluesky, development updates"><Icon brand="bluesky" /></a>
+          : <span class="icon-a off" role="img" aria-label="Bluesky, not up yet" title="Bluesky: not up yet"><Icon brand="bluesky" /></span>}
+        <a class="icon-a" href={site.links.github} aria-label="GitHub, source code"><Icon brand="github" /></a>
+      </div>
     </div>
   </div>
 </footer>

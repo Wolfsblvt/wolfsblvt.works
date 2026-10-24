@@ -261,7 +261,7 @@ export async function mountResident(): Promise<void> {
     acquaintance: record,
     onPlace: (id) => {
       // Settled in his nook at the end of the page: the moment he asks whether to remember the visitor.
-      if (id === 'nook') offerToRemember({ layer: stage, inline: footer.querySelector<HTMLElement>('.foot-frame')!, resident, place: noteBesideNook });
+      if (id === 'nook') offerToRemember({ layer: stage, inline: footer.querySelector<HTMLElement>('.foot')!, resident, place: noteBesideNook });
       if (id !== 'perch' && caption && !caption.hidden) {
         caption.classList.add('wiping');
         setTimeout(() => { caption.hidden = true; }, 700);
