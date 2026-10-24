@@ -9,6 +9,9 @@ export const STANDING_HEIGHT = 198;
 
 export const KEY = '#FF00FF';
 
+/** The prop channel's key colour; see processRun in studio.mjs. */
+export const PROP_KEY = '#00FF00';
+
 export function paths(root) {
   const design = join(root, 'design', 'yoru');
   const work = join(root, 'artifacts', 'yoru-studio');
@@ -129,10 +132,13 @@ export function clipPrompt({ lock, family, clip, attachments }) {
       else lines.push(`${i + 1}. In-between ${f.step} of ${f.of - 1}: ${f.of === 2 ? 'halfway' : `${f.step}/${f.of} of the way`} from frame ${numberOf(f.between[0])} to frame ${numberOf(f.between[1])}.`);
     });
   }
+  if (clip.prop) {
+    lines.push('', `Prop: ${clip.prop.description} It is painted as a flat, pure green ${PROP_KEY} shape with no shading, outline or texture, exactly where it would be, as a placeholder the real prop replaces later. Its shape and size must be accurate; where Yoru's paws hold it, his paws are in front of the green.`);
+  }
   if (clip.notes) lines.push('', clip.notes);
   lines.push(
     '',
-    `Output: a perfectly flat pure magenta ${KEY} background everywhere outside Yoru. No floor, ground line, shadow, glow, motion lines, dust, sparkles, symbols, text, frame borders, guide marks or scenery. No detached effects: everything drawn is part of Yoru or a prop he holds. Keep magenta and close pinks out of Yoru himself; his plum capelet stays a dark, muted plum.`,
+    `Output: a perfectly flat pure magenta ${KEY} background everywhere outside Yoru${clip.prop ? ' and the green prop' : ''}. No floor, ground line, shadow, glow, motion lines, dust, sparkles, symbols, text, frame borders, guide marks or scenery. No detached effects: everything drawn is part of Yoru or a prop he holds. Keep magenta and close pinks out of Yoru himself; his plum capelet stays a dark, muted plum.`,
     '',
     'When the image is done, reply with the single word: done',
   );

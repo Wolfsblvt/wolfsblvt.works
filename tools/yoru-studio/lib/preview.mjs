@@ -10,7 +10,7 @@ import { clipDurations, loadFamily } from './spec.mjs';
  * A still of one registered run: every frame in a row on the site's dark canvas, standing Yoru faintly behind each,
  * and the floor line. Written next to the frames as `contact.png`.
  */
-export async function writeContact(runDir, cell, pivot, standingPng) {
+export async function writeContact(runDir, cell, pivot, standingPng, props) {
   const frames = readdirSync(join(runDir, 'frames')).filter((f) => f.endsWith('.png')).sort();
   const ghost = await sharp(standingPng).composite([{
     input: Buffer.from([255, 255, 255, 72]), raw: { width: 1, height: 1, channels: 4 }, tile: true, blend: 'dest-in',
@@ -24,6 +24,12 @@ export async function writeContact(runDir, cell, pivot, standingPng) {
     layers.push({ input: ghost, left: left + pivot.x - 96, top: gap + pivot.y - 203 });
     layers.push({ input: { create: { width: cell.width, height: 1, channels: 4, background: '#73cae388' } }, left, top: gap + pivot.y });
     layers.push({ input: join(runDir, 'frames', f), left, top: gap });
+    const prop = props?.[i];
+    if (prop) {
+      const w = Math.max(1, prop.right - prop.left), h = Math.max(1, prop.bottom - prop.top);
+      const box = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect x="0.5" y="0.5" width="${w - 1}" height="${h - 1}" fill="none" stroke="#3ddc84" stroke-width="1"/></svg>`;
+      layers.push({ input: Buffer.from(box), left: left + prop.left, top: gap + prop.top });
+    }
   });
   await sharp({ create: { width, height, channels: 4, background: '#100b11' } })
     .composite(layers.filter((l) => l.left >= 0 && l.top >= 0)).png().toFile(join(runDir, 'contact.png'));

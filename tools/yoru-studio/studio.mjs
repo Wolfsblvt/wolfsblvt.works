@@ -15,9 +15,9 @@ import { basename, dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import { generate, ROUTE } from './lib/codex.mjs';
-import { keyResidue, matteKey, parseHex } from './lib/matte.mjs';
+import { keyMask, keyResidue, matteKey, parseHex } from './lib/matte.mjs';
 import { crop, placeFrames, solidBounds, splitFrames } from './lib/register.mjs';
-import { clipDurations, clipLayout, clipPrompt, identityLock, KEY, loadFamily, makeGuide, paths, saveFamily, STANDING_HEIGHT } from './lib/spec.mjs';
+import { clipDurations, clipLayout, clipPrompt, identityLock, KEY, loadFamily, makeGuide, paths, PROP_KEY, saveFamily, STANDING_HEIGHT } from './lib/spec.mjs';
 import { writeContact, writePreview } from './lib/preview.mjs';
 import { alphaMask, colourSignature, matchScale, shiftCell, signatureDistance, stabilize } from './lib/align.mjs';
 
@@ -139,7 +139,10 @@ async function processRun(family, clip, dir) {
   const { data, info } = await sharp(join(dir, 'strip.png')).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
   const { width, height } = info;
   const key = parseHex(family.key ?? KEY);
-  const matte = matteKey(data, width, height, key);
+  // A clip with a prop has it painted in the prop key colour: removed like the background, its place remembered.
+  const propKey = clip.prop ? parseHex(family.propKey ?? PROP_KEY) : null;
+  const propMask = propKey ? keyMask(data, width, height, propKey) : null;
+  const matte = matteKey(data, width, height, propKey ? [key, propKey] : key);
   const rgba = matte.data;
   const layout = clipLayout(clip);
   const warnings = [];
@@ -167,9 +170,12 @@ async function processRun(family, clip, dir) {
   const placed = frames.map((f, i) => placeFrames([{ bounds: f.bounds, slotCenterX: f.slotCenterX }], {
     scale: scaleAt(i), cell: family.cell, pivot: family.pivot, ground: 'frame', anchor: clip.anchor ?? 'slot',
   })[0]);
-  if ((clip.ground ?? 'frame') === 'clip') {
-    // Airborne poses keep their height above the clip's lowest foot instead of each landing on the floor.
-    const floor = Math.max(...frames.map((f) => f.bounds.top + f.bounds.height));
+  const ground = clip.ground ?? 'frame';
+  if (ground !== 'frame') {
+    // Poses that leave the floor keep their height relative to one floor instead of each landing on it: the clip's
+    // lowest foot ('clip', for hops), the first frame's feet ('first', stepping down off a ledge) or the last's ('last').
+    const bottoms = frames.map((f) => f.bounds.top + f.bounds.height);
+    const floor = ground === 'first' ? bottoms[0] : ground === 'last' ? bottoms.at(-1) : Math.max(...bottoms);
     placed.forEach((p, i) => { p.top -= Math.round((floor - (frames[i].bounds.top + frames[i].bounds.height)) * scaleAt(i)); });
     placed.forEach((p) => { p.clipped = p.left < 0 || p.top < 0 || p.left + p.width > family.cell.width || p.top + p.height > family.cell.height; });
   }
@@ -205,8 +211,33 @@ async function processRun(family, clip, dir) {
   const ref = await canonicalRef();
   const drift = signatureDistance(colourSignature(rgba, width * height), colourSignature(ref.rgba, ref.width * ref.height));
   if (drift > DRIFT_LIMIT) warnings.push(`colours drift from the canonical Yoru (${drift.toFixed(2)})`);
-  await writeContact(dir, family.cell, family.pivot, await standingCell());
-  return writeReport(dir, { scale, endScale, heights, offsets, drift, warnings, edgePixels: matte.edgePixels, residue, placed });
+  const props = propMask ? frames.map((f, i) => propPlacement(propMask, width, layout, f, i, placed[i], scaleAt(i), offsets[i])) : undefined;
+  await writeContact(dir, family.cell, family.pivot, await standingCell(), props);
+  if (props?.some((p) => !p)) warnings.push(`prop missing in frame(s) ${props.flatMap((p, i) => (p ? [] : [i + 1])).join(', ')}`);
+  return writeReport(dir, { scale, endScale, heights, offsets, props, drift, warnings, edgePixels: matte.edgePixels, residue, placed });
+}
+
+/**
+ * Where the prop was painted in one frame, in that frame's cell coordinates: its bounds and centre. Prop pixels belong
+ * to the frame whose slot (column, and grid row band) they fall in.
+ */
+function propPlacement(mask, width, layout, f, i, p, scale, dx) {
+  const slotWidth = width / layout.cols;
+  const col = i % layout.cols;
+  const x0 = Math.floor(col * slotWidth), x1 = Math.floor((col + 1) * slotWidth);
+  let minX = Infinity, minY = Infinity, maxX = -1, maxY = -1, sx = 0, sy = 0, n = 0;
+  for (let y = f.region.top; y < f.region.top + f.region.height; y++) {
+    for (let x = x0; x < x1; x++) {
+      if (!mask[y * width + x]) continue;
+      const ly = y - f.region.top;
+      if (x < minX) minX = x; if (x > maxX) maxX = x; if (ly < minY) minY = ly; if (ly > maxY) maxY = ly;
+      sx += x; sy += ly; n++;
+    }
+  }
+  if (n < 50) return null;
+  const toX = (x) => Math.round(p.left + (x - f.bounds.left) * scale + dx);
+  const toY = (y) => Math.round(p.top + (y - f.bounds.top) * scale);
+  return { left: toX(minX), top: toY(minY), right: toX(maxX + 1), bottom: toY(maxY + 1), cx: toX(sx / n), cy: toY(sy / n) };
 }
 
 /**
@@ -343,7 +374,12 @@ async function cmdPack(familyId) {
     readdirSync(dir).filter((f) => f.endsWith('.png')).sort()
       .forEach((f, col) => composites.push({ input: join(dir, f), left: col * cw, top: row * ch }));
     const durations = clipDurations(clip);
-    manifest.clips[clip.id] = { row, frames: clip.frames, durations, loop: clip.loop ?? false, ...(clip.from && { from: clip.from }), ...(clip.to && { to: clip.to }) };
+    const reg = JSON.parse(readFileSync(join(P.runs, familyId, clip.id, clip.selected, 'registration.json'), 'utf8'));
+    manifest.clips[clip.id] = {
+      row, frames: clip.frames, durations, loop: clip.loop ?? false,
+      ...(clip.from && { from: clip.from }), ...(clip.to && { to: clip.to }),
+      ...(reg.props && { prop: clip.prop.name, props: reg.props }),
+    };
   });
   mkdirSync(P.sheets, { recursive: true });
   await sharp({ create: { width: cols * cw, height: clips.length * ch, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })

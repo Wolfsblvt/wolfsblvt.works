@@ -36,12 +36,21 @@ no API key is involved. The studio then:
    May, leaves the purple outline the v1 sprites have.
 2. **Cuts** the sheet into frames from connected pieces, so a tail reaching into the next slot is not sliced, and
    drops detached specks.
-3. **Registers** every frame at one shared scale. Standing Yoru is 198 px tall in master pixels; a clip's `scale`
-   says which frame's real height is known, either as a fraction of standing height or by matching a frame of another
-   clip (`"match": "settle#-1"`). Feet go on the cell's floor line and the slot centre on the pivot, so nothing pops
-   or slides that the drawing did not move.
-4. Writes a contact sheet per run and warnings for anything that needs a look: frames that reach the image edge,
-   detached pieces, leftover magenta.
+3. **Registers** every frame at one shared scale. Standing Yoru is 198 px tall in master pixels. A clip's `scale`
+   names one anchor frame: by default a standing pose, matched by silhouette against the canonical base; or
+   `"match": "settle#-1"`, matched by silhouette against another clip's registered frame in the same pose. Silhouettes,
+   not bounding boxes: an ear tip or tail tuft decides a box and would make him shrink and grow between clips. A
+   `height` fraction is the fallback for a pose with nothing to match yet, and `endHeight` adds a second anchor at the
+   clip's end when the generator drew him slowly shrinking across the sheet.
+4. **Steadies** the frames. Feet go on the floor line; horizontally each frame is aligned to its neighbour (a loop to
+   its first frame) by silhouette overlap, and a transition's accumulated drift is removed so it still starts and ends
+   where its neighbours expect. `"stabilize": "none"` keeps the generator's placement.
+5. Writes a contact sheet per run and warnings for anything that needs a look: frames that reach the image edge or
+   leave the cell, detached pieces, leftover magenta, and colours that drift from the canonical Yoru (brown fur and
+   pink ears are the generator's usual way of losing him).
+
+`npm run yoru -- montage <family> [clip] [--strips]` stacks every run's contact sheet (or raw sheet) into one image
+for reviewing a whole batch.
 
 ## Writing a clip
 
@@ -49,6 +58,10 @@ A clip lists **key poses** (`beats`), each one clear step of the action. `inbetw
 many intermediate poses between neighbouring keys; per-key `durations` are then shared with the in-betweens, so they
 make motion smoother without changing its tempo. More frames per sheet leave fewer pixels per frame; keep in-betweens
 only where they hold the same fidelity as key-only clips.
+
+Say directions as "faces the left edge of the image", not "faces left": the generator reads the second as his left
+and turns him the other way. Things he touches that belong to the site (a Pile piece, a ledge, a hanging tag) are
+never drawn; the clip says where in front of him the empty spot is, and the resident puts the real object there.
 
 Transitions connect through shared poses. A clip that starts or ends in another clip's pose attaches it as a
 reference (`reference/key-*.png` or `"frame": "family/clip#n"`) and matches its scale to it. Write waking as its own
@@ -61,5 +74,9 @@ before selecting it. A clean contact sheet does not show jitter, sliding feet or
 
 | Family | Clips | Standing |
 | --- | --- | --- |
-| `v1` | The nine May rows, imported from their raw strips and re-cut on the shared scale | Imported; heights estimated |
-| `sleep` | `settle`, `sleep` (loop), `wake` | Generating |
+| `v1` | The nine May rows, imported from their raw strips and re-cut | Historical; the newer engine draws him differently, so `presence` replaces it |
+| `sleep` | `settle`, `sleep` (loop), `wake` | Selected and packed |
+| `everyday` | walks, turns, sit-down, sit, stand-up, yawn, groom | Selected and packed |
+| `presence` | idle, look, run left and right, wave, hop, think | Generating |
+| `curious` | inspect, nudge off a ledge, bat at something hanging | Generating |
+| `reactions` | unimpressed stare, startle, peek from behind an edge | Generating |

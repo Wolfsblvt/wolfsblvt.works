@@ -25,22 +25,24 @@ const INTERIOR = 3;
 const distance = (r, g, b, k) => Math.hypot(r - k[0], g - k[1], b - k[2]);
 
 /**
- * Turns an RGBA buffer painted on a flat key colour into a straight-alpha RGBA buffer. The input is not modified.
+ * Turns an RGBA buffer painted on flat key colours into a straight-alpha RGBA buffer. The input is not modified.
  * Fully transparent output pixels carry no colour, so nothing leaks back when the image is resized or composited.
+ * Several keys may be given: the background's, and a prop channel's that is removed the same way.
  *
  * @param {Uint8Array | Buffer} rgba  width × height × 4 bytes
  * @param {number} width
  * @param {number} height
- * @param {[number, number, number]} key
+ * @param {[number, number, number] | Array<[number, number, number]>} key  one key colour, or several
  * @param {Partial<typeof DEFAULTS>} [options]
  * @returns {{ data: Uint8Array, edgePixels: number, keyedPixels: number }}
  */
 export function matteKey(rgba, width, height, key, options = {}) {
   const o = { ...DEFAULTS, ...options };
+  const keys = Array.isArray(key[0]) ? key : [key];
   const count = width * height;
   const cls = new Uint8Array(count);
   for (let i = 0; i < count; i++) {
-    const d = distance(rgba[i * 4], rgba[i * 4 + 1], rgba[i * 4 + 2], key);
+    const d = Math.min(...keys.map((k) => distance(rgba[i * 4], rgba[i * 4 + 1], rgba[i * 4 + 2], k)));
     cls[i] = d < o.background ? 0 : d > o.foreground ? 2 : 1;
   }
 
@@ -64,7 +66,7 @@ export function matteKey(rgba, width, height, key, options = {}) {
       edgePixels++;
       const fg = meanOf(rgba, cls, width, height, x, y, o.sampleRadius, INTERIOR)
         ?? meanOf(rgba, cls, width, height, x, y, o.sampleRadius * 2, INTERIOR);
-      const bg = meanOf(rgba, cls, width, height, x, y, o.sampleRadius, 0) ?? key;
+      const bg = meanOf(rgba, cls, width, height, x, y, o.sampleRadius, 0) ?? keys[0];
       if (!fg) continue; // an isolated speck of near-key colour with no body nearby
       const [a, colour] = unmix([rgba[p], rgba[p + 1], rgba[p + 2]], fg, bg);
       if (a < o.minAlpha) continue;
@@ -147,4 +149,16 @@ export function keyResidue(rgba, width, height, key, { minAlpha = 24, tolerance 
     if (distance(rgba[i * 4], rgba[i * 4 + 1], rgba[i * 4 + 2], key) < tolerance) residue++;
   }
   return residue;
+}
+
+/**
+ * Where a prop key colour was painted: a mask of pixels close to it. Clips that involve a prop (the ladder, a poked
+ * object) have the generator paint it in this flat colour, so Yoru comes out alone and the prop's place is known.
+ */
+export function keyMask(rgba, width, height, key, { within = 90 } = {}) {
+  const mask = new Uint8Array(width * height);
+  for (let i = 0; i < mask.length; i++) {
+    if (distance(rgba[i * 4], rgba[i * 4 + 1], rgba[i * 4 + 2], key) < within) mask[i] = 1;
+  }
+  return mask;
 }
