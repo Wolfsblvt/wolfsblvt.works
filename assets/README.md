@@ -35,7 +35,7 @@ A GitHub README uses a picture with the pinned `assets/lockup-default/on-dark.sv
 `assets/lockup-default/on-light.svg` fallback, alt text “Wolfsblvt Works” and links outside the image. Use the same
 pattern for `assets/sponsor-banner/`, with enabled support links separately. Avoid floating main URLs.
 
-The [published mirror](https://wolfsblvt.works/brand/works/manifest.json) is at `https://wolfsblvt.works/brand/works/`.
+The publication mirror is at [`https://wolfsblvt.works/brand/works/`](https://wolfsblvt.works/brand/works/manifest.json).
 It serves display-only surfaces deliberately following the
 current identity; product runtimes vendor tokens, CSS, fonts and components at build time.
 
