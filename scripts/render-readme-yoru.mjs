@@ -1,4 +1,4 @@
-/** Export the accepted v1 resident's wave and idle frame without changing the artwork. */
+/** Export the maintained Yoru presence sheet's wave and idle frame without changing the artwork. */
 import { readFile, mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -6,14 +6,23 @@ import sharp from 'sharp';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const output = resolve(root, 'docs/assets/readme');
-const sheet = await readFile(resolve(root, 'design/the-walk/assets/yoru-spritesheet.webp'));
-const width = 192;
-const height = 208;
-const idle = { row: 0, column: 0 };
-// src/styles/base.css: s-wave uses row 3, four frames, over 700 ms at display size 96x104.
-const frames = [idle, ...Array.from({ length: 4 }, (_, column) => ({ row: 3, column })), idle];
-// GIF delays use 10 ms units; alternate around 175 ms to retain the 700 ms wave.
-const delay = [600, 170, 180, 170, 180, 600];
+const source = resolve(root, 'design/yoru/sheets');
+const manifest = JSON.parse(await readFile(resolve(source, 'presence.json'), 'utf8'));
+const sheet = await readFile(resolve(source, manifest.sheet));
+const { width, height } = manifest.cell;
+const idle = { row: manifest.clips.idle.row, column: 0 };
+const wave = manifest.clips.wave;
+const frames = [idle, ...Array.from({ length: wave.frames }, (_, column) => ({ row: wave.row, column })), idle];
+// Round the cumulative timeline to GIF's 10 ms units, retaining the authored total duration to the nearest tick.
+let elapsed = 600;
+let previous = 600;
+const delay = [600, ...wave.durations.map((duration) => {
+  elapsed += duration;
+  const end = Math.round(elapsed / 10) * 10;
+  const durationMs = end - previous;
+  previous = end;
+  return durationMs;
+}), 600];
 const pixels = await Promise.all(frames.map(({ row, column }) => sharp(sheet)
   .extract({ left: column * width, top: row * height, width, height })
   .ensureAlpha().raw().toBuffer()));

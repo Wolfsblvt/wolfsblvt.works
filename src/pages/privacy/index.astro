@@ -64,7 +64,7 @@ const contactLogs = fx(p.contactLogRetention);
             <li>Fonts, scripts and images come from this site itself. The contact form’s bot check is the one exception.</li>
             <li>If you write to me, I use what you send to answer you, and nothing else.</li>
             <li>Your pile is shuffled a little by your browser’s name and language. Nothing about it is stored.</li>
-            <li>Nothing is stored in your browser, unless you ask Yoru to remember you. Then it stays in your browser.</li>
+            <li>No analytics or tracking, and no browser storage unless you choose “remember me” in Yoru’s nook on the main Works site. That memory stays only in this browser and is removable. Contact does not store it.</li>
           </ul>
         </div>
 
@@ -92,7 +92,8 @@ const contactLogs = fx(p.contactLogRetention);
         <p>Today’s pile is shuffled a little per browser, so not everyone sees exactly the same one. The shuffle mixes in your browser’s name, version and language, which your browser sends with every request anyway. That mix is used once, to deal the pile, and isn’t stored, logged or sent anywhere else. Anyone with the same browser and language gets the same pile. It’s just for fun.</p>
         <p><span class={cookie.cls}>{cookie.text}</span></p>
         <h3>If you ask Yoru to remember you</h3>
-        <p>Yoru sometimes asks whether he should remember you. Only if you answer “remember me” does your browser keep one small note in its local storage, under <code>yoru.acquaintance</code>: how familiar he has become with you, where he likes to rest, which places he has visited with you, and the day you were last here. It holds nothing about who you are, is never sent anywhere, and only changes how he behaves. It stays until you delete it: with the button below, or by clearing this site’s data in your browser.</p>
+        <p>Yoru asks only in his nook on the main Works home page. Only if you choose “remember me” does this browser store one small record in local storage under <code>yoru.acquaintance</code>. It contains how familiar or briefly wary Yoru is, his favourite resting place, places you have visited together, and the calendar day of the last Home visit. It contains no name, account, identifier, click path, reading history or coordinates; it is never sent anywhere. It changes only Yoru’s behaviour and the keepsakes in his nook. “Not now” leaves nothing behind.</p>
+        <p>The record stays in this browser until you choose “Forget me,” clear this site’s data, or the browser removes it. You can delete it with “Forget me” beside Yoru’s memory control in his nook, or with the button below. The Privacy, Impressum and 404 rooms may read this existing main-site memory without changing it; the separate Contact page neither reads nor stores it.</p>
         <p class="yoru-memory" data-yoru-memory hidden><span data-yoru-memory-state>Yoru remembers you on this browser.</span> <button type="button" class="btn btn-line" data-yoru-forget>Forget me</button></p>
 
         <h2 id="contact"><span class="n">04</span>When you write to me</h2>

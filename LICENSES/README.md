@@ -10,6 +10,9 @@ The website's code is licensed under [GNU AGPL-3.0-only](AGPL-3.0-only.txt): eve
 
 The design canvas's tool scripts under `design/the-walk/tools/` and the marks generator under `design/marks/source/` are code too, under the same terms; the artwork they produce is not (see below).
 
+The character-production tooling under `tools/yoru-studio/` is repository code under AGPL-3.0-only as well. Its
+generated artwork is reserved; running the tooling does not change the artwork's rights.
+
 ## Prose — CC BY 4.0
 
 Original prose is licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/legalcode): the site's copy, the Pile's entries in `src/content/pile/`, the documentation in `docs/`, `README.md`, and the written records under `design/` and `references/`. Credit **Wolfsblvt Works**, link the licence and say what you changed. Quoted third-party material keeps its own terms.
@@ -19,6 +22,11 @@ Original prose is licensed under [Creative Commons Attribution 4.0 International
 The Wolfsblvt Works marks (the WOLFSBLVT / WORKS lockups, the icon and its corners, the handwritten WORKS, the sponsor artwork and their motion), Yoru, the agent avatars, the diffdevil identity, the social cards and every other piece of artwork in this repository are reserved. That covers `brand/bundle/works/`, `design/marks/`, `design/the-walk/assets/`, `docs/assets/readme/` images, `references/avatars/`, `public/social/` and the projections the build generates from them (favicons, app icons, Yoru's spritesheets). Their appearance in AGPL code or CC BY prose grants no right to use them; the names and marks identify Wolfsblvt Works and its projects.
 
 The compact `wolfsblvt/works` and `wolfsblvt/signpost` glyphs are a separate case: they are distributed by [`@wolfsblvt/icons`](https://github.com/Wolfsblvt/wolfsblvt-icons) under MIT, and the site renders them from that package.
+
+`design/yoru/` contains reserved character artwork, animation sheets and authored animation/production specifications.
+Its explanatory prose follows the documentation licence above. Generated `public/yoru/resident/` sheets are reserved
+projections of that artwork. The images under `docs/assets/readme/` remain reserved; their source/reproduction prose
+is CC BY 4.0 and their renderer scripts are AGPL-3.0-only. Third-party notices retain their existing scope and homes.
 
 ## Third parties
 

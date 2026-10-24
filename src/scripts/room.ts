@@ -3,7 +3,7 @@
  * lives here too: on the 404 he wanders off the path when clicked and comes back round from the other side; on the
  * legal pages he is asleep on his line.
  */
-import { memory } from '../features/yoru/client/remember';
+import { forgetAcquaintance, memory } from '../features/yoru/client/remember';
 import { mountSpot } from '../features/yoru/client/spot';
 import { documentTop, isPlainClick, travelTo } from './runtime';
 
@@ -45,24 +45,45 @@ function mountYoru(): void {
   const path = document.querySelector<HTMLElement>('[data-yoru-lost-ground]');
   if (lost && path) {
     mountSpot({
-      spot: lost, ground: groundOf(path), wandersOff: true,
+      memory: 'read', spot: lost, ground: groundOf(path), wandersOff: true,
       caption: document.querySelector<HTMLElement>('[data-yoru-lost-cap]'),
       label: 'Yoru, the resident. Click him and he wanders off.',
     });
   }
   // On the privacy page: whether he remembers this visitor, and the way to make him forget.
   const remembered = document.querySelector<HTMLElement>('[data-yoru-memory]');
-  if (remembered && memory.load()) {
-    remembered.hidden = false;
-    remembered.querySelector('[data-yoru-forget]')!.addEventListener('click', (event) => {
-      memory.forget();
+  if (remembered) {
+    const renderMemory = () => {
+      remembered.hidden = !memory().load();
+      if (!remembered.hidden) {
+        remembered.querySelector('[data-yoru-memory-state]')!.textContent = 'Yoru remembers you on this browser.';
+        if (!remembered.querySelector('[data-yoru-forget]')) {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'btn btn-line';
+          button.dataset.yoruForget = '';
+          button.textContent = 'Forget me';
+          remembered.append(button);
+        }
+      }
+    };
+    renderMemory();
+    addEventListener('yoru-memory-updated', renderMemory);
+    addEventListener('yoru-forgotten', () => {
       remembered.querySelector('[data-yoru-memory-state]')!.textContent = 'Forgotten. Next time he’ll meet you fresh.';
-      (event.currentTarget as HTMLElement).remove();
+      remembered.querySelector('[data-yoru-forget]')?.remove();
+    });
+    remembered.addEventListener('click', (event) => {
+      if (!(event.target as Element).closest('[data-yoru-forget]')) return;
+      if (!forgetAcquaintance()) {
+        remembered.querySelector('[data-yoru-memory-state]')!.textContent = 'This browser wouldn’t remove the memory. You can try again.';
+        return;
+      }
     });
   }
   const nap = document.querySelector<HTMLElement>('[data-yoru-nap]');
   const line = document.querySelector<HTMLElement>('[data-yoru-nap-ground]');
-  if (nap && line) mountSpot({ spot: nap, ground: groundOf(line), asleep: true, label: 'Yoru, asleep. Poke him.' });
+  if (nap && line) mountSpot({ memory: 'read', spot: nap, ground: groundOf(line), asleep: true, label: 'Yoru, asleep. Poke him.' });
 }
 
 mountToc();

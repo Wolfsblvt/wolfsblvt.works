@@ -40,7 +40,7 @@ He has places to be, naps to take, and opinions about being poked. On the site, 
 
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="docs/assets/readme/yoru-still.png">
-  <img src="docs/assets/readme/yoru-hello.gif" alt="Yoru gives a small wave, then settles." width="96" height="104">
+  <img src="docs/assets/readme/yoru-hello.gif" alt="Yoru gives a small wave, then settles." width="160" height="120">
 </picture>
 
 [A still moment](docs/assets/readme/yoru-still.png) · [Artwork and media sources](docs/assets/readme/README.md)
@@ -53,7 +53,8 @@ contact form for every Wolfsblvt project. A successful send delivers your messag
 
 ## Private by construction
 
-No analytics or tracking, no cookies or browser storage for the site's own purposes. Fonts are self-hosted;
+No analytics or tracking, and no browser storage unless you choose “remember me” in Yoru’s nook on the main Works site.
+That memory stays only in this browser and is removable. Contact does not store it. Fonts are self-hosted;
 Cloudflare Turnstile on the contact page is the only third-party script. The [privacy page](https://wolfsblvt.works/privacy/)
 explains hosting, security checks and what happens when you write. Dark only, on purpose; reduced motion is welcome.
 

@@ -80,7 +80,9 @@ The current build is the shell, the mechanics and the first real content. The si
 - Personal and definite. Opinions stated plainly, sincerity allowed to stand.
 - Honest about what exists. A project's standing is said once; a composed scene is content, and only unreplaced
   scaffolding is labelled as such.
-- Private by construction. No analytics, no tracking, no consent banner, nothing stored in the browser. Variety in the
+- Private by construction. No analytics or tracking, and no browser storage unless you choose “remember me” in Yoru’s
+  nook on the main Works site. That memory stays only in this browser and is removable. Contact does not store it.
+  No consent banner. Variety in the
   Pile comes from the date and what a request already carries, never from following a person.
 - Dark only. The palette, the glow and the handwriting are designed on a dark canvas.
 - Readable and usable without motion or JavaScript. Every animation has a finished state, and the content is there

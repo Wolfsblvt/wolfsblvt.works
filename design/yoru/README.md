@@ -2,10 +2,10 @@
 
 ## Meaning
 
-The source for Yoru's animation: who he is, what each animation should show, and the registered sprite sheets the
-site will play. New animation is generated with the same image engine that drew him in May, then cleaned, cut and
-registered by the deterministic studio in [`tools/yoru-studio/`](../../tools/yoru-studio/studio.mjs). This folder is a
-candidate on `feat/yoru-resident-life`; the live site still plays the v1 atlas in `design/the-walk/assets/`.
+The maintained character and animation source: who Yoru is, what each animation should show, and the selected
+registered sprite sheets projected by the site build. New animation is generated with the same image engine that
+drew him in May, then cleaned, cut and registered by the deterministic studio in
+[`tools/yoru-studio/`](../../tools/yoru-studio/studio.mjs). `design/the-walk/assets/` retains the historical May material.
 
 | Path | What it is |
 | --- | --- |
@@ -116,6 +116,9 @@ npm run yoru -- pack <family>
 | `nook` | his cushion and four keepsakes (prop family) | Selected and packed |
 | `ladder-prop` | the folding ladder, open and folded (prop family) | Selected and packed |
 | `ladder` | produce, mount, climb, dismount, stow, each for a drop on his left and (`-right`) on his right | Selected and packed: the real ladder where it moves with him, green ladder and blue ledge where it hangs |
+
+The site projects nine runtime families: **45 clips / 294 frames**, including the cushion, keepsakes and ladder props.
+The `codex` desktop-only and historical `v1` families are excluded from that count and from the website build.
 
 Two more things are made from the packed sheets:
 

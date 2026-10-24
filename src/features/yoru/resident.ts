@@ -171,6 +171,7 @@ export class Resident {
     this.#clips = o.clips;
     this.#world = o.world;
     this.#clock = o.clock ?? realClock;
+    this.#since = this.#clock.now();
     this.#random = mulberry32(o.seed ?? 1);
     this.#reduced = o.reducedMotion ?? false;
     this.#trace = o.trace ?? (() => {});

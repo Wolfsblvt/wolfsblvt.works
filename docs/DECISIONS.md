@@ -162,21 +162,24 @@ text wherever the content runs edge to edge.
 
 **Date:** 2026-10-24 · **Status:** Current
 
-Yoru can remember a visitor on their browser, and only after they say so. He asks himself, as a handwritten note
-beside him with two equally easy answers ("remember me", "not today"): on the home page when he settles in his nook at
-the footer, the natural goodbye of a visit; in the smaller rooms after his first answer to a poke, or on the 404 once
-he is back round. "not today" closes it for that page. A yes stores one small record in local storage
-(`yoru.acquaintance`): familiarity, his favourite resting place, the scenes visited together, the day last seen;
-nothing about who the visitor is, nothing sent anywhere. A returning visitor finds keepsakes from those scenes beside
-his cushion, his favourite resting place, and on a new day "oh. you again." in the hero. "Forget me" on the Privacy
-page deletes the record. The copy is a draft for Wolf to confirm.
+Yoru asks only in his Home nook, as a handwritten note with equally prominent "remember me" and "not now" answers.
+"Only in this browser" appears before the choice. A successful write and readback creates one main-origin record
+(`yoru.acquaintance`): familiarity, brief wariness, favourite resting place, discovered scenes and the last Home
+encounter's calendar day. Home alone settles and updates it; Privacy, Impressum and 404 may read it without changing
+it or consuming the next Home greeting. Contact neither reads nor writes it. Nothing is sent anywhere.
+The record stays until the visitor chooses "Forget me", clears site data, or the browser removes it. The stable
+nook control and Privacy button each delete it in one action; already-open pages cannot recreate it. A failed write
+keeps remembering off and receives failure copy. A returning visitor finds keepsakes, a favourite place and, on a new
+day, "oh. you again." in the hero. "Not now" stores no rejection and dismisses the offer for that page.
 
 **Why.** Wolf asked for it opt-in only ("Build it, opt-in only"), and then for an opt-in people actually take: "We also
 should consider how we present this to the user so the chance they click is very high. Because otherwise an opt-in is
 kinda wasted, isn't it." The ask comes from Yoru, at a warm moment, with a visible payoff, which is what makes a yes
 likely without pressure. Wolf chose the nook moment, the handwritten note, and the keepsakes, favourite spot and
-welcome back as the payoff. Storage the visitor explicitly requests for this is strictly required for it (§ 25 (2) 2
-TDDDG), so it needs an accurate disclosure, not a consent banner.
+welcome back as the payoff. The selected privacy posture is explicit choice before local storage, an equally usable
+rejection, complete disclosure and easy deletion. This records product judgment, not a categorical legal certification.
+The Home-only writer keeps one honest owner for relationship growth and preserves the new-day greeting after visits
+to smaller rooms. Restricting solicitation to the selected nook avoids turning utility pages into repeated asks.
 
 **Rejected.** A quiet footer line (rarely seen), Yoru holding up a sign (charming, but a new clip for the same ask),
 asking after a playful moment (it interrupts the play), a timed ask after two minutes (tied to nothing he did), and a

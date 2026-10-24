@@ -29,9 +29,10 @@ export interface Acquaintance {
 export interface MemoryStore {
   /** The remembered acquaintance, or null when remembering is off, unavailable or the record is not usable. */
   load(): Acquaintance | null;
-  save(record: Acquaintance): void;
+  /** True only when the same valid record can be read back after writing. */
+  save(record: Acquaintance): boolean;
   /** Turn remembering off: the record is gone. */
-  forget(): void;
+  forget(): boolean;
 }
 
 export function newAcquaintance(today: string): Acquaintance {
@@ -48,6 +49,8 @@ export function parseAcquaintance(raw: string | null): Acquaintance | null {
     if (r.favouritePlace !== null && typeof r.favouritePlace !== 'string') return null;
     if (!Array.isArray(r.discovered) || !r.discovered.every((d) => typeof d === 'string')) return null;
     if (typeof r.lastSeen !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(r.lastSeen)) return null;
+    const day = new Date(`${r.lastSeen}T00:00:00Z`);
+    if (!Number.isFinite(day.getTime()) || day.toISOString().slice(0, 10) !== r.lastSeen) return null;
     return {
       version: VERSION,
       familiarity: r.familiarity,
@@ -71,10 +74,16 @@ export function browserMemory(storage: Pick<Storage, 'getItem' | 'setItem' | 're
       try { return parseAcquaintance(storage?.getItem(MEMORY_KEY) ?? null); } catch { return null; }
     },
     save(record) {
-      try { storage?.setItem(MEMORY_KEY, JSON.stringify(record)); } catch { /* full or blocked: he simply forgets */ }
+      if (!storage) return false;
+      const raw = JSON.stringify(record);
+      try {
+        storage.setItem(MEMORY_KEY, raw);
+        return storage.getItem(MEMORY_KEY) === raw && parseAcquaintance(raw) !== null;
+      } catch { return false; }
     },
     forget() {
-      try { storage?.removeItem(MEMORY_KEY); } catch { /* nothing stored that we can reach */ }
+      if (!storage) return false;
+      try { storage.removeItem(MEMORY_KEY); return storage.getItem(MEMORY_KEY) === null; } catch { return false; }
     },
   };
 }
@@ -85,17 +94,21 @@ function daysBetween(from: string, to: string): number {
 }
 
 /**
- * What a returning visitor meets: familiarity kept (it fades only very slowly over months), wariness settled by the
+ * What a returning visitor meets: familiarity kept, wariness settled by the
  * days away. No absence debt, no sulking.
  */
-export function welcomeBack(record: Acquaintance, today: string): Acquaintance {
+export function settleAcquaintance(record: Acquaintance, today: string): Acquaintance {
   const days = daysBetween(record.lastSeen, today);
   return {
     ...record,
-    familiarity: Math.max(0, record.familiarity - Math.max(0, days - 30) * 0.002),
+    familiarity: record.familiarity,
     wariness: days >= 1 ? 0 : record.wariness * 0.5,
-    lastSeen: today,
   };
+}
+
+/** Home alone records the new encounter day; a room's settled projection preserves the stored history. */
+export function welcomeBack(record: Acquaintance, today: string): Acquaintance {
+  return { ...settleAcquaintance(record, today), lastSeen: today };
 }
 
 /** Calm time together makes him more familiar; a minute of it is worth a little, an hour a lot, never more than 1. */

@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import site from '../site.config.mjs';
 import { loadLegalOperator } from '../src/lib/legal-operator.mjs';
 import { validateBrandBundle } from '../tools/brand-bundle/scripts/validate-brand-bundle.mjs';
+import { YORU_SITE_FAMILIES } from './yoru-families.mjs';
 
 const out = fileURLToPath(new URL('../artifacts/site/', import.meta.url));
 const failures = [];
@@ -144,8 +145,18 @@ if (/<link[^>]+rel="(stylesheet|preload)"/i.test(unavailable) || /@font-face|\/_
 }
 if (/(href|src)="\/(?!\/)/.test(unavailable)) fail('503.html uses a site-relative link; links there must be absolute.');
 
-for (const asset of ['favicon.svg', 'favicon-192.png', 'apple-touch-icon.png', 'yoru/resident/presence-1x.webp', 'yoru/resident/sleep-2x.webp']) {
+const yoruFiles = YORU_SITE_FAMILIES.flatMap(family => [`${family}-1x.webp`, `${family}-2x.webp`]);
+for (const asset of ['favicon.svg', 'favicon-192.png', 'apple-touch-icon.png', ...yoruFiles.map(file => `yoru/resident/${file}`)]) {
   if (!existsSync(join(out, asset))) fail(`${asset} is missing.`);
+}
+for (const file of ['sheet-1x.webp', 'sheet-2x.webp']) {
+  if (existsSync(join(out, 'yoru', file))) fail(`Legacy Yoru output yoru/${file} must be retired.`);
+}
+const residentOutput = join(out, 'yoru', 'resident');
+if (existsSync(residentOutput)) {
+  for (const file of readdirSync(residentOutput)) {
+    if (!yoruFiles.includes(file)) fail(`Unknown Yoru output yoru/resident/${file}.`);
+  }
 }
 
 const headers = existsSync(join(out, '_headers')) ? read('_headers') : '';

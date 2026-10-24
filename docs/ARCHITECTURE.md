@@ -122,9 +122,17 @@ and the home a visitor arriving from that product can return to.
 
 Nothing is persisted on the server. There is no database, no message store and no cookie set by this site. The one thing
 ever written to browser storage is Yoru's remembered acquaintance (`yoru.acquaintance`, `src/features/yoru/memory.ts`),
-and only after the visitor answers "remember me" when he asks (`client/remember.ts`): a small record of how familiar
-he is with them, where he likes to rest, the scenes he visited with them and the day they were last here. It never
-leaves the browser, and "Forget me" on the Privacy page deletes it. A contact message exists only as two emails. The contact service's log event and Cloudflare's own request logs
+and only after the visitor answers "remember me" in the Home nook (`client/remember.ts`): familiarity, brief wariness,
+favourite resting place, discovered scenes and the last Home visit's calendar day. Home owns all writes and the
+new-day greeting. The 404, Privacy and Impressum hosts use read-only memory; Contact uses explicit no-memory mode and
+never accesses its separate origin's storage. Successful writes are read back before remembered behaviour starts.
+It never leaves the browser and has no automatic expiry. One-action "Forget me" controls in the nook and Privacy
+delete it; same-page and cross-tab deletion clears remembered behaviour, and pagehide cannot recreate the record.
+Valid cross-tab records update the current resident and keepsakes without writing back or replaying the greeting.
+Read-only rooms derive settled wariness while preserving the stored encounter day. On phones the nook note uses its
+own footer flow space; on wider screens it sits beside him. A Coast visit from the wide margin uses the same offscreen
+travel as section bands, because a hop cannot reach the safe interior of the window.
+A contact message exists only as two emails. The contact service's log event and Cloudflare's own request logs
 are the only records; [Logging](LOGGING.md) describes them.
 
 Build-time data comes from the repository: `site.config.mjs` (identity, links, legal facts), the Pile collection in

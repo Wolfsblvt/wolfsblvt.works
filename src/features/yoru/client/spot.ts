@@ -5,9 +5,8 @@
  * he runs off with a sent message and comes back for the next one.
  *
  * The page's still frame (YoruStill) keeps his space and is what visitors without JavaScript see; once he is mounted
- * it is hidden and he is drawn in a clipped, click-through layer over the page. After his first answer to a poke (or,
- * on the 404, once he is back round) he asks whether to remember the visitor; nothing is stored unless they say yes
- * (remember.ts).
+ * it is hidden and he is drawn in a clipped, click-through layer over the page. Utility rooms may read an existing
+ * acquaintance without changing it; Contact has no memory. Only the Home nook offers remembering.
  */
 import { YORU_FAMILIES } from '../../../generated/yoru-families';
 import { reducedMotion } from '../../../scripts/runtime';
@@ -15,11 +14,14 @@ import { ClipLibrary } from '../clips';
 import { SpritePlayer } from '../player';
 import { Resident } from '../resident';
 import type { Link, Surface, World } from '../world';
-import { keepWhileVisiting, offerToRemember, recall } from './remember';
+import { settleAcquaintance } from '../memory';
+import { memory, observeAcquaintance, today } from './remember';
 
 const SHEETS = '/yoru/resident';
 
 export interface SpotOptions {
+  /** Same-origin utility rooms read an existing record; the separate Contact origin never accesses it. */
+  memory: 'read' | 'none';
   /** The element holding his still frame. */
   spot: HTMLElement;
   /** The line he stands on, in page coordinates. */
@@ -79,19 +81,19 @@ export function mountSpot(o: SpotOptions): Spot {
   };
 
   let gone = false;
+  const stored = o.memory === 'read' ? memory().load() : null;
   const resident = new Resident({
     player: new SpritePlayer(yoru),
     clips,
     world,
     start: { place: 'spot', at: 0.5, asleep: o.asleep ?? false },
-    acquaintance: recall().record,
+    acquaintance: stored ? settleAcquaintance(stored, today()) : null,
     seed: (Date.now() / 86400000) | 0,
     reducedMotion: reducedMotion(),
     onPlace: (id) => {
       // Gone round the screen: back to his spot, and the note with him.
       if (id === 'round') resident.invite('spot');
       if (id === 'spot' && o.caption) o.caption.hidden = false;
-      if (id === 'spot' && o.wandersOff) offer();
       if (id === 'away') { gone = true; resident.stop(); yoru.hidden = true; }
     },
   });
@@ -103,15 +105,8 @@ export function mountSpot(o: SpotOptions): Spot {
       return;
     }
     resident.poke();
-    // He answers the poke first; then he asks.
-    setTimeout(offer, 2600);
   });
-  // The note sits above his spot, its corner just left of him.
-  const offer = () => offerToRemember({
-    layer: stage, resident,
-    place: ({ width, height }) => { const g = o.ground(); return { left: (g.left + g.right) / 2 - 30 - width, top: g.y - 96 - height }; },
-  });
-  keepWhileVisiting(resident);
+  if (o.memory === 'read') observeAcquaintance(resident, undefined, 'read');
 
   o.spot.querySelector<HTMLElement>('[data-yoru-still]')?.style.setProperty('visibility', 'hidden');
   resident.start();

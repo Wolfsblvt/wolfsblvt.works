@@ -62,7 +62,8 @@ on it.
 - **No tracking, no device access.** No analytics, no third-party scripts beyond Turnstile on the contact page, nothing
   in cookies or browser storage, with one exception the visitor chooses: Yoru's remembered acquaintance
   (`yoru.acquaintance` in local storage), written only after they answer "remember me", never sent anywhere, and
-  deleted by "Forget me" on the Privacy page. The Pile's variety comes from the date and request headers on the server
+  written only by Home and deleted by "Forget me" in the Home nook or on Privacy. The 404, Privacy and Impressum may
+  only read it; Contact neither reads nor writes it. The Pile's variety comes from the date and request headers on the server
   only.
 - **Icons.** Every icon comes from `@wolfsblvt/icons`. Add missing glyphs to the wolfsblvt-icons repository; never add a
   local SVG icon here.

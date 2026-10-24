@@ -102,10 +102,11 @@ a:hover { color: var(--cyan); }
    two equally easy answers. The layer lets clicks through; the note takes its own. */
 .yoru-note { position: absolute; pointer-events: auto; max-width: 260px; text-align: right; opacity: 0; transform: translateY(6px); transition: opacity .4s ease, transform .4s ease; }
 .yoru-note.shown { opacity: 1; transform: none; }
+.yoru-note.in-flow { position: relative; margin: 24px 0 0 auto; }
 .yoru-note-text { margin: 0 0 10px; font: 500 17px/1.25 var(--hand); color: var(--rose); transform: rotate(-3deg); transform-origin: 100% 50%; }
 .yoru-note-acts { display: flex; gap: 8px; justify-content: flex-end; }
+.yoru-note-details { font: 400 13px var(--sans); color: var(--text-soft); }
 .yoru-note-acts button { appearance: none; min-height: 34px; padding: 0 14px; border-radius: 999px; border: 1px solid rgb(239 142 161 / 55%); background: transparent; color: var(--text); font: 500 14px var(--sans); cursor: pointer; }
-.yoru-note-acts button[data-yes] { background: rgb(239 142 161 / 16%); }
 .yoru-note-acts button:hover { border-color: var(--rose); }
 .yoru-note-acts button:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
 

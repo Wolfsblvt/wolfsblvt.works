@@ -55,7 +55,7 @@ Yoru lives in the site. He keeps you company along the Walk, has places to perch
 He is part of the place's character; the content remains usable without motion or JavaScript. The site is dark only,
 with its glow and handwriting designed for that canvas.
 
-The README greeting uses his accepted v1 animation artwork and a static reduced-motion alternative.
+The README greeting uses the maintained [Yoru artwork](../design/yoru/README.md) and a static reduced-motion alternative.
 [README media](assets/readme/README.md) records the source and reproduction procedure. Yoru's artwork remains
 [reserved](../LICENSES/README.md#reserved-the-marks-yoru-and-other-artwork).
 
@@ -76,7 +76,11 @@ The [privacy page](https://wolfsblvt.works/privacy/#contact) explains processing
 
 ## Privacy while visiting
 
-The site has no analytics or tracking and sets no cookies or browser storage for its own purposes. Fonts are
+No analytics or tracking, and no browser storage unless you choose “remember me” in Yoru’s nook on the main Works site.
+That memory stays only in this browser and is removable. Contact does not store it. The main-site record holds
+familiarity, brief wariness, his favourite resting place, scenes visited together and the calendar day of the last Home
+visit. Only Home updates it; Privacy, Impressum and 404 may read it. Choose “Forget me” in his nook or on Privacy to
+remove it; otherwise it stays until you clear site data or the browser removes it. Fonts are
 self-hosted. The contact form's Cloudflare Turnstile check is the only third-party script; hosting and security
 services still handle the requests needed to deliver and protect the site. The
 [privacy page](https://wolfsblvt.works/privacy/) explains those services and their current handling.

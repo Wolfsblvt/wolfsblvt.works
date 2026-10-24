@@ -48,7 +48,7 @@ function virtualClock(): Clock & { advance(ms: number): void } {
 /** Enough of an element for the player: it only writes styles and data attributes. */
 const fakeElement = () => ({ style: {} as Record<string, string>, dataset: {} as Record<string, string> }) as unknown as SpriteElement;
 
-function setup(seed = 7, surfaces: Record<string, Surface | null> = {}, acquaintance: Acquaintance | null = null) {
+function setup(seed = 7, surfaces: Record<string, Surface | null> = {}, acquaintance: Acquaintance | null = null, elapsed = 0) {
   const geometry: Record<string, Surface | null> = {
     floor: { left: 100, right: 700, y: 400 },
     nook: { left: 700, right: 900, y: 400 },
@@ -65,6 +65,7 @@ function setup(seed = 7, surfaces: Record<string, Surface | null> = {}, acquaint
     ],
   };
   const clock = virtualClock();
+  clock.advance(elapsed);
   const element = fakeElement();
   const player = new SpritePlayer(element, clock);
   const trace: string[] = [];
@@ -82,6 +83,14 @@ async function live(resident: Resident, clock: Clock, ms: number): Promise<void>
 
 // Virtual time still yields a macrotask per frame; these lives take a few seconds of real time.
 describe('the resident', { timeout: 20000 }, () => {
+  it('counts only actual session minutes for a returning acquaintance on a non-zero clock', () => {
+    const known = { ...newAcquaintance('2026-10-24'), familiarity: 0.4 };
+    const { resident, clock } = setup(7, {}, known, 86_400_000);
+    expect(resident.remember()?.familiarity).toBe(0.4);
+    clock.advance(60_000);
+    expect(resident.remember()?.familiarity).toBeCloseTo(0.406);
+  });
+
   it('chooses the same life from the same seed, and a different one from another', async () => {
     const a = setup(3), b = setup(3), c = setup(4);
     await Promise.all([live(a.resident, a.clock, 30000), live(b.resident, b.clock, 30000), live(c.resident, c.clock, 30000)]);

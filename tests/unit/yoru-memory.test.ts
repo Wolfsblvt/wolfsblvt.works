@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { browserMemory, MEMORY_KEY, newAcquaintance, parseAcquaintance, spendTime, welcomeBack } from '../../src/features/yoru/memory';
+import { browserMemory, MEMORY_KEY, newAcquaintance, parseAcquaintance, settleAcquaintance, spendTime, welcomeBack } from '../../src/features/yoru/memory';
 
 /** A Storage stand-in; `fail` makes every call throw, as a blocked or full store does. */
 function store(fail = false) {
@@ -19,9 +19,9 @@ describe('remembered acquaintance', () => {
     const memory = browserMemory(s);
     expect(memory.load()).toBeNull();
     expect(s.data.size).toBe(0);
-    memory.save(newAcquaintance('2026-10-24'));
+    expect(memory.save(newAcquaintance('2026-10-24'))).toBe(true);
     expect(memory.load()?.familiarity).toBe(0);
-    memory.forget();
+    expect(memory.forget()).toBe(true);
     expect(s.data.size).toBe(0);
     expect(memory.load()).toBeNull();
   });
@@ -37,6 +37,10 @@ describe('remembered acquaintance', () => {
     expect(parseAcquaintance(JSON.stringify({ ...newAcquaintance('2026-10-24'), version: 2 }))).toBeNull();
     expect(parseAcquaintance(JSON.stringify({ ...newAcquaintance('2026-10-24'), familiarity: 7 }))).toBeNull();
     expect(parseAcquaintance(JSON.stringify({ ...newAcquaintance('2026-10-24'), lastSeen: 1729700000000 }))).toBeNull();
+    for (const day of ['2026-99-99', '2026-02-30', '2025-02-29']) {
+      expect(parseAcquaintance(JSON.stringify(newAcquaintance(day)))).toBeNull();
+    }
+    expect(parseAcquaintance(JSON.stringify(newAcquaintance('2024-02-29')))).not.toBeNull();
     const s = store();
     s.data.set(MEMORY_KEY, '{"version":1');
     expect(browserMemory(s).load()).toBeNull();
@@ -45,9 +49,28 @@ describe('remembered acquaintance', () => {
   it('treats blocked storage as no memory, never as a broken page', () => {
     const memory = browserMemory(store(true));
     expect(memory.load()).toBeNull();
-    expect(() => memory.save(newAcquaintance('2026-10-24'))).not.toThrow();
-    expect(() => memory.forget()).not.toThrow();
+    expect(memory.save(newAcquaintance('2026-10-24'))).toBe(false);
+    expect(memory.forget()).toBe(false);
     expect(browserMemory(null).load()).toBeNull();
+    expect(browserMemory(null).save(newAcquaintance('2026-10-24'))).toBe(false);
+  });
+
+  it('does not report a successful write when storage silently discards or changes the record', () => {
+    const discarded = { getItem: () => null, setItem: () => {}, removeItem: () => {} };
+    expect(browserMemory(discarded).save(newAcquaintance('2026-10-24'))).toBe(false);
+    const changed = { ...discarded, getItem: () => JSON.stringify({ ...newAcquaintance('2026-10-24'), familiarity: 0.5 }) };
+    expect(browserMemory(changed).save(newAcquaintance('2026-10-24'))).toBe(false);
+  });
+
+  it('reports failure when removal is blocked or silently ignored, preserving the record', () => {
+    for (const throws of [true, false]) {
+      const s = store();
+      const record = newAcquaintance('2026-10-24');
+      const memory = browserMemory({ ...s, removeItem() { if (throws) throw new DOMException('blocked', 'SecurityError'); } });
+      expect(memory.save(record)).toBe(true);
+      expect(memory.forget()).toBe(false);
+      expect(memory.load()).toEqual(record);
+    }
   });
 
   it('charges nothing for time away: familiarity stays, wariness settles', () => {
@@ -56,6 +79,14 @@ describe('remembered acquaintance', () => {
     expect(after.familiarity).toBe(0.7);
     expect(after.wariness).toBe(0);
     expect(after.lastSeen).toBe('2026-10-24');
+    const yearsLater = welcomeBack(before, '2036-10-24');
+    expect(yearsLater.familiarity).toBe(before.familiarity);
+    expect(yearsLater.wariness).toBe(0);
+    const room = settleAcquaintance(before, '2036-10-24');
+    expect(room.familiarity).toBe(before.familiarity);
+    expect(room.wariness).toBe(0);
+    expect(room.lastSeen).toBe(before.lastSeen);
+    expect(before.wariness).toBe(0.8);
   });
 
   it('grows familiar with calm time together, not with poking', () => {

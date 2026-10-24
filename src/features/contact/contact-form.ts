@@ -56,6 +56,7 @@ function setupContactForm(form: HTMLFormElement): void {
   const card = document.querySelector<HTMLElement>('.ct-card');
   // He sits on the card's top edge, along the stretch his still frame takes up.
   const yoru = yoruSpot && card ? mountSpot({
+    memory: 'none',
     spot: yoruSpot,
     ground: () => {
       const spot = yoruSpot.getBoundingClientRect();

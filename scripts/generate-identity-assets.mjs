@@ -7,10 +7,11 @@
 //   src/generated/yoru-doze.ts    one sleeping frame as a data URI, for the self-contained 503
 //   public/yoru/resident/<family>-1x.webp, -2x.webp   the resident's animation families
 //   src/generated/yoru-families.ts                    their manifests
-import { cpSync, rmSync, copyFileSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { cpSync, rmSync, copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
+import { YORU_SITE_FAMILIES } from './yoru-families.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const marks = join(root, 'brand', 'bundle', 'works');
@@ -34,10 +35,16 @@ copyFileSync(join(marks, 'assets/icon-application/universal-192x192.png'), join(
 // The resident's animation families, packed by the sprite studio (design/yoru/sheets/, lossless at twice display
 // size), as lossy 1x/2x sheets the browser loads per family, and their manifests as one module the engine imports.
 // A sheet is only re-encoded when its master changed: these are large and the dev server runs this on every start.
-const RESIDENT_FAMILIES = ['presence', 'everyday', 'sleep', 'curious', 'reactions', 'guest', 'nook', 'ladder', 'ladder-prop'];
+const RESIDENT_FAMILIES = YORU_SITE_FAMILIES;
 const sheets = join(root, 'design', 'yoru', 'sheets');
 const residentOut = join(pub, 'yoru', 'resident');
 mkdirSync(residentOut, { recursive: true });
+// Switching from an older checkout must retire its generated art, while preserving expected files' encode cache.
+for (const legacy of ['sheet-1x.webp', 'sheet-2x.webp']) rmSync(join(pub, 'yoru', legacy), { force: true });
+const expected = new Set(RESIDENT_FAMILIES.flatMap(family => [`${family}-1x.webp`, `${family}-2x.webp`]));
+for (const file of readdirSync(residentOut)) {
+  if (!expected.has(file)) rmSync(join(residentOut, file));
+}
 const manifests = {};
 for (const family of RESIDENT_FAMILIES) {
   const master = join(sheets, `${family}.webp`);

@@ -21,7 +21,8 @@ import { reducedMotion } from '../../../scripts/runtime';
 import { ClipLibrary } from '../clips';
 import { SpritePlayer } from '../player';
 import { Resident } from '../resident';
-import { keepWhileVisiting, offerToRemember, recall } from './remember';
+import { keepWhileVisiting, observeAcquaintance, offerToRemember, recall } from './remember';
+import type { Acquaintance } from '../memory';
 import type { Link, Place, Surface, World } from '../world';
 
 const SHEETS = '/yoru/resident';
@@ -196,8 +197,9 @@ export function mountResident(): void {
       layer: () => { const r = docRect(coast); return { element: coastLayer, origin: { x: r.left, y: r.top } }; },
     });
     links.push(
-      { from: 'lane', to: 'coast', way: 'hop', at: 'left', leave: 0, arrive: 0.85 },
-      { from: 'coast', to: 'lane', way: 'hop', at: 'right', arrive: 0.3 },
+      // The wide margin is beyond an honest hop into the safe part of the window. Use the same authored travel as bands.
+      offscreen('lane', 'coast', 0.85),
+      offscreen('coast', 'lane', 0.3),
     );
     // Without a margin he comes into the window from its side, from the band of the stretch it sits in.
     const top = docRect(coast).top;
@@ -210,16 +212,17 @@ export function mountResident(): void {
   // ---------- his nook ----------
   const { record, returning } = recall();
   // The cushion, and beside it a keepsake from each scene he has visited with a visitor who asked to be remembered.
-  const nookProps = [{ clip: 'nook/cushion', frame: 0, dx: 0 }, ...(record?.discovered ?? [])
+  const keepsakes = (memory: Acquaintance | null) => (memory?.discovered ?? [])
     .filter((id) => id in KEEPSAKES && clips.has('nook/keepsakes'))
-    .map((id, i) => ({ clip: 'nook/keepsakes', frame: KEEPSAKES[id]!, dx: 80 + i * 26 }))];
-  const props = nookProps.map((p) => {
+    .map((id, i) => ({ clip: 'nook/keepsakes', frame: KEEPSAKES[id]!, dx: 80 + i * 26 }));
+  const makeProp = (p: { clip: string; frame: number; dx: number }) => {
     const el = document.createElement('div');
     el.className = 'yoru-prop';
     stage.append(el);
     el.style.pointerEvents = 'none';
-    return { ...p, player: new SpritePlayer(el) };
-  });
+    return { ...p, el, player: new SpritePlayer(el) };
+  };
+  const props = [{ clip: 'nook/cushion', frame: 0, dx: 0 }, ...keepsakes(record)].map(makeProp);
   const placeCushion = () => {
     const c = nookCentre();
     for (const p of props) { p.player.hold(clips.get(p.clip), p.frame); p.player.moveTo(c.x + p.dx, c.y + 4); }
@@ -227,6 +230,7 @@ export function mountResident(): void {
   placeCushion();
   // Someone he knows, back on another day: the hero's introduction becomes a greeting.
   const greeting = caption?.querySelector('span');
+  const introduction = greeting?.textContent ?? '';
   if (returning && greeting) greeting.textContent = 'oh. you again.';
 
   /**
@@ -257,7 +261,7 @@ export function mountResident(): void {
     acquaintance: record,
     onPlace: (id) => {
       // Settled in his nook at the end of the page: the moment he asks whether to remember the visitor.
-      if (id === 'nook') offerToRemember({ layer: stage, resident, place: noteBesideNook });
+      if (id === 'nook') offerToRemember({ layer: stage, inline: footer.querySelector<HTMLElement>('.foot-frame')!, resident, place: noteBesideNook });
       if (id !== 'perch' && caption && !caption.hidden) {
         caption.classList.add('wiping');
         setTimeout(() => { caption.hidden = true; }, 700);
@@ -268,6 +272,12 @@ export function mountResident(): void {
     },
   });
   yoru.addEventListener('click', () => resident.poke());
+  observeAcquaintance(resident, (current) => {
+    for (const prop of props.splice(1)) prop.el.remove();
+    props.push(...keepsakes(current).map(makeProp));
+    placeCushion();
+    if (!current && greeting) greeting.textContent = introduction;
+  });
   keepWhileVisiting(resident);
   // The resident draws him from now on; the hero's own still frame was only for pages without JavaScript.
   heroSpot?.setAttribute('hidden', '');

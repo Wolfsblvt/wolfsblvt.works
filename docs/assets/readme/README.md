@@ -2,10 +2,10 @@
 
 ## Meaning
 
-The source and reproduction record for the root README's committed entrance assets. They show the accepted site and
-its v1 Yoru resident, using the artwork on `main` at
-[`aca9d0a7c7ea0e034217ca8d339fd8942f3d2849`](https://github.com/Wolfsblvt/wolfsblvt.works/tree/aca9d0a7c7ea0e034217ca8d339fd8942f3d2849).
-The active resident redesign is not an input. Reusable Works identity exports remain in the
+The source and reproduction record for the root README's committed entrance assets. They show the joined Home and
+the maintained [Yoru 2.0 artwork](../../../design/yoru/README.md) on this source tree. The presence sheet and manifest
+originate in Tala's `d3f1f2acc011d03ef8b967585aa742dd063b4780` contribution and are used without artwork changes.
+Reusable Works identity exports remain in the
 [brand catalogue](../../../assets/README.md). A local capture establishes presentation, not public availability.
 
 ## Committed media
@@ -13,12 +13,12 @@ The active resident redesign is not an input. Reusable Works identity exports re
 | File | Source and treatment |
 | --- | --- |
 | `walk-hero.webp` | Local build of the accepted Home; 1440 × 900 viewport, reduced motion, fonts loaded, top 1440 × 640 captured and encoded at WebP quality 86. No page elements or copy are replaced. |
-| `yoru-hello.gif` | `design/the-walk/assets/yoru-spritesheet.webp`: idle at row 0, column 0; four wave frames at row 3, columns 0–3; idle again. These are the positions used by `src/styles/base.css`. One play, then still. |
-| `yoru-still.png` | The same first idle frame, with its transparency and original 192 × 208 canvas preserved. The README selects it for reduced motion and links it directly. |
+| `yoru-hello.gif` | `design/yoru/sheets/presence.webp` and `presence.json`: first idle frame; the six wave frames and their authored durations; idle again. One play, then still. |
+| `yoru-still.png` | The same first idle frame, with its transparency and original 320 × 240 canvas preserved. The README selects it for reduced motion and links it directly. |
 
-Yoru displays at the site's native 96 × 104 size. The greeting lasts 1.9 seconds: 600 ms idle, the site's 700 ms wave,
-then 600 ms idle. GIF's 10 ms resolution uses 170/180/170/180 ms for the four wave frames. No artwork is redrawn,
-mirrored or taken from an unaccepted branch.
+Yoru displays at the sheet's native half-scale, 160 × 120. The greeting lasts 2.8 seconds: 600 ms idle, the authored
+1600 ms wave, then 600 ms idle. GIF's 10 ms resolution rounds the cumulative timeline, preserving the total duration.
+No artwork is redrawn or mirrored. The historical May sheet is not a runtime or README input.
 
 ## Reproduce Yoru
 

@@ -87,6 +87,37 @@ test('sent: the Works words, the reference, and Yoru runs off with it', async ({
   await expect(page.locator('#subject')).toHaveValue('');
 });
 
+test('Contact on its own origin never opens acquaintance storage, including poking and a sent message', async ({ page }) => {
+  // Serve the local Worker through Contact's real origin in the isolated browser; no public host is contacted.
+  await page.route('https://contact.wolfsblvt.works/**', async route => {
+    if (route.request().method() === 'POST') {
+      await route.fulfill({ json: { ok: true, outcome: 'sent', reference: 'WW-20261024-ABCDE' } });
+      return;
+    }
+    const url = new URL(route.request().url());
+    const path = url.pathname === '/' ? '/contact/' : url.pathname;
+    const response = await route.fetch({ url: `http://127.0.0.1:8788${path}${url.search}` });
+    await route.fulfill({ response });
+  });
+  await page.addInitScript(() => {
+    const original = Object.getOwnPropertyDescriptor(window, 'localStorage')!;
+    let accesses = 0;
+    Object.defineProperty(window, 'localStorage', { configurable: true, get() { accesses++; return original.get!.call(window); } });
+    Object.defineProperty(window, 'storageAccesses', { get: () => accesses });
+  });
+  await page.goto('https://contact.wolfsblvt.works/');
+  await expect(page.locator('[data-submit]')).toBeEnabled();
+  await page.locator('.yoru-resident').click();
+  await page.waitForTimeout(2800);
+  await expect(page.locator('.yoru-note')).toHaveCount(0);
+  await fill(page);
+  await page.locator('[data-submit]').click();
+  await expect(page.locator('[data-outcome]')).toContainText('Thanks.');
+  await expect(page.locator('.yoru-resident')).toBeHidden({ timeout: 15000 });
+  expect(await page.evaluate(() => Reflect.get(window, 'storageAccesses'))).toBe(0);
+  expect(await page.evaluate(() => localStorage.getItem('yoru.acquaintance'))).toBeNull();
+});
+
 test('sent, copy failed: says exactly that', async ({ page }) => {
   await page.goto('/contact/');
   await answer(page, { ok: true, outcome: 'sent-copy-failed', reference: 'WW-20261014-FGHJK', message: 'Your message reached the inbox, but the copy to ada@example.org could not be emailed. Keep the reference WW-20261014-FGHJK for your records.', retryable: false });
