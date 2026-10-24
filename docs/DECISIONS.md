@@ -172,6 +172,11 @@ nook control and Privacy button each delete it in one action; already-open pages
 keeps remembering off and receives failure copy. A returning visitor finds keepsakes, a favourite place and, on a new
 day, "oh. you again." in the hero. "Not now" stores no rejection and dismisses the offer for that page.
 
+**Final copy choice, 2026-10-24.** Wolf selected [option A](https://github.com/Wolfsblvt/emergency-meeting/issues/924#issuecomment-6388090640):
+"A. We can update that, yes. Makes sense." The selected note reads "want me to remember you?", "only in this browser."
+and "next time I’ll know you.", with the "what gets kept?" Privacy link and equal "remember me" / "not now" choices.
+This confirms the wording carried by the accepted publication source; it supersedes the earlier draft's "not today".
+
 **Why.** Wolf asked for it opt-in only ("Build it, opt-in only"), and then for an opt-in people actually take: "We also
 should consider how we present this to the user so the chance they click is very high. Because otherwise an opt-in is
 kinda wasted, isn't it." The ask comes from Yoru, at a warm moment, with a visible payoff, which is what makes a yes
