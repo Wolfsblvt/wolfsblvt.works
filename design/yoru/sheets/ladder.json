@@ -335,6 +335,330 @@
         0,
         0
       ]
+    },
+    "produce-right": {
+      "row": 5,
+      "frames": 8,
+      "durations": [
+        400,
+        260,
+        260,
+        300,
+        240,
+        240,
+        300,
+        400
+      ],
+      "loop": false,
+      "feet": [
+        0,
+        0,
+        0,
+        0,
+        22,
+        75,
+        84,
+        82
+      ]
+    },
+    "mount-right": {
+      "row": 6,
+      "frames": 6,
+      "durations": [
+        289,
+        244,
+        244,
+        267,
+        244,
+        289
+      ],
+      "loop": false,
+      "feet": [
+        1,
+        1,
+        28,
+        51,
+        110,
+        149
+      ],
+      "prop": "ladder",
+      "props": [
+        {
+          "left": 195,
+          "top": 393,
+          "right": 237,
+          "bottom": 602,
+          "cx": 221,
+          "cy": 493
+        },
+        {
+          "left": 197,
+          "top": 393,
+          "right": 240,
+          "bottom": 603,
+          "cx": 223,
+          "cy": 493
+        },
+        {
+          "left": 202,
+          "top": 393,
+          "right": 246,
+          "bottom": 602,
+          "cx": 228,
+          "cy": 491
+        },
+        {
+          "left": 179,
+          "top": 393,
+          "right": 271,
+          "bottom": 601,
+          "cx": 252,
+          "cy": 490
+        },
+        {
+          "left": 160,
+          "top": 393,
+          "right": 250,
+          "bottom": 602,
+          "cx": 231,
+          "cy": 499
+        },
+        {
+          "left": 199,
+          "top": 394,
+          "right": 241,
+          "bottom": 602,
+          "cx": 226,
+          "cy": 524
+        }
+      ],
+      "scenery": [
+        {
+          "left": 87,
+          "top": 400,
+          "right": 205,
+          "bottom": 616,
+          "cx": 145,
+          "cy": 507
+        },
+        {
+          "left": 88,
+          "top": 400,
+          "right": 208,
+          "bottom": 616,
+          "cx": 148,
+          "cy": 508
+        },
+        {
+          "left": 97,
+          "top": 400,
+          "right": 213,
+          "bottom": 616,
+          "cx": 154,
+          "cy": 510
+        },
+        {
+          "left": 122,
+          "top": 399,
+          "right": 301,
+          "bottom": 615,
+          "cx": 180,
+          "cy": 519
+        },
+        {
+          "left": 101,
+          "top": 400,
+          "right": 217,
+          "bottom": 616,
+          "cx": 150,
+          "cy": 525
+        },
+        {
+          "left": 87,
+          "top": 400,
+          "right": 165,
+          "bottom": 616,
+          "cx": 123,
+          "cy": 509
+        }
+      ]
+    },
+    "climb-right": {
+      "row": 7,
+      "frames": 4,
+      "durations": [
+        225,
+        225,
+        225,
+        225
+      ],
+      "loop": true,
+      "feet": [
+        -5,
+        -5,
+        -3,
+        0
+      ],
+      "prop": "ladder",
+      "props": [
+        {
+          "left": 149,
+          "top": 195,
+          "right": 226,
+          "bottom": 438,
+          "cx": 192,
+          "cy": 333
+        },
+        {
+          "left": 147,
+          "top": 195,
+          "right": 223,
+          "bottom": 437,
+          "cx": 187,
+          "cy": 327
+        },
+        {
+          "left": 143,
+          "top": 194,
+          "right": 218,
+          "bottom": 437,
+          "cx": 181,
+          "cy": 318
+        },
+        {
+          "left": 139,
+          "top": 195,
+          "right": 215,
+          "bottom": 438,
+          "cx": 174,
+          "cy": 317
+        }
+      ]
+    },
+    "dismount-right": {
+      "row": 8,
+      "frames": 5,
+      "durations": [
+        220,
+        220,
+        200,
+        240,
+        360
+      ],
+      "loop": false,
+      "feet": [
+        -25,
+        6,
+        8,
+        7,
+        9
+      ],
+      "prop": "ladder",
+      "props": [
+        {
+          "left": 191,
+          "top": 170,
+          "right": 258,
+          "bottom": 402,
+          "cx": 231,
+          "cy": 294
+        },
+        {
+          "left": 185,
+          "top": 174,
+          "right": 249,
+          "bottom": 403,
+          "cx": 223,
+          "cy": 291
+        },
+        {
+          "left": 186,
+          "top": 172,
+          "right": 251,
+          "bottom": 403,
+          "cx": 226,
+          "cy": 286
+        },
+        {
+          "left": 198,
+          "top": 172,
+          "right": 264,
+          "bottom": 403,
+          "cx": 237,
+          "cy": 284
+        },
+        {
+          "left": 198,
+          "top": 173,
+          "right": 259,
+          "bottom": 403,
+          "cx": 237,
+          "cy": 280
+        }
+      ],
+      "scenery": [
+        {
+          "left": 83,
+          "top": 399,
+          "right": 269,
+          "bottom": 437,
+          "cx": 175,
+          "cy": 418
+        },
+        {
+          "left": 76,
+          "top": 401,
+          "right": 262,
+          "bottom": 439,
+          "cx": 168,
+          "cy": 420
+        },
+        {
+          "left": 83,
+          "top": 400,
+          "right": 270,
+          "bottom": 438,
+          "cx": 176,
+          "cy": 420
+        },
+        {
+          "left": 89,
+          "top": 400,
+          "right": 275,
+          "bottom": 438,
+          "cx": 182,
+          "cy": 419
+        },
+        {
+          "left": 83,
+          "top": 400,
+          "right": 269,
+          "bottom": 438,
+          "cx": 175,
+          "cy": 420
+        }
+      ]
+    },
+    "stow-right": {
+      "row": 9,
+      "frames": 6,
+      "durations": [
+        300,
+        240,
+        240,
+        240,
+        260,
+        400
+      ],
+      "loop": false,
+      "feet": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
     }
   }
 }

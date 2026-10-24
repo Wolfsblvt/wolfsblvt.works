@@ -87,6 +87,11 @@ export function mountResident(): void {
     const r = docRect(footer);
     return { x: r.right - r.width * 0.08 - 60, y: r.top };
   };
+  const captionOnRight = () => {
+    if (!caption || caption.hidden) return false;
+    const c = caption.getBoundingClientRect(), p = perchLine.getBoundingClientRect();
+    return c.left + c.width / 2 > p.left + p.width / 2;
+  };
   const fixedLayer = () => ({ element: lane, origin: { x: scrollX, y: scrollY } });
 
   // The porch: the top edge of whatever comes right below the hero, a ladder's length under the perch. The first
@@ -153,7 +158,13 @@ export function mountResident(): void {
   const offscreen = (from: string, to: string, arrive = 0.5): Link => ({ from, to, way: 'offscreen', at: 'right', enter: 'right', arrive });
   const bandIds = bands.map((b) => b.id);
   const links: Link[] = [
-    { from: 'perch', to: 'porch', way: 'ladder-down', at: 'left', arrive: 0 },
+    // Down from the end of the perch away from his caption, so the ladder never hangs across the handwriting (it sits
+    // to the perch's right on narrow screens and to its left on wide ones).
+    {
+      from: 'perch', to: 'porch', way: 'ladder-down',
+      get at() { return captionOnRight() ? 'left' : 'right'; },
+      get arrive() { return captionOnRight() ? 0 : 1; },
+    } as Link,
     offscreen('perch', 'lane'),
     offscreen('porch', 'lane'),
     offscreen('porch', 'peek'),

@@ -48,8 +48,9 @@ Adoption on Cloudflare is Wolf Ops work; see [Development](DEVELOPMENT.md#public
 Without JavaScript the same page is complete: the pile renders as an ordinary list and Endless as a section.
 
 6. Yoru, the resident (`src/features/yoru/client/site.ts`), starts on the hero's perch. At the reader's first scroll he
-   unfolds his ladder and climbs down to the porch, the top edge of the content right below the hero, a ladder's
-   length under the perch; a ladder is only taken where it reaches. He is one element in one of two clipped,
+   unfolds his ladder from the end of the perch away from his caption and climbs down to the porch, the top edge of
+   the content right below the hero, a ladder's length under the perch; a ladder is only taken where it reaches, and
+   each side of him has its own drawn set of ladder clips. He is one element in one of two clipped,
    click-through layers: a page stage the size of the document (the perch, the porch, the section bands, the footer
    nook, inside Borrowed Coast's window) and a fixed layer over the viewport (the margin lane and the bottom-edge
    peek), where he rides along with the reader. He never covers a reading line: where the screen leaves a margin

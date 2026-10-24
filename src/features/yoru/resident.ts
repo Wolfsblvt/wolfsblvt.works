@@ -34,6 +34,11 @@ const ROLE = {
   climb: ['ladder/climb'],
   dismount: ['ladder/dismount'],
   stow: ['ladder/stow'],
+  produceRight: ['ladder/produce-right'],
+  mountRight: ['ladder/mount-right'],
+  climbRight: ['ladder/climb-right'],
+  dismountRight: ['ladder/dismount-right'],
+  stowRight: ['ladder/stow-right'],
   ladder: ['ladder-prop/open'],
   walkLeft: ['everyday/walk-left'],
   walkRight: ['everyday/walk-right'],
@@ -56,15 +61,28 @@ const ROLE = {
 } as const;
 type Role = keyof typeof ROLE;
 
+/** The ladder prop, in master pixels: ladder-prop/open has its rungs `rung` apart and its hooks `hooksAbovePivot` above its pivot. */
+const LADDER = { rung: 42.5, hooksAbovePivot: 420 };
+
 /**
- * The ladder, in master pixels. The generator drew the ladder he climbs smaller than the prop's natural size, and
- * his paws are what must meet the rungs, so the prop is drawn at `spriteScale` to match the ladder in the climb
- * clip: rungs `rung` apart there (measured from the green ladder: one climb cycle moves him exactly this far), 42.5
- * apart in ladder-prop/open, whose hooks sit `hooksAbovePivot` above its pivot.
+ * One set of ladder clips, drawn for a drop on one side of him. The generator drew the ladder he climbs smaller than
+ * the prop's natural size, and his paws are what must meet the rungs, so the prop is drawn at `rung / LADDER.rung`
+ * to match the climb clip: `rung` is the rung spacing there in master pixels (measured from its green ladder; one
+ * climb cycle moves him exactly this far). The right-hand rung was measured against the left-hand one, the same way
+ * (rung period of the green ladder at the clip's registered scale, 33.4 against 30.3), so the two sides agree.
+ * `toward` is the side of him the ladder hangs on.
  */
-const LADDER = { rung: 33.5, spriteScale: 33.5 / 42.5, hooksAbovePivot: 420 };
+interface LadderSide {
+  produce: Role; mount: Role; climb: Role; dismount: Role; stow: Role;
+  posture: Posture; toward: -1 | 1; rung: number;
+}
+const LADDER_LEFT: LadderSide = { produce: 'produce', mount: 'mount', climb: 'climb', dismount: 'dismount', stow: 'stow', posture: 'face-left', toward: -1, rung: 33.5 };
+const LADDER_RIGHT: LadderSide = { produce: 'produceRight', mount: 'mountRight', climb: 'climbRight', dismount: 'dismountRight', stow: 'stowRight', posture: 'face-right', toward: 1, rung: 36.9 };
+const sideRoles = (side: LadderSide): Role[] => [side.produce, side.mount, side.climb, side.dismount, side.stow, side.posture === 'face-left' ? 'turnLeft' : 'turnRight'];
 /** How far below the ladder's foot he will still step off its last rung, in CSS pixels. */
 const LADDER_STEP_OFF = 40;
+/** How far to his side the ladder hangs when a clip does not say, in CSS pixels. */
+const LADDER_BESIDE = 20;
 
 /** The shortest beat of his life, in milliseconds; see the loop. */
 const MIN_BEAT = 400;
@@ -489,8 +507,9 @@ export class Resident {
     if (link.way === 'walk') return this.#has('walkLeft', 'walkRight');
     if (link.way === 'hop') return this.#withinHop(link) && (this.#hopsLeft(link) ? this.#has('hop', 'turnLeft') : this.#has('hopRight', 'turnRight'));
     if (link.way === 'offscreen') return this.#has('runLeft', 'runRight', 'turnLeft', 'turnRight');
-    // The ladder clips are drawn with the drop to his left.
-    return this.#hopsLeft(link) && this.#withinLadder(link) && this.#has('produce', 'mount', 'climb', 'dismount', 'stow', 'ladder', 'turnLeft');
+    // Each set of ladder clips is drawn for a drop on one side of him.
+    const side = this.#hopsLeft(link) ? LADDER_LEFT : LADDER_RIGHT;
+    return this.#withinLadder(link, side) && this.#has(...sideRoles(side), 'ladder');
   }
 
   async #travel(links: Link[], signal: AbortSignal): Promise<void> {
@@ -585,24 +604,26 @@ export class Resident {
     const to = place(this.#world, link.to).surface()!;
     const hard = this.#hard.signal;
     if (this.#reduced) { this.#arrive(link); return; }
-    await this.#toPosture('face-left');
-    const produce = this.#clip('produce'), mount = this.#clip('mount'), climb = this.#clip('climb');
-    const dismount = this.#clip('dismount'), stow = this.#clip('stow');
+    const side = this.#hopsLeft(link) ? LADDER_LEFT : LADDER_RIGHT;
+    const spriteScale = side.rung / LADDER.rung;
+    await this.#toPosture(side.posture);
+    const produce = this.#clip(side.produce), mount = this.#clip(side.mount), climb = this.#clip(side.climb);
+    const dismount = this.#clip(side.dismount), stow = this.#clip(side.stow);
     const s = climb.displayScale;
     const x = this.#player.position.x;
     await this.#player.play(produce, { signal: hard });
 
     // The hanging ladder: where mount's first frame has it, or just past his toes.
     const hanging = mount.props?.[0];
-    const ladderX = hanging ? x + (hanging.cx - mount.pivot.x) * s : x - 20;
+    const ladderX = hanging ? x + (hanging.cx - mount.pivot.x) * s : x + side.toward * LADDER_BESIDE;
     const hooksY = hanging ? from.y + (hanging.top - mount.pivot.y) * s : from.y - 8;
     const ladder = this.#ladderSprite();
     const ladderClip = this.#clip('ladder');
     ladder.hold(ladderClip, 0);
     ladder.element.style.transformOrigin = `${ladderClip.pivot.x * s}px ${ladderClip.pivot.y * s}px`;
-    ladder.element.style.transform = `scale(${LADDER.spriteScale})`;
+    ladder.element.style.transform = `scale(${spriteScale})`;
     // A drop shorter than the ladder: it stands on the lower floor instead of reaching through it.
-    ladder.moveTo(ladderX, Math.min(hooksY + LADDER.hooksAbovePivot * LADDER.spriteScale * s, to.y));
+    ladder.moveTo(ladderX, Math.min(hooksY + LADDER.hooksAbovePivot * spriteScale * s, to.y));
     ladder.element.style.visibility = '';
 
     await this.#player.play(mount, { signal: hard });
@@ -617,9 +638,9 @@ export class Resident {
     let y = from.y + (mount.feet.at(-1)! - climb.feet[0]!) * s;
     const stopAt = to.y + (dismount.feet[0]! - climb.feet[0]!) * s;
     this.#player.moveTo(climbX, y);
-    while (!hard.aborted && y < stopAt - (LADDER.rung * s) / 2) {
+    while (!hard.aborted && y < stopAt - (side.rung * s) / 2) {
       await this.#player.play(climb, { signal: hard });
-      y += LADDER.rung * s;
+      y += side.rung * s;
       this.#player.moveTo(climbX, y);
     }
     const groundX = onLadder(dismount, climbX);
@@ -702,13 +723,14 @@ export class Resident {
 
   /** Whether a hop goes towards the left, from where it sets off to where it lands. */
   /** A ladder only goes down, as far as it reaches, onto somewhere below where it hangs. */
-  #withinLadder(link: Link): boolean {
+  #withinLadder(link: Link, side: LadderSide): boolean {
     const from = place(this.#world, link.from).surface();
     const to = place(this.#world, link.to).surface();
     if (!from || !to || !this.#has('ladder')) return false;
     const drop = to.y - from.y;
-    const reach = LADDER.hooksAbovePivot * LADDER.spriteScale * this.#clip('ladder').displayScale + LADDER_STEP_OFF;
-    const x = from.left + departure(link) * (from.right - from.left);
+    const reach = LADDER.hooksAbovePivot * (side.rung / LADDER.rung) * this.#clip('ladder').displayScale + LADDER_STEP_OFF;
+    // Where the ladder comes down: just past his toes, on its side of him.
+    const x = from.left + departure(link) * (from.right - from.left) + side.toward * LADDER_BESIDE;
     return drop > 0 && drop <= reach && x >= to.left && x <= to.right;
   }
 

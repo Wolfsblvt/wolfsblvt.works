@@ -19,6 +19,8 @@
   .nook::after { content: 'nook'; position: absolute; right: 10px; bottom: 10px; color: var(--quiet); font-size: 12px; }
   .ledge { position: absolute; left: 4%; width: 28%; top: 372px; height: 148px; background: #1d151c; border-top: 1px solid #4a3546; }
   .ledge::after { content: 'ledge'; position: absolute; left: 10px; bottom: 10px; color: var(--quiet); font-size: 12px; }
+  .shelf { position: absolute; left: 16%; width: 18%; top: 290px; height: 12px; background: #1d151c; border-top: 1px solid #4a3546; }
+  .shelf::after { content: 'shelf'; position: absolute; left: 8px; top: 16px; color: var(--quiet); font-size: 12px; }
   .perch { position: absolute; left: 74%; width: 22%; top: 250px; height: 14px; background: #1d151c; border-top: 1px solid #4a3546; }
   .perch::after { content: 'perch'; position: absolute; right: 8px; top: 18px; color: var(--quiet); font-size: 12px; }
   [data-yoru-ladder] { position: absolute; z-index: 1; }
@@ -45,6 +47,7 @@
   <label><input type="checkbox" data-remember> Remember Yoru on this browser</label>
   <button class="ctl" type="button" data-invite>Interest in the coast</button>
   <button class="ctl" type="button" data-toggle-ledge>Remove / restore ledge</button>
+  <label>Start on <select data-start><option value="perch">the perch (ladder down on his left)</option><option value="shelf">the shelf (ladder down on his right)</option></select></label>
   <button class="ctl" type="button" data-restart>Restart</button>
 </header>
 <div class="stage" data-stage>
@@ -53,6 +56,7 @@
   <div class="nook" data-nook></div>
   <div class="pebble" data-pebble></div>
   <div class="perch" data-perch></div>
+  <div class="shelf" data-shelf></div>
   <div class="window" data-window>
     <img data-window-img src="/walk-assets/borrowed-coast/window-chart.png" alt="Borrowed Coast's night chart">
     <div class="window-layer" data-window-layer></div>

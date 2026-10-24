@@ -115,7 +115,7 @@ npm run yoru -- pack <family>
 | `guest` | look-in, sit-in, watch, notice, rise: a visit inside a project window | Selected and packed |
 | `nook` | his cushion and four keepsakes (prop family) | Selected and packed |
 | `ladder-prop` | the folding ladder, open and folded (prop family) | Selected and packed |
-| `ladder` | produce, mount, climb, dismount, stow | Round two: the real ladder where it moves with him, green ladder and blue ledge where it hangs |
+| `ladder` | produce, mount, climb, dismount, stow, each for a drop on his left and (`-right`) on his right | Selected and packed: the real ladder where it moves with him, green ladder and blue ledge where it hangs |
 
 Two more things are made from the packed sheets:
 
