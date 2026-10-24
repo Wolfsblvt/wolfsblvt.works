@@ -14,6 +14,9 @@
   "workers_dev": false,
   "preview_urls": false,
   "compatibility_date": "2026-08-15",
+  // Keep Workers Trace Events eligible for the account Logpush route. This is top-level because it applies to
+  // the Worker across environments and must survive ordinary production uploads.
+  "logpush": true,
   "assets": {
     "directory": "./artifacts/site",
     "binding": "ASSETS",
