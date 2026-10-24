@@ -1,0 +1,132 @@
+{
+  "family": "presence",
+  "title": "Being there",
+  "description": "The new-look replacements for the May rows that still matter on the site: standing idle, looking around, running, a greeting, a small hop and a thinking pose. Codex-only states (waiting for approval, reviewing code) are not carried over.",
+  "cell": { "width": 320, "height": 240 },
+  "pivot": { "x": 160, "y": 235 },
+  "sequences": [["idle*2", "look*1", "idle*2", "wave", "idle", "think"]],
+  "clips": [
+    {
+      "id": "idle",
+      "frames": 8,
+      "loop": true,
+      "stabilize": "first",
+      "durations": [400, 200, 160, 200, 300, 220, 200, 400],
+      "scale": { "frame": 0, "height": 1 },
+      "action": "Yoru standing facing the viewer exactly as in the identity reference, at rest and self-possessed. A calm, low-distraction loop: slow breathing, one blink, a slight ear flick, the tail tip curling and uncurling. His feet stay planted and his body stays in place; every frame is nearly the same pose.",
+      "beats": [
+        "Standing exactly as in the identity reference, breathing out.",
+        "Breathing in, chest very slightly raised.",
+        "Eyes closing in a blink.",
+        "Eyes open again, half-lidded.",
+        "One ear flicking slightly.",
+        "Tail tip curling a little.",
+        "Breathing out, tail tip uncurling.",
+        "Standing exactly as in the first frame."
+      ]
+    },
+    {
+      "id": "look",
+      "frames": 8,
+      "durations": [300, 220, 500, 220, 220, 500, 220, 300],
+      "scale": { "frame": 0, "height": 1 },
+      "action": "Yoru standing facing the viewer looks around without moving his feet: his head turns to look towards the left edge of the image, holds, turns across to look towards the right edge, holds, and comes back to face the viewer. Ears follow his gaze. Calm and observant.",
+      "beats": [
+        "Standing exactly as in the identity reference.",
+        "Head turning towards the left edge of the image, ears turning with it.",
+        "Looking towards the left edge, holding, eyes narrowed with interest.",
+        "Head coming back past the front.",
+        "Head turning towards the right edge of the image.",
+        "Looking towards the right edge, holding.",
+        "Head coming back towards the viewer.",
+        "Standing exactly as in the identity reference."
+      ]
+    },
+    {
+      "id": "run-left",
+      "frames": 8,
+      "loop": true,
+      "ground": "clip",
+      "durations": 90,
+      "scale": { "frame": 0, "height": 0.8 },
+      "action": "Yoru runs on all fours towards the left edge of the image, seen exactly from the side, facing left. A full, fast, light gallop cycle that loops: legs gather and stretch, back flexes, the capelet streams behind and the tail follows. No speed lines or dust.",
+      "beats": [
+        "Front paws reaching forward, hind legs pushing off.",
+        "Body stretched out, all paws off the ground.",
+        "Front paws landing.",
+        "Front legs folding under, hind legs swinging forward.",
+        "Body gathered, back arched, hind paws landing ahead of the front paws.",
+        "Hind legs pushing off, front paws reaching.",
+        "Body stretching again, capelet streaming.",
+        "Front paws reaching forward as in the first frame."
+      ]
+    },
+    {
+      "id": "run-right",
+      "frames": 8,
+      "loop": true,
+      "ground": "clip",
+      "durations": 90,
+      "scale": { "frame": 0, "height": 0.8 },
+      "action": "Yoru runs on all fours towards the right edge of the image, seen exactly from the side, facing right. Draw him facing right; his forelock stays on the same side of his own face. A full, fast, light gallop cycle that loops: legs gather and stretch, back flexes, the capelet streams behind and the tail follows. No speed lines or dust.",
+      "beats": [
+        "Front paws reaching forward, hind legs pushing off.",
+        "Body stretched out, all paws off the ground.",
+        "Front paws landing.",
+        "Front legs folding under, hind legs swinging forward.",
+        "Body gathered, back arched, hind paws landing ahead of the front paws.",
+        "Hind legs pushing off, front paws reaching.",
+        "Body stretching again, capelet streaming.",
+        "Front paws reaching forward as in the first frame."
+      ]
+    },
+    {
+      "id": "wave",
+      "frames": 6,
+      "durations": [200, 160, 260, 200, 160, 300],
+      "scale": { "frame": 0, "height": 1 },
+      "action": "A restrained, slightly smug greeting. Standing facing the viewer, Yoru lifts one front paw to shoulder height, gives one small lazy wave with a knowing head tilt, and lowers it again. No wave marks or symbols.",
+      "beats": [
+        "Standing exactly as in the identity reference.",
+        "One paw lifting, head starting to tilt.",
+        "Paw raised at shoulder height, palm towards the viewer, knowing half-smile.",
+        "Paw tipping to one side in a small lazy wave.",
+        "Paw coming down.",
+        "Standing exactly as in the identity reference."
+      ]
+    },
+    {
+      "id": "hop",
+      "frames": 7,
+      "ground": "clip",
+      "durations": [180, 120, 100, 120, 100, 140, 260],
+      "scale": { "frame": 0, "height": 1 },
+      "action": "Yoru hops up onto something about half his height, seen from the side facing the left edge of the image: crouch, spring, tuck, land, settle. Light and precise, like a cat. The hop goes up and slightly to the left.",
+      "beats": [
+        "Standing in profile facing the left edge of the image, looking up at where he is going.",
+        "Crouching, weight back on his hind legs, tail low.",
+        "Springing up and forward, body stretched, front paws reaching.",
+        "At the top of the hop, legs tucked, capelet lifting.",
+        "Front paws landing higher up, hind legs following.",
+        "All four paws landed, body compressed.",
+        "Standing upright again, composed, as if it was nothing."
+      ]
+    },
+    {
+      "id": "think",
+      "frames": 6,
+      "loop": true,
+      "durations": [500, 300, 500, 300, 400, 500],
+      "scale": { "frame": 0, "height": 1 },
+      "action": "Yoru standing facing the viewer, thinking something over: one paw raised to his chin, head tilted, eyes looking up and to the side, the tail tip tapping. A thoughtful loop with small changes only; no props or symbols.",
+      "beats": [
+        "Standing, one paw at his chin, head tilted, eyes looking up to the side.",
+        "Tail tip tapping, eyes narrowing.",
+        "Head tilting the other way, still thinking.",
+        "Tail tip tapping again.",
+        "A slow blink.",
+        "Back to the first pose, paw at his chin."
+      ]
+    }
+  ]
+}

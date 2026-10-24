@@ -1,0 +1,143 @@
+{
+  "family": "everyday",
+  "title": "Everyday acting",
+  "sheet": "everyday.webp",
+  "cell": {
+    "width": 288,
+    "height": 216
+  },
+  "pivot": {
+    "x": 144,
+    "y": 211
+  },
+  "displayScale": 0.5,
+  "clips": {
+    "walk-left": {
+      "row": 0,
+      "frames": 8,
+      "durations": [
+        150,
+        150,
+        150,
+        150,
+        150,
+        150,
+        150,
+        150
+      ],
+      "loop": true
+    },
+    "walk-right": {
+      "row": 1,
+      "frames": 8,
+      "durations": [
+        150,
+        150,
+        150,
+        150,
+        150,
+        150,
+        150,
+        150
+      ],
+      "loop": true
+    },
+    "turn-left": {
+      "row": 2,
+      "frames": 5,
+      "durations": [
+        200,
+        140,
+        140,
+        140,
+        220
+      ],
+      "loop": false,
+      "to": "walk-left"
+    },
+    "turn-right": {
+      "row": 3,
+      "frames": 5,
+      "durations": [
+        200,
+        140,
+        140,
+        140,
+        220
+      ],
+      "loop": false,
+      "to": "walk-right"
+    },
+    "sit-down": {
+      "row": 4,
+      "frames": 6,
+      "durations": [
+        200,
+        160,
+        160,
+        180,
+        200,
+        300
+      ],
+      "loop": false,
+      "to": "sit"
+    },
+    "sit": {
+      "row": 5,
+      "frames": 6,
+      "durations": [
+        500,
+        160,
+        160,
+        400,
+        300,
+        600
+      ],
+      "loop": true
+    },
+    "stand-up": {
+      "row": 6,
+      "frames": 6,
+      "durations": [
+        220,
+        160,
+        160,
+        160,
+        180,
+        300
+      ],
+      "loop": false,
+      "from": "sit"
+    },
+    "yawn": {
+      "row": 7,
+      "frames": 6,
+      "durations": [
+        200,
+        200,
+        260,
+        500,
+        220,
+        300
+      ],
+      "loop": false
+    },
+    "groom": {
+      "row": 8,
+      "frames": 8,
+      "durations": [
+        260,
+        200,
+        200,
+        200,
+        200,
+        200,
+        240,
+        360
+      ],
+      "loop": false,
+      "from": "sit",
+      "to": "sit"
+    }
+  }
+}

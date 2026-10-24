@@ -1,0 +1,58 @@
+{
+  "family": "reactions",
+  "title": "Reactions to the visitor",
+  "description": "What poking and hovering does to him. Wolf, 2026-10-24: the unimpressed stare, a startle hop, and retreating to peek back from behind an edge. The edge is the site's own element, which hides the part of him behind it; the sprite only draws the lean.",
+  "cell": { "width": 256, "height": 240 },
+  "pivot": { "x": 128, "y": 235 },
+  "sequences": [["stare"], ["startle"], ["peek"]],
+  "clips": [
+    {
+      "id": "stare",
+      "frames": 6,
+      "durations": [200, 260, 300, 700, 220, 400],
+      "scale": { "frame": 0, "height": 1 },
+      "action": "Poked once. Yoru, standing facing the viewer as in the identity reference, notices: ears twitch, then he turns his head slowly to look straight at the viewer with a flat, unimpressed, half-lidded stare, holds it, blinks once slowly and looks away. Nothing else moves.",
+      "beats": [
+        "Standing facing the viewer exactly as in the identity reference, looking slightly aside.",
+        "Ears twitching, eyes flicking towards the viewer.",
+        "Head turning to face the viewer directly.",
+        "Flat, unimpressed, half-lidded stare straight at the viewer.",
+        "One slow blink, eyes closed.",
+        "Looking away again, composed, faintly smug."
+      ]
+    },
+    {
+      "id": "startle",
+      "frames": 7,
+      "ground": "clip",
+      "durations": [120, 100, 120, 160, 200, 260, 400],
+      "scale": { "frame": 0, "height": 1 },
+      "action": "Poked while busy. Yoru, standing facing the viewer, gets a fright: a small hop straight up in place with fur fluffed, ears straight up and the capelet flaring, lands, then smooths himself down and recomposes his face as if nothing happened. The hop is small, about a quarter of his height.",
+      "beats": [
+        "Standing facing the viewer as in the identity reference.",
+        "Flinch: eyes wide, ears straight up, fur bristling.",
+        "In the air, a small hop straight up, tail fluffed, capelet flaring.",
+        "Landing, knees bent, fur still fluffed.",
+        "Fur settling, eyes narrowing, a quick look to each side.",
+        "Smoothing the capelet down with one paw.",
+        "Composed again, half-lidded, as if nothing happened."
+      ]
+    },
+    {
+      "id": "peek",
+      "frames": 6,
+      "loop": true,
+      "durations": [600, 200, 900, 300, 200, 700],
+      "scale": { "frame": 0, "height": 1 },
+      "action": "Yoru has retreated behind something tall on the left side of the image; that thing is NOT drawn. Standing upright, he leans his upper body out towards the left edge of the image to peek: head tilted, one paw raised as if holding an edge, watching the viewer warily, then ducks back upright. His feet stay planted where they are.",
+      "beats": [
+        "Standing upright in three-quarter view facing the left edge of the image, hidden, looking sideways.",
+        "Leaning out towards the left edge, one paw raised as if on an edge.",
+        "Leaning out further, head tilted, peeking at the viewer with one eye narrowed.",
+        "Holding the peek, ears flicking.",
+        "Ducking back, upper body straightening.",
+        "Standing upright again, hidden, tail twitching."
+      ]
+    }
+  ]
+}

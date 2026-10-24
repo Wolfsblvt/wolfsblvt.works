@@ -29,11 +29,10 @@ export async function writeContact(runDir, cell, pivot, standingPng) {
     .composite(layers.filter((l) => l.left >= 0 && l.top >= 0)).png().toFile(join(runDir, 'contact.png'));
 }
 
-export async function writePreview(P, root) {
+export async function writePreview(P, standingPng) {
   mkdirSync(P.preview, { recursive: true });
-  // Standing Yoru from the v1 master, first idle cell: the scale every new clip is registered against.
-  await sharp(join(root, 'design', 'the-walk', 'assets', 'yoru-spritesheet.webp'))
-    .extract({ left: 0, top: 0, width: 192, height: 208 }).png().toFile(join(P.preview, 'standing.png'));
+  // Standing Yoru, the scale every clip is registered against.
+  writeFileSync(join(P.preview, 'standing.png'), standingPng);
 
   const rel = (path) => relative(P.preview, path).replaceAll('\\', '/');
   const families = existsSync(P.families)

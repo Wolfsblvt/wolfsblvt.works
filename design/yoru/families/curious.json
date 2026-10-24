@@ -1,0 +1,61 @@
+{
+  "family": "curious",
+  "title": "Play and curiosity",
+  "description": "Yoru touching things himself. The things are the site's own (a Pile piece, a ledge, something hanging in a project window), so they are never drawn: he aims at a fixed spot in front of him and the resident places the real object there. Wolf, 2026-10-24: inspect and poke, nudge off a ledge, bat at dangling things.",
+  "cell": { "width": 288, "height": 208 },
+  "pivot": { "x": 176, "y": 203 },
+  "sequences": [["inspect"], ["nudge"], ["bat"]],
+  "clips": [
+    {
+      "id": "inspect",
+      "frames": 8,
+      "durations": [300, 240, 400, 180, 220, 360, 200, 420],
+      "scale": { "frame": 0, "height": 1 },
+      "action": "Yoru inspects a small object lying on the ground just in front of him, towards the left edge of the image. The object itself is NOT drawn: the ground in front of his feet stays empty background, and his nose and claw stop exactly at that empty spot. He faces the left edge of the image in three-quarter view the whole time. Curious, careful, then satisfied that it is harmless.",
+      "beats": [
+        "Standing upright, looking down at the empty spot on the ground in front of him, ears forward.",
+        "Leaning down towards the spot, neck stretched, tail up for balance.",
+        "Sniffing the spot closely, nose almost touching it, eyes narrowed.",
+        "One front paw reaching out, a single claw poking the spot.",
+        "Pulling the paw back quickly and leaning back half a step, ears flicking.",
+        "Head tilted, studying the spot, a sceptical look.",
+        "Poking the spot a second time, more confidently.",
+        "Straightening up, unimpressed and satisfied, as if he knew all along."
+      ]
+    },
+    {
+      "id": "nudge",
+      "frames": 8,
+      "durations": [500, 300, 300, 300, 260, 200, 400, 600],
+      "scale": { "frame": 0, "height": 1 },
+      "action": "Rare, earned mischief. Yoru stands at the very edge of a ledge, the edge just in front of his toes towards the left edge of the image; a small object would sit at that edge but is NOT drawn. Holding eye contact with the viewer the whole time, he slowly pushes the empty spot at the edge with one front paw until his paw sweeps past it, then glances down after it and looks back at the viewer, smug. Body in three-quarter view facing the left edge of the image, head turned to the viewer.",
+      "beats": [
+        "Standing at the edge, body towards the left edge of the image, head turned to look straight at the viewer.",
+        "Lifting one front paw slowly, still looking at the viewer.",
+        "Paw resting on the empty spot at the edge in front of his toes, eye contact held.",
+        "Pushing slowly, paw sliding forward towards the edge, a tiny smirk.",
+        "Paw at the very edge, still looking at the viewer.",
+        "Paw sweeping past the edge; nothing is drawn there.",
+        "Glancing down over the edge after whatever fell.",
+        "Looking back at the viewer, half-lidded and smug, paw back down."
+      ]
+    },
+    {
+      "id": "bat",
+      "frames": 8,
+      "durations": [400, 220, 160, 260, 300, 260, 180, 500],
+      "scale": { "frame": 0, "match": "everyday/sit#0", "height": 0.8 },
+      "action": "Yoru sits and lazily bats at something hanging just above and in front of him, towards the left edge of the image. The hanging thing is NOT drawn: that spot stays empty background. He watches it swing with his head, bats once more, then loses interest. Seated in three-quarter view facing the left edge of the image.",
+      "beats": [
+        "Seated, looking up at the empty spot above and in front of him, ears forward.",
+        "Lifting one front paw towards it.",
+        "Batting upwards, paw at the empty spot, claws just out.",
+        "Paw back down, head following the swing to the left.",
+        "Head following the swing back to the right.",
+        "Paw lifting again, eyes narrowed.",
+        "Batting a second time, a little harder.",
+        "Paw down, looking away, lost interest, unimpressed."
+      ]
+    }
+  ]
+}

@@ -8,6 +8,7 @@
 //   node tools/yoru-studio/studio.mjs import   <family> <clip> <png> [run]   bring an existing strip in as a run
 //   node tools/yoru-studio/studio.mjs preview                                write the studio page
 //   node tools/yoru-studio/studio.mjs serve [--port=4390]                    serve it, fresh on every load
+//   node tools/yoru-studio/studio.mjs montage  <family> [clip] [--strips]    one still of every run, for review
 
 import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join, relative, resolve } from 'node:path';
@@ -18,6 +19,10 @@ import { keyResidue, matteKey, parseHex } from './lib/matte.mjs';
 import { crop, placeFrames, solidBounds, splitFrames } from './lib/register.mjs';
 import { clipDurations, clipLayout, clipPrompt, identityLock, KEY, loadFamily, makeGuide, paths, saveFamily, STANDING_HEIGHT } from './lib/spec.mjs';
 import { writeContact, writePreview } from './lib/preview.mjs';
+import { alphaMask, colourSignature, matchScale, shiftCell, signatureDistance, stabilize } from './lib/align.mjs';
+
+/** Colour distance from the canonical base above which a run is flagged as possibly off-model; see processRun. */
+const DRIFT_LIMIT = 0.55;
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const P = paths(root);
@@ -154,7 +159,7 @@ async function processRun(family, clip, dir) {
   });
   if (frames.some((f) => !f)) return writeReport(dir, { scale: 0, warnings, frames: [] });
 
-  const scale = resolveScale(family, clip, frames, warnings);
+  const scale = await resolveScale(family, clip, frames, warnings);
   // A second anchor at the clip's end corrects a generator that drew Yoru slowly growing or shrinking across the
   // sheet: the scale moves evenly from the first anchor's value to the one that makes the last frame its known height.
   const endScale = clip.scale?.endHeight ? (STANDING_HEIGHT * clip.scale.endHeight) / frames.at(-1).bounds.height : scale;
@@ -169,33 +174,80 @@ async function processRun(family, clip, dir) {
     placed.forEach((p) => { p.clipped = p.left < 0 || p.top < 0 || p.left + p.width > family.cell.width || p.top + p.height > family.cell.height; });
   }
 
-  const out = join(dir, 'frames');
-  mkdirSync(out, { recursive: true });
+  const { width: cw, height: ch } = family.cell;
+  const cells = [];
   const heights = [];
   for (const [i, f] of frames.entries()) {
     const p = placed[i];
-    if (p.clipped) warnings.push(`frame ${i + 1} leaves the ${family.cell.width}×${family.cell.height} cell`);
+    if (p.clipped) warnings.push(`frame ${i + 1} leaves the ${cw}×${ch} cell`);
     const sprite = await sharp(Buffer.from(crop(f.pixels, f.region.width, f.local)), {
       raw: { width: f.local.width, height: f.local.height, channels: 4 },
     }).resize(p.width, p.height, { kernel: 'lanczos3' }).png().toBuffer();
-    const cellImage = await sharp({ create: { width: family.cell.width, height: family.cell.height, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+    cells.push(await sharp({ create: { width: cw, height: ch, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
       .composite([{ input: await clampToCell(sprite, p, family.cell), left: Math.max(0, p.left), top: Math.max(0, p.top) }])
-      .png().toBuffer();
-    writeFileSync(join(out, `${String(i).padStart(2, '0')}.png`), cellImage);
+      .raw().toBuffer());
     heights.push(p.height);
+  }
+
+  // The generator never centres a pose in its slot exactly; keep the body steady by silhouette overlap.
+  const mode = clip.stabilize ?? (clip.loop ? 'first' : 'chain');
+  const offsets = stabilize(cells.map((c) => alphaMask(c, cw, ch)), cw, ch, mode);
+  const moved = Math.max(...offsets.map(Math.abs));
+  if (moved > 32) warnings.push(`stabilising moved a frame ${moved} px`);
+  const out = join(dir, 'frames');
+  mkdirSync(out, { recursive: true });
+  for (const [i, cell] of cells.entries()) {
+    await sharp(Buffer.from(shiftCell(cell, cw, ch, offsets[i])), { raw: { width: cw, height: ch, channels: 4 } })
+      .png().toFile(join(out, `${String(i).padStart(2, '0')}.png`));
   }
   const residue = keyResidue(rgba, width, height, key);
   if (residue > 50) warnings.push(`${residue} edge pixels still lean magenta`);
+  const ref = await canonicalRef();
+  const drift = signatureDistance(colourSignature(rgba, width * height), colourSignature(ref.rgba, ref.width * ref.height));
+  if (drift > DRIFT_LIMIT) warnings.push(`colours drift from the canonical Yoru (${drift.toFixed(2)})`);
   await writeContact(dir, family.cell, family.pivot, await standingCell());
-  return writeReport(dir, { scale, endScale, heights, warnings, edgePixels: matte.edgePixels, residue, placed });
+  return writeReport(dir, { scale, endScale, heights, offsets, drift, warnings, edgePixels: matte.edgePixels, residue, placed });
 }
 
-/** Standing Yoru from the v1 master's first idle cell, the scale reference. */
+/**
+ * The canonical base, matted and cropped to its silhouette, at standing height in master pixels: the reference every
+ * standing anchor is matched against.
+ */
+let canonical;
+async function canonicalRef() {
+  if (canonical) return canonical;
+  const { data, info } = await sharp(join(P.reference, 'canonical-base.png')).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const matted = matteKey(data, info.width, info.height, parseHex(KEY)).data;
+  const b = solidBounds(matted, info.width, info.height);
+  const width = Math.round((b.width * STANDING_HEIGHT) / b.height);
+  const rgba = await sharp(Buffer.from(crop(matted, info.width, b)), { raw: { width: b.width, height: b.height, channels: 4 } })
+    .resize(width, STANDING_HEIGHT, { kernel: 'lanczos3' }).raw().toBuffer();
+  canonical = { rgba, mask: alphaMask(rgba, width, STANDING_HEIGHT), width, height: STANDING_HEIGHT };
+  return canonical;
+}
+
+/** Standing Yoru for the studio's scale ghost: the canonical base on a 192 × 208 cell, feet at 203. */
 let standing;
 async function standingCell() {
-  standing ??= await sharp(join(root, 'design', 'the-walk', 'assets', 'yoru-spritesheet.webp'))
-    .extract({ left: 0, top: 0, width: 192, height: 208 }).png().toBuffer();
+  if (standing) return standing;
+  const c = await canonicalRef();
+  standing = await sharp({ create: { width: 192, height: 208, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } } })
+    .composite([{ input: await sharp(Buffer.from(c.rgba), { raw: { width: c.width, height: c.height, channels: 4 } }).png().toBuffer(), left: Math.round(96 - c.width / 2), top: 203 - c.height }])
+    .png().toBuffer();
   return standing;
+}
+
+/** A frame's silhouette, cropped to its solid bounds. */
+function frameSilhouette(f) {
+  const pixels = crop(f.pixels, f.region.width, f.local);
+  return { mask: alphaMask(pixels, f.local.width, f.local.height), width: f.local.width, height: f.local.height };
+}
+
+/** A registered frame of a selected clip, as a silhouette at master scale. */
+async function registeredSilhouette(familyId, clipId, n) {
+  const { data, info } = await sharp(selectedFrame(familyId, clipId, n)).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const b = solidBounds(data, info.width, info.height);
+  return { mask: alphaMask(crop(data, info.width, b), b.width, b.height), width: b.width, height: b.height };
 }
 
 /** Crops a scaled sprite to the part that fits the cell, so a clipped frame still composites (and is reported). */
@@ -208,19 +260,32 @@ async function clampToCell(sprite, p, cell) {
 }
 
 /**
- * One scale for the clip: a frame of known height (a fraction of standing Yoru), or the registered height of a frame
- * in another clip that shows the same pose.
+ * One scale for the clip, from one anchor frame whose size is known:
+ * - `match: "clip#n"`: it shows the same pose as a registered frame of another clip; their silhouettes are matched.
+ * - `height: 1` (the default): it is standing Yoru; its silhouette is matched against the canonical base.
+ * - any other `height`: its bounding box is that fraction of standing height. A fallback for poses with nothing to
+ *   match yet, and the guess the silhouette search starts from.
  */
-function resolveScale(family, clip, frames, warnings) {
+async function resolveScale(family, clip, frames, warnings) {
   const s = clip.scale ?? { frame: 0, height: 1 };
-  const at = (n) => frames.at(n).bounds.height;
+  const anchor = frames.at(s.frame ?? 0);
+  const byHeight = (STANDING_HEIGHT * (s.height ?? 1)) / anchor.bounds.height;
   if (s.match) {
     const m = /^(?:([\w-]+)\/)?([\w-]+)#(-?\d+)$/.exec(s.match);
-    const reg = m && selectedRegistration(m[1] ?? family.family, m[2]);
-    if (reg) return reg.heights.at(Number(m[3])) / at(s.frame ?? 0);
+    const familyId = m?.[1] ?? family.family;
+    if (m && selectedRegistration(familyId, m[2])) {
+      const ref = await registeredSilhouette(familyId, m[2], Number(m[3]));
+      return matchScale(frameSilhouette(anchor), ref, ref.height / anchor.bounds.height).scale;
+    }
     warnings.push(`scale match ${s.match} not available yet; used height ${s.height ?? 1}`);
+    return byHeight;
   }
-  return (STANDING_HEIGHT * (s.height ?? 1)) / at(s.frame ?? 0);
+  if ((s.height ?? 1) === 1 && !s.byHeight) {
+    const { scale, score } = matchScale(frameSilhouette(anchor), await canonicalRef(), byHeight);
+    if (score < 0.6) warnings.push(`anchor frame matches standing Yoru poorly (${score.toFixed(2)})`);
+    return scale;
+  }
+  return byHeight;
 }
 
 function writeReport(dir, report) {
@@ -290,8 +355,33 @@ async function cmdPack(familyId) {
 // ---------- preview ----------
 
 async function cmdPreview() {
-  const file = await writePreview(P, root);
+  const file = await writePreview(P, await standingCell());
   console.log(file);
+}
+
+/**
+ * One still of a family's runs stacked top to bottom (newest first per clip): registered contact sheets, or the raw
+ * generated sheets with --strips. Written to artifacts/yoru-studio/montage.png, for reviewing a batch at a glance.
+ */
+async function cmdMontage(familyId, clipId) {
+  const family = loadFamily(P, familyId);
+  const files = [];
+  for (const clip of family.clips) {
+    if (clipId && clip.id !== clipId) continue;
+    const dir = join(P.runs, familyId, clip.id);
+    if (!existsSync(dir)) continue;
+    for (const run of readdirSync(dir).sort().reverse()) {
+      const file = join(dir, run, 'strips' in flags ? 'strip.png' : 'contact.png');
+      if (existsSync(file)) files.push(file);
+    }
+  }
+  const width = 2000;
+  const images = await Promise.all(files.map((f) => sharp(f).resize({ width, withoutEnlargement: true }).png().toBuffer({ resolveWithObject: true })));
+  let top = 0;
+  const layers = images.map(({ data, info }) => { const l = { input: data, left: 0, top }; top += info.height + 6; return l; });
+  const out = join(P.work, 'montage.png');
+  await sharp({ create: { width, height: Math.max(1, top), channels: 4, background: '#3a3a3a' } }).composite(layers).png().toFile(out);
+  console.log(`${out} (${files.length} runs)`);
 }
 
 /** Serves the studio page (rewritten on every load, so new runs appear on refresh) on http://localhost:4390. */
@@ -302,7 +392,7 @@ async function cmdServe() {
   createServer(async (req, res) => {
     const path = decodeURIComponent(new URL(req.url, 'http://x').pathname);
     if (path === '/') { res.writeHead(302, { location: '/preview/' }).end(); return; }
-    if (path === '/preview/') await writePreview(P, root);
+    if (path === '/preview/') await writePreview(P, await standingCell());
     const file = resolve(P.work, path === '/preview/' ? 'preview/index.html' : `.${path}`);
     if (!file.startsWith(P.work) || !existsSync(file)) { res.writeHead(404).end(); return; }
     res.writeHead(200, { 'content-type': types[file.slice(file.lastIndexOf('.'))] ?? 'application/octet-stream', 'cache-control': 'no-store' });
@@ -318,7 +408,7 @@ function findClip(family, clipId) {
 
 // ---------- dispatch, last so every binding above is initialised ----------
 
-const commands = { generate: cmdGenerate, import: cmdImport, process: cmdProcess, select: cmdSelect, pack: cmdPack, preview: cmdPreview, serve: cmdServe };
+const commands = { generate: cmdGenerate, import: cmdImport, process: cmdProcess, select: cmdSelect, pack: cmdPack, preview: cmdPreview, serve: cmdServe, montage: cmdMontage };
 if (!commands[command]) {
   console.error(`usage: studio.mjs <${Object.keys(commands).join('|')}> ...`);
   process.exit(2);
