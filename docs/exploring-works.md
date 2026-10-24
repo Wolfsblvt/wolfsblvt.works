@@ -55,8 +55,7 @@ Yoru lives in the site. He keeps you company along the Walk, has places to perch
 He is part of the place's character; the content remains usable without motion or JavaScript. The site is dark only,
 with its glow and handwriting designed for that canvas.
 
-The README's small greeting is a projection of his selected animation artwork, with a static alternative for reduced
-motion. [README media](assets/readme/README.md) records its source and how to reproduce it. Yoru's artwork remains
+The README media plan uses his selected animation artwork and a static reduced-motion alternative. [README media](assets/readme/README.md) records the source and reproduction procedure; those exports are not yet committed and the README currently uses a text-only introduction. Yoru's artwork remains
 [reserved](../LICENSES/README.md#reserved-the-marks-yoru-and-other-artwork).
 
 ## One contact page
