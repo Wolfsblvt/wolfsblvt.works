@@ -2,7 +2,7 @@
   "family": "curious",
   "title": "Play and curiosity",
   "description": "Yoru touching things himself. The things are the site's own (a Pile piece, a ledge, something hanging in a project window), so they are never drawn: he aims at a fixed spot in front of him and the resident places the real object there. Wolf, 2026-10-24: inspect and poke, nudge off a ledge, bat at dangling things.",
-  "cell": { "width": 288, "height": 208 },
+  "cell": { "width": 288, "height": 240 },
   "pivot": { "x": 176, "y": 203 },
   "sequences": [
     ["inspect"],
@@ -33,18 +33,19 @@
       "frames": 8,
       "durations": [500, 300, 300, 300, 260, 200, 400, 600],
       "scale": { "frame": 0, "height": 1 },
-      "action": "Rare, earned mischief. Yoru stands at the very edge of a ledge, the edge just in front of his toes towards the left edge of the image; a small object would sit at that edge but is NOT drawn. Holding eye contact with the viewer the whole time, he slowly pushes the empty spot at the edge with one front paw until his paw sweeps past it, then glances down after it and looks back at the viewer, smug. Body in three-quarter view facing the left edge of the image, head turned to the viewer.",
+      "ground": "first",
+      "action": "Rare, earned mischief. Yoru stands right at the very edge of a ledge; a small object lies on the ledge directly in front of his front toes, at his feet. The object is NOT drawn. Holding eye contact with the viewer, he pushes it off the edge with one front paw, and the push must be clearly readable: he crouches low with his chest near the ground, so his front leg, at its natural short length, reaches forward and down past his toes and over the brink. The leg never stretches or grows; the crouch and lean give the reach. Body in three-quarter view facing the left edge of the image, head turned to the viewer.",
       "beats": [
-        "Standing at the edge, body towards the left edge of the image, head turned to look straight at the viewer.",
-        "Lifting one front paw slowly, still looking at the viewer.",
-        "Paw resting on the empty spot at the edge in front of his toes, eye contact held.",
-        "Pushing slowly, paw sliding forward towards the edge, a tiny smirk.",
-        "Paw at the very edge, still looking at the viewer.",
-        "Paw sweeping past the edge; nothing is drawn there.",
-        "Glancing down over the edge after whatever fell.",
-        "Looking back at the viewer, half-lidded and smug, paw back down."
+        "Standing at the edge, front toes at the brink, body towards the left edge of the image, head turned to look straight at the viewer.",
+        "Lowering into a crouch, chest dropping towards the ledge, still looking at the viewer.",
+        "Crouched low, one front paw lifted and bent, hovering over the empty spot just in front of his toes.",
+        "Paw pressed down on the empty spot in front of his toes, leaning his weight onto it, a tiny smirk.",
+        "Still crouched, paw pushing forward to the very brink of the ledge, clearly in front of his other paw.",
+        "Paw reaching down over the brink, toes pointing down past the edge, leg its normal length; nothing is drawn there.",
+        "Rising out of the crouch, paw back beside the other one, glancing down over the edge after whatever fell.",
+        "Standing tall again, looking back at the viewer, half-lidded and smug."
       ],
-      "selected": "20261024T022416-442595ed"
+      "selected": "20261024T043203-f3c74c96"
     },
     {
       "id": "bat",

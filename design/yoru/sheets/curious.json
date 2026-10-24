@@ -4,7 +4,7 @@
   "sheet": "curious.webp",
   "cell": {
     "width": 288,
-    "height": 208
+    "height": 240
   },
   "pivot": {
     "x": 176,
@@ -25,7 +25,17 @@
         200,
         420
       ],
-      "loop": false
+      "loop": false,
+      "feet": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
     },
     "nudge": {
       "row": 1,
@@ -40,7 +50,17 @@
         400,
         600
       ],
-      "loop": false
+      "loop": false,
+      "feet": [
+        0,
+        1,
+        -2,
+        1,
+        3,
+        21,
+        0,
+        0
+      ]
     },
     "bat": {
       "row": 2,
@@ -55,7 +75,17 @@
         180,
         500
       ],
-      "loop": false
+      "loop": false,
+      "feet": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
     }
   }
 }
