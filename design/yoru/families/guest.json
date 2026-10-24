@@ -1,0 +1,118 @@
+{
+  "family": "guest",
+  "title": "A visitor inside a project window",
+  "description": "Yoru visiting a project's window, first Borrowed Coast's night chart: he looks in past the frame, hops in, sits inside behind the window's lower edge with his back half to us and watches the chart, notices when its view changes, and leaves the same way. The window's own frame hides his lower half; he is one actor moved into the window's layer, never a second Yoru. The chart is the site's and is never drawn.",
+  "cell": { "width": 288, "height": 240 },
+  "pivot": { "x": 144, "y": 235 },
+  "sequences": [
+    ["look-in", "sit-in", "watch*3", "notice", "watch*2", "rise"]
+  ],
+  "clips": [
+    {
+      "id": "look-in",
+      "frames": 6,
+      "durations": [300, 260, 500, 400, 260, 300],
+      "scale": { "frame": 0, "match": "everyday/turn-left#-1", "height": 1 },
+      "action": "Yoru, standing in profile facing the left edge of the image, has found a window into another place just in front of him; the window is NOT drawn. Curious, he leans forward and looks into it, puts one paw up on its edge at chest height, looks up and around inside with interest, and decides to go in.",
+      "beats": [
+        "Standing in profile facing the left edge of the image, ears up, looking ahead.",
+        "Leaning forward, neck stretched, peering ahead.",
+        "One front paw raised to chest height, resting on an edge in front of him that is not drawn.",
+        "Peering in, eyes wide with interest, ears forward.",
+        "Looking up and around, tail curling with curiosity.",
+        "Weight shifting back, a small decided look, ready to hop."
+      ],
+      "selected": "20261024T031620-5a5d98e2"
+    },
+    {
+      "id": "sit-in",
+      "frames": 6,
+      "durations": [260, 220, 220, 260, 300, 400],
+      "to": "watch",
+      "scale": { "frame": 0, "match": "everyday/turn-left#-1", "height": 1 },
+      "action": "Yoru settles down to watch something in front of and below him: starting in profile facing the left edge of the image, he turns away from the viewer and sits down, ending seated seen from behind and slightly to the side, his back and the star-map capelet towards us, ears up, looking forward and down into the scene.",
+      "beats": [
+        "Standing in profile facing the left edge of the image.",
+        "Turning away from the viewer, three-quarters from behind, tail swinging.",
+        "Seen from behind and slightly to the side, beginning to sit.",
+        "Sitting down, capelet spreading over his back, tail curling round.",
+        "Seated, seen from behind, looking forward and down, ears up.",
+        "Seated and settled, seen from behind, the side of his face just visible as he watches."
+      ],
+      "selected": "20261024T031723-58cc6ede"
+    },
+    {
+      "id": "watch",
+      "frames": 8,
+      "loop": true,
+      "durations": [700, 400, 600, 500, 700, 300, 300, 600],
+      "from": "sit-in",
+      "scale": { "frame": 0, "match": "sit-in#-1", "height": 0.78 },
+      "action": "Yoru sits seen from behind and slightly to the side, his back and star-map capelet towards us, watching something in front of and below him with calm interest. A quiet loop: his head tilts a little, one ear turns, the tail tip curls and uncurls, he breathes. Same seated pose and size in every frame.",
+      "beats": [
+        "Seated from behind, watching ahead.",
+        "Head tilting slightly to one side.",
+        "One ear turning towards something.",
+        "Head back to centre, watching.",
+        "Tail tip curling.",
+        "A slow blink, side of his face visible.",
+        "Tail tip uncurling.",
+        "Seated from behind, watching ahead, as in the first frame."
+      ],
+      "references": [
+        {
+          "frame": "guest/sit-in#-1",
+          "role": "Key pose: Yoru seated seen from behind, exactly how he sits while watching. Keep this pose, angle and size."
+        }
+      ],
+      "selected": "20261024T032017-608e5003"
+    },
+    {
+      "id": "notice",
+      "frames": 6,
+      "durations": [160, 200, 400, 300, 300, 400],
+      "from": "watch",
+      "to": "watch",
+      "scale": { "frame": 0, "match": "watch#0", "height": 0.78 },
+      "action": "Yoru, seated seen from behind and slightly to the side, watching, notices something change in front of him: ears snap up, his head turns to follow it, the blue crystal pendant at his throat catches a little light as he turns, then he settles back to watching, interested.",
+      "beats": [
+        "Seated from behind, watching ahead.",
+        "Ears snapping up, body straightening.",
+        "Head turning to follow something across the scene, the side of his face and the blue pendant visible, a small glint on the pendant.",
+        "Head following it further, eyes narrowed with interest.",
+        "Head coming back, ears relaxing.",
+        "Seated from behind, watching ahead again, tail curling once."
+      ],
+      "references": [
+        {
+          "frame": "guest/sit-in#-1",
+          "role": "Key pose: Yoru seated seen from behind, exactly how he sits while watching. Keep this pose, angle and size."
+        }
+      ],
+      "selected": "20261024T032120-5f47698c"
+    },
+    {
+      "id": "rise",
+      "frames": 6,
+      "durations": [300, 220, 220, 220, 240, 300],
+      "from": "watch",
+      "scale": { "frame": 0, "match": "watch#0", "height": 0.78, "endHeight": 1 },
+      "action": "Yoru has seen enough: from sitting seen from behind, he stands up, stretches his back briefly and turns until he faces the right edge of the image in profile, ready to leave.",
+      "beats": [
+        "Seated from behind, watching ahead.",
+        "Getting up, haunches lifting.",
+        "Standing seen from behind, a short stretch of the back.",
+        "Turning towards the right edge of the image.",
+        "Three-quarters towards the right edge, tail swinging round.",
+        "Standing in profile facing the right edge of the image, ready to go."
+      ],
+      "references": [
+        {
+          "frame": "guest/sit-in#-1",
+          "role": "Key pose: Yoru seated seen from behind, exactly how he sits while watching. Keep this pose, angle and size."
+        }
+      ],
+      "selected": "20261024T032220-d071ab9b"
+    }
+  ]
+}

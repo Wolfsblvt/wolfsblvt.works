@@ -17,7 +17,8 @@ function manifest(family: string, clips: Record<string, number>, loops: string[]
 }
 
 const library = () => new ClipLibrary([
-  manifest('presence', { idle: 4, look: 4, think: 4, wave: 4, hop: 7, 'run-left': 4, 'run-right': 4 }, ['idle', 'think']),
+  manifest('presence', { idle: 4, look: 4, think: 4, wave: 4, hop: 7, 'hop-right': 7, 'run-left': 4, 'run-right': 4 }, ['idle', 'think']),
+  manifest('guest', { 'look-in': 3, 'sit-in': 3, watch: 4, notice: 3, rise: 3 }, ['watch']),
   manifest('everyday', { 'walk-left': 4, 'walk-right': 4, 'turn-left': 3, 'turn-right': 3, 'sit-down': 3, sit: 3, 'stand-up': 3, yawn: 3, groom: 4 }, ['sit']),
   manifest('sleep', { settle: 4, sleep: 2, wake: 4 }, ['sleep']),
   manifest('curious', { inspect: 4 }),
@@ -149,5 +150,45 @@ describe('the resident', { timeout: 20000 }, () => {
     expect(seen).toContain('presence/wave');
     expect(seen).not.toContain('reactions/stare');
     expect(resident.remember()?.familiarity).toBe(0.8); // a poke in the window earns no familiarity
+  });
+
+  it('visits a scene as one actor: in through its layer, watching, noticing, and out again', async () => {
+    // Stand-ins that move the element between parents the way the DOM does.
+    const appended: string[] = [];
+    let parent: unknown = null;
+    const layerElement = { append: () => { parent = layerElement; appended.push('into window'); } } as unknown as HTMLElement;
+    const stageElement = { append: () => { parent = stageElement; appended.push('back home'); } } as unknown as HTMLElement;
+    parent = stageElement;
+    const world: World = {
+      places: [
+        { id: 'floor', kind: 'ground', surface: () => ({ left: 100, right: 700, y: 400 }) },
+        {
+          id: 'coast', kind: 'guest',
+          surface: () => ({ left: 300, right: 500, y: 360 }),
+          layer: () => ({ element: layerElement, origin: { x: 280, y: 150 } }),
+        },
+      ],
+      links: [
+        { from: 'floor', to: 'coast', way: 'hop', at: 'left', leave: 0.7, arrive: 0.8 },
+        { from: 'coast', to: 'floor', way: 'hop', at: 'right', arrive: 0.8 },
+      ],
+    };
+    const clock = virtualClock();
+    const element = { style: {}, dataset: {}, get parentElement() { return parent; } } as unknown as HTMLElement;
+    const trace: string[] = [];
+    const resident = new Resident({ player: new SpritePlayer(element, clock), clips: library(), world, start: { place: 'floor', at: 0.5 }, seed: 5, clock, trace: (l) => trace.push(l) });
+    resident.start();
+    while (resident.state.posture !== 'watch' && clock.now() < 600000) await new Promise((r) => setTimeout(r, 0));
+    expect(resident.state.place).toBe('coast');
+    expect(appended).toContain('into window');
+    resident.sceneChanged('coast');
+    const t = clock.now();
+    while (!trace.includes('→ leave') && clock.now() < t + 600000) await new Promise((r) => setTimeout(r, 0));
+    while (resident.state.place === 'coast' && clock.now() < t + 600000) await new Promise((r) => setTimeout(r, 0));
+    resident.stop();
+    expect(trace).toContain('coast changed');
+    expect(trace).toContain('→ notice');
+    expect(resident.state.place).toBe('floor');
+    expect(appended.at(-1)).toBe('back home');
   });
 });

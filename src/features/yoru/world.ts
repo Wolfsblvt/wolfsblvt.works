@@ -22,9 +22,15 @@ export interface Place {
   restful?: boolean;
   /** Things on this place he can go and inspect, by id with their current x. */
   curiosities?(): Array<{ id: string; x: number }>;
+  /**
+   * For a place inside something (a project window): the element he moves into while there, so its frame clips
+   * and covers him, and that element's position in stage coordinates.
+   */
+  layer?(): { element: HTMLElement; origin: { x: number; y: number } } | null;
 }
 
-export type Way = 'walk' | 'hop-up' | 'ladder-down';
+/** walk along; hop up, down or across (into or out of a window included); climb down by ladder. */
+export type Way = 'walk' | 'hop' | 'ladder-down';
 
 /** A connection: from the `at` end of one place to another. */
 export interface Link {
@@ -34,6 +40,8 @@ export interface Link {
   /** Which end of `from` he leaves by, and the x on `to` he arrives at, as a fraction of its width. */
   at: 'left' | 'right';
   arrive: number;
+  /** Where along `from` he sets off, when it is not the `at` end: a window above the middle of a floor. */
+  leave?: number;
 }
 
 export interface World {
@@ -70,3 +78,6 @@ export function route(world: World, from: string, to: string): Link[] | null {
   }
   return null;
 }
+
+/** Where along `from` a link sets off, as a fraction of its width. */
+export const departure = (link: Link): number => link.leave ?? (link.at === 'left' ? 0 : 1);

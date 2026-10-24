@@ -121,6 +121,24 @@
       "selected": "20261024T023619-34193642"
     },
     {
+      "id": "hop-right",
+      "frames": 7,
+      "durations": [180, 120, 100, 120, 100, 140, 260],
+      "scale": { "frame": 0, "match": "everyday/turn-right#-1", "height": 1 },
+      "action": "Yoru hops up onto something about half his height, seen from the side facing the right edge of the image: crouch, spring, tuck, land, settle. Light and precise, like a cat. The hop goes up and slightly to the right.",
+      "beats": [
+        "Standing in profile facing the right edge of the image, looking up at where he is going.",
+        "Crouching, weight back on his hind legs, tail low.",
+        "Springing up and forward, body stretched, front paws reaching.",
+        "At the top of the hop, legs tucked, capelet lifting.",
+        "Front paws landing higher up, hind legs following.",
+        "All four paws landed, body compressed.",
+        "Standing upleft again, composed, as if it was nothing."
+      ],
+      "stabilize": "chain",
+      "selected": "20261024T031525-0bedde34"
+    },
+    {
       "id": "think",
       "frames": 6,
       "loop": true,

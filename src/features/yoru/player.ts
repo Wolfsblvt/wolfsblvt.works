@@ -39,11 +39,15 @@ export class SpritePlayer {
   #clip: Clip | null = null;
   #x = 0;
   #y = 0;
+  /** The element his sprite currently lives in, and where that element sits in stage coordinates. */
+  #home: HTMLElement | null = null;
+  #layer: { element: HTMLElement; origin: { x: number; y: number } } | null = null;
   /** Playback speed multiplier for rehearsal; the site always plays at 1. */
   tempo = 1;
 
   constructor(element: HTMLElement, private readonly clock: Clock = realClock) {
     this.element = element;
+    this.#home = element.parentElement;
     element.style.position = 'absolute';
     element.style.backgroundRepeat = 'no-repeat';
     element.style.pointerEvents = 'auto';
@@ -57,6 +61,17 @@ export class SpritePlayer {
   moveTo(x: number, y: number): void {
     this.#x = x;
     this.#y = y;
+    this.#position();
+  }
+
+  /**
+   * Moves his one element into another layer (a project window, behind its frame), or back home with null. Stage
+   * coordinates stay the same; only what clips and covers him changes. There is never a second element.
+   */
+  setLayer(layer: { element: HTMLElement; origin: { x: number; y: number } } | null): void {
+    this.#layer = layer;
+    const parent = layer?.element ?? this.#home;
+    if (parent && this.element.parentElement !== parent) parent.append(this.element);
     this.#position();
   }
 
@@ -107,7 +122,8 @@ export class SpritePlayer {
     const clip = this.#clip;
     if (!clip) return;
     const s = clip.displayScale;
-    this.element.style.left = `${Math.round(this.#x - clip.pivot.x * s)}px`;
-    this.element.style.top = `${Math.round(this.#y - clip.pivot.y * s)}px`;
+    const origin = this.#layer?.origin ?? { x: 0, y: 0 };
+    this.element.style.left = `${Math.round(this.#x - origin.x - clip.pivot.x * s)}px`;
+    this.element.style.top = `${Math.round(this.#y - origin.y - clip.pivot.y * s)}px`;
   }
 }

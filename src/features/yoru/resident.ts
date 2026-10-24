@@ -11,9 +11,10 @@ import { mulberry32 } from '../../lib/shape';
 import type { Clip, ClipLibrary } from './clips';
 import { realClock, SpritePlayer, type Clock } from './player';
 import { spendTime, type Acquaintance } from './memory';
-import { place, route, type Link, type World } from './world';
+import { departure, place, route, type Link, type World } from './world';
 
-export type Posture = 'stand' | 'face-left' | 'face-right' | 'sit' | 'curl';
+/** 'watch' is sitting seen from behind, looking into a scene: how he is a guest inside a project window. */
+export type Posture = 'stand' | 'face-left' | 'face-right' | 'sit' | 'curl' | 'watch';
 
 /** Clip ids by role. The first one present in the library is used, so older families can stand in. */
 const ROLE = {
@@ -22,6 +23,12 @@ const ROLE = {
   think: ['presence/think'],
   wave: ['presence/wave', 'v1/wave'],
   hop: ['presence/hop'],
+  hopRight: ['presence/hop-right'],
+  lookIn: ['guest/look-in'],
+  sitIn: ['guest/sit-in'],
+  watch: ['guest/watch'],
+  notice: ['guest/notice'],
+  rise: ['guest/rise'],
   walkLeft: ['everyday/walk-left'],
   walkRight: ['everyday/walk-right'],
   runLeft: ['presence/run-left', 'v1/run-left'],
@@ -96,6 +103,8 @@ export class Resident {
   #curiosity = 0.4;
   #wariness = 0;
   #pokes: number[] = [];
+  /** When he arrived at his current place; a guest stays a while, then leaves. */
+  #arrivedAt = 0;
   #acquaintance: Acquaintance | null;
   /** Since the last remember(): time spent together and whether it included poking. */
   #since = 0;
@@ -163,6 +172,27 @@ export class Resident {
     this.#pokedSince = true;
     this.#trace(`poke ×${this.#pokes.length}`);
     this.#queued = this.#reaction(this.#pokes.length);
+    this.#current?.abort();
+  }
+
+  /**
+   * A place is getting the visitor's attention (a project window scrolled into view and used). If he is calm and the
+   * way is open, he goes to have a look; otherwise he carries on. An invitation, not a command.
+   */
+  invite(placeId: string): void {
+    if (this.#place === placeId || this.#calm() < 0.5) return;
+    const way = route(this.#world, this.#place, placeId);
+    if (!way || !way.every((link) => this.#canTake(link))) return;
+    this.#trace(`invited to ${placeId}`);
+    this.#queued = { name: 'visit', weight: () => 1, run: (signal) => this.#travel(way, signal) };
+    this.#current?.abort();
+  }
+
+  /** Something changed inside a scene (Borrowed Coast switched its view): if he is watching it, he notices. */
+  sceneChanged(placeId: string): void {
+    if (this.#place !== placeId || this.#posture !== 'watch' || !this.#has('notice')) return;
+    this.#trace(`${placeId} changed`);
+    this.#queued = { name: 'notice', weight: () => 1, run: (signal) => this.#once('notice', signal) };
     this.#current?.abort();
   }
 
@@ -239,7 +269,17 @@ export class Resident {
 
   #behaviours(): Behaviour[] {
     const here = place(this.#world, this.#place);
+    if (here.kind === 'guest') return this.#guestBehaviours();
     const list: Behaviour[] = [this.#idleBehaviour()];
+    const scenes = this.#reachable().filter((id) => place(this.#world, id).kind === 'guest');
+    list.push({
+      name: 'visit',
+      weight: () => (scenes.length && this.#has('sitIn', 'watch', 'rise') ? (0.3 + this.#curiosity * 1.6) * this.#calm() : 0),
+      run: async (signal) => {
+        const scene = scenes[Math.floor(this.#random() * scenes.length)]!;
+        await this.#travel(route(this.#world, this.#place, scene)!, signal);
+      },
+    });
     list.push({
       name: 'sit a while',
       weight: () => (this.#has('sitDown', 'sit', 'standUp') ? (0.7 + this.#rest * 0.6) * this.#calm() : 0),
@@ -313,6 +353,28 @@ export class Resident {
     return list;
   }
 
+  /** Inside a scene he watches for a while, notices what changes, and leaves the way he came. */
+  #guestBehaviours(): Behaviour[] {
+    const stayed = this.#clock.now() - this.#arrivedAt;
+    const exits = this.#reachable().filter((id) => place(this.#world, id).kind !== 'guest');
+    return [
+      {
+        name: 'watch',
+        weight: () => Math.max(0.05, 2.5 - stayed / 40000),
+        run: async (signal) => { await this.#toPosture('watch'); await this.#loop('watch', signal, 2 + Math.floor(this.#random() * 3)); },
+      },
+      {
+        name: 'leave',
+        weight: () => (exits.length ? Math.min(3, stayed / 45000) : 0),
+        run: async (signal) => {
+          this.#curiosity = Math.max(0, this.#curiosity - 0.5);
+          const exit = exits[Math.floor(this.#random() * exits.length)]!;
+          await this.#travel(route(this.#world, this.#place, exit)!, signal);
+        },
+      },
+    ];
+  }
+
   #idleBehaviour(): Behaviour {
     return {
       name: 'idle',
@@ -363,19 +425,25 @@ export class Resident {
 
   #canTake(link: Link): boolean {
     if (link.way === 'walk') return this.#has('walkLeft', 'walkRight');
-    if (link.way === 'hop-up') return link.at === 'left' && this.#has('hop', 'turnLeft');
+    if (link.way === 'hop') return this.#hopsLeft(link) ? this.#has('hop', 'turnLeft') : this.#has('hopRight', 'turnRight');
     return false; // the ladder needs its prop art first
   }
 
   async #travel(links: Link[], signal: AbortSignal): Promise<void> {
     for (const link of links) {
       if (signal.aborted) return;
-      await this.#walkTo(link.at === 'left' ? 0 : 1, signal);
+      await this.#walkTo(departure(link), signal);
       if (signal.aborted) return;
       if (link.way === 'walk') {
         this.#arrive(link);
-      } else if (link.way === 'hop-up') {
-        await this.#hopUp(link);
+      } else if (link.way === 'hop') {
+        // Before hopping into a scene he has a look inside first, when he is facing it.
+        if (this.#hopsLeft(link) && place(this.#world, link.to).kind === 'guest' && this.#has('lookIn')) {
+          await this.#toPosture('face-left');
+          await this.#once('lookIn', signal);
+          if (signal.aborted) return;
+        }
+        await this.#hop(link);
       }
     }
   }
@@ -405,13 +473,19 @@ export class Resident {
     }
   }
 
-  /** Hops from the left end of this place up onto the next one; the arc is his, the clip is drawn in place. */
-  async #hopUp(link: Link): Promise<void> {
+  /**
+   * Hops from one end of this place onto the next, up, down or across. The arc is his; the clip is drawn in place.
+   * Going into or out of a scene, he changes layer at the top of the arc, where he is clear of its frame.
+   */
+  async #hop(link: Link): Promise<void> {
     const from = place(this.#world, this.#place).surface()!;
-    const to = place(this.#world, link.to).surface()!;
-    await this.#toPosture('face-left');
-    const clip = this.#clip('hop');
-    const start = { x: from.left, y: from.y };
+    const destination = place(this.#world, link.to);
+    const to = destination.surface()!;
+    const leftwards = this.#hopsLeft(link);
+    await this.#toPosture(leftwards ? 'face-left' : 'face-right');
+    const clip = this.#clip(leftwards ? 'hop' : 'hopRight');
+    const start = { x: from.left + departure(link) * (from.right - from.left), y: from.y };
+    let swapped = false;
     const end = { x: to.left + link.arrive * (to.right - to.left), y: to.y };
     const frames = clip.durations.length;
     await this.#player.play(clip, {
@@ -420,16 +494,30 @@ export class Resident {
         // frames 0-1 gather, 2-4 travel, 5-6 land
         const t = Math.max(0, Math.min(1, (frame - 1.5) / Math.max(1, frames - 4)));
         const lift = Math.sin(t * Math.PI) * 24;
+        if (!swapped && t >= 0.5) {
+          swapped = true;
+          this.#player.setLayer(destination.layer?.() ?? null);
+        }
         this.#player.moveTo(start.x + (end.x - start.x) * t, start.y + (end.y - start.y) * t - lift);
       },
     });
     this.#arrive(link);
-    this.#posture = 'face-left';
+    this.#posture = leftwards ? 'face-left' : 'face-right';
+  }
+
+  /** Whether a hop goes towards the left, from where it sets off to where it lands. */
+  #hopsLeft(link: Link): boolean {
+    const from = place(this.#world, link.from).surface();
+    const to = place(this.#world, link.to).surface();
+    if (!from || !to) return link.at === 'left';
+    const start = from.left + departure(link) * (from.right - from.left);
+    return to.left + link.arrive * (to.right - to.left) < start;
   }
 
   #arrive(link: Link): void {
     this.#place = link.to;
     this.#at = link.arrive;
+    this.#arrivedAt = this.#clock.now();
     this.#follow();
   }
 
@@ -443,10 +531,12 @@ export class Resident {
     this.#trace(`moved to ${this.#place}`);
   }
 
-  /** Puts the sprite where his place says he is. */
+  /** Puts the sprite where his place says he is, in that place's layer. */
   #follow(): void {
-    const surface = place(this.#world, this.#place).surface();
+    const here = place(this.#world, this.#place);
+    const surface = here.surface();
     if (!surface) return;
+    this.#player.setLayer(here.layer?.() ?? null);
     this.#player.moveTo(surface.left + this.#at * (surface.right - surface.left), surface.y);
   }
 
@@ -460,7 +550,10 @@ export class Resident {
     let guard = 0;
     while (this.#posture !== target && guard++ < 4) {
       const p = this.#posture;
-      if (p === 'face-left') await this.#turn('turnLeft', true, 'stand');
+      if (target === 'watch' && p === 'face-left') await this.#transition('sitIn', 'watch');
+      else if (target === 'watch' && p === 'stand') await this.#turn('turnLeft', false, 'face-left');
+      else if (p === 'watch') await this.#transition('rise', 'face-right');
+      else if (p === 'face-left') await this.#turn('turnLeft', true, 'stand');
       else if (p === 'face-right') await this.#turn('turnRight', true, 'stand');
       else if (p === 'sit') await this.#transition('standUp', 'stand');
       else if (p === 'curl') await this.#transition('wake', 'stand');

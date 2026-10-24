@@ -230,6 +230,7 @@ async function processRun(family, clip, dir) {
   const ref = await canonicalRef();
   const drift = signatureDistance(colourSignature(rgba, width * height), colourSignature(ref.rgba, ref.width * ref.height));
   if (drift > DRIFT_LIMIT) warnings.push(`colours drift from the canonical Yoru (${drift.toFixed(2)})`);
+  else if (drift > DRIFT_LIMIT - 0.07) warnings.push(`check the colours: close to drifting (${drift.toFixed(2)})`);
   const props = propMask ? frames.map((f, i) => propPlacement(propMask, width, layout, f, i, placed[i], scaleAt(i), offsets[i])) : undefined;
   await writeContact(dir, family.cell, family.pivot, await standingCell(), props);
   if (props?.some((p) => !p)) warnings.push(`prop missing in frame(s) ${props.flatMap((p, i) => (p ? [] : [i + 1])).join(', ')}`);
@@ -560,6 +561,13 @@ async function cmdServe() {
       if (path === '/') { res.writeHead(302, { location: '/preview/' }).end(); return; }
       if (path === '/preview/') await writePreview(P, await standingCell());
       if (path === '/rehearsal/') return send(res, join(rehearsal, 'index.html'));
+      // The project windows' real captures, so a guest visit is rehearsed against the scene he will visit.
+      if (path.startsWith('/walk-assets/')) {
+        const assets = join(root, 'design', 'the-walk', 'assets');
+        const file = resolve(assets, path.slice('/walk-assets/'.length));
+        if (!file.startsWith(assets) || !existsSync(file)) { res.writeHead(404).end(); return; }
+        return send(res, file);
+      }
       if (path === '/sheets/') {
         const packed = existsSync(P.sheets) ? readdirSync(P.sheets).filter((f) => f.endsWith('.json')).map((f) => f.slice(0, -5)) : [];
         res.writeHead(200, { 'content-type': types['.json'], 'cache-control': 'no-store' }).end(JSON.stringify(packed));

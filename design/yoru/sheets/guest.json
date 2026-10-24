@@ -1,0 +1,88 @@
+{
+  "family": "guest",
+  "title": "A visitor inside a project window",
+  "sheet": "guest.webp",
+  "cell": {
+    "width": 288,
+    "height": 240
+  },
+  "pivot": {
+    "x": 144,
+    "y": 235
+  },
+  "displayScale": 0.5,
+  "clips": {
+    "look-in": {
+      "row": 0,
+      "frames": 6,
+      "durations": [
+        300,
+        260,
+        500,
+        400,
+        260,
+        300
+      ],
+      "loop": false
+    },
+    "sit-in": {
+      "row": 1,
+      "frames": 6,
+      "durations": [
+        260,
+        220,
+        220,
+        260,
+        300,
+        400
+      ],
+      "loop": false,
+      "to": "watch"
+    },
+    "watch": {
+      "row": 2,
+      "frames": 8,
+      "durations": [
+        700,
+        400,
+        600,
+        500,
+        700,
+        300,
+        300,
+        600
+      ],
+      "loop": true,
+      "from": "sit-in"
+    },
+    "notice": {
+      "row": 3,
+      "frames": 6,
+      "durations": [
+        160,
+        200,
+        400,
+        300,
+        300,
+        400
+      ],
+      "loop": false,
+      "from": "watch",
+      "to": "watch"
+    },
+    "rise": {
+      "row": 4,
+      "frames": 6,
+      "durations": [
+        300,
+        220,
+        220,
+        220,
+        240,
+        300
+      ],
+      "loop": false,
+      "from": "watch"
+    }
+  }
+}

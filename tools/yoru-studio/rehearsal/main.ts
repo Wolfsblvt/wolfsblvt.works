@@ -37,13 +37,31 @@ const world: World = {
     }),
     boxPlace('nook', 'nook', '[data-nook]', { restful: true }),
     boxPlace('ledge', 'perch', '[data-ledge]', { restful: true }),
+    {
+      // Borrowed Coast's window: he sits behind its lower edge, inside its layer, so the frame clips and covers him.
+      id: 'coast',
+      kind: 'guest',
+      surface(): Surface | null {
+        const win = stage.querySelector<HTMLElement>('[data-window]');
+        if (!win || win.hidden) return null;
+        const left = win.offsetLeft + win.offsetWidth * 0.08;
+        return { left, right: win.offsetLeft + win.offsetWidth * 0.7, y: win.offsetTop + win.offsetHeight + 2 };
+      },
+      layer() {
+        const win = stage.querySelector<HTMLElement>('[data-window]');
+        const layer = win?.querySelector<HTMLElement>('[data-window-layer]');
+        return win && layer ? { element: layer, origin: { x: win.offsetLeft, y: win.offsetTop } } : null;
+      },
+    },
   ],
   links: [
     { from: 'floor', to: 'nook', way: 'walk', at: 'right', arrive: 0.05 },
     { from: 'nook', to: 'floor', way: 'walk', at: 'left', arrive: 0.95 },
-    { from: 'floor', to: 'ledge', way: 'hop-up', at: 'left', arrive: 0.8 },
-    // No way down drawn yet: he walks off the ledge's right end onto the floor. The ladder and a hop down replace this.
-    { from: 'ledge', to: 'floor', way: 'walk', at: 'right', arrive: 0.02 },
+    { from: 'floor', to: 'ledge', way: 'hop', at: 'left', arrive: 0.8 },
+    { from: 'ledge', to: 'floor', way: 'hop', at: 'right', arrive: 0.08 },
+    // Into the window from the floor below its right side, and out again from the sill's right end.
+    { from: 'floor', to: 'coast', way: 'hop', at: 'left', leave: 0.74, arrive: 0.85 },
+    { from: 'coast', to: 'floor', way: 'hop', at: 'right', arrive: 0.8 },
   ],
 };
 
@@ -99,6 +117,15 @@ async function boot(): Promise<void> {
 }
 
 document.querySelector('[data-restart]')!.addEventListener('click', () => void boot());
+document.querySelector('[data-invite]')!.addEventListener('click', () => resident?.invite('coast'));
+// Switching the chart's view is a scene change he can notice while watching.
+for (const button of document.querySelectorAll<HTMLButtonElement>('[data-mode]')) {
+  button.addEventListener('click', () => {
+    document.querySelector<HTMLImageElement>('[data-window-img]')!.src = `/walk-assets/borrowed-coast/window-${button.dataset['mode']}.png`;
+    for (const b of document.querySelectorAll<HTMLButtonElement>('[data-mode]')) b.setAttribute('aria-pressed', String(b === button));
+    resident?.sceneChanged('coast');
+  });
+}
 rememberBox.addEventListener('change', () => {
   if (rememberBox.checked) {
     const fresh = newAcquaintance(today());
