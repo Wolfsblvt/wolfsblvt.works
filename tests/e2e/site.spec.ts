@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import operator from '../../src/data/legal-operator.example.json' with { type: 'json' };
 
 const PAGES = ['/', '/privacy/', '/impressum/', '/contact/', '/not-a-place/'];
 
@@ -37,6 +38,28 @@ test('source shows the obvious operator fixture, marked as such', async ({ page 
   await page.goto('/impressum/');
   await expect(page.locator('.fx-key')).toBeVisible();
   await expect(page.locator('address')).toContainText('Max Mustermann');
+});
+
+test('Privacy identifies the controller with the same projected postal address as Impressum', async ({ page, request }, testInfo) => {
+  const address = operator.postalAddress;
+  const lines = [address.streetAddress, `${address.postalCode} ${address.locality}`, address.countryName];
+  for (const path of ['/impressum/', '/privacy/']) {
+    await page.goto(path);
+    for (const line of lines) await expect(page.locator('address')).toContainText(line);
+    await expect(page.locator('address .fx')).toHaveCount(path === '/privacy/' ? 3 : 4);
+    await expect(page.locator('article')).toContainText(operator.legalName);
+  }
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/privacy/');
+  await page.locator('address').scrollIntoViewIfNeeded();
+  await expect(page.locator('address')).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
+  await page.screenshot({ path: testInfo.outputPath('privacy-controller-fixture-390.png') });
+  for (const path of ['/', '/contact/', '/404.html', '/503.html']) {
+    const html = await (await request.get(path)).text();
+    expect(html).not.toContain(address.streetAddress);
+    expect(html).not.toContain(`${address.postalCode} ${address.locality}`);
+  }
 });
 
 test('the home page has a social card, structured identity and the per-browser seed', async ({ page }) => {
