@@ -55,7 +55,7 @@ export default {
         pending: false,
       },
       turnstile: { value: 'Cloudflare Turnstile', pending: false },
-      contactLogRetention: { value: 'Those records are kept for up to 7 days.', pending: false },
+      contactLogRetention: { value: 'Those technical records are kept for up to 12 months in a private operational archive.', pending: false },
     },
   },
 };
