@@ -19,6 +19,8 @@ function manifest(family: string, clips: Record<string, number>, loops: string[]
 const library = () => new ClipLibrary([
   manifest('presence', { idle: 4, look: 4, think: 4, wave: 4, hop: 7, 'hop-right': 7, 'run-left': 4, 'run-right': 4 }, ['idle', 'think']),
   manifest('guest', { 'look-in': 3, 'sit-in': 3, watch: 4, notice: 3, rise: 3 }, ['watch']),
+  manifest('ladder', { produce: 3, mount: 3, climb: 4, dismount: 3, stow: 3 }, ['climb']),
+  manifest('ladder-prop', { open: 1 }),
   manifest('everyday', { 'walk-left': 4, 'walk-right': 4, 'turn-left': 3, 'turn-right': 3, 'sit-down': 3, sit: 3, 'stand-up': 3, yawn: 3, groom: 4 }, ['sit']),
   manifest('sleep', { settle: 4, sleep: 2, wake: 4 }, ['sleep']),
   manifest('curious', { inspect: 4 }),
@@ -190,5 +192,27 @@ describe('the resident', { timeout: 20000 }, () => {
     expect(trace).toContain('→ notice');
     expect(resident.state.place).toBe('floor');
     expect(appended.at(-1)).toBe('back home');
+  });
+
+  it('climbs down by ladder in whole rungs, lands on the lower place and puts the ladder away', async () => {
+    const created: Array<{ style: Record<string, string>; dataset: Record<string, string> }> = [];
+    const doc = { createElement: () => { const el = { style: {} as Record<string, string>, dataset: {} as Record<string, string> }; created.push(el); return el; } };
+    const element = { style: {}, dataset: {}, parentElement: null, ownerDocument: doc, before: () => {} } as unknown as HTMLElement;
+    const world: World = {
+      places: [
+        { id: 'ledge', kind: 'perch', surface: () => ({ left: 300, right: 500, y: 300 }) },
+        { id: 'floor', kind: 'ground', surface: () => ({ left: 100, right: 700, y: 420 }) },
+      ],
+      links: [{ from: 'ledge', to: 'floor', way: 'ladder-down', at: 'left', arrive: 0.3 }],
+    };
+    const clock = virtualClock();
+    const trace: string[] = [];
+    const resident = new Resident({ player: new SpritePlayer(element, clock), clips: library(), world, start: { place: 'ledge', at: 0.5 }, seed: 2, clock, trace: (l) => trace.push(l) });
+    resident.start();
+    while (resident.state.place !== 'floor' && clock.now() < 600000) await new Promise((r) => setTimeout(r, 0));
+    resident.stop();
+    expect(resident.state.place).toBe('floor');
+    expect(created).toHaveLength(1); // one ladder, never a second Yoru
+    expect(created[0]!.style['visibility']).toBe('hidden');
   });
 });

@@ -29,6 +29,7 @@ export interface SheetManifest {
     to?: string;
     prop?: string;
     props?: Array<PropPlacement | null>;
+    feet?: number[];
   }>;
 }
 
@@ -46,6 +47,8 @@ export interface Clip {
   loop: boolean;
   prop?: string;
   props?: Array<PropPlacement | null>;
+  /** Feet below the pivot in each frame, in master pixels (negative when he is above it). */
+  feet: number[];
 }
 
 export class ClipLibrary {
@@ -68,6 +71,7 @@ export class ClipLibrary {
           row: c.row,
           durations: c.durations,
           loop: c.loop,
+          feet: c.feet ?? c.durations.map(() => 0),
           ...(c.prop && { prop: c.prop }),
           ...(c.props && { props: c.props }),
         });

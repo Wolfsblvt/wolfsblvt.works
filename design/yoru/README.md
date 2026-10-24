@@ -63,6 +63,16 @@ Say directions as "faces the left edge of the image", not "faces left": the gene
 and turns him the other way. Things he touches that belong to the site (a Pile piece, a ledge, a hanging tag) are
 never drawn; the clip says where in front of him the empty spot is, and the resident puts the real object there.
 
+Two key channels go further than an empty spot. A clip with a `prop` has the generator paint it in flat green and a
+clip with `scenery` paints it in flat blue; the studio removes both like the background, so Yoru comes out alone,
+and records where they were in every frame (`props` and `scenery` in the manifest). `"ground": "scenery"` uses the
+blue's top edge as the floor, so a ledge stays put while he steps down past it. Use the channels for things that
+stay still while he moves (the hanging ladder, the ledge); draw the real object when it moves with him.
+
+A family with `"subject": "prop"` draws things from his world instead of Yoru: a `propDescription` replaces the
+identity lock, the style anchor goes along as rendering style only, and `"scale": { "pixels": n }` gives its size.
+Props that a clip must match (the ladder) are attached to that clip as references, so every clip draws the same one.
+
 Transitions connect through shared poses. A clip that starts or ends in another clip's pose attaches it as a
 reference (`reference/key-*.png` or `"frame": "family/clip#n"`) and matches its scale to it. Write waking as its own
 movement, not settling reversed, and write left-facing poses as drawn poses rather than mirrors: he is asymmetric.
@@ -81,7 +91,10 @@ before selecting it. A clean contact sheet does not show jitter, sliding feet or
 | `curious` | inspect, nudge off a ledge, bat at something hanging | Selected and packed |
 | `reactions` | unimpressed stare, startle, peek from behind an edge | Selected and packed |
 | `codex` | jumping, failed, waiting, working: the desktop pet's own states | Selected and packed |
-| `ladder` | produce, mount, climb, dismount, stow, with the ladder in the prop channel | First candidates; mount and dismount need a visible ledge, and the ladder needs a prop reference |
+| `guest` | look-in, sit-in, watch, notice, rise: a visit inside a project window | Selected and packed |
+| `nook` | his cushion and four keepsakes (prop family) | Selected and packed |
+| `ladder-prop` | the folding ladder, open and folded (prop family) | Selected and packed |
+| `ladder` | produce, mount, climb, dismount, stow | Round two: the real ladder where it moves with him, green ladder and blue ledge where it hangs |
 
 Two more things are made from the packed sheets:
 

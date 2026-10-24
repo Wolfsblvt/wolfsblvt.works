@@ -1,0 +1,340 @@
+{
+  "family": "ladder",
+  "title": "A sensible way down",
+  "sheet": "ladder.webp",
+  "cell": {
+    "width": 320,
+    "height": 720
+  },
+  "pivot": {
+    "x": 176,
+    "y": 400
+  },
+  "displayScale": 0.5,
+  "clips": {
+    "produce": {
+      "row": 0,
+      "frames": 8,
+      "durations": [
+        400,
+        260,
+        260,
+        300,
+        240,
+        240,
+        300,
+        400
+      ],
+      "loop": false,
+      "feet": [
+        0,
+        0,
+        0,
+        0,
+        89,
+        120,
+        132,
+        133
+      ]
+    },
+    "mount": {
+      "row": 1,
+      "frames": 6,
+      "durations": [
+        260,
+        220,
+        220,
+        240,
+        220,
+        260
+      ],
+      "loop": false,
+      "feet": [
+        1,
+        1,
+        21,
+        73,
+        178,
+        196
+      ],
+      "prop": "ladder",
+      "props": [
+        {
+          "left": 125,
+          "top": 385,
+          "right": 173,
+          "bottom": 602,
+          "cx": 147,
+          "cy": 496
+        },
+        {
+          "left": 118,
+          "top": 385,
+          "right": 166,
+          "bottom": 603,
+          "cx": 140,
+          "cy": 496
+        },
+        {
+          "left": 149,
+          "top": 386,
+          "right": 197,
+          "bottom": 602,
+          "cx": 170,
+          "cy": 495
+        },
+        {
+          "left": 141,
+          "top": 388,
+          "right": 184,
+          "bottom": 603,
+          "cx": 162,
+          "cy": 499
+        },
+        {
+          "left": 132,
+          "top": 385,
+          "right": 179,
+          "bottom": 606,
+          "cx": 152,
+          "cy": 500
+        },
+        {
+          "left": 120,
+          "top": 383,
+          "right": 169,
+          "bottom": 603,
+          "cx": 140,
+          "cy": 496
+        }
+      ],
+      "scenery": [
+        {
+          "left": 167,
+          "top": 400,
+          "right": 277,
+          "bottom": 620,
+          "cx": 222,
+          "cy": 510
+        },
+        {
+          "left": 66,
+          "top": 400,
+          "right": 270,
+          "bottom": 620,
+          "cx": 210,
+          "cy": 510
+        },
+        {
+          "left": 96,
+          "top": 400,
+          "right": 297,
+          "bottom": 619,
+          "cx": 242,
+          "cy": 510
+        },
+        {
+          "left": 182,
+          "top": 400,
+          "right": 284,
+          "bottom": 618,
+          "cx": 237,
+          "cy": 521
+        },
+        {
+          "left": 174,
+          "top": 400,
+          "right": 283,
+          "bottom": 623,
+          "cx": 242,
+          "cy": 521
+        },
+        {
+          "left": 162,
+          "top": 399,
+          "right": 268,
+          "bottom": 619,
+          "cx": 229,
+          "cy": 506
+        }
+      ]
+    },
+    "climb": {
+      "row": 2,
+      "frames": 4,
+      "durations": [
+        180,
+        180,
+        180,
+        180
+      ],
+      "loop": true,
+      "feet": [
+        -18,
+        -18,
+        -13,
+        0
+      ],
+      "prop": "ladder",
+      "props": [
+        {
+          "left": 154,
+          "top": 159,
+          "right": 229,
+          "bottom": 441,
+          "cx": 189,
+          "cy": 306
+        },
+        {
+          "left": 142,
+          "top": 159,
+          "right": 216,
+          "bottom": 441,
+          "cx": 177,
+          "cy": 306
+        },
+        {
+          "left": 136,
+          "top": 159,
+          "right": 210,
+          "bottom": 440,
+          "cx": 170,
+          "cy": 304
+        },
+        {
+          "left": 124,
+          "top": 160,
+          "right": 198,
+          "bottom": 441,
+          "cx": 158,
+          "cy": 303
+        }
+      ]
+    },
+    "dismount": {
+      "row": 3,
+      "frames": 5,
+      "durations": [
+        220,
+        220,
+        200,
+        240,
+        360
+      ],
+      "loop": false,
+      "feet": [
+        -31,
+        5,
+        7,
+        5,
+        7
+      ],
+      "prop": "ladder",
+      "props": [
+        {
+          "left": 108,
+          "top": 196,
+          "right": 176,
+          "bottom": 403,
+          "cx": 136,
+          "cy": 303
+        },
+        {
+          "left": 105,
+          "top": 196,
+          "right": 175,
+          "bottom": 403,
+          "cx": 132,
+          "cy": 302
+        },
+        {
+          "left": 108,
+          "top": 196,
+          "right": 162,
+          "bottom": 403,
+          "cx": 135,
+          "cy": 302
+        },
+        {
+          "left": 83,
+          "top": 197,
+          "right": 137,
+          "bottom": 404,
+          "cx": 110,
+          "cy": 303
+        },
+        {
+          "left": 89,
+          "top": 197,
+          "right": 143,
+          "bottom": 404,
+          "cx": 116,
+          "cy": 302
+        }
+      ],
+      "scenery": [
+        {
+          "left": 87,
+          "top": 400,
+          "right": 264,
+          "bottom": 437,
+          "cx": 176,
+          "cy": 418
+        },
+        {
+          "left": 93,
+          "top": 400,
+          "right": 271,
+          "bottom": 437,
+          "cx": 182,
+          "cy": 418
+        },
+        {
+          "left": 94,
+          "top": 400,
+          "right": 272,
+          "bottom": 437,
+          "cx": 183,
+          "cy": 419
+        },
+        {
+          "left": 80,
+          "top": 400,
+          "right": 258,
+          "bottom": 437,
+          "cx": 169,
+          "cy": 419
+        },
+        {
+          "left": 87,
+          "top": 400,
+          "right": 264,
+          "bottom": 437,
+          "cx": 175,
+          "cy": 419
+        }
+      ]
+    },
+    "stow": {
+      "row": 4,
+      "frames": 6,
+      "durations": [
+        300,
+        240,
+        240,
+        240,
+        260,
+        400
+      ],
+      "loop": false,
+      "feet": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  }
+}

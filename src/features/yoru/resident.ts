@@ -29,6 +29,12 @@ const ROLE = {
   watch: ['guest/watch'],
   notice: ['guest/notice'],
   rise: ['guest/rise'],
+  produce: ['ladder/produce'],
+  mount: ['ladder/mount'],
+  climb: ['ladder/climb'],
+  dismount: ['ladder/dismount'],
+  stow: ['ladder/stow'],
+  ladder: ['ladder-prop/open'],
   walkLeft: ['everyday/walk-left'],
   walkRight: ['everyday/walk-right'],
   runLeft: ['presence/run-left', 'v1/run-left'],
@@ -49,6 +55,14 @@ const ROLE = {
   peek: ['reactions/peek'],
 } as const;
 type Role = keyof typeof ROLE;
+
+/**
+ * The ladder, in master pixels. The generator drew the ladder he climbs smaller than the prop's natural size, and
+ * his paws are what must meet the rungs, so the prop is drawn at `spriteScale` to match the ladder in the climb
+ * clip: rungs `rung` apart there (measured from the green ladder: one climb cycle moves him exactly this far), 42.5
+ * apart in ladder-prop/open, whose hooks sit `hooksAbovePivot` above its pivot.
+ */
+const LADDER = { rung: 33.5, spriteScale: 33.5 / 42.5, hooksAbovePivot: 420 };
 
 /** The shortest beat of his life, in milliseconds; see the loop. */
 const MIN_BEAT = 400;
@@ -426,7 +440,8 @@ export class Resident {
   #canTake(link: Link): boolean {
     if (link.way === 'walk') return this.#has('walkLeft', 'walkRight');
     if (link.way === 'hop') return this.#hopsLeft(link) ? this.#has('hop', 'turnLeft') : this.#has('hopRight', 'turnRight');
-    return false; // the ladder needs its prop art first
+    // The ladder clips are drawn with the drop to his left.
+    return this.#hopsLeft(link) && this.#has('produce', 'mount', 'climb', 'dismount', 'stow', 'ladder', 'turnLeft');
   }
 
   async #travel(links: Link[], signal: AbortSignal): Promise<void> {
@@ -444,6 +459,8 @@ export class Resident {
           if (signal.aborted) return;
         }
         await this.#hop(link);
+      } else if (link.way === 'ladder-down') {
+        await this.#climbDown(link);
       }
     }
   }
@@ -503,6 +520,78 @@ export class Resident {
     });
     this.#arrive(link);
     this.#posture = leftwards ? 'face-left' : 'face-right';
+  }
+
+  /**
+   * Down a ledge by ladder, a deliberate and slightly unnecessary effort: he produces the ladder, hooks it over the
+   * edge, climbs down rung by rung and puts it away. The whole descent is one committed movement: a poke waits until
+   * he stands on the ground again rather than leaving him frozen half-way down. The ladder hangs as its own sprite
+   * where the generator painted it, so it stays put while he moves down it.
+   */
+  async #climbDown(link: Link): Promise<void> {
+    const from = place(this.#world, this.#place).surface()!;
+    const to = place(this.#world, link.to).surface()!;
+    const hard = this.#hard.signal;
+    if (this.#reduced) { this.#arrive(link); return; }
+    await this.#toPosture('face-left');
+    const produce = this.#clip('produce'), mount = this.#clip('mount'), climb = this.#clip('climb');
+    const dismount = this.#clip('dismount'), stow = this.#clip('stow');
+    const s = climb.displayScale;
+    const x = this.#player.position.x;
+    await this.#player.play(produce, { signal: hard });
+
+    // The hanging ladder: where mount's first frame has it, or just past his toes.
+    const hanging = mount.props?.[0];
+    const ladderX = hanging ? x + (hanging.cx - mount.pivot.x) * s : x - 20;
+    const hooksY = hanging ? from.y + (hanging.top - mount.pivot.y) * s : from.y - 8;
+    const ladder = this.#ladderSprite();
+    const ladderClip = this.#clip('ladder');
+    ladder.hold(ladderClip, 0);
+    ladder.element.style.transformOrigin = `${ladderClip.pivot.x * s}px ${ladderClip.pivot.y * s}px`;
+    ladder.element.style.transform = `scale(${LADDER.spriteScale})`;
+    // A drop shorter than the ladder: it stands on the lower floor instead of reaching through it.
+    ladder.moveTo(ladderX, Math.min(hooksY + LADDER.hooksAbovePivot * LADDER.spriteScale * s, to.y));
+    ladder.element.style.visibility = '';
+
+    await this.#player.play(mount, { signal: hard });
+    // Each clip drew the ladder somewhere in its own cell; the ladder now hangs still, so he is placed per clip
+    // wherever puts that clip's ladder onto it.
+    const onLadder = (clip: Clip, fallback: number) => {
+      const p = clip.props?.find((placed) => placed) ?? null;
+      return p ? ladderX - (p.cx - clip.pivot.x) * s : fallback;
+    };
+    // Climb from where mount left his feet, one rung per cycle, until his feet are where dismount begins.
+    const climbX = onLadder(climb, x);
+    let y = from.y + (mount.feet.at(-1)! - climb.feet[0]!) * s;
+    const stopAt = to.y + (dismount.feet[0]! - climb.feet[0]!) * s;
+    this.#player.moveTo(climbX, y);
+    while (!hard.aborted && y < stopAt - (LADDER.rung * s) / 2) {
+      await this.#player.play(climb, { signal: hard });
+      y += LADDER.rung * s;
+      this.#player.moveTo(climbX, y);
+    }
+    const groundX = onLadder(dismount, climbX);
+    this.#player.moveTo(groundX, to.y);
+    await this.#player.play(dismount, { signal: hard });
+    ladder.element.style.visibility = 'hidden';
+    await this.#player.play(stow, { signal: hard });
+    this.#place = link.to;
+    this.#at = Math.max(0, Math.min(1, (groundX - to.left) / (to.right - to.left)));
+    this.#arrivedAt = this.#clock.now();
+    this.#posture = 'stand';
+    this.#follow();
+  }
+
+  /** The ladder's own element beside his, created on first use; scenery, not a second Yoru. */
+  #ladder: SpritePlayer | null = null;
+  #ladderSprite(): SpritePlayer {
+    if (this.#ladder) return this.#ladder;
+    const el = this.#player.element.ownerDocument.createElement('div');
+    el.dataset['yoruLadder'] = '';
+    this.#player.element.before(el);
+    this.#ladder = new SpritePlayer(el, this.#clock);
+    el.style.pointerEvents = 'none';
+    return this.#ladder;
   }
 
   /** Whether a hop goes towards the left, from where it sets off to where it lands. */

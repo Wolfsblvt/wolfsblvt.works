@@ -1,0 +1,32 @@
+{
+  "family": "ladder-prop",
+  "title": "The folding ladder",
+  "sheet": "ladder-prop.webp",
+  "cell": {
+    "width": 160,
+    "height": 480
+  },
+  "pivot": {
+    "x": 80,
+    "y": 470
+  },
+  "displayScale": 0.5,
+  "clips": {
+    "open": {
+      "row": 0,
+      "frames": 1,
+      "durations": [
+        1000
+      ],
+      "loop": false
+    },
+    "folded": {
+      "row": 1,
+      "frames": 1,
+      "durations": [
+        1000
+      ],
+      "loop": false
+    }
+  }
+}

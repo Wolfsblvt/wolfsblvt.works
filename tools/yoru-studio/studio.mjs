@@ -419,7 +419,10 @@ async function cmdPack(familyId) {
     manifest.clips[clip.id] = {
       row, frames: clip.frames, durations, loop: clip.loop ?? false,
       ...(clip.from && { from: clip.from }), ...(clip.to && { to: clip.to }),
+      // Where his feet are in each frame, relative to the pivot: what joins one clip's last pose to the next one's first.
+      feet: reg.placed.map((p) => p.top + p.height - family.pivot.y),
       ...(reg.props && { prop: clip.prop.name, props: reg.props }),
+      ...(reg.scenery && { scenery: reg.scenery }),
     };
   });
   mkdirSync(P.sheets, { recursive: true });

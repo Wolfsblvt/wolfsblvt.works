@@ -48,6 +48,8 @@ const world: World = {
       },
     },
     boxPlace('ledge', 'perch', '[data-ledge]', { restful: true }),
+    // Where he starts, high on the right. Like the site's hero perch: once he has climbed down, he does not go back.
+    boxPlace('perch', 'perch', '[data-perch]'),
     {
       // Borrowed Coast's window: he sits behind its lower edge, inside its layer, so the frame clips and covers him.
       id: 'coast',
@@ -66,6 +68,7 @@ const world: World = {
     },
   ],
   links: [
+    { from: 'perch', to: 'floor', way: 'ladder-down', at: 'left', arrive: 0.87 },
     { from: 'floor', to: 'nook', way: 'walk', at: 'right', arrive: 0.05 },
     { from: 'nook', to: 'floor', way: 'walk', at: 'left', arrive: 0.95 },
     { from: 'floor', to: 'ledge', way: 'hop', at: 'left', arrive: 0.8 },
@@ -143,7 +146,7 @@ async function boot(): Promise<void> {
     player,
     clips,
     world,
-    start: { place: 'floor', at: 0.6 },
+    start: { place: 'perch', at: 0.5 },
     seed: Number(document.querySelector<HTMLInputElement>('[data-seed]')!.value) || 1,
     reducedMotion: document.querySelector<HTMLInputElement>('[data-reduced]')!.checked,
     acquaintance: (() => { const r = memory.load(); return r ? welcomeBack(r, today()) : null; })(),
@@ -151,6 +154,8 @@ async function boot(): Promise<void> {
   });
   el.addEventListener('click', () => resident?.poke());
   resident.start();
+  // For poking at him from the console while rehearsing; the site exposes nothing like this.
+  (window as unknown as { yoru: Resident }).yoru = resident;
   trace('— start —');
 }
 
