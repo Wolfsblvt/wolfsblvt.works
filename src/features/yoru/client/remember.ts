@@ -7,7 +7,7 @@
  * his nook at the end of the home page, or after his first answer to a poke in the smaller rooms. "not today" is as
  * easy as yes, and the note does not come back on that page. A returning visitor finds keepsakes from the scenes they
  * visited together beside his cushion, his favourite resting place, and, on a new day, "oh. you again." in the hero.
- * Copy is Wolf's to confirm (draft, 2026-10-24).
+ * Wolf kept the copy as drafted (2026-10-24: "The remembering copy is fine as drafted. Keep it.").
  */
 import { browserMemory, newAcquaintance, welcomeBack, type Acquaintance } from '../memory';
 import type { Resident } from '../resident';

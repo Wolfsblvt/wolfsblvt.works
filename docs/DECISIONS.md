@@ -169,7 +169,7 @@ he is back round. "not today" closes it for that page. A yes stores one small re
 (`yoru.acquaintance`): familiarity, his favourite resting place, the scenes visited together, the day last seen;
 nothing about who the visitor is, nothing sent anywhere. A returning visitor finds keepsakes from those scenes beside
 his cushion, his favourite resting place, and on a new day "oh. you again." in the hero. "Forget me" on the Privacy
-page deletes the record. The copy is a draft for Wolf to confirm.
+page deletes the record. Wolf kept the copy as drafted: "The remembering copy is fine as drafted. Keep it."
 
 **Why.** Wolf asked for it opt-in only ("Build it, opt-in only"), and then for an opt-in people actually take: "We also
 should consider how we present this to the user so the chance they click is very high. Because otherwise an opt-in is
