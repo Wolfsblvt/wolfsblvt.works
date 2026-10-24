@@ -81,11 +81,15 @@ function mountWalkSpy(): void {
     // Progress follows the words: while you read a section, the path fills across that section's word, so the
     // whole Pile, Endless included, stays inside "Whoa" however long it grows.
     if (threshold) t.whoa = documentTop(threshold);
-    const w = wordStarts();
+    const w = wordSpans();
     const segments: [number, number, number][] = [];
+    // Each section fills its own word, letter to letter, and the gap to the next word jumps with the highlight. Filling
+    // on to the next word's start made a section look complete long before it ended: Wolf saw "Whoa" full by the
+    // middle of Endless.
+    const whyMid = (w.why[0] + w.why[1]) / 2;
     const spans: Record<string, [number, number]> = {
-      hi: [0, w.what], what: [w.what, w.why], why: [w.why, (w.why + w.who) / 2], what2: [(w.why + w.who) / 2, w.who],
-      who: [w.who, w.help], help: [w.help, w.whoa], whoa: [w.whoa, w.hello], hello: [w.hello, 1],
+      hi: [0, w.hi[1]], what: w.what, why: [w.why[0], whyMid], what2: [whyMid, w.why[1]],
+      who: w.who, help: w.help, whoa: w.whoa, hello: [w.hello[0], 1],
     };
     const ordered = SECTIONS.filter((id) => t[id] !== undefined);
     ordered.forEach((id, i) => {
@@ -104,7 +108,8 @@ function mountWalkSpy(): void {
         break;
       }
     }
-    header?.setProgress(clamp(p, 0, 1));
+    // The phone bar has no words to follow: it shows plain page progress, Endless included.
+    header?.setProgress(clamp(p, 0, 1), clamp(s / maxY, 0, 1));
     header?.setSettle(clamp(scrollY / Math.max(1, (hero?.offsetHeight ?? 700) * 0.75), 0, 1));
     const navId = now === 'what2' ? 'what' : now;
     if (navId !== current) {
@@ -122,14 +127,16 @@ function mountWalkSpy(): void {
   update();
 }
 
-/** Where each nav word begins along the header's path, 0..1; equal slices when the full nav is not laid out. */
-function wordStarts(): Record<(typeof WORDS)[number], number> {
+/** Where each nav word begins and ends along the header's path, 0..1; equal slices when the full nav is not laid out. */
+function wordSpans(): Record<(typeof WORDS)[number], [number, number]> {
   const nav = document.querySelector<HTMLElement>('[data-nav]');
-  const out = {} as Record<(typeof WORDS)[number], number>;
+  const out = {} as Record<(typeof WORDS)[number], [number, number]>;
   const width = nav?.offsetWidth ?? 0;
   WORDS.forEach((id, i) => {
     const item = nav?.querySelector<HTMLElement>(`[data-nav-item="${id}"]`);
-    out[id] = width > 0 && item ? item.offsetLeft / width : i / WORDS.length;
+    out[id] = width > 0 && item
+      ? [item.offsetLeft / width, (item.offsetLeft + item.offsetWidth) / width]
+      : [i / WORDS.length, (i + 0.8) / WORDS.length];
   });
   return out;
 }
@@ -318,8 +325,11 @@ function mountArrival(): void {
   };
   if (!target) { restore(); return; }
   const go = () => travelTo(() => (id === 'hi' ? 0 : documentTop(target) - headerOffset())).finally(restore);
-  if (document.fonts?.ready) void document.fonts.ready.then(() => setTimeout(go, 120));
-  else setTimeout(go, 120);
+  // Set off once the fonts are in, so the journey's distance is the real one; but never wait on them for long. The
+  // journey rebases towards its destination every frame, so a late font swap only moves where it ends, not whether.
+  const fonts = document.fonts?.ready ?? Promise.resolve();
+  const soon = new Promise<void>((resolve) => setTimeout(resolve, 600));
+  void Promise.race([fonts, soon]).then(() => setTimeout(go, 120));
 }
 
 mountWalkSpy();

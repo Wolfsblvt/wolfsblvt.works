@@ -42,10 +42,12 @@ in front, a wavy progress path fills along the header's bottom edge, and the cur
 **Why.** Contact must be findable without hovering, and the other words stay playful without becoming riddles. The
 crossed-out correction is the same gesture as the hero's strike-through, so the site teaches its own handwriting once.
 
-**Addendum, 2026-10-24.** The path fills across the words: while you read a section, the fill runs from its word's
-start to the next word's start, so the whole Pile, Endless included, stays inside "Whoa" however long it grows, and
-"Hello?" only fills at the end. Before, the fill was linear in page height and reached the end while you were still
-in the Pile (Wolf: "it needs to scale the last part of the bar to the pile section").
+**Addendum, 2026-10-24.** The path fills across the words: while you read a section, the fill runs across its own
+word, letter to letter, and the gap to the next word jumps with the highlight, so the whole Pile, Endless included,
+stays inside "Whoa" however long it grows, and "Hello?" only fills at the end. Before, the fill was linear in page
+height and reached the end while you were still in the Pile (Wolf: "it needs to scale the last part of the bar to the
+pile section"); a first correction ran each word's fill on to the next word's start, which made "Whoa" look complete
+by the middle of Endless. The phone bar has no words to follow and shows plain page progress instead.
 
 **Rejected.** Custom tooltips and native `title` tooltips (they hide the personality and don't work on touch);
 crossing out every label (Contact's correction would lose its meaning); plain section names (correct and lifeless).
@@ -357,6 +359,11 @@ the walk's eased journey instead of the browser's jump, held before first paint 
 carries a small `#` in its corner that travels there, puts the address in the bar and copies the link. Pile addresses
 are forgiving: `#noreplyyet` and `#no-reply-yet` resolve to `#pile-no-reply-yet`. The Pile's public address is `#whoa`,
 the header's own word, whether it is open or closed; `#endless` and `#pile` are still understood but internal.
+
+On a slow connection the journey still happens: a held address sets off once the fonts are in or after 600 ms,
+whichever comes first, because the journey rebases towards its destination every frame anyway; and when the Pile's
+script arrives after the bootstrap's two-second escape it still takes over while the Pile is below the fold, standing
+back only when the escape has already put the collection in front of the reader.
 
 **Why.** Wolf: "Each section needs anchors that I can link people to." Linking straight to a project is how the site
 will mostly be shared. On the Pile: "we said "endless" is only internal. The public anchor is `#whoa` for the pile.

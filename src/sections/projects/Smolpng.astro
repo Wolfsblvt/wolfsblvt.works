@@ -8,23 +8,15 @@
 import Anchor from '../../components/Anchor.astro';
 import './smolpng.css';
 
-// Wolf's exact bytes. Each run of glyphs outside ASCII sits in a cell exactly as wide as that many characters of the
-// primary face, so a fallback font for one stroke (the arc, on most systems) can never push the rest of its line out
-// of alignment, and a run of box strokes stays one unbroken line.
+// Wolf's exact bytes. Every glyph outside ASCII sits in its own cell exactly one character of the primary face wide,
+// the way a terminal would draw it: whichever font supplies a corner, a diagonal or the arc, and whatever advance
+// that glyph has there, the columns hold. (Grouping a row's strokes into one wider cell does not: the run is centred
+// as a block, so one wide fallback glyph shifts the whole row.)
 const SQUISHLING = `     ( ¬ω¬ )
   /╭───────╮\\
  (_) ○╱╲_ (_)
    ╰───────╯╲_⌒)`;
-const runs = SQUISHLING.split('\n').map((line) => {
-  const out: { text: string; cell: boolean }[] = [];
-  for (const ch of line) {
-    const cell = ch.charCodeAt(0) > 0x7e;
-    const last = out.at(-1);
-    if (last && last.cell === cell) last.text += ch;
-    else out.push({ text: ch, cell });
-  }
-  return out;
-});
+const cells = SQUISHLING.split('\n').map((line) => [...line].map((ch) => ({ ch, cell: ch.charCodeAt(0) > 0x7e })));
 ---
 
 <section id="smolpng" class="frame lift smol-frame" aria-labelledby="smol-h">
@@ -44,7 +36,7 @@ const runs = SQUISHLING.split('\n').map((line) => {
       </div>
       <div class="smol-stage">
         <div class="smol-mascot">
-          <div class="smol-blob"><pre class="smol-ascii" role="img" aria-label="Squishling, drawn in ASCII: a round creature with narrowed happy eyes, holding a picture against its chest with both hands">{runs.map((line, i) => <>{line.map((run) => run.cell ? <span class="g" style={`width:${[...run.text].length}ch`}>{run.text}</span> : run.text)}{i < runs.length - 1 ? '\n' : ''}</>)}</pre></div>
+          <div class="smol-blob"><pre class="smol-ascii" role="img" aria-label="Squishling, drawn in ASCII: a round creature with narrowed happy eyes, holding a picture against its chest with both hands">{cells.map((line, i) => <>{line.map((g) => g.cell ? <span class="g">{g.ch}</span> : g.ch)}{i < cells.length - 1 ? '\n' : ''}</>)}</pre></div>
           <p class="smol-meet"><strong>Meet Squishling.</strong> Will squish for headpats.</p>
           <p class="smol-meet-sub">We’ve commissioned a VTuber for their illustrated look. The ASCII cutie is staying, too.</p>
         </div>

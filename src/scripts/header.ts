@@ -9,8 +9,8 @@ import { reducedMotion } from './runtime';
 export interface HeaderController {
   /** 0 at the top of the page, 1 once the header has settled. */
   setSettle(t: number): void;
-  /** Reading progress along the path, 0..1. */
-  setProgress(p: number): void;
+  /** Reading progress along the path, 0..1; `plain` (default `p`) feeds the phone bar, which has no words to follow. */
+  setProgress(p: number, plain?: number): void;
   /** Mark one nav word as current (home page section spy). */
   setCurrent(id: string | null): void;
 }
@@ -24,6 +24,7 @@ export function mountHeader(): HeaderController | null {
   const still = mark?.classList.contains('mark-still') ?? true;
   let lastT = -1;
   let lastP = -1;
+  let lastPlain = -1;
 
   const setSettle = (t: number) => {
     t = clamp(t, 0, 1);
@@ -48,12 +49,14 @@ export function mountHeader(): HeaderController | null {
     mark.querySelector('[data-mark-knockout]')?.setAttribute('stroke-width', String(frame.knockoutStroke));
   };
 
-  const setProgress = (p: number) => {
+  const setProgress = (p: number, plain = p) => {
     p = clamp(p, 0, 1);
-    if (Math.abs(p - lastP) < 0.002) return;
+    plain = clamp(plain, 0, 1);
+    if (Math.abs(p - lastP) < 0.002 && Math.abs(plain - lastPlain) < 0.002) return;
     lastP = p;
+    lastPlain = plain;
     progress?.setAttribute('stroke-dashoffset', String(Math.round((100 - p * 100) * 10) / 10));
-    progressMobile?.setAttribute('width', String(Math.round(p * 1000) / 10));
+    progressMobile?.setAttribute('width', String(Math.round(plain * 1000) / 10));
   };
 
   const setCurrent = (id: string | null) => {

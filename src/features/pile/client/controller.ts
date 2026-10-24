@@ -45,8 +45,10 @@ export function mountPile(): void {
   if (!section || !manifestEl) return;
 
   const boot: BootState = window.__pileBoot ?? { hash: null };
-  // If the bootstrap's escape already exposed the content, a late controller must not collapse what is being read.
-  if (boot.failed) return;
+  // If the bootstrap's escape already exposed the content and the visitor may be reading it, a late controller must
+  // not collapse it under them. Arriving late while the Pile is still below the fold is fine: nobody is reading it
+  // yet, and a slow connection should not lose the whole Pile for the visit.
+  if (boot.failed && section.getBoundingClientRect().top < innerHeight) return;
 
   try {
     start(section, JSON.parse(manifestEl.textContent ?? '[]') as ManifestEntry[], boot);

@@ -36,9 +36,11 @@
 .smol-stage { display: grid; gap: 18px; justify-items: center; }
 .smol-mascot { display: grid; justify-items: center; gap: 10px; text-align: center; }
 .smol-blob { display: grid; place-items: center; padding: clamp(18px, 2.6vw, 30px) clamp(20px, 3vw, 36px); border-radius: 48% 52% 46% 54% / 56% 44% 56% 44%; background: #fff; border: 2px dashed var(--smol-ice); }
-.smol-ascii { margin: 0; font: 400 clamp(17px, 2.4vw, 30px)/1.15 var(--smol-ascii); font-variant-ligatures: none; color: var(--smol-ink); white-space: pre; letter-spacing: 0; }
-/* Each run of glyphs outside ASCII sits in exactly that many cells of the primary face, whichever font draws it. */
-.smol-ascii .g { display: inline-block; text-align: center; }
+/* The drawing is one block centred in the blob; its lines are never centred individually, or every row would get its
+   own offset and the art falls apart. */
+.smol-ascii { margin: 0 auto; width: max-content; text-align: left; font: 400 clamp(17px, 2.4vw, 30px)/1.15 var(--smol-ascii); font-variant-ligatures: none; color: var(--smol-ink); white-space: pre; letter-spacing: 0; }
+/* Each glyph outside ASCII sits in exactly one cell of the primary face, whichever font draws it. */
+.smol-ascii .g { display: inline-block; width: 1ch; text-align: center; }
 .smol-meet { margin: 6px 0 0; font-size: 16px; line-height: 1.35; color: var(--smol-ink); max-width: 30ch; }
 .smol-meet strong { font-weight: 800; }
 .smol-meet-sub { margin: 0; font-size: 13.5px; line-height: 1.45; color: var(--smol-ink-quiet); max-width: 34ch; }
