@@ -45,7 +45,7 @@
     "@fontsource/special-elite": "5.3.0",
     "@iconify-json/lucide": "1.2.133",
     "@iconify-json/simple-icons": "1.2.96",
-    "@wolfsblvt/icons": "0.4.0",
+    "@wolfsblvt/icons": "0.5.0",
     "astro": "7.3.8"
   },
   "devDependencies": {

@@ -8,7 +8,7 @@ import { PRODUCTS, type ProductSlug } from '../../../shared/contact-contract';
 export interface ProductPresentation {
   type: 'Website' | 'Tool' | 'Project' | 'Extension';
   /** A product glyph in @wolfsblvt/icons; absent means the dashed initial placeholder. */
-  icon?: 'wolfsblvt/works' | 'diffdevil/brand';
+  icon?: 'wolfsblvt/works' | 'diffdevil/brand' | 'tunneltend/brand';
   /** Where "back to" goes for a visitor who arrived with ?product=. */
   home: string;
 }
@@ -16,9 +16,9 @@ export interface ProductPresentation {
 const PRESENTATION: Record<ProductSlug, ProductPresentation> = {
   'wolfsblvt-works': { type: 'Website', icon: 'wolfsblvt/works', home: 'https://wolfsblvt.works/' },
   diffdevil: { type: 'Tool', icon: 'diffdevil/brand', home: 'https://diffdevil.dev/' },
-  // Both show the dashed initial until @wolfsblvt/icons carries their glyphs.
+  // smolpng shows the dashed initial until @wolfsblvt/icons carries its glyph.
   smolpng: { type: 'Tool', home: 'https://github.com/Wolfsblvt/smolpng' },
-  tunneltend: { type: 'Tool', home: 'https://github.com/Wolfsblvt/tunneltend' },
+  tunneltend: { type: 'Tool', icon: 'tunneltend/brand', home: 'https://github.com/Wolfsblvt/tunneltend' },
   'wolfsblvt-com': { type: 'Website', home: 'https://wolfsblvt.com/' },
   agents: { type: 'Website', home: 'https://agents.wolfsblvt.com/' },
 };
