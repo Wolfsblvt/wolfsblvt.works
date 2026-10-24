@@ -639,26 +639,34 @@ context, not a new skin. The chip keeps the way back obvious without a second he
 **Rejected.** Theming the page in each product's colours and type (a per-product design to maintain for every product,
 and the page would stop being recognisably the one Works contact).
 
-### Contact events: 7 days at publication, 12 months remains selected
+### Contact events: up to 12 months; request logs: up to 7 days
 
-**Date:** 2026-10-14 · **Status:** Selected destination; publication truth reconciled on 2026-10-24
+**Date:** 2026-10-14 · **Status:** Current; retained-route evidence joined on 2026-10-24
 
 Each `contact.submission` event (time, IP address, topic and project, every control's outcome, never the message) is
-selected for 12 months in the retained log route, the Works default for security events. Current publication truth is
-up to 7 days in Workers Logs; the Privacy and data page states that window. Twelve months becomes current only after
-the private R2 route, its 365-day lifecycle and a retained event are read back. R2 is not a publication gate.
+retained for up to 12 months through the private Workers Trace Events Logpush → Cloudflare Pipelines → R2 route, the
+Works default for security events. Workers Logs supplies the hot seven-day surface. Ordinary request logs remain
+available for up to 7 days, longer only to investigate a specific attack; the retained contact-event route does not
+extend their retention. The Privacy and data source states these two distinct windows.
 
 **Why.** Wolf chose the Works default. The event is mostly abuse and security evidence; one retention for the whole
 event keeps it simple.
 
 **Rejected.** 90 days (proposed because the form has no accounts to protect); 30 days (the design's original line).
 
-**Why the publication correction.** Ops confirmed the 7-day hot surface and no retained export. Stating 12 months now
-would describe unconfigured retention. The selected destination remains under Wolf Ops custody through the separate
-owner-confirmation path, without delaying publication or silently reducing the retained outcome.
+**Earlier publication boundary.** Before the retained route was proved, publication stated only the confirmed
+seven-day hot window. R2 did not hold publication, and the selected twelve-month destination remained active.
 
-**Sources.** Wolf Ops' provider readback and the accepted publication direction, 2026-10-24 (attributable records in
-the private publication room); Cloudflare's [Workers Logs retention](https://developers.cloudflare.com/workers/observability/logs/workers-logs/).
+**Current evidence and limits.** Wolf Ops read back the private bucket, disabled public access and enabled 365-day
+lifecycle. One synthetic contact attempt rejected by Turnstile was admitted by the contact filter: retained-object
+metadata and sink metrics (one file, one record) proved the retained contact-class event. The object body was not
+inspected. The historical cause of the earlier setup failures remains unknown. Continuing export freshness and actual
+aged deletion are not proved by this single event. Source-owned top-level `logpush: true` preserves export eligibility
+on ordinary uploads; deployment and live public-copy readback remain separate Ops effects.
+
+**Sources.** Wolf's retention selection, the accepted publication direction and Wolf Ops' retained-route Return,
+2026-10-24 (attributable records in the private publication room); [Logging](LOGGING.md#retention-and-deletion);
+Cloudflare's [Workers Logs retention](https://developers.cloudflare.com/workers/observability/logs/workers-logs/).
 
 ### diffdevil is a registered contact product
 
