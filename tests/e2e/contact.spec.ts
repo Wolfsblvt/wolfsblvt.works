@@ -79,9 +79,11 @@ test('sent: the Works words, the reference, and Yoru runs off with it', async ({
   await expect(outcome).toContainText('WW-20261014-ABCDE');
   await expect(outcome).toContainText('Yoru’s delivering it. mostly reliable.');
   await expect(page.locator('[data-contact-form]')).toBeHidden();
-  await expect(page.locator('[data-contact-yoru]')).toHaveClass(/away/, { timeout: 4000 });
+  // He runs off out of view with the message and isn't there afterwards; the next message brings him back.
+  await expect(page.locator('.yoru-resident')).toBeHidden({ timeout: 15000 });
   await outcome.getByText('Write another').click();
   await expect(page.locator('[data-contact-form]')).toBeVisible();
+  await expect(page.locator('.yoru-resident')).toBeVisible();
   await expect(page.locator('#subject')).toHaveValue('');
 });
 

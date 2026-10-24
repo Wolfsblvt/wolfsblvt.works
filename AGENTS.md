@@ -60,7 +60,10 @@ on it.
 - **Visitor content.** The contact service never logs or stores a visitor's name, email, subject or message. Keep the
   `contact.submission` event redacted ([docs/LOGGING.md](docs/LOGGING.md)) and the tests that pin it.
 - **No tracking, no device access.** No analytics, no third-party scripts beyond Turnstile on the contact page, nothing
-  in cookies or browser storage. The Pile's variety comes from the date and request headers on the server only.
+  in cookies or browser storage, with one exception the visitor chooses: Yoru's remembered acquaintance
+  (`yoru.acquaintance` in local storage), written only after they answer "remember me", never sent anywhere, and
+  deleted by "Forget me" on the Privacy page. The Pile's variety comes from the date and request headers on the server
+  only.
 - **Icons.** Every icon comes from `@wolfsblvt/icons`. Add missing glyphs to the wolfsblvt-icons repository; never add a
   local SVG icon here.
 - **Secrets.** `.dev.vars` is local and ignored. Real secrets are set by Wolf Ops with `wrangler secret put`.

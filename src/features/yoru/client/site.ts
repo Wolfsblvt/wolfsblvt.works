@@ -13,18 +13,21 @@
  * moment, then goes on ahead (Wolf, 2026-10-24: "We do A", the section bands, with the peek for very long
  * sections).
  *
- * The page's own signals become invitations, never commands. Nothing is stored and nothing leaves the page.
- * Remembered acquaintance is built but not offered here until the site's storage account changes (Wolf, 2026-10-24:
- * "Build it, opt-in only").
+ * The page's own signals become invitations, never commands. Nothing leaves the page, and nothing is stored unless the
+ * visitor asks him to remember them (remember.ts): he offers when he settles in his nook.
  */
 import { YORU_FAMILIES } from '../../../generated/yoru-families';
 import { reducedMotion } from '../../../scripts/runtime';
 import { ClipLibrary } from '../clips';
 import { SpritePlayer } from '../player';
 import { Resident } from '../resident';
+import { keepWhileVisiting, offerToRemember, recall } from './remember';
 import type { Link, Place, Surface, World } from '../world';
 
 const SHEETS = '/yoru/resident';
+
+/** The keepsake (a frame of nook/keepsakes) he brings home from each scene. */
+const KEEPSAKES: Record<string, number> = { coast: 0 };
 
 /**
  * His margin lane, v1's follower spot: how far in from the viewport's right edge and above its bottom it sits, its
@@ -205,13 +208,37 @@ export function mountResident(): void {
   const world: World = { places, links };
 
   // ---------- his nook ----------
-  const cushion = document.createElement('div');
-  cushion.className = 'yoru-prop';
-  stage.append(cushion);
-  const cushionPlayer = new SpritePlayer(cushion);
-  cushion.style.pointerEvents = 'none';
-  const placeCushion = () => { const c = nookCentre(); cushionPlayer.hold(clips.get('nook/cushion'), 0); cushionPlayer.moveTo(c.x, c.y + 4); };
+  const { record, returning } = recall();
+  // The cushion, and beside it a keepsake from each scene he has visited with a visitor who asked to be remembered.
+  const nookProps = [{ clip: 'nook/cushion', frame: 0, dx: 0 }, ...(record?.discovered ?? [])
+    .filter((id) => id in KEEPSAKES && clips.has('nook/keepsakes'))
+    .map((id, i) => ({ clip: 'nook/keepsakes', frame: KEEPSAKES[id]!, dx: 80 + i * 26 }))];
+  const props = nookProps.map((p) => {
+    const el = document.createElement('div');
+    el.className = 'yoru-prop';
+    stage.append(el);
+    el.style.pointerEvents = 'none';
+    return { ...p, player: new SpritePlayer(el) };
+  });
+  const placeCushion = () => {
+    const c = nookCentre();
+    for (const p of props) { p.player.hold(clips.get(p.clip), p.frame); p.player.moveTo(c.x + p.dx, c.y + 4); }
+  };
   placeCushion();
+  // Someone he knows, back on another day: the hero's introduction becomes a greeting.
+  const greeting = caption?.querySelector('span');
+  if (returning && greeting) greeting.textContent = 'oh. you again.';
+
+  /**
+   * His note beside him in the nook: above and to his left while there is room on screen; on a narrow screen scrolled
+   * to the bottom, where the nook sits right under the header, just below his line instead, beside the footer's logo.
+   */
+  const noteBesideNook = ({ width, height }: { width: number; height: number }) => {
+    const c = nookCentre();
+    const headerBottom = (header?.getBoundingClientRect().bottom ?? 0) + 12;
+    const above = c.y - 40 - height - scrollY > headerBottom;
+    return above ? { left: c.x - 64 - width, top: c.y - 40 - height } : { left: c.x + 70 - width, top: c.y + 14 };
+  };
 
   // ---------- the resident ----------
   let heroGone = false;
@@ -227,7 +254,10 @@ export function mountResident(): void {
     start: { place: 'perch', at: 0.5 },
     seed: (Date.now() / 86400000) | 0,
     reducedMotion: reducedMotion(),
+    acquaintance: record,
     onPlace: (id) => {
+      // Settled in his nook at the end of the page: the moment he asks whether to remember the visitor.
+      if (id === 'nook') offerToRemember({ layer: stage, resident, place: noteBesideNook });
       if (id !== 'perch' && caption && !caption.hidden) {
         caption.classList.add('wiping');
         setTimeout(() => { caption.hidden = true; }, 700);
@@ -238,6 +268,7 @@ export function mountResident(): void {
     },
   });
   yoru.addEventListener('click', () => resident.poke());
+  keepWhileVisiting(resident);
   // The resident draws him from now on; the hero's own still frame was only for pages without JavaScript.
   heroSpot?.setAttribute('hidden', '');
   resident.start();
@@ -298,11 +329,12 @@ export function mountResident(): void {
     // The first report can arrive before a real scroll; only a real scroll away counts.
     heroGone = !entry!.isIntersecting && scrollY > 80;
     if (!heroGone || !['perch', 'porch'].includes(resident.state.place)) return;
-    if (mode === 'lane') ask('lane'); else follow();
+    // A reader who jumped straight to the end finds him in his nook.
+    if (footerVisible) ask('nook'); else if (mode === 'lane') ask('lane'); else follow();
   }, { threshold: 0.05 }).observe(hero);
   new IntersectionObserver(([entry]) => {
     footerVisible = entry!.isIntersecting;
-    if (footerVisible && resident.state.place !== 'perch') ask('nook');
+    if (footerVisible && (resident.state.place !== 'perch' || heroGone)) ask('nook');
     if (!footerVisible && resident.state.place === 'nook') {
       if (mode === 'lane') ask('lane'); else follow();
     }

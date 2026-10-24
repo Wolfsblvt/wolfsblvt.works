@@ -3,6 +3,7 @@
  * lives here too: on the 404 he wanders off the path when clicked and comes back round from the other side; on the
  * legal pages he is asleep on his line.
  */
+import { memory } from '../features/yoru/client/remember';
 import { mountSpot } from '../features/yoru/client/spot';
 import { documentTop, isPlainClick, travelTo } from './runtime';
 
@@ -47,6 +48,16 @@ function mountYoru(): void {
       spot: lost, ground: groundOf(path), wandersOff: true,
       caption: document.querySelector<HTMLElement>('[data-yoru-lost-cap]'),
       label: 'Yoru, the resident. Click him and he wanders off.',
+    });
+  }
+  // On the privacy page: whether he remembers this visitor, and the way to make him forget.
+  const remembered = document.querySelector<HTMLElement>('[data-yoru-memory]');
+  if (remembered && memory.load()) {
+    remembered.hidden = false;
+    remembered.querySelector('[data-yoru-forget]')!.addEventListener('click', (event) => {
+      memory.forget();
+      remembered.querySelector('[data-yoru-memory-state]')!.textContent = 'Forgotten. Next time he’ll meet you fresh.';
+      (event.currentTarget as HTMLElement).remove();
     });
   }
   const nap = document.querySelector<HTMLElement>('[data-yoru-nap]');

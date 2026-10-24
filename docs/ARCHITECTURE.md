@@ -120,10 +120,11 @@ and the home a visitor arriving from that product can return to.
 
 ## Data and storage
 
-Nothing is persisted. There is no database, no message store, no cookie set by this site and nothing written to browser
-storage. Yoru's remembered acquaintance (`src/features/yoru/memory.ts`) is built as an opt-in that would write one small
-record to local storage, but the site does not offer it: that needs the storage account here and on the Privacy page to
-change first. A contact message exists only as two emails. The contact service's log event and Cloudflare's own request logs
+Nothing is persisted on the server. There is no database, no message store and no cookie set by this site. The one thing
+ever written to browser storage is Yoru's remembered acquaintance (`yoru.acquaintance`, `src/features/yoru/memory.ts`),
+and only after the visitor answers "remember me" when he asks (`client/remember.ts`): a small record of how familiar
+he is with them, where he likes to rest, the scenes he visited with them and the day they were last here. It never
+leaves the browser, and "Forget me" on the Privacy page deletes it. A contact message exists only as two emails. The contact service's log event and Cloudflare's own request logs
 are the only records; [Logging](LOGGING.md) describes them.
 
 Build-time data comes from the repository: `site.config.mjs` (identity, links, legal facts), the Pile collection in

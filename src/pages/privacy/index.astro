@@ -64,6 +64,7 @@ const contactLogs = fx(p.contactLogRetention);
             <li>Fonts, scripts and images come from this site itself. The contact form’s bot check is the one exception.</li>
             <li>If you write to me, I use what you send to answer you, and nothing else.</li>
             <li>Your pile is shuffled a little by your browser’s name and language. Nothing about it is stored.</li>
+            <li>Nothing is stored in your browser, unless you ask Yoru to remember you. Then it stays in your browser.</li>
           </ul>
         </div>
 
@@ -85,11 +86,14 @@ const contactLogs = fx(p.contactLogRetention);
         <p>The provider may process this data in the United States. <span class={transfer.cls}>{transfer.text}</span>, which you can request through the privacy contact above.</p>
 
         <h2 id="storage"><span class="n">03</span>Your browser and this site</h2>
-        <p>This site doesn’t set cookies or store anything in your browser for its own purposes. Where you are in the Pile lives in the page address (the part after the <code>#</code>), which your browser keeps and never sends to the server.</p>
+        <p>This site doesn’t set cookies or store anything in your browser for its own purposes, with one exception you choose yourself (below). Where you are in the Pile lives in the page address (the part after the <code>#</code>), which your browser keeps and never sends to the server.</p>
         <p>Today’s pile is worked out in your browser from the date. Nothing about what you looked at leaves your device.</p>
         <h3>Why your pile might look different</h3>
         <p>Today’s pile is shuffled a little per browser, so not everyone sees exactly the same one. The shuffle mixes in your browser’s name, version and language, which your browser sends with every request anyway. That mix is used once, to deal the pile, and isn’t stored, logged or sent anywhere else. Anyone with the same browser and language gets the same pile. It’s just for fun.</p>
         <p><span class={cookie.cls}>{cookie.text}</span></p>
+        <h3>If you ask Yoru to remember you</h3>
+        <p>Yoru sometimes asks whether he should remember you. Only if you answer “remember me” does your browser keep one small note in its local storage, under <code>yoru.acquaintance</code>: how familiar he has become with you, where he likes to rest, which places he has visited with you, and the day you were last here. It holds nothing about who you are, is never sent anywhere, and only changes how he behaves. It stays until you delete it: with the button below, or by clearing this site’s data in your browser.</p>
+        <p class="yoru-memory" data-yoru-memory hidden><span data-yoru-memory-state>Yoru remembers you on this browser.</span> <button type="button" class="btn btn-line" data-yoru-forget>Forget me</button></p>
 
         <h2 id="contact"><span class="n">04</span>When you write to me</h2>
         <p>You can reach me by email, through the contact form, or on Discord. When you do, I process what you send so I can answer.</p>

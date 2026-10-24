@@ -158,6 +158,30 @@ sense. For very long sections, we *could* still consider him giving a bottom-edg
 scrolling, **then** moving to the next section." **Rejected:** the follower lane at every width, which covered body
 text wherever the content runs edge to edge.
 
+### Yoru remembers a visitor only when asked, and asks well
+
+**Date:** 2026-10-24 · **Status:** Current
+
+Yoru can remember a visitor on their browser, and only after they say so. He asks himself, as a handwritten note
+beside him with two equally easy answers ("remember me", "not today"): on the home page when he settles in his nook at
+the footer, the natural goodbye of a visit; in the smaller rooms after his first answer to a poke, or on the 404 once
+he is back round. "not today" closes it for that page. A yes stores one small record in local storage
+(`yoru.acquaintance`): familiarity, his favourite resting place, the scenes visited together, the day last seen;
+nothing about who the visitor is, nothing sent anywhere. A returning visitor finds keepsakes from those scenes beside
+his cushion, his favourite resting place, and on a new day "oh. you again." in the hero. "Forget me" on the Privacy
+page deletes the record. The copy is a draft for Wolf to confirm.
+
+**Why.** Wolf asked for it opt-in only ("Build it, opt-in only"), and then for an opt-in people actually take: "We also
+should consider how we present this to the user so the chance they click is very high. Because otherwise an opt-in is
+kinda wasted, isn't it." The ask comes from Yoru, at a warm moment, with a visible payoff, which is what makes a yes
+likely without pressure. Wolf chose the nook moment, the handwritten note, and the keepsakes, favourite spot and
+welcome back as the payoff. Storage the visitor explicitly requests for this is strictly required for it (§ 25 (2) 2
+TDDDG), so it needs an accurate disclosure, not a consent banner.
+
+**Rejected.** A quiet footer line (rarely seen), Yoru holding up a sign (charming, but a new clip for the same ask),
+asking after a playful moment (it interrupts the play), a timed ask after two minutes (tied to nothing he did), and a
+wave on arrival as the payoff.
+
 ## The header and the marks
 
 ### Finished assets, editable design, and production markup are separate
