@@ -26,7 +26,8 @@
         "Breathing out, tail tip uncurling.",
         "Standing exactly as in the first frame."
       ],
-      "selected": "20261024T023504-acc70ecf"
+      "selected": "20261024T023504-acc70ecf",
+      "tempo": 0.85
     },
     {
       "id": "look",
@@ -64,7 +65,8 @@
         "Body stretching again, capelet streaming.",
         "Front paws reaching forward as in the first frame."
       ],
-      "selected": "20261024T021718-98bdbfc1"
+      "selected": "20261024T021718-98bdbfc1",
+      "tempo": 0.9
     },
     {
       "id": "run-right",
@@ -84,7 +86,8 @@
         "Body stretching again, capelet streaming.",
         "Front paws reaching forward as in the first frame."
       ],
-      "selected": "20261024T021820-b87c36a2"
+      "selected": "20261024T021820-b87c36a2",
+      "tempo": 0.9
     },
     {
       "id": "wave",
@@ -100,7 +103,8 @@
         "Paw coming down.",
         "Standing exactly as in the identity reference."
       ],
-      "selected": "20261024T021927-b820cb8e"
+      "selected": "20261024T021927-b820cb8e",
+      "tempo": 0.8
     },
     {
       "id": "hop",

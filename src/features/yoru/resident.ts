@@ -68,8 +68,12 @@ const LADDER = { rung: 33.5, spriteScale: 33.5 / 42.5, hooksAbovePivot: 420 };
 const MIN_BEAT = 400;
 
 /** Display pixels per millisecond. */
-const WALK_SPEED = 0.05;
-const RUN_SPEED = 0.2;
+/**
+ * Ground covered per walk and run cycle, in CSS pixels, when a clip does not carry its own stride. Distance is per
+ * frame of the drawing, not per millisecond, so a slower clip walks slower instead of sliding its feet.
+ */
+const WALK_STRIDE = 60;
+const RUN_STRIDE = 144;
 /**
  * How far he can hop, in display pixels: up about half his height (the hop clip's own rise), down a little further,
  * across a modest gap. A link whose places are further apart right now is not open, however it was authored: a page
@@ -513,13 +517,13 @@ export class Resident {
     if (this.#reduced) { this.#at = target; this.#follow(); return; }
     await this.#toPosture(leftwards ? 'face-left' : 'face-right');
     const role: Role = run ? (leftwards ? 'runLeft' : 'runRight') : leftwards ? 'walkLeft' : 'walkRight';
-    const speed = run ? RUN_SPEED : WALK_SPEED;
     const clip = this.#clip(role);
+    const stride = clip.stride ?? (run ? RUN_STRIDE : WALK_STRIDE);
     while (!signal.aborted && this.#alive && Math.abs(target - this.#at) * width > 1) {
       await this.#player.play(clip, {
         signal,
         onFrame: (frame) => {
-          const step = (speed * clip.durations[frame]! * this.#player.tempo) / width;
+          const step = stepOf(clip, frame, stride) / width;
           this.#at = leftwards ? Math.max(target, this.#at - step) : Math.min(target, this.#at + step);
           this.#follow();
         },
@@ -652,7 +656,7 @@ export class Resident {
       await this.#player.play(clip, {
         signal,
         onFrame: (frame) => {
-          const step = RUN_SPEED * clip.durations[frame]! * this.#player.tempo;
+          const step = stepOf(clip, frame, clip.stride ?? RUN_STRIDE);
           x = leftwards ? Math.max(toX, x - step) : Math.min(toX, x + step);
           this.#player.moveTo(x, y);
         },
@@ -796,4 +800,10 @@ export class Resident {
     this.#player.hold(clip, frame);
     this.#follow();
   }
+}
+
+/** How far one frame of a walk or run carries him: its share of the cycle's time, of the cycle's stride. */
+function stepOf(clip: Clip, frame: number, stride: number): number {
+  const cycle = clip.durations.reduce((a, b) => a + b, 0);
+  return (stride * clip.durations[frame]!) / cycle;
 }

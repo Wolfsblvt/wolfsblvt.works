@@ -80,6 +80,19 @@ movement, not settling reversed, and write left-facing poses as drawn poses rath
 Check every candidate in the studio at 1× on both backgrounds, with the floor line and standing Yoru for scale,
 before selecting it. A clean contact sheet does not show jitter, sliding feet or a face that changes between frames.
 
+## Tempo
+
+A clip's `durations` set its rhythm; its `tempo` sets how fast the whole clip runs on the site (1 as written, 0.8 a
+fifth slower), applied when the sheet is packed. A walk or run also has a `stride`: the CSS pixels one full cycle
+carries him. The resident moves him by the frame, not by the millisecond, so a slower walk is a slower walk and his
+feet stay planted. Set both by eye on the tempo board, which plays every clip the site uses at its real size and
+saves each change to the clip's spec:
+
+```sh
+npm run yoru -- serve      # then http://localhost:4390/tempo/
+npm run yoru -- pack <family>
+```
+
 ## Families
 
 | Family | Clips | Standing |

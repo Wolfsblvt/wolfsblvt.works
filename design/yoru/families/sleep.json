@@ -33,7 +33,8 @@
           "role": "Key pose: the curled sleeping pose the last frame must match exactly."
         }
       ],
-      "selected": "20261024T012540-6663ec05"
+      "selected": "20261024T012540-6663ec05",
+      "tempo": 0.8
     },
     {
       "id": "sleep",
@@ -85,7 +86,8 @@
           "role": "Key pose: the curled sleeping pose the first frame must match exactly."
         }
       ],
-      "selected": "20261024T012337-6ef98828"
+      "selected": "20261024T012337-6ef98828",
+      "tempo": 0.9
     }
   ]
 }

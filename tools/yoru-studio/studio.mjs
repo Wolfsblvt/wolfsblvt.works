@@ -18,7 +18,7 @@ import sharp from 'sharp';
 import { generate, ROUTE } from './lib/codex.mjs';
 import { keyMask, keyResidue, matteKey, parseHex } from './lib/matte.mjs';
 import { crop, placeFrames, solidBounds, splitFrames } from './lib/register.mjs';
-import { clipDurations, clipLayout, clipPrompt, identityLock, KEY, loadFamily, makeGuide, paths, PROP_KEY, saveFamily, SCENERY_KEY, STANDING_HEIGHT } from './lib/spec.mjs';
+import { authoredDurations, clipDurations, clipLayout, clipPrompt, identityLock, KEY, loadFamily, makeGuide, paths, PROP_KEY, saveFamily, SCENERY_KEY, STANDING_HEIGHT } from './lib/spec.mjs';
 import { writeContact, writePreview } from './lib/preview.mjs';
 import { alphaMask, colourSignature, matchScale, shiftCell, signatureDistance, stabilize } from './lib/align.mjs';
 
@@ -418,6 +418,7 @@ async function cmdPack(familyId) {
     const reg = JSON.parse(readFileSync(join(P.runs, familyId, clip.id, clip.selected, 'registration.json'), 'utf8'));
     manifest.clips[clip.id] = {
       row, frames: clip.frames, durations, loop: clip.loop ?? false,
+      ...(clip.stride && { stride: clip.stride }),
       ...(clip.from && { from: clip.from }), ...(clip.to && { to: clip.to }),
       // Where his feet are in each frame, relative to the pivot: what joins one clip's last pose to the next one's first.
       feet: reg.placed.map((p) => p.top + p.height - family.pivot.y),
@@ -585,6 +586,18 @@ async function cmdServe() {
       if (path === '/') { res.writeHead(302, { location: '/preview/' }).end(); return; }
       if (path === '/preview/') await writePreview(P, await standingCell());
       if (path === '/rehearsal/') return send(res, join(rehearsal, 'index.html'));
+      if (path === '/tempo/') return send(res, join(root, 'tools', 'yoru-studio', 'tempo', 'index.html'));
+      if (path === '/tempo/clips.json') {
+        res.writeHead(200, { 'content-type': types['.json'], 'cache-control': 'no-store' }).end(JSON.stringify(tempoBoard()));
+        return;
+      }
+      if (path === '/tempo/save' && req.method === 'POST') {
+        let body = '';
+        for await (const chunk of req) body += chunk;
+        saveTempo(JSON.parse(body));
+        res.writeHead(204).end();
+        return;
+      }
       // The project windows' real captures, so a guest visit is rehearsed against the scene he will visit.
       if (path.startsWith('/walk-assets/')) {
         const assets = join(root, 'design', 'the-walk', 'assets');
@@ -613,6 +626,39 @@ async function cmdServe() {
       else res.writeHead(500, { 'content-type': 'text/plain' }).end(String(error?.stack ?? error));
     }
   }).listen(port, () => console.log(`Yoru studio on http://localhost:${port}/ · rehearsal at /rehearsal/`));
+}
+
+// ---------- tempo board ----------
+
+/** Families the site plays; v1 (the May frames) and the Codex pet keep their own timing. */
+const TEMPO_FAMILIES = ['presence', 'everyday', 'sleep', 'curious', 'reactions', 'guest', 'ladder', 'nook'];
+
+/** Every animated, packed clip with its authored timing and current tempo, for the board at /tempo/. */
+function tempoBoard() {
+  return TEMPO_FAMILIES.filter((id) => existsSync(join(P.sheets, `${id}.json`))).map((id) => {
+    const family = loadFamily(P, id);
+    const manifest = JSON.parse(readFileSync(join(P.sheets, `${id}.json`), 'utf8'));
+    return {
+      family: id, title: family.title, sheet: `/sheets/${id}.webp`,
+      cell: manifest.cell, pivot: manifest.pivot, displayScale: manifest.displayScale,
+      clips: family.clips.filter((clip) => clip.frames > 1 && manifest.clips[clip.id]).map((clip) => ({
+        id: clip.id, row: manifest.clips[clip.id].row, frames: clip.frames, loop: clip.loop ?? false,
+        durations: authoredDurations(clip), tempo: clip.tempo ?? 1,
+        ...(/^(walk|run)-/.test(clip.id) && { stride: clip.stride ?? (clip.id.startsWith('run') ? 144 : 60) }),
+      })),
+    };
+  });
+}
+
+/** Writes one clip's tempo (and a walk's or run's stride) into its family spec; `pack` carries it to the site. */
+function saveTempo({ family: familyId, clip: clipId, tempo, stride }) {
+  if (!TEMPO_FAMILIES.includes(familyId)) throw new Error(`not on the tempo board: ${familyId}`);
+  const family = loadFamily(P, familyId);
+  const clip = findClip(family, clipId);
+  if (!(tempo >= 0.25 && tempo <= 3)) throw new Error(`tempo out of range: ${tempo}`);
+  if (Math.abs(tempo - 1) < 0.001) delete clip.tempo; else clip.tempo = Math.round(tempo * 100) / 100;
+  if (stride !== undefined) clip.stride = Math.round(stride);
+  saveFamily(family);
 }
 
 function findClip(family, clipId) {

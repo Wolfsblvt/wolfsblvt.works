@@ -16,28 +16,44 @@
       "row": 0,
       "frames": 6,
       "durations": [
-        300,
-        260,
-        500,
-        400,
-        260,
-        300
+        333,
+        289,
+        556,
+        444,
+        289,
+        333
       ],
-      "loop": false
+      "loop": false,
+      "feet": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
     },
     "sit-in": {
       "row": 1,
       "frames": 6,
       "durations": [
-        260,
-        220,
-        220,
-        260,
-        300,
-        400
+        289,
+        244,
+        244,
+        289,
+        333,
+        444
       ],
       "loop": false,
-      "to": "watch"
+      "to": "watch",
+      "feet": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
     },
     "watch": {
       "row": 2,
@@ -53,7 +69,17 @@
         600
       ],
       "loop": true,
-      "from": "sit-in"
+      "from": "sit-in",
+      "feet": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
     },
     "notice": {
       "row": 3,
@@ -68,21 +94,37 @@
       ],
       "loop": false,
       "from": "watch",
-      "to": "watch"
+      "to": "watch",
+      "feet": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
     },
     "rise": {
       "row": 4,
       "frames": 6,
       "durations": [
-        300,
-        220,
-        220,
-        220,
-        240,
-        300
+        333,
+        244,
+        244,
+        244,
+        267,
+        333
       ],
       "loop": false,
-      "from": "watch"
+      "from": "watch",
+      "feet": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
     }
   }
 }

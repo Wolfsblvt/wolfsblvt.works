@@ -22,7 +22,8 @@
         "Looking up and around, tail curling with curiosity.",
         "Weight shifting back, a small decided look, ready to hop."
       ],
-      "selected": "20261024T031620-5a5d98e2"
+      "selected": "20261024T031620-5a5d98e2",
+      "tempo": 0.9
     },
     {
       "id": "sit-in",
@@ -39,7 +40,8 @@
         "Seated, seen from behind, looking forward and down, ears up.",
         "Seated and settled, seen from behind, the side of his face just visible as he watches."
       ],
-      "selected": "20261024T031723-58cc6ede"
+      "selected": "20261024T031723-58cc6ede",
+      "tempo": 0.9
     },
     {
       "id": "watch",
@@ -112,7 +114,8 @@
           "role": "Key pose: Yoru seated seen from behind, exactly how he sits while watching. Keep this pose, angle and size."
         }
       ],
-      "selected": "20261024T032220-d071ab9b"
+      "selected": "20261024T032220-d071ab9b",
+      "tempo": 0.9
     }
   ]
 }

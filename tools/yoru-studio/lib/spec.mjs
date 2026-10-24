@@ -82,7 +82,17 @@ export function frameScript(clip) {
  * Frame durations. Given one duration per key pose, a key and the in-betweens after it share that key's time, so
  * adding in-betweens makes the motion smoother without making it slower or faster.
  */
+/**
+ * The durations the site plays: the authored ones divided by the clip's `tempo` (its speed, 1 unchanged), so the
+ * rhythm between beats stays as written while the whole clip runs faster or slower.
+ */
 export function clipDurations(clip) {
+  const tempo = clip.tempo ?? 1;
+  return authoredDurations(clip).map((ms) => Math.round(ms / tempo));
+}
+
+/** One duration per frame as written in the spec: a number for all, one per frame, or one per beat shared out. */
+export function authoredDurations(clip) {
   const d = clip.durations ?? 140;
   if (!Array.isArray(d)) return Array(clip.frames).fill(d);
   if (d.length === clip.frames) return d;

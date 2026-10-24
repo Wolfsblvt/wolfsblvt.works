@@ -93,4 +93,8 @@ describe('key poses and in-betweens', () => {
   it('shares each key pose’s time with its in-betweens, so smoothness does not change tempo', () => {
     expect(clipDurations(clip)).toEqual([150, 150, 100, 100, 400]);
   });
+
+  it('runs a whole clip faster or slower by its tempo, keeping the rhythm between beats', () => {
+    expect(clipDurations({ ...clip, tempo: 0.5 })).toEqual([300, 300, 200, 200, 800]);
+  });
 });

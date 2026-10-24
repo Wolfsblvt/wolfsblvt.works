@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yoru tempo board</title>
+<style>
+  :root { color-scheme: dark; --bg: #0b1015; --card: #121a21; --line: #2a3640; --text: #e8e2d6; --muted: #8e9aa3; --accent: #7fd6c9; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.5 system-ui, sans-serif; }
+  header { padding: 20px 24px 8px; }
+  h1 { font-size: 20px; font-weight: 600; margin: 0 0 4px; }
+  header p { margin: 0; color: var(--muted); max-width: 70ch; }
+  h2 { font-size: 15px; font-weight: 600; margin: 24px 24px 10px; color: var(--muted); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; padding: 0 24px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px 12px; }
+  .card.changed { border-color: var(--accent); }
+  .name { display: flex; justify-content: space-between; gap: 8px; font-weight: 600; }
+  .name small { font-weight: 400; color: var(--muted); }
+  .stage { position: relative; height: 150px; margin: 6px -4px; overflow: hidden; border-bottom: 1px solid var(--line); }
+  .sprite { position: absolute; background-repeat: no-repeat; image-rendering: auto; }
+  label { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
+  input[type=range] { flex: 1; }
+  .value { min-width: 4.5em; text-align: right; color: var(--text); font-variant-numeric: tabular-nums; }
+  .row { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; font-size: 12px; color: var(--muted); }
+  button { background: none; color: var(--muted); border: 1px solid var(--line); border-radius: 6px; padding: 2px 8px; font: inherit; cursor: pointer; }
+  button:hover { color: var(--text); }
+  .status { position: fixed; right: 16px; bottom: 12px; color: var(--muted); font-size: 12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Yoru tempo board</h1>
+  <p>Every clip the site plays, at its real size on the page. Speed is how fast the whole clip runs (×1 is as authored;
+  lower is slower); the rhythm between its beats stays as written. A walk or run also has its stride, the ground one
+  cycle covers, so his feet stay planted. Changes save to the clip's spec at once; <code>npm run yoru -- pack</code>
+  carries them to the site.</p>
+</header>
+<main id="board"></main>
+<div class="status" id="status"></div>
+<script type="module">
+const board = document.getElementById('board');
+const status = document.getElementById('status');
+const families = await (await fetch('/tempo/clips.json')).json();
+const HOLD = 900; // a clip that does not loop holds its last frame this long before it plays again
+
+const sheets = new Map();
+async function sheetSize(url) {
+  if (!sheets.has(url)) {
+    const img = new Image();
+    // The load event, not decode(): decoding a large sheet can stay pending although it has loaded.
+    sheets.set(url, new Promise((done, fail) => {
+      img.onload = () => done({ width: img.naturalWidth, height: img.naturalHeight });
+      img.onerror = () => fail(new Error(`could not load ${url}`));
+      img.src = url;
+    }));
+  }
+  return sheets.get(url);
+}
+
+for (const family of families) {
+  const heading = document.createElement('h2');
+  heading.textContent = `${family.family} · ${family.title}`;
+  const grid = document.createElement('div');
+  grid.className = 'grid';
+  board.append(heading, grid);
+  const size = await sheetSize(family.sheet);
+  for (const clip of family.clips) grid.append(card(family, clip, size));
+}
+
+function card(family, clip, size) {
+  const s = family.displayScale;
+  const el = document.createElement('div');
+  el.className = 'card';
+  el.innerHTML = `
+    <div class="name">${clip.id} <small>${clip.frames} frames${clip.loop ? ' · loops' : ''}</small></div>
+    <div class="stage"><div class="sprite"></div></div>
+    <label>speed <input type="range" min="0.5" max="1.6" step="0.05" class="tempo"><span class="value tempo-out"></span></label>
+    ${clip.stride ? '<label>stride <input type="range" min="20" max="240" step="2" class="stride"><span class="value stride-out"></span></label>' : ''}
+    <div class="row"><span class="length"></span><button type="button" class="reset">×1</button></div>`;
+  const sprite = el.querySelector('.sprite');
+  const stage = el.querySelector('.stage');
+  const tempoInput = el.querySelector('.tempo');
+  const strideInput = el.querySelector('.stride');
+  const authored = { tempo: clip.tempo, stride: clip.stride };
+  tempoInput.value = clip.tempo;
+  if (strideInput) strideInput.value = clip.stride;
+
+  Object.assign(sprite.style, {
+    width: `${family.cell.width * s}px`, height: `${family.cell.height * s}px`,
+    backgroundImage: `url(${family.sheet})`, backgroundSize: `${size.width * s}px ${size.height * s}px`,
+  });
+  const floor = 140;
+  const leftwards = clip.id.endsWith('-left');
+  let x = 0;
+  const place = () => {
+    const stageWidth = stage.clientWidth;
+    sprite.style.left = `${(clip.stride ? x : stageWidth / 2) - family.pivot.x * s}px`;
+    sprite.style.top = `${floor - family.pivot.y * s}px`;
+  };
+
+  const show = () => {
+    const tempo = Number(tempoInput.value);
+    el.querySelector('.tempo-out').textContent = `×${tempo.toFixed(2)}`;
+    const pass = clip.durations.reduce((a, b) => a + b, 0) / tempo;
+    let line = `${(pass / 1000).toFixed(2)} s per pass`;
+    if (strideInput) {
+      el.querySelector('.stride-out').textContent = `${strideInput.value} px`;
+      line += ` · ${Math.round((Number(strideInput.value) / pass) * 1000)} px/s`;
+    }
+    el.querySelector('.length').textContent = line;
+    el.classList.toggle('changed', tempo !== authored.tempo || (strideInput && Number(strideInput.value) !== authored.stride));
+  };
+
+  let saving = 0;
+  const save = () => {
+    clearTimeout(saving);
+    saving = setTimeout(async () => {
+      const body = { family: family.family, clip: clip.id, tempo: Number(tempoInput.value), ...(strideInput && { stride: Number(strideInput.value) }) };
+      const response = await fetch('/tempo/save', { method: 'POST', body: JSON.stringify(body) });
+      status.textContent = response.ok ? `saved ${family.family}/${clip.id} ×${body.tempo}` : `could not save ${clip.id}: ${await response.text()}`;
+    }, 300);
+  };
+  tempoInput.addEventListener('input', () => { show(); save(); });
+  strideInput?.addEventListener('input', () => { show(); save(); });
+  el.querySelector('.reset').addEventListener('click', () => {
+    tempoInput.value = 1;
+    show();
+    save();
+  });
+
+  // Plays frame by frame on its own clock, so every card keeps its own time.
+  let frame = 0;
+  const step = () => {
+    sprite.style.backgroundPosition = `${-frame * family.cell.width * s}px ${-clip.row * family.cell.height * s}px`;
+    if (clip.stride) {
+      const width = stage.clientWidth;
+      const pass = clip.durations.reduce((a, b) => a + b, 0);
+      const move = (Number(strideInput.value) * clip.durations[frame]) / pass;
+      x = leftwards ? x - move : x + move;
+      if (leftwards && x < -40) x = width + 40;
+      if (!leftwards && x > width + 40) x = -40;
+    }
+    place();
+    const wait = clip.durations[frame] / Number(tempoInput.value);
+    frame += 1;
+    if (frame >= clip.frames) {
+      frame = 0;
+      setTimeout(step, wait + (clip.loop ? 0 : HOLD));
+    } else {
+      setTimeout(step, wait);
+    }
+  };
+  requestAnimationFrame(() => { x = stage.clientWidth / 2; step(); });
+  show();
+  return el;
+}
+</script>
+</body>
+</html>

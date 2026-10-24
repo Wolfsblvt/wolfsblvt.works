@@ -32,6 +32,8 @@ export interface SheetManifest {
     /** Where the scenery channel (a ledge, the ground) was painted in each frame. */
     scenery?: Array<PropPlacement | null>;
     feet?: number[];
+    /** For a walk or run: how far one full cycle carries him, in CSS pixels, so his feet stay planted at any tempo. */
+    stride?: number;
   }>;
 }
 
@@ -53,6 +55,8 @@ export interface Clip {
   props?: Array<PropPlacement | null>;
   /** Feet below the pivot in each frame, in master pixels (negative when he is above it). */
   feet: number[];
+  /** For a walk or run: CSS pixels one full cycle carries him. */
+  stride?: number;
 }
 
 export class ClipLibrary {
@@ -79,6 +83,7 @@ export class ClipLibrary {
           feet: c.feet ?? c.durations.map(() => 0),
           ...(c.prop && { prop: c.prop }),
           ...(c.props && { props: c.props }),
+          ...(c.stride && { stride: c.stride }),
         });
       }
     }

@@ -27,7 +27,8 @@
         "Left foot planted again, tail swaying the other way.",
         "Weight settling onto the left foot, ready to repeat."
       ],
-      "selected": "20261024T012539-df958c50"
+      "selected": "20261024T012539-df958c50",
+      "tempo": 0.8
     },
     {
       "id": "walk-right",
@@ -46,7 +47,8 @@
         "Right foot planted again, tail swaying the other way.",
         "Weight settling onto the right foot, ready to repeat."
       ],
-      "selected": "20261024T012621-69b70350"
+      "selected": "20261024T012621-69b70350",
+      "tempo": 0.8
     },
     {
       "id": "turn-left",
@@ -62,7 +64,8 @@
         "Body three-quarters towards the left edge, tail swinging round behind him to the right.",
         "In profile facing the left edge of the image, standing, ready to walk."
       ],
-      "selected": "20261024T020423-73947080"
+      "selected": "20261024T020423-73947080",
+      "tempo": 0.85
     },
     {
       "id": "turn-right",
@@ -78,7 +81,8 @@
         "Body three-quarters towards the right edge, tail swinging round behind him to the left.",
         "In profile facing the right edge of the image, standing, ready to walk."
       ],
-      "selected": "20261024T012711-6dc3e124"
+      "selected": "20261024T012711-6dc3e124",
+      "tempo": 0.85
     },
     {
       "id": "sit-down",
@@ -95,7 +99,8 @@
         "Seated upright, tail curling round his feet, capelet settling.",
         "Seated and still, half-lidded, a little smug."
       ],
-      "selected": "20261024T012800-c896fc78"
+      "selected": "20261024T012800-c896fc78",
+      "tempo": 0.9
     },
     {
       "id": "sit",
@@ -135,7 +140,8 @@
         "Nearly standing, capelet still settling.",
         "Standing facing the viewer exactly as in the identity reference."
       ],
-      "selected": "20261024T012922-c3382d48"
+      "selected": "20261024T012922-c3382d48",
+      "tempo": 0.9
     },
     {
       "id": "yawn",
@@ -151,7 +157,8 @@
         "Mouth closing, ears coming back up, a sleepy blink.",
         "Composed again, half-lidded, as if nothing happened."
       ],
-      "selected": "20261024T013003-37dfd482"
+      "selected": "20261024T013003-37dfd482",
+      "tempo": 0.8
     },
     {
       "id": "groom",
@@ -171,7 +178,8 @@
         "Paw back on the ground, a quick look to the side.",
         "Seated facing the viewer again, half-lidded, composed."
       ],
-      "selected": "20261024T013047-e7d99d1c"
+      "selected": "20261024T013047-e7d99d1c",
+      "tempo": 0.85
     }
   ]
 }
