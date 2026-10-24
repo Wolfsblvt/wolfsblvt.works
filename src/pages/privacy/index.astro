@@ -1,7 +1,7 @@
 ---
 /**
- * Privacy and data: a short-version list, then the details, with a contents column. It names the controller and points
- * to the Impressum for the postal address. Retention is given as criteria without promising scheduled deletion.
+ * Privacy and data: a short-version list, then the details, with a contents column. It names the controller and postal
+ * address from the same operator projection as Impressum. Retention is given as criteria without promising scheduled deletion.
  * Highlighted values are fixtures until the private projection and the deployment's provider facts replace them.
  */
 import site from '../../../site.config.mjs';
@@ -11,6 +11,7 @@ import { loadLegalOperator } from '../../lib/legal-operator.mjs';
 import '../../styles/rooms.css';
 
 const operator = loadLegalOperator({ requireProduction: process.env.WORKS_PUBLICATION === '1' });
+const address = operator.postalAddress;
 const p = site.legal.privacy;
 const pending = Object.values(p).some((v) => v.pending);
 const showFixtures = operator.fixture === true || pending;
@@ -69,7 +70,12 @@ const contactLogs = fx(p.contactLogRetention);
         </div>
 
         <h2 id="controller"><span class="n">01</span>Who is responsible</h2>
-        <p>The controller for this website is <span class:list={{ fx: operator.fixture === true }}>{operator.legalName}</span>. The postal address is in the <a href="/impressum/">Impressum</a>.</p>
+        <p>The controller for this website is <span class:list={{ fx: operator.fixture === true }}>{operator.legalName}</span>.</p>
+        <address>
+          <span class:list={{ fx: operator.fixture === true }}>{address.streetAddress}</span><br />
+          <span class:list={{ fx: operator.fixture === true }}>{address.postalCode} {address.locality}</span><br />
+          <span class:list={{ fx: operator.fixture === true }}>{address.countryName}</span>
+        </address>
         <p>Privacy contact: <a href={`mailto:${privacyMail}`}>{privacyMail}</a>. You can also use the <a href={site.contactUrl}>contact form</a> and pick “Privacy”.</p>
         <p>Wolfsblvt Works is the name I make and publish things under. It isn’t a company.</p>
 

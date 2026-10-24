@@ -710,6 +710,11 @@ promising deletion would be untrue.
 **Rejected.** Repeating the address on the privacy page; a deletion promise for correspondence; a cookie banner (nothing
 on the site needs consent).
 
+**Controller-address correction, 2026-10-24.** Privacy now renders the controller's postal address from the same
+canonical operator projection as Impressum, so the page itself carries the complete controller identification.
+This supersedes only the address-link-only choice and rejection above, following the
+[launch correction](https://github.com/Wolfsblvt/emergency-meeting/issues/916#issuecomment-6389628474).
+
 ### Error pages in the site's voice
 
 **Date:** 2026-10-14 · **Status:** Current
