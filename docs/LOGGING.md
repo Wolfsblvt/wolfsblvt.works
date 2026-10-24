@@ -9,9 +9,11 @@ ever holding what someone wrote. This document owns what those records contain a
 they stay and who can read them. The exact event shape lives in `worker/contact/log.ts` and its tests; the visitor-facing
 account lives on the Privacy and data page.
 
-Standing: the event contract is implemented and tested. Wolf Ops confirmed the Workers Paid hot surface on 2026-10-24:
-current publication truth is up to 7 days for request logs and contact events. The private retained export is not active;
-12 months remains the selected destination. Public deployment and live event readback remain Wolf Ops work.
+Standing: the event contract is implemented and tested. Wolf Ops confirmed the Workers Paid hot surface and the
+private retained route on 2026-10-24. Request logs remain available for up to 7 days in Workers Logs. Structured
+`contact.submission` events are also exported through the authenticated Workers Trace Events Logpush route into a
+private R2 destination with a 365-day lifecycle; one retained contact-class event was read back by metadata. The
+retained object body was not inspected.
 
 ## Purpose classes
 
@@ -63,9 +65,10 @@ with its own record here, and it still never captures message content.
 - **Hot surface:** Cloudflare Workers Logs (`observability.enabled` in `wrangler.jsonc`). The event is one JSON line on
   `console.log`, searchable in the dashboard. On the Works account's Workers Paid plan, Workers Logs keeps events for 7
   days (provider inputs and plan readback, 2026-10-24; [Workers Logs](https://developers.cloudflare.com/workers/observability/logs/workers-logs/)).
-- **Retained export:** not set up. The Works route for anything kept longer than the hot window is Logpush of Workers
-  Trace Events into Cloudflare Pipelines, classified and written to a private R2 bucket partitioned by product,
-  environment, class and date, with an R2 lifecycle rule for the retention below. Wolf Ops owns that adoption.
+- **Retained export:** Workers Trace Events Logpush is enabled for the production Worker and feeds the authenticated
+  Cloudflare Pipelines route into a private R2 bucket partitioned by product, environment, class and date. The bucket is
+  not public and has a 365-day lifecycle. Wolf Ops read back one retained contact-class event by object metadata and
+  sink metrics; the object body was not inspected. Source keeps `logpush: true` so ordinary uploads preserve the route.
 - **Mail:** the internal notification and the visitor's copy are ordinary email in the Works mailbox and the visitor's
   own mailbox. They are correspondence, not logs, and follow the mailbox's own lifecycle.
 
@@ -73,20 +76,16 @@ with its own record here, and it still never captures message content.
 
 Current publication truth:
 
-- **`contact.submission` events: up to 7 days**, in Workers Logs. No retained export is active.
-- **Cloudflare request logs: up to 7 days** on the current plan, longer only to investigate a specific attack.
+- **`contact.submission` events: up to 12 months.** Wolf chose the Works default for security events on 2026-10-14. The
+  event is primarily abuse and security evidence (honeypot, token, rate-limit and Turnstile outcomes with the client IP),
+  and it also answers "did my message arrive". Workers Logs provide the hot seven-day surface; the private retained
+  Logpush/Pipelines/R2 route has a 365-day lifecycle and one retained contact-class event was read back by metadata.
+  A 90-day override was proposed, on the grounds that the form has no accounts to compromise, and declined.
+- **Cloudflare request logs: up to 7 days** on the current plan, longer only to investigate a specific attack. The
+  retained contact-event route does not turn ordinary request logs into a twelve-month archive.
 
-Selected retained destination, not yet active:
-
-- **`contact.submission` events: 12 months.** Wolf chose the Works default for security events on 2026-10-14. The event
-  is primarily abuse and security evidence (honeypot, token, rate-limit and Turnstile outcomes with the client IP), and
-  it also answers "did my message arrive". A 90-day override was proposed, on the grounds that the form has no
-  accounts to compromise, and declined. This becomes current only after Wolf Ops reads back the private R2 route,
-  its 365-day lifecycle and a retained event through the separately recorded owner-confirmation path.
-
-The Privacy and data page states the current 7-day window. R2 is not a publication gate. Once the retained route is
-proved, update this document and `site.config.mjs` together before stating 12 months publicly. This preserves the
-selected destination without claiming retention that does not exist (accepted publication direction, 2026-10-24).
+The Privacy and data page states these two distinct windows. The retained object body was not inspected and the
+historical cause of earlier setup failures remains unknown; neither limitation changes the evidenced retention route.
 
 Nothing in these records identifies a visitor by name or email, so there is no per-person deletion path to run;
 records expire with their retention.
@@ -99,8 +98,9 @@ blocked before the Worker), not that a send silently happened.
 
 ## Access, dashboards, and user visibility
 
-Wolf, through the Cloudflare dashboard (Workers Logs) and, once adopted, the private R2 bucket. No one else has access
-and there are no dashboards or alerts yet. Visitors see their own outcome and reference on the page and in their copy.
+Wolf, through the Cloudflare dashboard (Workers Logs) and the private R2 destination. The bucket has no public
+access. There are no dashboards or alerts yet. Visitors see their own outcome and reference on the page and in their
+copy.
 
 ## Alerts, incidents, and recovery joins
 
