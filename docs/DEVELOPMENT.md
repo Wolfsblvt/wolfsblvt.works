@@ -45,6 +45,7 @@ random string for `CONTACT_FORM_SECRET`. It is ignored by Git; real values never
 | Re-render the social cards | `npm run cards` |
 | Refresh the committed profile pictures of people credited in the Pile | `npm run credits` |
 | Publication gate on its own | `npm run check:publish` |
+| Live HTTPS readback of both public hosts (after a deployment or route change) | `npm run check:live-https` |
 | Publication build | `npm run build:production` |
 | Contact-first launch build (the contact page, its assets, the 404 and the 503; nothing else) | `npm run build:contact-only` |
 
@@ -347,3 +348,9 @@ provider behavior remain live qualification, not a claim made by this source con
 required to be real, runs the output check, then the publication gate.
 
 Routine releases use `Website` above. The first-admission steps are not repeated for every merge.
+
+After every production deployment, and after any route, domain or zone change, run `npm run check:live-https` from
+outside. It asks both hosts over plain HTTP (a page load, an empty `POST` and a path with a query) without following
+redirects and expects each to be redirected to the same HTTPS address, then expects HTTPS to answer with HSTS. It sends
+no form fields or credentials and keeps no response bodies. The Worker's own redirect is pinned by the Worker tests;
+from outside the zone's redirect and the Worker's look the same.

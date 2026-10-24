@@ -63,6 +63,31 @@ describe('contact', () => {
   });
 });
 
+describe('plain HTTP on the public hosts', () => {
+  it('redirects the contact page and a submission to HTTPS before the Worker serves or handles them', async () => {
+    for (const method of ['GET', 'POST']) {
+      const response = await SELF.fetch('http://contact.wolfsblvt.works/?product=diffdevil', { method, redirect: 'manual', ...(method === 'POST' ? { body: new FormData(), headers: { Origin: 'http://contact.wolfsblvt.works' } } : {}) });
+      expect(response.status).toBe(308);
+      expect(response.headers.get('Location')).toBe('https://contact.wolfsblvt.works/?product=diffdevil');
+      expect(await response.text()).not.toContain('data-form-token');
+    }
+  });
+
+  it('redirects the home page and the old contact path to HTTPS, keeping the path', async () => {
+    const home = await SELF.fetch('http://wolfsblvt.works/', { redirect: 'manual' });
+    expect(home.status).toBe(308);
+    expect(home.headers.get('Location')).toBe('https://wolfsblvt.works/');
+    const contact = await SELF.fetch('http://wolfsblvt.works/contact/', { redirect: 'manual' });
+    expect(contact.headers.get('Location')).toBe('https://wolfsblvt.works/contact/');
+  });
+
+  it('leaves plain HTTP alone on other hosts, so local development keeps working', async () => {
+    const response = await SELF.fetch('http://localhost/contact/', { redirect: 'manual' });
+    expect(response.status).toBe(200);
+    expect(await response.text()).toMatch(/data-form-token="\d+\.[0-9a-f]{64}"/);
+  });
+});
+
 describe('static pages', () => {
   it('serves other routes straight from the assets', async () => {
     const response = await SELF.fetch('https://wolfsblvt.works/privacy/');

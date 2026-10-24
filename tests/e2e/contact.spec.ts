@@ -6,7 +6,8 @@ async function stubTurnstile(page: Page) {
   await page.route('https://challenges.cloudflare.com/**', (route) =>
     route.fulfill({
       contentType: 'text/javascript',
-      body: `window.turnstile={render:(el,o)=>{setTimeout(()=>o.callback('stub-token'),10);return 'w1'},reset(){}};window.onTurnstileLoaded&&window.onTurnstileLoaded();`,
+      // Like the real widget, a reset answers again on its own a moment later.
+      body: `window.turnstile={render:(el,o)=>{window.__ts=o;setTimeout(()=>o.callback('stub-token'),10);return 'w1'},reset(){setTimeout(()=>window.__ts.callback('stub-token'),10)}};window.onTurnstileLoaded&&window.onTurnstileLoaded();`,
     }),
   );
 }
@@ -137,6 +138,56 @@ test('failed: keeps the text, offers retry and the email address', async ({ page
   await outcome.locator('[data-retry]').click();
   await expect(page.locator('#message')).toHaveValue('Hi Wolf, is that on purpose?');
   await expect(page.locator('#message')).toBeFocused();
+});
+
+test('failed: Try again is ready to send once the bot check has answered again', async ({ page }) => {
+  await page.goto('/contact/');
+  await answer(page, { ok: false, outcome: 'failed', message: 'The message was not sent; nothing reached the inbox. Your text is kept in the form.', retryable: true }, 503);
+  await fill(page);
+  await page.locator('[data-submit]').click();
+  await expect(page.locator('[data-outcome]')).toContainText('Your message was not sent.');
+  await page.locator('[data-retry]').click();
+  await expect(page.locator('[data-submit]')).toBeEnabled();
+});
+
+test('expired form: renews its token in place, keeps the draft and sends with the fresh token', async ({ page }) => {
+  await page.goto('/contact/');
+  const tokens: string[] = [];
+  await page.route('**/contact/', async (route) => {
+    if (route.request().method() !== 'POST') return route.continue();
+    tokens.push(/name="form-token"\r\n\r\n([^\r]+)/.exec(route.request().postData() ?? '')?.[1] ?? '');
+    if (tokens.length === 1) {
+      return route.fulfill({ status: 400, json: { ok: false, outcome: 'rejected', message: 'This form was open too long to send, so nothing was sent. Get a fresh form and send again.', retryable: false, renewForm: true } });
+    }
+    return route.fulfill({ json: { ok: true, outcome: 'sent', reference: 'WW-20261025-RENEW', message: 'Your message reached the inbox and a copy was emailed to ada@example.org.', retryable: false } });
+  });
+  await fill(page);
+  await page.locator('[data-submit]').click();
+  const outcome = page.locator('[data-outcome]');
+  await expect(outcome).toContainText('It’s fresh again and your text is still in it');
+  await outcome.locator('[data-retry]').click();
+  await expect(page.locator('#message')).toHaveValue('Hi Wolf, is that on purpose?');
+  await expect(page.getByLabel('Subject')).toHaveValue('diffdevil counted my rename');
+  await page.locator('[data-submit]').click();
+  await expect(outcome).toContainText('Thanks. Your message is on its way.');
+  expect(tokens).toHaveLength(2);
+  expect(tokens[0]).toMatch(/^\d+\.[0-9a-f]{64}$/);
+  expect(tokens[1]).toMatch(/^\d+\.[0-9a-f]{64}$/);
+  expect(tokens[1]).not.toBe(tokens[0]);
+});
+
+test('expired form: when no fresh form can be fetched, the draft stays and nothing claims a safe reload', async ({ page }) => {
+  await page.goto('/contact/');
+  await page.route('**/contact/', (route) => route.request().method() === 'POST'
+    ? route.fulfill({ status: 400, json: { ok: false, outcome: 'rejected', message: 'This form was open too long to send, so nothing was sent. Get a fresh form and send again.', retryable: false, renewForm: true } })
+    : route.abort());
+  await fill(page);
+  await page.locator('[data-submit]').click();
+  const outcome = page.locator('[data-outcome]');
+  await expect(outcome).toContainText('a fresh one couldn’t be fetched just now');
+  await expect(outcome.locator('[data-fallback-email]')).toBeVisible();
+  await outcome.locator('[data-retry]').click();
+  await expect(page.locator('#message')).toHaveValue('Hi Wolf, is that on purpose?');
 });
 
 test('server field errors land on their fields', async ({ page }) => {

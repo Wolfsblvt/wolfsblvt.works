@@ -17,6 +17,7 @@ interface SubmitResponse {
   message: string;
   errors?: FieldError[];
   retryable?: boolean;
+  renewForm?: boolean;
 }
 
 declare global {
@@ -30,9 +31,10 @@ declare global {
 }
 
 const TURNSTILE_SCRIPT = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileLoaded';
+const CONTACT_FORM = '[data-contact-form]';
 const numberFormat = new Intl.NumberFormat('en');
 
-const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+const form = document.querySelector<HTMLFormElement>(CONTACT_FORM);
 if (form) setupContactForm(form);
 
 function must<T>(value: T | null | undefined): T {
@@ -118,6 +120,28 @@ function setupContactForm(form: HTMLFormElement): void {
     submitButton.disabled = true;
     submitNote.textContent = reason;
   }
+  /** Back at the form: the widget may already have answered since its reset, so only wait when it hasn't. */
+  function readyForBotCheck(): void {
+    if (turnstileToken) enableSubmit();
+    else disableSubmit('Waiting for the bot check to finish…');
+  }
+
+  /**
+   * Fetches the contact page again for its freshly issued form token and puts it into this form, leaving everything
+   * the visitor typed where it is. Nothing is stored and nothing is sent; the visitor sends again themselves.
+   */
+  async function renewFormToken(): Promise<boolean> {
+    try {
+      const page = await fetch(window.location.href, { headers: { Accept: 'text/html' }, credentials: 'omit', cache: 'no-store' });
+      if (!page.ok) return false;
+      const fresh = new DOMParser().parseFromString(await page.text(), 'text/html').querySelector<HTMLFormElement>(CONTACT_FORM)?.dataset.formToken;
+      if (!fresh) return false;
+      tokenInput.value = fresh;
+      return true;
+    } catch {
+      return false;
+    }
+  }
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -149,6 +173,10 @@ function setupContactForm(form: HTMLFormElement): void {
       turnstileToken = '';
       if (window.turnstile && turnstileWidgetId !== null) window.turnstile.reset(turnstileWidgetId);
     }
+    if (response.renewForm) {
+      showRenewal(await renewFormToken());
+      return;
+    }
     handleResponse(response);
   });
 
@@ -158,7 +186,7 @@ function setupContactForm(form: HTMLFormElement): void {
     const context = document.querySelector<HTMLElement>('[data-product-context]');
     if (context?.dataset.wasShown === 'true') context.hidden = false;
     yoruSits();
-    disableSubmit('Waiting for the bot check to finish…');
+    readyForBotCheck();
     form.querySelector<HTMLElement>('#message')?.focus();
   });
   outcome.querySelector<HTMLButtonElement>('[data-another]')?.addEventListener('click', () => {
@@ -177,7 +205,7 @@ function setupContactForm(form: HTMLFormElement): void {
   function handleResponse(response: SubmitResponse): void {
     if (response.errors && response.errors.length > 0) {
       presentErrors(response.errors);
-      disableSubmit('Waiting for the bot check to finish…');
+      readyForBotCheck();
       return;
     }
     switch (response.outcome) {
@@ -196,6 +224,16 @@ function setupContactForm(form: HTMLFormElement): void {
         form.hidden = true;
         showOutcome({ kicker: 'Not sent', bad: true, title: 'Your message was not sent.', text: response.message || 'Nothing reached the inbox. Email me directly instead.', reference: response.reference, retry: response.retryable !== false, fallback: true });
     }
+  }
+
+  // The token outlived its 12 hours (or the service's signing secret changed). Nothing was sent; the text stays put.
+  // If the fresh form couldn't be fetched, sending again asks for one again, so "Try again" stays honest either way.
+  function showRenewal(renewed: boolean): void {
+    form.hidden = true;
+    const text = renewed
+      ? 'The form was open too long to send. It’s fresh again and your text is still in it, so send it once more.'
+      : 'The form was open too long to send, and a fresh one couldn’t be fetched just now. Your text is still in the form: try again, or copy it somewhere safe before you reload the page.';
+    showOutcome({ kicker: 'Not sent', bad: true, title: 'Your message was not sent.', text, retry: true, fallback: true });
   }
 
   function showOutcome(options: { kicker: string; title: string; text: string; bad?: boolean; reference?: string; scribble?: string; retry?: boolean; fallback?: boolean; home?: boolean; another?: boolean }): void {

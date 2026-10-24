@@ -1,7 +1,9 @@
 /**
- * The contact submission pipeline. Order is deliberate: cheap local refusals first, then rate limits, then
- * validation, then the paid Turnstile check, then the two sends. Every exit writes exactly one log event
- * and returns exactly one truthful browser outcome.
+ * The contact submission pipeline. Order is deliberate: cheap local refusals first, then the per-IP limit, then
+ * validation, then the Turnstile check, then the shared location and per-recipient limits, then the two sends.
+ * Only a request that passed Turnstile can spend the shared allowances, so failed or unauthenticated attempts
+ * cannot use them up for everyone else; the per-IP limit stays early so one client cannot hammer the pipeline.
+ * Every exit writes exactly one log event and returns exactly one truthful browser outcome.
  */
 import { CONTACT_HOST, CONTACT_INBOX, FIELDS, LIMITS, OUTCOMES, type Outcome } from '../../shared/contact-contract';
 import { buildInternalNotification, buildVisitorCopy } from './mail';
@@ -18,8 +20,13 @@ export interface SubmitResponseBody {
   message: string;
   errors?: FieldError[];
   retryable: boolean;
+  /** The form token can't be used any more; nothing was sent, and a freshly served form can send the same text. */
+  renewForm?: boolean;
   fallbackEmail: string;
 }
+
+/** Production accepts submissions only over HTTPS on the canonical contact host. */
+const CONTACT_ORIGIN = `https://${CONTACT_HOST}`;
 
 const RETRY_LATER = 'Please wait a moment and try again, or email directly.';
 
@@ -87,8 +94,8 @@ export async function handleContactSubmission(request: Request, services: Contac
     return refuse('disabled', 503, 'disabled', `The contact form is paused right now. Email ${services.inbox} directly instead.`);
   }
 
-  if (services.environment === 'production' && url.hostname !== CONTACT_HOST) {
-    return refuse('origin', 403, 'rejected', 'Use the canonical contact address to send a message.');
+  if (services.environment === 'production' && url.origin !== CONTACT_ORIGIN) {
+    return refuse('origin', 403, 'rejected', `Open the contact form at ${CONTACT_ORIGIN}/ and send it from there.`);
   }
 
   if (request.headers.get('Origin') !== url.origin) {
@@ -128,18 +135,20 @@ export async function handleContactSubmission(request: Request, services: Contac
   const token = await verifyFormToken(services.formSecret, stringField(form, FIELDS.formToken, 128), services.now().getTime());
   if (!token.ok) {
     event.formToken = token.reason;
-    const message =
-      token.reason === 'too-fast'
-        ? 'That was quick. Take a moment, then send again.'
-        : 'This form has expired. Reload the page and send again; your text is kept in the form.';
-    return refuse('form-token', 400, 'rejected', message, { retryable: token.reason === 'too-fast' });
+    if (token.reason === 'too-fast') {
+      return refuse('form-token', 400, 'rejected', 'That was quick. Take a moment, then send again.', { retryable: true });
+    }
+    // An expired form, or one signed before the form secret changed, is renewable: nothing was sent, and the page can
+    // fetch a freshly issued token without losing what the visitor typed.
+    if (token.reason === 'expired' || token.reason === 'bad-signature') {
+      return refuse('form-token', 400, 'rejected', 'This form was open too long to send, so nothing was sent. Get a fresh form and send again.', { renewForm: true });
+    }
+    return refuse('form-token', 400, 'rejected', 'This form could not be verified, so nothing was sent. Reload the contact page and send again.');
   }
   event.formToken = 'ok';
 
   const ipLimit = clientIp ? await services.limitIp(clientIp) : 'unavailable';
   if (ipLimit !== 'allowed') return refuseForLimit('ip', ipLimit);
-  const locationLimit = await services.limitLocation();
-  if (locationLimit !== 'allowed') return refuseForLimit('location', locationLimit);
 
   const validation = validateSubmission(form);
   if (!validation.ok) {
@@ -148,10 +157,6 @@ export async function handleContactSubmission(request: Request, services: Contac
   const submission = validation.value;
   event.category = submission.category;
   event.product = submission.product;
-
-  const recipientKey = await sha256Hex(submission.email.toLowerCase());
-  const recipientLimit = await services.limitRecipient(recipientKey);
-  if (recipientLimit !== 'allowed') return refuseForLimit('recipient', recipientLimit);
 
   const turnstileToken = stringField(form, FIELDS.turnstile, 2048);
   const verdict = await services.turnstile(turnstileToken, clientIp, crypto.randomUUID());
@@ -162,6 +167,12 @@ export async function handleContactSubmission(request: Request, services: Contac
   if (services.environment === 'production' && verdict.testingKey) {
     return refuse('turnstile', 503, 'disabled', 'The contact form is temporarily unavailable. Please email directly instead.');
   }
+
+  const locationLimit = await services.limitLocation();
+  if (locationLimit !== 'allowed') return refuseForLimit('location', locationLimit);
+  const recipientKey = await sha256Hex(submission.email.toLowerCase());
+  const recipientLimit = await services.limitRecipient(recipientKey);
+  if (recipientLimit !== 'allowed') return refuseForLimit('recipient', recipientLimit);
 
   const reference = createReference(services.now());
   event.reference = reference;

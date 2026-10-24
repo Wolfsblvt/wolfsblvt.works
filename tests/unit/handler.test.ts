@@ -262,3 +262,130 @@ describe('refusals before any send', () => {
     expect(JSON.stringify(h.events)).not.toContain('private');
   });
 });
+
+/** Counts every limiter call so a test can prove which allowances an attempt spent. */
+function countingLimits(results: Partial<Record<'ip' | 'location' | 'recipient', 'allowed' | 'limited' | 'unavailable'>> = {}) {
+  const calls = { ip: 0, location: 0, recipient: 0 };
+  return {
+    calls,
+    overrides: {
+      limitIp: async () => (calls.ip++, results.ip ?? 'allowed'),
+      limitLocation: async () => (calls.location++, results.location ?? 'allowed'),
+      limitRecipient: async () => (calls.recipient++, results.recipient ?? 'allowed'),
+    } satisfies Partial<ContactServices>,
+  };
+}
+
+const failedTurnstile = async () => ({ ok: false, errorCodes: ['invalid-input-response'], testingKey: false });
+
+describe('shared allowances are spent only by attempts that passed the bot check', () => {
+  it('a failed Turnstile verdict spends neither the shared location nor the recipient allowance', async () => {
+    const limits = countingLimits();
+    const h = harness({ ...limits.overrides, turnstile: failedTurnstile });
+    const { status, event } = await submit(h);
+    expect(status).toBe(403);
+    expect(event.stage).toBe('turnstile');
+    expect(limits.calls).toEqual({ ip: 1, location: 0, recipient: 0 });
+  });
+
+  it('an absent Turnstile proof spends neither shared allowance', async () => {
+    const limits = countingLimits();
+    const h = harness({ ...limits.overrides, turnstile: async (token) => ({ ok: token !== null, errorCodes: token ? [] : ['missing-input-response'], testingKey: false }) });
+    const form = await request({});
+    const body = await form.formData();
+    body.delete(FIELDS.turnstile);
+    const response = await handleContactSubmission(new Request(form.url, { method: 'POST', body, headers: { Origin: 'https://contact.wolfsblvt.works', 'CF-Connecting-IP': '203.0.113.7' } }), h.services);
+    expect(response.status).toBe(403);
+    expect(limits.calls).toEqual({ ip: 1, location: 0, recipient: 0 });
+  });
+
+  it('invalid fields spend no shared allowance', async () => {
+    const limits = countingLimits();
+    const h = harness(limits.overrides);
+    const { status } = await submit(h, { [FIELDS.email]: 'nope' });
+    expect(status).toBe(422);
+    expect(limits.calls).toEqual({ ip: 1, location: 0, recipient: 0 });
+  });
+
+  it('keeps the per-IP limit early: an over-limit client reaches neither validation nor Turnstile', async () => {
+    let turnstileCalls = 0;
+    const limits = countingLimits({ ip: 'limited' });
+    const h = harness({ ...limits.overrides, turnstile: async () => (turnstileCalls++, { ok: true, errorCodes: [], testingKey: false }) });
+    const { status, event } = await submit(h, { [FIELDS.email]: 'nope' });
+    expect(status).toBe(429);
+    expect(event).toMatchObject({ stage: 'rate-limited', rateLimited: 'ip', turnstile: { checked: false } });
+    expect(turnstileCalls).toBe(0);
+    expect(limits.calls).toEqual({ ip: 1, location: 0, recipient: 0 });
+  });
+
+  it('still limits actual sends after the bot check passes', async () => {
+    const location = countingLimits({ location: 'limited' });
+    const atLocation = harness(location.overrides);
+    expect((await submit(atLocation)).event).toMatchObject({ stage: 'rate-limited', rateLimited: 'location', turnstile: { checked: true, ok: true } });
+    expect(atLocation.internal).toHaveLength(0);
+
+    const recipient = countingLimits({ recipient: 'limited' });
+    const toRecipient = harness(recipient.overrides);
+    expect((await submit(toRecipient)).event).toMatchObject({ stage: 'rate-limited', rateLimited: 'recipient', turnstile: { checked: true, ok: true } });
+    expect(toRecipient.internal).toHaveLength(0);
+    expect(toRecipient.copies).toHaveLength(0);
+  });
+
+  it('a successful send spends each allowance exactly once', async () => {
+    const limits = countingLimits();
+    const h = harness(limits.overrides);
+    expect((await submit(h)).body.outcome).toBe('sent');
+    expect(limits.calls).toEqual({ ip: 1, location: 1, recipient: 1 });
+  });
+});
+
+describe('an expired form is renewable without losing the draft', () => {
+  it('marks an expired token renewable, sends nothing and claims nothing about a reload', async () => {
+    const h = harness();
+    const old = await issueFormToken(SECRET, NOW.getTime() - LIMITS.maximumFormAgeMs - 1);
+    const { status, body, event } = await submit(h, {}, { token: old });
+    expect(status).toBe(400);
+    expect(event.formToken).toBe('expired');
+    expect(body).toMatchObject({ ok: false, outcome: 'rejected', renewForm: true, retryable: false });
+    expect(body.message).toContain('nothing was sent');
+    expect(body.message).not.toMatch(/reload/i);
+    expect(h.internal).toHaveLength(0);
+  });
+
+  it('marks a token signed with an earlier secret renewable', async () => {
+    const h = harness();
+    const rotated = await issueFormToken('an-earlier-secret', NOW.getTime() - 10_000);
+    const { body, event } = await submit(h, {}, { token: rotated });
+    expect(event.formToken).toBe('bad-signature');
+    expect(body.renewForm).toBe(true);
+  });
+
+  it('does not offer renewal for a missing or malformed token', async () => {
+    const h = harness();
+    expect((await submit(h, {}, { token: null })).body.renewForm).toBeUndefined();
+    expect((await submit(h, {}, { token: 'not-a-token' })).body.renewForm).toBeUndefined();
+  });
+});
+
+describe('production accepts submissions only over HTTPS', () => {
+  async function productionSubmit(url: string, origin: string) {
+    const h = harness({ environment: 'production' });
+    const form = await (await request({})).formData();
+    const response = await handleContactSubmission(new Request(url, { method: 'POST', body: form, headers: { Origin: origin, 'CF-Connecting-IP': '203.0.113.7' } }), h.services);
+    return { h, status: response.status, body: (await response.json()) as SubmitResponseBody };
+  }
+
+  it('refuses a same-origin plaintext submission on the contact host before reading or sending it', async () => {
+    const { h, status, body } = await productionSubmit('http://contact.wolfsblvt.works/', 'http://contact.wolfsblvt.works');
+    expect(status).toBe(403);
+    expect(body.message).toContain('https://contact.wolfsblvt.works/');
+    expect(h.events[0]).toMatchObject({ stage: 'origin', formToken: null });
+    expect(h.internal).toHaveLength(0);
+  });
+
+  it('sends over HTTPS on the contact host', async () => {
+    const { h, body } = await productionSubmit('https://contact.wolfsblvt.works/', 'https://contact.wolfsblvt.works');
+    expect(body.outcome).toBe('sent');
+    expect(h.internal).toHaveLength(1);
+  });
+});

@@ -72,7 +72,8 @@ credential prerequisites are described in [Development](docs/DEVELOPMENT.md#auto
   Worker, bindings and Logpush setting; Ops owns the account, existing custom domains, secrets and native HTTPS/redirect
   rules. Keep routes/domains out of this configuration so routine uploads preserve those connections. A consumed
   `main` update has a production effect; draft source preparation does not. Provider setup, DNS and manual recovery
-  remain Wolf Ops work, with exact current authority.
+  remain Wolf Ops work, with exact current authority. Everything stays HTTPS-only; run `npm run check:live-https`
+  after a deployment.
 - **Showcase, not audit.** A composed scene, an authored number, a mock interaction or an imagined moment is finished
   public content: no "illustrative", "fixture" or "not built" captions, no `illustrative: true`, one short standing
   line per project at most. `illustrative: true` and `data-placeholder` mean unreplaced design-time scaffolding only,

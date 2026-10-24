@@ -23,6 +23,7 @@
     "check:types": "npm run assets && astro check && tsc --noEmit -p tsconfig.worker.json",
     "check:output": "node scripts/check-output.mjs",
     "check:publish": "node scripts/check-publish.mjs",
+    "check:live-https": "node scripts/check-live-https.mjs",
     "test": "npm run test:unit",
     "test:unit": "vitest run",
     "test:e2e": "playwright test",
