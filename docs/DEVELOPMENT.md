@@ -106,7 +106,7 @@ Produced by the build, ignored by Git, never edited by hand:
 | `public/fonts/`, `src/styles/fonts.generated.css` | `scripts/prepare-fonts.mjs`, from the Fontsource packages (Latin and Latin Extended) |
 | `public/favicon.svg`, `public/favicon-192.png`, `public/apple-touch-icon.png` | `scripts/generate-identity-assets.mjs`, from the marks |
 | `public/brand/works/` | The same script, byte-for-byte mirror of the committed canonical bundle |
-| `public/yoru/sheet-1x.webp`, `sheet-2x.webp`, `src/generated/yoru-doze.ts` | the same script, from Yoru's frames in `design/the-walk/assets/` |
+| `src/generated/yoru-doze.ts` | the same script: one sleeping frame from `design/yoru/sheets/sleep.webp`, inline for the 503 |
 | `public/yoru/resident/<family>-1x.webp`, `-2x.webp`, `src/generated/yoru-families.ts` | the same script, from the resident's packed sheets in `design/yoru/sheets/`; a sheet is re-encoded only when its master changed |
 | `artifacts/yoru-studio/` | `npm run yoru`: raw generations, cut frames, contact sheets and the studio pages |
 | `artifacts/test-results/`, `artifacts/review/` | Playwright, and one-off review captures |

@@ -34,10 +34,10 @@ h1{margin:0;font-weight:300;font-size:clamp(46px,6.2vw,96px);line-height:.95;let
 .quiet{font:14.5px system-ui,sans-serif;color:#d1c0b8;margin-left:6px}
 .yoru{position:relative;align-self:end;margin:0 clamp(0px,5vw,80px) 30px 0;display:flex;flex-direction:column;align-items:center}
 @media (max-width:820px){.yoru{justify-self:end;margin-right:24px}}
-.yoru img{display:block;width:96px;height:104px}
+.yoru img{display:block}
 .ground{width:150px;border-top:1px solid rgb(243 232 220 / 16%)}
-.cap{position:absolute;right:calc(100% - 20px);bottom:58px;font:500 16px/1.25 'Segoe Print','Bradley Hand','Comic Sans MS',cursive;color:#ef8ea1;white-space:nowrap;transform:rotate(-4deg)}
-@media (max-width:640px){.cap{right:-10px;bottom:118px}}
+.cap{position:absolute;right:calc(100% - 20px);bottom:34px;font:500 16px/1.25 'Segoe Print','Bradley Hand','Comic Sans MS',cursive;color:#ef8ea1;white-space:nowrap;transform:rotate(-4deg)}
+@media (max-width:640px){.cap{right:-10px;bottom:92px}}
 .mini{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;padding:28px 0 34px;border-top:1px solid rgb(243 232 220 / 10%);font:13.5px system-ui,sans-serif;color:#9c8c93}
 .mini a{color:#d1c0b8;text-decoration:none}.mini a:hover{color:#73cae3}
 `;
@@ -72,7 +72,7 @@ const html = `<!doctype html>
 </div>
 <div class="yoru">
 <span class="cap" aria-hidden="true">Yoru is looking into it.</span>
-<img src="${YORU_DOZE}" alt="Yoru, asleep" width="96" height="104">
+<img src="${YORU_DOZE.src}" alt="Yoru, asleep" width="${YORU_DOZE.width}" height="${YORU_DOZE.height}">
 <div class="ground"></div>
 </div>
 </main>

@@ -7,6 +7,7 @@
 import site from '../../../site.config.mjs';
 import { CATEGORIES, FIELDS, LIMITS } from '../../../shared/contact-contract';
 import Icon from '../../components/Icon.astro';
+import YoruStill from '../../components/YoruStill.astro';
 import { CONTACT_PRODUCTS } from '../../features/contact/products';
 import Base from '../../layouts/Base.astro';
 import '../../features/contact/contact.css';
@@ -55,7 +56,7 @@ const productsJson = JSON.stringify(Object.fromEntries(CONTACT_PRODUCTS.map((p) 
       </div>
 
       <div class="ct-card-wrap">
-        <div class="ct-yoru" aria-hidden="true" data-contact-yoru><div class="sprite s-idle"></div></div>
+        <div class="ct-yoru" data-contact-yoru><YoruStill pose="idle" label="Yoru, sitting on the form." /></div>
         <div class="ct-card">
           <p class="ct-from" hidden data-product-context>
             <span data-product-context-icon></span>

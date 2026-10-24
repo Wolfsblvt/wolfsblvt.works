@@ -21,9 +21,7 @@
 .ct-card-wrap { position: relative; margin-top: 46px; }
 @media (max-width: 980px) { .ct-card-wrap { margin-top: 110px; } }
 .ct-card { position: relative; border: 1px solid rgb(243 232 220 / 12%); border-radius: 18px; background: linear-gradient(180deg, rgb(30 21 30 / 92%), rgb(20 14 21 / 92%)); box-shadow: 0 30px 70px -40px rgb(0 0 0 / 90%); padding: clamp(24px, 3vw, 40px); }
-.ct-yoru { position: absolute; right: 34px; top: -98px; z-index: 2; transition: transform 1.6s linear; }
-.ct-yoru.out { transform: translateX(70vw); }
-.ct-yoru.away { transform: translateX(70vw); transition: none; visibility: hidden; }
+.ct-yoru { position: absolute; right: 34px; bottom: 100%; z-index: 2; }
 .ct-from { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 0 0 26px; padding: 12px 14px; border-radius: 12px; border: 1px dashed rgb(115 202 227 / 35%); background: rgb(115 202 227 / 6%); font: 14.5px/1.4 var(--sans); color: var(--text-soft); }
 .ct-from strong { color: var(--text); }
 .ct-form { display: grid; gap: 26px; }

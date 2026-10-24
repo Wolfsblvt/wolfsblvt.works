@@ -7,7 +7,6 @@
 .lg-h { margin: 0; font-weight: 300; font-size: clamp(46px, 6.4vw, 92px); line-height: .98; letter-spacing: -.03em; font-variation-settings: 'opsz' 72; }
 .lg-sub { margin: 16px 0 0; font: 15px var(--sans); color: var(--text-faint); }
 .lg-nap { position: relative; display: flex; align-items: flex-end; gap: 2px; margin-right: clamp(0px, 4vw, 60px); }
-.lg-nap .sprite { flex: none; }
 .lg-nap-line { position: absolute; left: -30px; right: -30px; bottom: 6px; border-top: 1px solid rgb(243 232 220 / 16%); }
 .lg-nap-cap { position: absolute; right: 100%; top: -6px; display: flex; align-items: flex-start; gap: 2px; white-space: nowrap; }
 .lg-nap-cap span { font: 500 16px/1.25 var(--hand); color: var(--rose); transform: rotate(-4deg); text-align: right; }
@@ -70,9 +69,6 @@
 .er-quiet:hover { color: var(--cyan); }
 .er-yoru { position: relative; align-self: end; margin: 0 clamp(0px, 5vw, 80px) 30px 0; display: flex; flex-direction: column; align-items: center; }
 @media (max-width: 820px) { .er-yoru { justify-self: end; margin-right: 24px; } }
-.er-yoru .yoru-btn { transition: transform 1.6s linear; }
-.er-yoru .yoru-btn.out { transform: translateX(70vw); }
-.er-yoru .yoru-btn.away { transform: translateX(70vw); transition: none; visibility: hidden; }
 .er-ground { width: 150px; border-top: 1px solid rgb(243 232 220 / 16%); }
 .er-cap { position: absolute; right: calc(100% - 20px); bottom: 58px; display: flex; align-items: flex-end; gap: 2px; opacity: 0; animation: fadein .6s ease 3.1s forwards; }
 @media (max-width: 640px) { .er-cap { right: -10px; bottom: 118px; flex-direction: row-reverse; } .er-cap svg { transform: scaleX(-1); } }

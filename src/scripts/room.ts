@@ -1,8 +1,10 @@
 /**
- * Rooms: the contents column follows your reading with the cyan dot and travels with the site's eased curve; on the
- * 404, Yoru runs off the path when clicked and wanders back from the other side.
+ * Rooms: the contents column follows your reading with the cyan dot and travels with the site's eased curve. Yoru
+ * lives here too: on the 404 he wanders off the path when clicked and comes back round from the other side; on the
+ * legal pages he is asleep on his line.
  */
-import { documentTop, isPlainClick, reducedMotion, travelTo } from './runtime';
+import { mountSpot } from '../features/yoru/client/spot';
+import { documentTop, isPlainClick, travelTo } from './runtime';
 
 function mountToc(): void {
   const toc = document.querySelector<HTMLElement>('[data-toc]');
@@ -32,46 +34,25 @@ function mountToc(): void {
   });
 }
 
-function mountLostYoru(): void {
-  const button = document.querySelector<HTMLButtonElement>('[data-yoru-lost]');
-  const sprite = button?.querySelector<HTMLElement>('.sprite');
-  const cap = document.querySelector<HTMLElement>('[data-yoru-lost-cap]');
-  if (!button || !sprite) return;
-  let busy = false;
-  if (!reducedMotion()) {
-    setInterval(() => {
-      if (busy) return;
-      sprite.className = 'sprite s-look';
-      setTimeout(() => { if (!busy) sprite.className = 'sprite s-idle'; }, 1700);
-    }, 6500);
+/** The 404's Yoru, who wanders off when clicked, and the legal pages' Yoru, asleep on his line. */
+function mountYoru(): void {
+  const groundOf = (line: HTMLElement) => () => {
+    const r = line.getBoundingClientRect();
+    return { left: r.left + scrollX, right: r.right + scrollX, y: r.top + scrollY };
+  };
+  const lost = document.querySelector<HTMLElement>('[data-yoru-lost]');
+  const path = document.querySelector<HTMLElement>('[data-yoru-lost-ground]');
+  if (lost && path) {
+    mountSpot({
+      spot: lost, ground: groundOf(path), wandersOff: true,
+      caption: document.querySelector<HTMLElement>('[data-yoru-lost-cap]'),
+      label: 'Yoru, the resident. Click him and he wanders off.',
+    });
   }
-  button.addEventListener('click', () => {
-    if (busy || reducedMotion()) return;
-    busy = true;
-    if (cap) cap.hidden = true;
-    sprite.className = 'sprite s-runR';
-    button.classList.add('out');
-    setTimeout(() => {
-      button.classList.remove('out');
-      button.classList.add('away');
-      setTimeout(() => {
-        // Back from the other side.
-        button.style.transition = 'none';
-        button.style.transform = 'translateX(-70vw)';
-        button.classList.remove('away');
-        sprite.className = 'sprite s-runL';
-        void button.offsetWidth;
-        button.style.transition = '';
-        button.style.transform = '';
-        setTimeout(() => {
-          sprite.className = 'sprite s-idle';
-          if (cap) cap.hidden = false;
-          busy = false;
-        }, 1650);
-      }, 2600);
-    }, 1650);
-  });
+  const nap = document.querySelector<HTMLElement>('[data-yoru-nap]');
+  const line = document.querySelector<HTMLElement>('[data-yoru-nap-ground]');
+  if (nap && line) mountSpot({ spot: nap, ground: groundOf(line), asleep: true, label: 'Yoru, asleep. Poke him.' });
 }
 
 mountToc();
-mountLostYoru();
+mountYoru();

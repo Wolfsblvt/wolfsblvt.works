@@ -1,0 +1,30 @@
+---
+/**
+ * One still frame of Yoru from the resident's sheets: what a page shows without JavaScript, and the space his spot
+ * keeps while the resident (src/features/yoru/client/spot.ts) draws him. His feet sit on the box's bottom edge.
+ */
+import { YORU_FAMILIES } from '../generated/yoru-families';
+
+interface Props {
+  pose: 'idle' | 'asleep';
+  label: string;
+}
+const { pose, label } = Astro.props;
+const [family, clip] = pose === 'asleep' ? ['sleep', 'sleep'] : ['presence', 'idle'];
+const manifest = YORU_FAMILIES[family]!;
+const { row } = manifest.clips[clip]!;
+const s = manifest.displayScale;
+const columns = Math.max(...Object.values(manifest.clips).map((c) => c.frames));
+const rows = Object.keys(manifest.clips).length;
+const sheet = `/yoru/resident/${family}`;
+const style = [
+  `width:${manifest.cell.width * s}px`,
+  `height:${manifest.cell.height * s}px`,
+  `margin-bottom:${-(manifest.cell.height - manifest.pivot.y) * s}px`,
+  `background-image:image-set(url(${sheet}-1x.webp) 1x, url(${sheet}-2x.webp) 2x)`,
+  `background-size:${columns * manifest.cell.width * s}px ${rows * manifest.cell.height * s}px`,
+  `background-position:0 ${-row * manifest.cell.height * s}px`,
+].join(';');
+---
+
+<div class="yoru-still" role="img" aria-label={label} title="Yoru" style={style} data-yoru-still></div>

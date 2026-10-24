@@ -93,22 +93,11 @@ a:hover { color: var(--cyan); }
 .js [data-reveal=fade] { opacity: 0; transform: translateY(14px); transition: opacity 1s ease, transform 1s ease; }
 .js [data-reveal=fade][data-on] { opacity: 1; transform: none; }
 
-/* Yoru's sprite: 96x104 frames */
-.sprite { width: 96px; height: 104px; background-image: url(/yoru/sheet-1x.webp); background-image: image-set(url(/yoru/sheet-1x.webp) 1x, url(/yoru/sheet-2x.webp) 2x); background-size: 768px 936px; background-repeat: no-repeat; }
-.s-idle { animation: s-idle 1.4s steps(6) infinite; }
-.s-look { animation: s-look 1.6s steps(6) 1 forwards; }
-.s-runL { animation: s-runL .7s steps(8) infinite; }
-.s-runR { animation: s-runR .7s steps(8) infinite; }
-.s-sit { animation: s-sit .9s steps(5) 1 forwards; }
-.s-doze { background-position: -288px -520px; animation: s-doze 2.8s steps(2) infinite; }
-@keyframes s-idle { from { background-position: 0 0 } to { background-position: -576px 0 } }
-@keyframes s-look { from { background-position: 0 -832px } to { background-position: -576px -832px } }
-@keyframes s-wave { from { background-position: 0 -312px } to { background-position: -384px -312px } }
-@keyframes s-runR { from { background-position: 0 -104px } to { background-position: -768px -104px } }
-@keyframes s-runL { from { background-position: 0 -208px } to { background-position: -768px -208px } }
-@keyframes s-sit { from { background-position: 0 -520px } to { background-position: -480px -520px } }
-@keyframes s-doze { from { background-position: -288px -520px } to { background-position: -480px -520px } }
-.yoru-btn { appearance: none; background: none; border: 0; padding: 0; margin: 0; cursor: pointer; display: block; }
+/* Yoru, the resident: a clipped, click-through layer over the page for him to live in, and his own element. */
+.yoru-stage { position: absolute; left: 0; top: 0; width: 100%; overflow: hidden; pointer-events: none; z-index: 40; }
+.yoru-resident { appearance: none; border: 0; padding: 0; background-color: transparent; cursor: pointer; }
+.yoru-resident:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; border-radius: 8px; }
+.yoru-still { flex: none; background-repeat: no-repeat; }
 
 /* Buttons */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 44px; padding: 0 20px; border-radius: 999px; font: 600 15px var(--sans); text-decoration: none; box-sizing: border-box; transition: transform .2s, background .2s, color .2s, border-color .2s; cursor: pointer; }
@@ -138,5 +127,4 @@ a:hover { color: var(--cyan); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .js [data-reveal], .js [data-reveal] > * { opacity: 1 !important; transform: none !important; clip-path: none !important; }
-  .s-doze { background-position: -288px -520px; }
 }

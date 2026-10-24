@@ -19,19 +19,14 @@
 .perch { position: relative; display: flex; flex-direction: column; align-items: center; }
 .perch-line { width: 180px; border-top: 1px solid rgb(243 232 220 / 18%); }
 .perch-spot { height: 101px; display: flex; align-items: flex-end; }
-.hero-yoru .sprite { margin-bottom: -3px; }
-.hero-yoru:hover .sprite { animation: s-wave .7s steps(4) infinite; }
 .yoru-cap { position: absolute; right: calc(100% - 34px); top: 100%; margin-top: 4px; display: flex; align-items: flex-start; gap: 2px; opacity: 0; animation: fadein .6s ease 3s forwards; }
 .yoru-cap.back { animation-delay: .25s; }
 .yoru-cap span { font: 500 16px/1.2 var(--hand); color: var(--rose); white-space: nowrap; transform: rotate(-4deg); margin-top: 14px; }
 @media (max-width: 640px) { .yoru-cap { right: auto; left: 118px; top: 62%; flex-direction: row-reverse; } .yoru-cap svg { transform: scaleX(-1); } .yoru-cap span { white-space: normal; max-width: 12ch; } }
-/* Yoru, the resident (src/features/yoru/client/site.ts): the page stage spans the document, the lane is fixed over the
-   viewport, a scene layer sits inside a project window. All clip him and let clicks through; only he takes them. */
-.yoru-stage { position: absolute; left: 0; top: 0; width: 100%; overflow: hidden; pointer-events: none; z-index: 40; }
+/* Yoru on the home page (src/features/yoru/client/site.ts): besides the shared page stage (base.css), the lane is
+   fixed over the viewport and a scene layer sits inside a project window. Both clip him and let clicks through. */
 .yoru-lane { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 40; }
 .yoru-scene { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 1; }
-.yoru-resident { appearance: none; border: 0; padding: 0; background-color: transparent; cursor: pointer; }
-.yoru-resident:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; border-radius: 8px; }
 
 /* ---------- why ---------- */
 .why { display: grid; grid-template-columns: minmax(0, .78fr) minmax(0, 1.22fr); gap: 32px 72px; align-items: start; }

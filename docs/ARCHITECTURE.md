@@ -62,6 +62,11 @@ Without JavaScript the same page is complete: the pile renders as an ordinary li
    command. He is in one place at a time and does not return to the perch. Sheets load per family, as 1x and 2x WebP,
    from `public/yoru/resident/`. Without JavaScript the hero shows his still frame.
 
+   The 404, the legal pages and Contact give the same resident one spot on a ground line (`client/spot.ts`): on the
+   404 a click sends him off the screen and back round, on the legal pages he starts asleep, and on Contact he runs
+   off with a sent message and comes back for the next. Each page shows his still frame (`YoruStill`) without
+   JavaScript. The 503 cannot rely on the site, so it shows one sleeping frame inline and nothing moves.
+
 ### A contact message
 
 1. A browser asks `https://contact.wolfsblvt.works/?product=diffdevil`. The Worker serves the static `contact/` page
@@ -121,8 +126,8 @@ change first. A contact message exists only as two emails. The contact service's
 are the only records; [Logging](LOGGING.md) describes them.
 
 Build-time data comes from the repository: `site.config.mjs` (identity, links, legal facts), the Pile collection in
-`src/content/pile/`, the approved marks in `brand/bundle/works/`, Yoru's v1 frames in `design/the-walk/assets/` (the legal pages, 404 and
-503) and the resident's packed sheets in `design/yoru/sheets/`. The legal operator's
+`src/content/pile/`, the approved marks in `brand/bundle/works/` and Yoru's packed sheets in `design/yoru/sheets/`, which
+every page that shows him uses (the 503 carries one sleeping frame inline). The legal operator's
 name and address reach the build only as the private `WOLFSBLVT_LEGAL_OPERATOR_B64` projection; the public source
 carries an obvious fixture in `src/data/legal-operator.example.json`.
 

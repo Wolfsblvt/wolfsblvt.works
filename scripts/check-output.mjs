@@ -144,7 +144,7 @@ if (/<link[^>]+rel="(stylesheet|preload)"/i.test(unavailable) || /@font-face|\/_
 }
 if (/(href|src)="\/(?!\/)/.test(unavailable)) fail('503.html uses a site-relative link; links there must be absolute.');
 
-for (const asset of ['favicon.svg', 'favicon-192.png', 'apple-touch-icon.png', 'yoru/sheet-1x.webp', 'yoru/sheet-2x.webp']) {
+for (const asset of ['favicon.svg', 'favicon-192.png', 'apple-touch-icon.png', 'yoru/resident/presence-1x.webp', 'yoru/resident/sleep-2x.webp']) {
   if (!existsSync(join(out, asset))) fail(`${asset} is missing.`);
 }
 

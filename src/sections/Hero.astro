@@ -1,5 +1,6 @@
 ---
 /** Hi: the sentence with its correction, the invitation, and Yoru on his perch. */
+import YoruStill from '../components/YoruStill.astro';
 ---
 
 <section id="hi" class="frame hero lift" data-hero>
@@ -17,8 +18,8 @@
         <svg width="44" height="36" viewBox="0 0 44 36"><path d="M3 30 C 18 31, 32 24, 38 6" fill="none" stroke="#ef8ea1" stroke-width="1.8" stroke-linecap="round"></path><path d="M31.5 11 L38 5 L41.5 13" fill="none" stroke="#ef8ea1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
       </div>
       <div class="perch-spot">
-        <div class="hero-yoru" role="img" aria-label="Yoru, the resident, standing on a line. He lives here." title="Yoru" data-yoru-hero>
-          <div class="sprite s-idle" data-yoru-hero-sprite></div>
+        <div class="hero-yoru" data-yoru-hero>
+          <YoruStill pose="idle" label="Yoru, the resident, standing on a line. He lives here." />
         </div>
       </div>
       <div class="perch-line" data-yoru-perch></div>

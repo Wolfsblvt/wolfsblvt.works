@@ -6,7 +6,7 @@
  * Adapted from the moved service's src/scripts/contact-form.ts (Wolfsblvt/wolfsblvt.com 98a85f8).
  */
 import { FIELDS, LIMITS, OUTCOMES, TURNSTILE_ACTION } from '../../../shared/contact-contract';
-import { reducedMotion } from '../../scripts/runtime';
+import { mountSpot } from '../yoru/client/spot';
 
 type FieldError = { field: string; message: string };
 
@@ -52,7 +52,17 @@ function setupContactForm(form: HTMLFormElement): void {
   const attemptInput = must(form.querySelector<HTMLInputElement>('[data-attempt]'));
   const turnstileSlot = must(form.querySelector<HTMLElement>('[data-turnstile]'));
   const outcome = must(document.querySelector<HTMLElement>('[data-outcome]'));
-  const yoru = document.querySelector<HTMLElement>('[data-contact-yoru]');
+  const yoruSpot = document.querySelector<HTMLElement>('[data-contact-yoru]');
+  const card = document.querySelector<HTMLElement>('.ct-card');
+  // He sits on the card's top edge, along the stretch his still frame takes up.
+  const yoru = yoruSpot && card ? mountSpot({
+    spot: yoruSpot,
+    ground: () => {
+      const spot = yoruSpot.getBoundingClientRect();
+      return { left: spot.left + scrollX, right: spot.right + scrollX, y: card.getBoundingClientRect().top + scrollY };
+    },
+    label: 'Yoru, the resident. Poke him.',
+  }) : null;
   const products = JSON.parse(form.dataset.products ?? '{}') as Record<string, { label: string; home: string }>;
 
   let turnstileToken = '';
@@ -210,20 +220,13 @@ function setupContactForm(form: HTMLFormElement): void {
     outcome.focus();
   }
 
-  // Yoru runs off with a sent message and isn't there afterwards; he stays put when it failed.
+  // Yoru runs off with a sent message and isn't there afterwards; he stays put when it failed, and comes back when the
+  // form is back.
   function yoruRunsOff(): void {
-    if (!yoru) return;
-    if (reducedMotion()) { yoru.classList.add('away'); return; }
-    const sprite = yoru.querySelector('.sprite');
-    if (sprite) sprite.className = 'sprite s-runR';
-    yoru.classList.add('out');
-    setTimeout(() => { yoru.classList.remove('out'); yoru.classList.add('away'); }, 1650);
+    yoru?.leave();
   }
   function yoruSits(): void {
-    if (!yoru) return;
-    yoru.classList.remove('out', 'away');
-    const sprite = yoru.querySelector('.sprite');
-    if (sprite) sprite.className = 'sprite s-idle';
+    yoru?.comeBack();
   }
 
   function presentErrors(errors: FieldError[]): void {

@@ -59,6 +59,8 @@ export interface Link {
 export interface World {
   places: ReadonlyArray<Place>;
   links: ReadonlyArray<Link>;
+  /** The stretch of the stage the reader can see, in stage coordinates: running out of view means past its edge. */
+  view?(): { left: number; right: number };
 }
 
 export function place(world: World, id: string): Place {

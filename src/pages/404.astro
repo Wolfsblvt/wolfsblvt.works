@@ -5,6 +5,7 @@
  */
 import site from '../../site.config.mjs';
 import Base from '../layouts/Base.astro';
+import YoruStill from '../components/YoruStill.astro';
 import '../styles/rooms.css';
 ---
 
@@ -31,8 +32,8 @@ import '../styles/rooms.css';
     </div>
     <div class="er-yoru">
       <div class="er-cap" aria-hidden="true" data-yoru-lost-cap><span>Yoru gets lost here too.</span><svg width="30" height="26" viewBox="0 0 30 26" fill="none" stroke="#ef8ea1" stroke-width="1.6" stroke-linecap="round"><path d="M3 5c8 1 15 6 22 16"></path><path d="M18 20l7 1.5-1-7"></path></svg></div>
-      <button class="yoru-btn" type="button" aria-label="Yoru, the resident. Click him and he runs off." title="Yoru" data-yoru-lost><div class="sprite s-idle"></div></button>
-      <div class="er-ground"></div>
+      <div class="er-spot" data-yoru-lost><YoruStill pose="idle" label="Yoru, the resident, standing at the end of the path." /></div>
+      <div class="er-ground" data-yoru-lost-ground></div>
     </div>
   </main>
   <script is:inline>

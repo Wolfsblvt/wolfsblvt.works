@@ -83,14 +83,19 @@ const RUN_STRIDE = 144;
  */
 const HOP = { up: 60, down: 180, across: 280 };
 
-/** How far past the end of a place he runs to be out of view, in display pixels. */
+/**
+ * How far past the end of a place, and past the edge of what the reader can see, he runs to be out of view, in
+ * display pixels: about half his cell, so not a whisker of him is left showing.
+ */
 const OFFSCREEN = 160;
+const PAST_EDGE = 90;
 
 export interface ResidentOptions {
   player: SpritePlayer;
   clips: ClipLibrary;
   world: World;
-  start: { place: string; at: number };
+  /** Where he is when the page opens, and whether he is already asleep there (a restful place). */
+  start: { place: string; at: number; asleep?: boolean };
   seed?: number;
   clock?: Clock;
   reducedMotion?: boolean;
@@ -156,6 +161,7 @@ export class Resident {
     this.#wariness = this.#acquaintance?.wariness ?? 0;
     this.#place = o.start.place;
     this.#at = o.start.at;
+    if (o.start.asleep) { this.#posture = 'curl'; this.#rest = 1; }
   }
 
   get state(): { place: string; at: number; posture: Posture; rest: number; curiosity: number; wariness: number } {
@@ -214,8 +220,9 @@ export class Resident {
    * A place is getting the visitor's attention (a project window scrolled into view and used). If he is calm and the
    * way is open, he goes to have a look; otherwise he carries on. An invitation, not a command.
    */
-  invite(placeId: string): void {
-    if (this.#place === placeId || this.#calm() < 0.5) return;
+  invite(placeId: string, { insist = false }: { insist?: boolean } = {}): void {
+    // insist: the page needs him there whatever his mood (he has a sent message to deliver).
+    if (this.#place === placeId || (!insist && this.#calm() < 0.5)) return;
     const way = route(this.#world, this.#place, placeId);
     if (!way || !way.every((link) => this.#canTake(link))) return;
     this.#trace(`invited to ${placeId}`);
@@ -241,6 +248,8 @@ export class Resident {
   // ---------- the loop ----------
 
   async #live(): Promise<void> {
+    // Found curled up (a page where he is already asleep, or a tab seen again mid-nap), he sleeps on.
+    if (this.#posture === 'curl' && !this.#queued) this.#queued = this.#behaviours().find((b) => b.name === 'nap' && b.weight() > 0) ?? null;
     while (this.#alive) {
       if (!place(this.#world, this.#place).surface()) { this.#relocate(); continue; }
       const next = this.#queued ?? this.#choose();
@@ -636,14 +645,17 @@ export class Resident {
     const hard = this.#hard.signal;
     if (!this.#reduced) {
       const leftwards = link.at === 'left';
+      const view = this.#world.view?.();
+      const outLeft = (left: number) => Math.min(left - OFFSCREEN, view ? view.left - PAST_EDGE : Infinity);
+      const outRight = (right: number) => Math.max(right + OFFSCREEN, view ? view.right + PAST_EDGE : -Infinity);
       await this.#toPosture(leftwards ? 'face-left' : 'face-right');
       const start = this.#player.position.x;
-      await this.#run(start, leftwards ? from.left - OFFSCREEN : from.right + OFFSCREEN, from.y, hard);
+      await this.#run(start, leftwards ? outLeft(from.left) : outRight(from.right), from.y, hard);
       const fromLeft = link.enter === 'left';
       const arriveX = to.left + link.arrive * (to.right - to.left);
       this.#posture = fromLeft ? 'face-right' : 'face-left';
       this.#player.setLayer(place(this.#world, link.to).layer?.() ?? null);
-      await this.#run(fromLeft ? to.left - OFFSCREEN : to.right + OFFSCREEN, arriveX, to.y, hard);
+      await this.#run(fromLeft ? outLeft(to.left) : outRight(to.right), arriveX, to.y, hard);
     }
     this.#arrive(link);
   }
