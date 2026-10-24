@@ -18,7 +18,8 @@ const lockup = (prefix, height, extra = '') =>
     .replace('<svg xmlns="http://www.w3.org/2000/svg"', `<svg xmlns="http://www.w3.org/2000/svg" style="height:${height}px;width:auto;display:block;${extra}"`)
     .split('wk-full-dark-')
     .join(prefix);
-const yoru = `data:image/png;base64,${readFileSync(join(root, 'design', 'the-walk', 'assets', 'yoru-still-cutout.png')).toString('base64')}`;
+// Yoru as he is drawn now: the standing still cut by `npm run yoru -- cutout` from the sprites' style anchor.
+const yoru = `data:image/png;base64,${readFileSync(join(root, 'design', 'yoru', 'stills', 'standing.png')).toString('base64')}`;
 // A page set from a string can't load file:// fonts, so the self-hosted files travel inline.
 const fontCss = readFileSync(join(root, 'src', 'styles', 'fonts.generated.css'), 'utf8').replace(
   /url\('\/fonts\/([^']+)'\)/g,
@@ -44,7 +45,7 @@ const css = `${fontCss}
 .b-h{font:300 132px/.92 'Literata',serif;letter-spacing:-.035em;font-variation-settings:'opsz' 72}
 .b-ins{position:absolute;left:520px;top:250px;white-space:nowrap;font:500 40px/1.12 'Shantell Sans',cursive;color:#ef8ea1;transform:rotate(-3deg)}
 .b-foot{position:absolute;left:0;bottom:0}
-.b-yoru{position:absolute;right:186px;bottom:56px;width:128px;height:auto}
+.b-yoru{position:absolute;right:198px;bottom:56px;width:auto;height:138px}
 .a-in{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:40px}
 .a-line{margin:0;font:300 58px/1.05 'Literata',serif;letter-spacing:-.02em;color:#d1c0b8;font-variation-settings:'opsz' 60;text-align:center;white-space:nowrap}
 `;

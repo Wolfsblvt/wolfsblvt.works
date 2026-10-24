@@ -17,7 +17,7 @@ import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import { generate, ROUTE } from './lib/codex.mjs';
 import { keyMask, keyResidue, matteKey, parseHex } from './lib/matte.mjs';
-import { crop, placeFrames, solidBounds, splitFrames } from './lib/register.mjs';
+import { crop, opacityProfile, placeFrames, solidBounds, splitFrames } from './lib/register.mjs';
 import { authoredDurations, clipDurations, clipLayout, clipPrompt, identityLock, KEY, loadFamily, makeGuide, paths, PROP_KEY, saveFamily, SCENERY_KEY, STANDING_HEIGHT } from './lib/spec.mjs';
 import { writeContact, writePreview } from './lib/preview.mjs';
 import { alphaMask, colourSignature, matchScale, shiftCell, signatureDistance, stabilize } from './lib/align.mjs';
@@ -543,6 +543,29 @@ async function cmdPreview() {
  * One still of a family's runs stacked top to bottom (newest first per clip): registered contact sheets, or the raw
  * generated sheets with --strips. Written to artifacts/yoru-studio/montage.png, for reviewing a batch at a glance.
  */
+/**
+ * A still of Yoru for static artwork (the home page's social card): mattes a drawing on flat magenta the way frames
+ * are matted, keeps the figure (the longest unbroken run of rows, so a neighbouring frame's stray foot is dropped)
+ * and crops to him. `cutout <source.png> <out.png>`
+ */
+async function cmdCutout(source, out) {
+  if (!source || !out) throw new Error('usage: cutout <source.png> <out.png>');
+  const { data, info } = await sharp(resolve(root, source)).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const matted = matteKey(data, info.width, info.height, parseHex(KEY)).data;
+  const rows = opacityProfile(matted, info.width, info.height, 'y');
+  let best = { top: 0, height: 0 };
+  for (let y = 0, start = -1; y <= info.height; y++) {
+    if (y < info.height && rows[y] > 0) { if (start < 0) start = y; continue; }
+    if (start >= 0 && y - start > best.height) best = { top: start, height: y - start };
+    start = -1;
+  }
+  const band = crop(matted, info.width, { left: 0, top: best.top, width: info.width, height: best.height });
+  const b = solidBounds(band, info.width, best.height);
+  const figure = crop(band, info.width, { ...b, top: b.top });
+  await sharp(Buffer.from(figure), { raw: { width: b.width, height: b.height, channels: 4 } }).png().toFile(resolve(root, out));
+  console.log(`${out}: ${b.width}×${b.height}`);
+}
+
 async function cmdMontage(familyId, clipId) {
   const family = loadFamily(P, familyId);
   const files = [];
@@ -669,7 +692,7 @@ function findClip(family, clipId) {
 
 // ---------- dispatch, last so every binding above is initialised ----------
 
-const commands = { generate: cmdGenerate, import: cmdImport, process: cmdProcess, select: cmdSelect, pack: cmdPack, preview: cmdPreview, serve: cmdServe, montage: cmdMontage, 'export-codex': cmdExportCodex };
+const commands = { generate: cmdGenerate, import: cmdImport, process: cmdProcess, select: cmdSelect, pack: cmdPack, preview: cmdPreview, serve: cmdServe, montage: cmdMontage, cutout: cmdCutout, 'export-codex': cmdExportCodex };
 if (!commands[command]) {
   console.error(`usage: studio.mjs <${Object.keys(commands).join('|')}> ...`);
   process.exit(2);

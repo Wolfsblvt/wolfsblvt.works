@@ -80,6 +80,14 @@ movement, not settling reversed, and write left-facing poses as drawn poses rath
 Check every candidate in the studio at 1× on both backgrounds, with the floor line and standing Yoru for scale,
 before selecting it. A clean contact sheet does not show jitter, sliding feet or a face that changes between frames.
 
+## Stills
+
+Static artwork that shows Yoru (the home page's social card) uses a still from `design/yoru/stills/`, not a frame of
+an old sheet. `npm run yoru -- cutout <source.png> <out.png>` mattes a drawing on flat magenta the way frames are
+matted, keeps the figure and crops to him; `stills/standing.png` is cut from the sprites' style anchor
+(`reference/style-standing.png`), so the card shows him as the site draws him. Re-render the cards with
+`npm run cards` after changing a still.
+
 ## Tempo
 
 A clip's `durations` set its rhythm; its `tempo` sets how fast the whole clip runs on the site (1 as written, 0.8 a
