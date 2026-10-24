@@ -66,7 +66,8 @@
         "Front paws reaching forward as in the first frame."
       ],
       "selected": "20261024T021718-98bdbfc1",
-      "tempo": 0.9
+      "stride": 120,
+      "tempo": 0.8
     },
     {
       "id": "run-right",
@@ -87,7 +88,8 @@
         "Front paws reaching forward as in the first frame."
       ],
       "selected": "20261024T021820-b87c36a2",
-      "tempo": 0.9
+      "tempo": 0.8,
+      "stride": 120
     },
     {
       "id": "wave",

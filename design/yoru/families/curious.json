@@ -26,7 +26,8 @@
         "Poking the spot a second time, more confidently.",
         "Straightening up, unimpressed and satisfied, as if he knew all along."
       ],
-      "selected": "20261024T022301-729aef26"
+      "selected": "20261024T022301-729aef26",
+      "tempo": 0.9
     },
     {
       "id": "nudge",
@@ -64,7 +65,8 @@
         "Batting a second time, a little harder.",
         "Paw down, looking away, lost interest, unimpressed."
       ],
-      "selected": "20261024T022531-a2c8842d"
+      "selected": "20261024T022531-a2c8842d",
+      "tempo": 0.9
     }
   ]
 }

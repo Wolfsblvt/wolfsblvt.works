@@ -63,7 +63,8 @@
           "role": "The ladder, unfolded: draw exactly this ladder, same shape, rungs, hinges and hooks."
         }
       ],
-      "selected": "20261024T033726-2ff10b04"
+      "selected": "20261024T033726-2ff10b04",
+      "tempo": 0.9
     },
     {
       "id": "climb",
