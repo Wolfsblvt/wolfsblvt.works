@@ -18,6 +18,7 @@ everything else near the bottom. Come with something in mind, or see what catche
 **[Visit wolfsblvt.works](https://wolfsblvt.works/)** · [Explore the Pile](https://wolfsblvt.works/#whoa) ·
 [Say hello](https://contact.wolfsblvt.works/) · [Documentation](docs/README.md)
 
+![The Works Walk: its handwritten invitation, warm path and Yoru on his perch.](docs/assets/readme/walk-hero.webp)
 
 ## Take the Walk
 
@@ -36,7 +37,13 @@ The [visitor guide](docs/exploring-works.md) has the landmarks and a little more
 ## Oh, and Yoru lives here
 
 He has places to be, naps to take, and opinions about being poked. On the site, he keeps you company as you wander.
-His [resident-life artwork](https://github.com/Wolfsblvt/wolfsblvt.works/tree/feat/yoru-resident-life/design/yoru) includes a wave. The [README media source](docs/assets/readme/README.md) records a short GIF and static fallback for the launch edition; they are not embedded until the actual media is committed.
+
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="docs/assets/readme/yoru-still.png">
+  <img src="docs/assets/readme/yoru-hello.gif" alt="Yoru gives a small wave, then settles." width="96" height="104">
+</picture>
+
+[A still moment](docs/assets/readme/yoru-still.png) · [Artwork and media sources](docs/assets/readme/README.md)
 
 ## Write to Wolf
 
