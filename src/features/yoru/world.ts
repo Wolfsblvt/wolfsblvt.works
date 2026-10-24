@@ -13,7 +13,11 @@ export interface Surface {
   y: number;
 }
 
-export type PlaceKind = 'perch' | 'ground' | 'nook' | 'guest';
+/**
+ * 'peek' is a place where only his head shows over an edge (the bottom of the reader's screen): he looks, and leaves
+ * when the page asks him on.
+ */
+export type PlaceKind = 'perch' | 'ground' | 'nook' | 'guest' | 'peek';
 
 export interface Place {
   id: string;

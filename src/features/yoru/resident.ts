@@ -299,6 +299,7 @@ export class Resident {
   #behaviours(): Behaviour[] {
     const here = place(this.#world, this.#place);
     if (here.kind === 'guest') return this.#guestBehaviours();
+    if (here.kind === 'peek') return this.#peekBehaviours();
     const list: Behaviour[] = [this.#idleBehaviour()];
     const scenes = this.#reachable().filter((id) => place(this.#world, id).kind === 'guest');
     list.push({
@@ -385,7 +386,8 @@ export class Resident {
   /** Inside a scene he watches for a while, notices what changes, and leaves the way he came. */
   #guestBehaviours(): Behaviour[] {
     const stayed = this.#clock.now() - this.#arrivedAt;
-    const exits = this.#reachable().filter((id) => place(this.#world, id).kind !== 'guest');
+    // Leaving a window by running out of its side is still leaving the way he came.
+    const exits = this.#reachable(true).filter((id) => place(this.#world, id).kind !== 'guest');
     return [
       {
         name: 'watch',
@@ -400,6 +402,18 @@ export class Resident {
           const exit = exits[Math.floor(this.#random() * exits.length)]!;
           await this.#travel(route(this.#world, this.#place, exit)!, signal);
         },
+      },
+    ];
+  }
+
+  /** Only his head shows: he looks about and waits for the page to move on. */
+  #peekBehaviours(): Behaviour[] {
+    return [
+      this.#idleBehaviour(),
+      {
+        name: 'look around',
+        weight: () => (this.#has('look') ? 0.8 : 0),
+        run: async (signal) => { await this.#toPosture('stand'); await this.#once('look', signal); },
       },
     ];
   }
@@ -442,13 +456,17 @@ export class Resident {
 
   // ---------- movement ----------
 
-  #reachable(): string[] {
+  /**
+   * Places he can get to now. On his own he only goes where the reader can watch him go; running out of view is
+   * something the page asks of him (an invitation), or how he leaves a window (`outOfView`).
+   */
+  #reachable(outOfView = false): string[] {
     return this.#world.places
       .filter((p) => p.id !== this.#place && p.surface())
       .map((p) => p.id)
       .filter((id) => {
         const r = route(this.#world, this.#place, id);
-        return r !== null && r.every((link) => this.#canTake(link));
+        return r !== null && r.every((link) => this.#canTake(link) && (outOfView || link.way !== 'offscreen'));
       });
   }
 
@@ -463,7 +481,8 @@ export class Resident {
   async #travel(links: Link[], signal: AbortSignal): Promise<void> {
     for (const link of links) {
       if (signal.aborted) return;
-      await this.#walkTo(departure(link), signal);
+      // Running out of view starts from wherever he stands; every other way sets off from its end of the place.
+      if (link.way !== 'offscreen') await this.#walkTo(departure(link), signal);
       if (signal.aborted) return;
       if (link.way === 'walk') {
         this.#arrive(link);

@@ -48,12 +48,16 @@ Adoption on Cloudflare is Wolf Ops work; see [Development](DEVELOPMENT.md#public
 Without JavaScript the same page is complete: the pile renders as an ordinary list and Endless as a section.
 
 6. Yoru, the resident (`src/features/yoru/client/site.ts`), starts on the hero's perch. He is one element in one of
-   two clipped, click-through layers: a page stage the size of the document (the perch, the footer nook, inside
-   Borrowed Coast's window) and a fixed lane over the viewport's right margin, where he rides along with the reader.
-   The resident (`resident.ts`) chooses what to do from a few needs, recent repetition and a seeded generator, and
-   moves between authored places by walking, hopping, a ladder or running out of view and back in; the page's events
-   are invitations (the hero scrolling away, the footer coming into view, a mode switch in Borrowed Coast), never
-   commands. He is in one place at a time and does not return to the perch. Sheets load per family, as 1x and 2x WebP,
+   two clipped, click-through layers: a page stage the size of the document (the perch, the section bands, the footer
+   nook, inside Borrowed Coast's window) and a fixed layer over the viewport (the margin lane and the bottom-edge
+   peek), where he rides along with the reader. He never covers a reading line: where the screen leaves a margin
+   beside the content he follows in it, and where it does not he sits in the empty band at the top of the section
+   being read, on the edge of its first content, runs ahead as the next section's start arrives, and in a long stretch
+   peeks up over the bottom edge once before going on. The resident (`resident.ts`) chooses what to do from a few needs, recent repetition and a seeded
+   generator, and moves between authored places by walking, hopping, a ladder or running out of view and back in; on
+   his own he only goes where he can be watched going, and running out of view is always the page's invitation (the
+   hero scrolling away, a heading arriving, the footer coming into view, a mode switch in Borrowed Coast), never a
+   command. He is in one place at a time and does not return to the perch. Sheets load per family, as 1x and 2x WebP,
    from `public/yoru/resident/`. Without JavaScript the hero shows his still frame.
 
 ### A contact message

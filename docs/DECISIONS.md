@@ -148,6 +148,16 @@ like the same place.
 line and the caption is gone for good; scrolling back up does not teleport him home. Wolf: "He literally lives in the
 site."
 
+**Addendum, 2026-10-24.** Yoru never covers a line someone is reading. Where the screen leaves a margin beside the
+content (wide desktops), he follows in it. Where it does not, which is phones and most laptops, he sits in the empty
+band at the top of the section being read, standing on the top edge of its first content (a project's window, or the
+heading block), and runs ahead into the next band as that section's start arrives; partway through a long stretch
+with no section start in view he peeks up over the bottom edge for a moment, then goes on ahead.
+Wolf chose this over a permanent bottom-edge peek and over no follower on small screens: "We do A, yes. That makes
+sense. For very long sections, we *could* still consider him giving a bottom-edge peek for a short moment while
+scrolling, **then** moving to the next section." **Rejected:** the follower lane at every width, which covered body
+text wherever the content runs edge to edge.
+
 ## The header and the marks
 
 ### Finished assets, editable design, and production markup are separate

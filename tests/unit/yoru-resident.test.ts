@@ -235,4 +235,34 @@ describe('the resident', { timeout: 20000 }, () => {
     resident.stop();
     expect(resident.state.place).toBe('floor');
   });
+
+  it('runs out of view only when the page asks, and only looks about while peeking', async () => {
+    const world: World = {
+      places: [
+        { id: 'band', kind: 'ground', surface: () => ({ left: 400, right: 500, y: 300 }) },
+        { id: 'peek', kind: 'peek', surface: () => ({ left: 640, right: 700, y: 1000 }) },
+      ],
+      links: [
+        { from: 'band', to: 'peek', way: 'offscreen', at: 'right', enter: 'right', arrive: 0.5 },
+        { from: 'peek', to: 'band', way: 'offscreen', at: 'right', enter: 'right', arrive: 0.5 },
+      ],
+    };
+    const clock = virtualClock();
+    const element = { style: {}, dataset: {}, parentElement: null } as unknown as SpriteElement;
+    const trace: string[] = [];
+    const resident = new Resident({ player: new SpritePlayer(element, clock), clips: library(), world, start: { place: 'band', at: 0.5 }, seed: 5, clock, trace: (l) => trace.push(l) });
+    await live(resident, clock, 20000);
+    expect(resident.state.place).toBe('band'); // a good while on his own, and he never ran off
+
+    resident.invite('peek');
+    resident.start();
+    while (resident.state.place !== 'peek' && clock.now() < 200000) await new Promise((r) => setTimeout(r, 0));
+    const arrived = trace.length;
+    const until = clock.now() + 15000;
+    while (clock.now() < until) await new Promise((r) => setTimeout(r, 0));
+    resident.stop();
+    expect(resident.state.place).toBe('peek');
+    const chosen = trace.slice(arrived).filter((l) => l.startsWith('→ ')).map((l) => l.slice(2));
+    expect(new Set(chosen)).toEqual(new Set(['idle', 'look around']));
+  });
 });
