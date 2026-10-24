@@ -12,16 +12,24 @@ test('in his nook he asks to remember the visitor; a yes stores his record, and 
   await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
   const note = page.locator('.yoru-note');
   await expect(note).toContainText('want me to remember you?', { timeout: 15000 });
-  await note.getByRole('button', { name: 'remember me' }).click();
+  await note.getByRole('button', { name: 'remember me' }).focus();
+  await page.keyboard.press('Enter');
   await expect(note).toContainText('Yoru remembers you.');
   await expect(note.getByRole('button', { name: 'Forget me' })).toBeVisible();
+  await expect(note.getByRole('status')).toHaveText('Yoru remembers you. only in this browser.');
+  await expect(note.getByRole('status')).toHaveAttribute('aria-live', 'polite');
+  await expect(note.getByRole('button', { name: 'Forget me' })).toBeFocused();
   expect(JSON.parse((await stored(page)) ?? '{}')).toMatchObject({ version: 1, familiarity: 0, discovered: [] });
 
   await page.goto('/privacy/');
   const memory = page.locator('[data-yoru-memory]');
   await expect(memory).toContainText('Yoru remembers you on this browser.');
-  await memory.getByRole('button', { name: 'Forget me' }).click();
+  await memory.getByRole('button', { name: 'Forget me' }).focus();
+  await page.keyboard.press('Enter');
   await expect(memory).toContainText('Forgotten.');
+  await expect(memory.getByRole('status')).toContainText('Forgotten.');
+  await expect(memory.getByRole('status')).toHaveAttribute('aria-live', 'polite');
+  await expect(memory.getByRole('status')).toBeFocused();
   expect(await stored(page)).toBeNull();
   // Leaving the page, where he was asleep with the old record in mind, must not bring it back.
   await page.goto('/impressum/');
@@ -42,6 +50,7 @@ test('not now closes his note and stores nothing', async ({ page }) => {
   expect(choices[0]).toEqual(choices[1]);
   await note.getByRole('button', { name: 'not now' }).click();
   await expect(note).toHaveCount(0);
+  await expect(page.locator('.yoru-resident')).toBeFocused();
   expect(await stored(page)).toBeNull();
 });
 
@@ -66,6 +75,8 @@ test('the stable nook forget control clears keepsakes and greeting without reloa
   const note = page.locator('.yoru-note');
   await expect(note.getByRole('button', { name: 'Forget me' })).toBeVisible({ timeout: 15000 });
   await note.getByRole('button', { name: 'Forget me' }).click();
+  await expect(note.getByRole('status')).toContainText('Forgotten.');
+  await expect(note.getByRole('status')).toBeFocused();
   expect(await stored(page)).toBeNull();
   await expect(page.locator('.yoru-prop')).toHaveCount(1);
   await expect(page.locator('[data-yoru-cap] span')).not.toHaveText('oh. you again.');
@@ -88,6 +99,8 @@ for (const failure of ['blocked', 'full', 'discarded'] as const) {
     await note.getByRole('button', { name: 'remember me' }).click();
     await expect(note).toContainText('couldn’t keep that');
     await expect(note).toContainText('Remembering is off.');
+    await expect(note.getByRole('status')).toContainText('Remembering is off.');
+    await expect(note.getByRole('status')).toBeFocused();
     expect(await stored(page)).toBeNull();
     await page.evaluate(() => dispatchEvent(new PageTransitionEvent('pagehide')));
     expect(await stored(page)).toBeNull();
@@ -159,8 +172,59 @@ test('a blocked removal keeps the Privacy control available and never claims for
   await page.locator('[data-yoru-forget]').click();
   await expect(page.locator('[data-yoru-memory]')).toContainText('wouldn’t remove');
   await expect(page.locator('[data-yoru-forget]')).toBeVisible();
+  await expect(page.locator('[data-yoru-forget]')).toBeFocused();
+  await expect(page.locator('[data-yoru-memory]').getByRole('status')).toContainText('wouldn’t remove');
   expect(await stored(page)).not.toBeNull();
 });
+
+test('a failed nook removal announces failure and retains focus on the retry action', async ({ page }) => {
+  await page.goto('/503.html');
+  await page.evaluate(() => localStorage.setItem('yoru.acquaintance', JSON.stringify({
+    version: 1, familiarity: 0.5, wariness: 0, favouritePlace: 'nook', discovered: [], lastSeen: '2026-10-24',
+  })));
+  await page.addInitScript(() => { Storage.prototype.removeItem = () => {}; });
+  await page.goto('/');
+  await page.keyboard.press('End');
+  const note = page.locator('.yoru-note');
+  const forget = note.getByRole('button', { name: 'Forget me' });
+  await forget.focus({ timeout: 15000 });
+  await page.keyboard.press('Enter');
+  await expect(note.getByRole('status')).toContainText('wouldn’t remove');
+  await expect(forget).toBeFocused();
+  expect(await stored(page)).not.toBeNull();
+});
+
+for (const poke of [false, true]) {
+  test(`lifecycle merges current storage before its event arrives${poke ? ', including another tab’s discovery and this tab’s mood' : ', including incoming wariness'}`, async ({ page, context }) => {
+    // Deterministically hold notification delivery. The writer changes real shared localStorage first.
+    await page.addInitScript(() => addEventListener('storage', event => event.stopImmediatePropagation(), true));
+    await page.goto('/503.html');
+    await page.evaluate(() => localStorage.setItem('yoru.acquaintance', JSON.stringify({
+      version: 1, familiarity: 0.4, wariness: 0, favouritePlace: null, discovered: [], lastSeen: '2026-10-24',
+    })));
+    await page.goto('/');
+    await expect(page.locator('.yoru-resident')).toHaveCount(1);
+    if (poke) await page.locator('.yoru-resident').click();
+    const other = await context.newPage();
+    try {
+      await other.goto('/503.html');
+      await other.evaluate(poked => {
+        const before = JSON.parse(localStorage.getItem('yoru.acquaintance')!);
+        localStorage.setItem('yoru.acquaintance', JSON.stringify({ ...before, familiarity: 0.6, wariness: poked ? 0 : 0.9, discovered: ['coast'], favouritePlace: 'nook' }));
+      }, poke);
+      await page.evaluate(async () => {
+        dispatchEvent(new PageTransitionEvent('pagehide'));
+        // This request queues after the lifecycle write, so readback has a deterministic completion seam.
+        await navigator.locks.request('yoru.acquaintance', () => {});
+      });
+      const result = JSON.parse((await stored(page))!);
+      expect(result).toMatchObject({ familiarity: 0.6, discovered: ['coast'], favouritePlace: 'nook' });
+      if (poke) expect(result.wariness).toBeGreaterThan(0);
+      else expect(result.wariness).toBe(0.9);
+      await expect(page.locator('[data-yoru-cap] span')).not.toHaveText('oh. you again.');
+    } finally { await other.close(); }
+  });
+}
 
 test('a discovery saved in one Home reaches another without replaying the greeting or losing it on pagehide', async ({ page, context }) => {
   await page.goto('/');

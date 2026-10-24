@@ -53,6 +53,7 @@ function mountYoru(): void {
   // On the privacy page: whether he remembers this visitor, and the way to make him forget.
   const remembered = document.querySelector<HTMLElement>('[data-yoru-memory]');
   if (remembered) {
+    const status = remembered.querySelector<HTMLElement>('[data-yoru-memory-state]')!;
     const renderMemory = () => {
       remembered.hidden = !memory().load();
       if (!remembered.hidden) {
@@ -70,13 +71,15 @@ function mountYoru(): void {
     renderMemory();
     addEventListener('yoru-memory-updated', renderMemory);
     addEventListener('yoru-forgotten', () => {
-      remembered.querySelector('[data-yoru-memory-state]')!.textContent = 'Forgotten. Next time he’ll meet you fresh.';
+      const moveFocus = remembered.querySelector('[data-yoru-forget]') === document.activeElement;
+      status.textContent = 'Forgotten. Next time he’ll meet you fresh.';
       remembered.querySelector('[data-yoru-forget]')?.remove();
+      if (moveFocus) status.focus({ preventScroll: true });
     });
-    remembered.addEventListener('click', (event) => {
+    remembered.addEventListener('click', async (event) => {
       if (!(event.target as Element).closest('[data-yoru-forget]')) return;
-      if (!forgetAcquaintance()) {
-        remembered.querySelector('[data-yoru-memory-state]')!.textContent = 'This browser wouldn’t remove the memory. You can try again.';
+      if (!await forgetAcquaintance()) {
+        status.textContent = 'This browser wouldn’t remove the memory. You can try again.';
         return;
       }
     });

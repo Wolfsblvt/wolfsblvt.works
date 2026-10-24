@@ -10,7 +10,7 @@
 import { mulberry32 } from '../../lib/shape';
 import type { Clip, ClipLibrary } from './clips';
 import { realClock, SpritePlayer, type Clock, type SpriteElement } from './player';
-import { spendTime, type Acquaintance } from './memory';
+import { mergeAcquaintance, spendTime, type Acquaintance } from './memory';
 import { departure, place, route, type Link, type World } from './world';
 
 /** 'watch' is sitting seen from behind, looking into a scene: how he is a guest inside a project window. */
@@ -161,6 +161,8 @@ export class Resident {
   /** When he arrived at his current place; a guest stays a while, then leaves. */
   #arrivedAt = 0;
   #acquaintance: Acquaintance | null;
+  #memoryBase: Acquaintance | null;
+  #memoryRunning = true;
   /** Since the last remember(): time spent together and whether it included poking. */
   #since = 0;
   #pokedSince = false;
@@ -176,6 +178,7 @@ export class Resident {
     this.#reduced = o.reducedMotion ?? false;
     this.#trace = o.trace ?? (() => {});
     this.#acquaintance = o.acquaintance ?? null;
+    this.#memoryBase = this.#acquaintance;
     this.#onPlace = o.onPlace ?? (() => {});
     this.#wariness = this.#acquaintance?.wariness ?? 0;
     this.#place = o.start.place;
@@ -194,7 +197,7 @@ export class Resident {
   remember(): Acquaintance | null {
     if (!this.#acquaintance) return null;
     const now = this.#clock.now();
-    const updated = spendTime(this.#acquaintance, (now - this.#since) / 60000, this.#pokedSince);
+    const updated = spendTime(this.#acquaintance, this.#memoryRunning ? (now - this.#since) / 60000 : 0, this.#pokedSince);
     this.#acquaintance = { ...updated, wariness: this.#wariness };
     this.#since = now;
     this.#pokedSince = false;
@@ -204,12 +207,25 @@ export class Resident {
   /** Remembering was switched on (with a fresh record) or off (null) during the visit. */
   setAcquaintance(record: Acquaintance | null): void {
     this.#acquaintance = record;
+    this.#memoryBase = record;
+    this.#wariness = record?.wariness ?? 0;
     this.#since = this.#clock.now();
     this.#pokedSince = false;
   }
 
+  /** Apply current storage without dropping unsaved local changes or confusing them with the next tab's changes. */
+  synchronizeAcquaintance(stored: Acquaintance | null): Acquaintance | null {
+    const local = this.remember();
+    const merged = stored && local && this.#memoryBase ? mergeAcquaintance(this.#memoryBase, local, stored) : stored;
+    this.setAcquaintance(merged);
+    this.#memoryBase = stored;
+    return merged;
+  }
+
   start(): void {
     if (this.#alive) return;
+    this.#since = this.#clock.now();
+    this.#memoryRunning = true;
     this.#alive = true;
     this.#hard = new AbortController();
     // Resuming after a pause, he is shown in the posture he was in, not snapped back to standing.
@@ -219,6 +235,8 @@ export class Resident {
   }
 
   stop(): void {
+    this.remember();
+    this.#memoryRunning = false;
     this.#alive = false;
     this.#hard.abort();
     this.#current?.abort();

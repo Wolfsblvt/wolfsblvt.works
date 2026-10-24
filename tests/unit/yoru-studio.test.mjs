@@ -1,9 +1,92 @@
-import { describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { request } from 'node:http';
+import { serveStudio } from '../../tools/yoru-studio/lib/server.mjs';
+import { paths } from '../../tools/yoru-studio/lib/spec.mjs';
 import { keyResidue, matteKey, unmix } from '../../tools/yoru-studio/lib/matte.mjs';
 import { findCuts, placeFrames, splitFrames } from '../../tools/yoru-studio/lib/register.mjs';
 import { clipDurations, frameCount, frameScript } from '../../tools/yoru-studio/lib/spec.mjs';
 
 const KEY = [255, 0, 255];
+
+describe('the local studio server', () => {
+  let root, p, server, port;
+  const family = () => JSON.parse(readFileSync(join(p.families, 'presence.json'), 'utf8'));
+  const edit = { family: 'presence', clip: 'run-left', tempo: 1.2, stride: 144 };
+  const send = (path, body, headers = {}, chunked = false) => new Promise((resolve, reject) => {
+    const req = request({ host: '127.0.0.1', port, path, method: body === undefined ? 'GET' : 'POST',
+      headers: { 'content-type': 'application/json', ...headers } }, (res) => {
+      let text = '';
+      res.setEncoding('utf8');
+      res.on('data', chunk => { text += chunk; });
+      res.on('end', () => resolve({ status: res.statusCode, text }));
+    });
+    req.on('error', reject);
+    if (chunked) req.write(body);
+    req.end(chunked ? undefined : body);
+  });
+
+  beforeAll(async () => {
+    root = mkdtempSync(join(tmpdir(), 'yoru-server-'));
+    p = paths(root);
+    for (const dir of [p.families, p.sheets, p.work, `${p.work}-sibling`, `${p.sheets}-sibling`, join(root, 'design/the-walk/assets'), join(root, 'design/the-walk/assets-sibling')]) mkdirSync(dir, { recursive: true });
+    writeFileSync(join(p.families, 'presence.json'), JSON.stringify({ family: 'presence', clips: [{ id: 'run-left', frames: 2 }] }));
+    writeFileSync(join(p.sheets, 'sheet.json'), '{}');
+    writeFileSync(join(`${p.sheets}-sibling`, 'private.json'), 'sibling');
+    writeFileSync(join(`${p.work}-sibling`, 'private.json'), 'sibling');
+    writeFileSync(join(root, 'design/the-walk/assets-sibling/private.json'), 'sibling');
+    server = await serveStudio({ root, paths: p, port: 0, preview: async () => { throw new Error(`private stack ${root}`); }, tempoBoard: () => [] });
+    port = server.address().port;
+  });
+  afterAll(async () => {
+    if (server) await new Promise((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
+    if (root) rmSync(root, { recursive: true, force: true });
+  });
+
+  it('binds only IPv4 loopback and permits a same-origin JSON edit to the selected source', async () => {
+    expect(server.address().address).toBe('127.0.0.1');
+    const response = await send('/tempo/save', JSON.stringify(edit), { origin: `http://127.0.0.1:${port}` });
+    expect(response.status).toBe(204);
+    expect(family().clips[0]).toMatchObject({ tempo: 1.2, stride: 144 });
+    expect((await send('/sheets/sheet.json')).status).toBe(200);
+  });
+
+  it('rejects Host, foreign or null Origin, simple content types and oversized fixed/chunked bodies without writing', async () => {
+    const before = family();
+    for (const [headers, status] of [
+      [{ host: 'evil.example' }, 403], [{ origin: 'https://evil.example' }, 403], [{ origin: 'null' }, 403],
+      [{ 'content-type': 'text/plain' }, 415], [{ 'content-type': 'application/x-www-form-urlencoded' }, 415],
+    ]) expect((await send('/tempo/save', JSON.stringify(edit), headers)).status).toBe(status);
+    const large = ' '.repeat(4097);
+    expect((await send('/tempo/save', large, { 'content-length': large.length })).status).toBe(413);
+    expect((await send('/tempo/save', large, {}, true)).status).toBe(413);
+    expect(family()).toEqual(before);
+  });
+
+  it('rejects malformed or out-of-range edits in full, including non-numeric and non-finite JSON values', async () => {
+    const before = family();
+    for (const invalid of [
+      { tempo: '1' }, { tempo: -1 }, { tempo: 0.24 }, { tempo: 3.01 }, { tempo: null },
+      { stride: -2 }, { stride: 0 }, { stride: 241 }, { stride: '144' }, { stride: null },
+      { family: '../presence' }, { clip: 'missing' },
+    ]) expect((await send('/tempo/save', JSON.stringify({ ...edit, ...invalid }))).status).toBe(400);
+    for (const raw of ['{', 'null', JSON.stringify(edit).replace('1.2', '1e999')]) expect((await send('/tempo/save', raw)).status).toBe(400);
+    expect(family()).toEqual(before);
+    expect((await send('/tempo/save', JSON.stringify({ ...edit, tempo: 0.25, stride: 20 }))).status).toBe(204);
+    expect((await send('/tempo/save', JSON.stringify({ ...edit, tempo: 3, stride: 240 }))).status).toBe(204);
+  });
+
+  it('contains decoded static paths at directory segments and hides internal errors', async () => {
+    for (const path of ['/sheets/%2e%2e%2fsheets-sibling/private.json', '/walk-assets/%2e%2e%2fassets-sibling/private.json', '/%2e%2e%2fyoru-studio-sibling/private.json']) {
+      expect((await send(path)).status).toBe(404);
+    }
+    const error = await send('/preview/');
+    expect(error).toEqual({ status: 500, text: 'Studio request failed.' });
+    expect((await send('/%ZZ')).status).toBe(400);
+  });
+});
 
 /** An image filled with the key colour, with rectangles painted on it. */
 function canvas(width, height, rects) {

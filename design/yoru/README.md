@@ -22,7 +22,7 @@ material; what the site needs is the packed sheet.
 
 ```sh
 npm run yoru -- generate sleep settle --count=2   # two candidates through codex exec
-npm run yoru -- serve                             # http://localhost:4390: every candidate, played at site size
+npm run yoru -- serve                             # http://127.0.0.1:4390: every candidate, played at site size
 npm run yoru -- select sleep settle <run>         # the chosen run becomes the clip
 npm run yoru -- pack sleep                        # design/yoru/sheets/sleep.webp and .json
 ```
@@ -97,7 +97,7 @@ feet stay planted. Set both by eye on the tempo board, which plays every clip th
 saves each change to the clip's spec:
 
 ```sh
-npm run yoru -- serve      # then http://localhost:4390/tempo/
+npm run yoru -- serve      # then http://127.0.0.1:4390/tempo/
 npm run yoru -- pack <family>
 ```
 

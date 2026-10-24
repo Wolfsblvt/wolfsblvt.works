@@ -124,8 +124,10 @@ their own public pages; commit the result. README captures and Yoru's greeting a
 
 `npm run yoru -- generate <family> <clip>` draws candidates through `codex exec` (Codex's built-in image tool on the
 ChatGPT plan signed in on this machine; no API key), `npm run yoru -- serve` shows them at
-http://localhost:4390/preview/ and the resident rehearsal at /rehearsal/, `select` picks one and `pack` writes the
+http://127.0.0.1:4390/preview/ and the resident rehearsal at /rehearsal/, `select` picks one and `pack` writes the
 sheet the site builds from. [design/yoru/README.md](../design/yoru/README.md) is the authoring guide.
+The studio binds only `127.0.0.1`. Its tempo board edits source through same-origin JSON requests capped at 4 KiB;
+tempo is 0.25–3 and walk/run stride is 20–240 pixels, matching the board's supported stride range.
 
 ### Add a Pile piece
 

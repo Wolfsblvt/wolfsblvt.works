@@ -39,6 +39,18 @@ export function newAcquaintance(today: string): Acquaintance {
   return { version: VERSION, familiarity: 0, wariness: 0, favouritePlace: null, discovered: [], lastSeen: today };
 }
 
+/** Merge a tab's changes, not its stale snapshot. Stored values win conflicting mood/place edits. */
+export function mergeAcquaintance(base: Acquaintance, local: Acquaintance, stored: Acquaintance): Acquaintance {
+  return {
+    version: VERSION,
+    familiarity: Math.max(local.familiarity, stored.familiarity),
+    discovered: [...new Set([...stored.discovered, ...local.discovered])].slice(0, 32),
+    favouritePlace: stored.favouritePlace === base.favouritePlace ? local.favouritePlace : stored.favouritePlace,
+    wariness: stored.wariness === base.wariness ? local.wariness : stored.wariness,
+    lastSeen: local.lastSeen > stored.lastSeen ? local.lastSeen : stored.lastSeen,
+  };
+}
+
 /** Accepts only a record this version wrote, with values in range; anything else is treated as no record. */
 export function parseAcquaintance(raw: string | null): Acquaintance | null {
   if (!raw) return null;

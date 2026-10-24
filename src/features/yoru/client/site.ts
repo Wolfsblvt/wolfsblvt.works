@@ -45,7 +45,7 @@ const ASK_AGAIN_MS = 10000;
 
 type Mode = 'lane' | 'bands';
 
-export function mountResident(): void {
+export async function mountResident(): Promise<void> {
   const perchLine = document.querySelector<HTMLElement>('[data-yoru-perch]');
   const heroSpot = document.querySelector<HTMLElement>('[data-yoru-hero]');
   const caption = document.querySelector<HTMLElement>('[data-yoru-cap]');
@@ -210,7 +210,7 @@ export function mountResident(): void {
   const world: World = { places, links };
 
   // ---------- his nook ----------
-  const { record, returning } = recall();
+  const { record, returning } = await recall();
   // The cushion, and beside it a keepsake from each scene he has visited with a visitor who asked to be remembered.
   const keepsakes = (memory: Acquaintance | null) => (memory?.discovered ?? [])
     .filter((id) => id in KEEPSAKES && clips.has('nook/keepsakes'))

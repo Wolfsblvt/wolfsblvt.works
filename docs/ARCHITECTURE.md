@@ -120,8 +120,9 @@ and the home a visitor arriving from that product can return to.
 
 ## Data and storage
 
-Nothing is persisted on the server. There is no database, no message store and no cookie set by this site. The one thing
-ever written to browser storage is Yoru's remembered acquaintance (`yoru.acquaintance`, `src/features/yoru/memory.ts`),
+Nothing is persisted on the server. There is no database or message store. The hosting security layer may use the
+short-lived necessary cookie disclosed on Privacy. The only browser state the Works product writes is Yoru's remembered
+acquaintance (`yoru.acquaintance`, `src/features/yoru/memory.ts`),
 and only after the visitor answers "remember me" in the Home nook (`client/remember.ts`): familiarity, brief wariness,
 favourite resting place, discovered scenes and the last Home visit's calendar day. Home owns all writes and the
 new-day greeting. The 404, Privacy and Impressum hosts use read-only memory; Contact uses explicit no-memory mode and
@@ -129,6 +130,12 @@ never accesses its separate origin's storage. Successful writes are read back be
 It never leaves the browser and has no automatic expiry. One-action "Forget me" controls in the nook and Privacy
 delete it; same-page and cross-tab deletion clears remembered behaviour, and pagehide cannot recreate the record.
 Valid cross-tab records update the current resident and keepsakes without writing back or replaying the greeting.
+Home read/merge/write operations and deletion share one same-origin Web Lock. At each save the resident merges changes
+since its last storage baseline with the current record: discoveries are a union, familiarity never decreases, and
+current stored values win conflicting favourite-place or wariness changes. Incoming wariness updates the live mood too.
+A missing record ends remembering rather than recreating it. Browsers without Web Locks cannot enable remembering;
+the existing failure outcome reports that it is off. The acquaintance clock pauses while the resident is stopped,
+so hidden time earns no familiarity. Memory outcomes have polite status regions and retain or deliberately transfer focus.
 Read-only rooms derive settled wariness while preserving the stored encounter day. On phones the nook note uses its
 own footer flow space; on wider screens it sits beside him. A Coast visit from the wide margin uses the same offscreen
 travel as section bands, because a hop cannot reach the safe interior of the window. Proximity is measured to the

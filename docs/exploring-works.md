@@ -76,8 +76,9 @@ The [privacy page](https://wolfsblvt.works/privacy/#contact) explains processing
 
 ## Privacy while visiting
 
-No analytics or tracking, and no browser storage unless you choose “remember me” in Yoru’s nook on the main Works site.
-That memory stays only in this browser and is removable. Contact does not store it. The main-site record holds
+No analytics or cross-site tracking. Works stores no browser state except the Yoru memory you choose with “remember me”
+in his nook on the main site. That memory stays only in this browser and is removable. Contact does not store it.
+The hosting security layer may use the short-lived necessary cookie disclosed on Privacy. The main-site record holds
 familiarity, brief wariness, his favourite resting place, scenes visited together and the calendar day of the last Home
 visit. Only Home updates it; Privacy, Impressum and 404 may read it. Choose “Forget me” in his nook or on Privacy to
 remove it; otherwise it stays until you clear site data or the browser removes it. Fonts are

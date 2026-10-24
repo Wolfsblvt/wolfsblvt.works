@@ -53,8 +53,9 @@ contact form for every Wolfsblvt project. A successful send delivers your messag
 
 ## Private by construction
 
-No analytics or tracking, and no browser storage unless you choose “remember me” in Yoru’s nook on the main Works site.
-That memory stays only in this browser and is removable. Contact does not store it. Fonts are self-hosted;
+No analytics or cross-site tracking. Works stores no browser state except the Yoru memory you choose with “remember me”
+in his nook on the main site. That memory stays only in this browser and is removable. Contact does not store it.
+The hosting security layer may use a short-lived necessary cookie; [Privacy](https://wolfsblvt.works/privacy/#storage) explains it. Fonts are self-hosted;
 Cloudflare Turnstile on the contact page is the only third-party script. The [privacy page](https://wolfsblvt.works/privacy/)
 explains hosting, security checks and what happens when you write. Dark only, on purpose; reduced motion is welcome.
 

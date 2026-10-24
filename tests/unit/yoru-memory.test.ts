@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { browserMemory, MEMORY_KEY, newAcquaintance, parseAcquaintance, settleAcquaintance, spendTime, welcomeBack } from '../../src/features/yoru/memory';
+import { browserMemory, MEMORY_KEY, mergeAcquaintance, newAcquaintance, parseAcquaintance, settleAcquaintance, spendTime, welcomeBack } from '../../src/features/yoru/memory';
 
 /** A Storage stand-in; `fail` makes every call throw, as a blocked or full store does. */
 function store(fail = false) {
@@ -14,6 +14,17 @@ function store(fail = false) {
 }
 
 describe('remembered acquaintance', () => {
+  it('merges different tabs’ changes while preserving discoveries and familiarity in either save order', () => {
+    const base = newAcquaintance('2026-10-24');
+    const a = { ...base, discovered: ['coast'], familiarity: 0.4 };
+    const b = { ...base, favouritePlace: 'nook', wariness: 0.7 };
+    const expected = { ...a, favouritePlace: 'nook', wariness: 0.7 };
+    expect(mergeAcquaintance(base, b, a)).toEqual(expected);
+    expect(mergeAcquaintance(base, a, b)).toEqual(expected);
+    const conflict = { ...a, favouritePlace: 'floor', wariness: 0.9 };
+    expect(mergeAcquaintance(base, b, conflict)).toMatchObject({ favouritePlace: 'floor', wariness: 0.9 });
+  });
+
   it('stores nothing until remembering is turned on, and nothing after it is turned off', () => {
     const s = store();
     const memory = browserMemory(s);

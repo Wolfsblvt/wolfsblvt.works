@@ -83,6 +83,32 @@ async function live(resident: Resident, clock: Clock, ms: number): Promise<void>
 
 // Virtual time still yields a macrotask per frame; these lives take a few seconds of real time.
 describe('the resident', { timeout: 20000 }, () => {
+  it('pauses acquaintance time while stopped, then counts only the next visible calm minute', () => {
+    const { resident, clock } = setup(7, {}, newAcquaintance('2026-10-24'));
+    resident.start();
+    expect(resident.remember()?.familiarity).toBe(0);
+    resident.stop();
+    clock.advance(120 * 60_000);
+    expect(resident.remember()?.familiarity).toBe(0);
+    resident.start();
+    expect(resident.remember()?.familiarity).toBe(0);
+    clock.advance(60_000);
+    expect(resident.remember()?.familiarity).toBeCloseTo(0.01);
+    resident.stop();
+  });
+
+  it('synchronizes incoming wariness into live state and the next save', () => {
+    const base = { ...newAcquaintance('2026-10-24'), wariness: 0.2 };
+    const { resident } = setup(7, {}, base);
+    const incoming = { ...base, wariness: 0.9 };
+    resident.synchronizeAcquaintance(incoming);
+    expect(resident.state.wariness).toBe(0.9);
+    expect(resident.remember()?.wariness).toBe(0.9);
+    resident.setAcquaintance({ ...base, wariness: 0.7 });
+    expect(resident.state.wariness).toBe(0.7);
+    expect(resident.remember()?.wariness).toBe(0.7);
+  });
+
   it('counts only actual session minutes for a returning acquaintance on a non-zero clock', () => {
     const known = { ...newAcquaintance('2026-10-24'), familiarity: 0.4 };
     const { resident, clock } = setup(7, {}, known, 86_400_000);

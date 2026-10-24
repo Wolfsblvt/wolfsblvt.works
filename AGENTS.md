@@ -59,12 +59,12 @@ on it.
   `/privacy/`. The fixture in `src/data/legal-operator.example.json` stays obviously fake.
 - **Visitor content.** The contact service never logs or stores a visitor's name, email, subject or message. Keep the
   `contact.submission` event redacted ([docs/LOGGING.md](docs/LOGGING.md)) and the tests that pin it.
-- **No tracking, no device access.** No analytics, no third-party scripts beyond Turnstile on the contact page, nothing
-  in cookies or browser storage, with one exception the visitor chooses: Yoru's remembered acquaintance
+- **No tracking, no device access.** No analytics or cross-site tracking, no third-party scripts beyond Turnstile on the
+  contact page. Works stores no browser state except the visitor-selected Yoru remembered acquaintance
   (`yoru.acquaintance` in local storage), written only after they answer "remember me", never sent anywhere, and
   written only by Home and deleted by "Forget me" in the Home nook or on Privacy. The 404, Privacy and Impressum may
   only read it; Contact neither reads nor writes it. The Pile's variety comes from the date and request headers on the server
-  only.
+  only. The hosting security layer may use the short-lived necessary cookie disclosed on Privacy.
 - **Icons.** Every icon comes from `@wolfsblvt/icons`. Add missing glyphs to the wolfsblvt-icons repository; never add a
   local SVG icon here.
 - **Secrets.** `.dev.vars` is local and ignored. Real secrets are set by Wolf Ops with `wrangler secret put`.

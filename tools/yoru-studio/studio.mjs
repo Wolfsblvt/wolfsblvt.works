@@ -15,6 +15,7 @@ import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFi
 import { basename, dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
+import { serveStudio, TEMPO_FAMILIES } from './lib/server.mjs';
 import { generate, ROUTE } from './lib/codex.mjs';
 import { keyMask, keyResidue, matteKey, parseHex } from './lib/matte.mjs';
 import { crop, opacityProfile, placeFrames, solidBounds, splitFrames } from './lib/register.mjs';
@@ -588,73 +589,17 @@ async function cmdMontage(familyId, clipId) {
 }
 
 /**
- * Serves the studio on http://localhost:4390: the candidate page at /preview/ (rewritten on every load, so new runs
+ * Serves the studio on http://127.0.0.1:4390: the candidate page at /preview/ (rewritten on every load, so new runs
  * appear on refresh), the packed sheets at /sheets/, and the resident rehearsal at /rehearsal/, whose script is the
  * real engine in src/features/yoru bundled on each request. None of this is part of the site build.
  */
 async function cmdServe() {
-  const { createServer } = await import('node:http');
-  const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.png': 'image/png', '.webp': 'image/webp', '.json': 'application/json' };
-  const port = Number(flags.port ?? 4390);
-  const rehearsal = join(root, 'tools', 'yoru-studio', 'rehearsal');
-  const send = (res, file) => {
-    // Read first: a sheet being repacked can fail mid-request, and that must become a 500, not a half-sent response.
-    const body = readFileSync(file);
-    res.writeHead(200, { 'content-type': types[file.slice(file.lastIndexOf('.'))] ?? 'application/octet-stream', 'cache-control': 'no-store' });
-    res.end(body);
-  };
-  createServer(async (req, res) => {
-    try {
-      const path = decodeURIComponent(new URL(req.url, 'http://x').pathname);
-      if (path === '/') { res.writeHead(302, { location: '/preview/' }).end(); return; }
-      if (path === '/preview/') await writePreview(P, await standingCell());
-      if (path === '/rehearsal/') return send(res, join(rehearsal, 'index.html'));
-      if (path === '/tempo/') return send(res, join(root, 'tools', 'yoru-studio', 'tempo', 'index.html'));
-      if (path === '/tempo/clips.json') {
-        res.writeHead(200, { 'content-type': types['.json'], 'cache-control': 'no-store' }).end(JSON.stringify(tempoBoard()));
-        return;
-      }
-      if (path === '/tempo/save' && req.method === 'POST') {
-        let body = '';
-        for await (const chunk of req) body += chunk;
-        saveTempo(JSON.parse(body));
-        res.writeHead(204).end();
-        return;
-      }
-      // The project windows' real captures, so a guest visit is rehearsed against the scene he will visit.
-      if (path.startsWith('/walk-assets/')) {
-        const assets = join(root, 'design', 'the-walk', 'assets');
-        const file = resolve(assets, path.slice('/walk-assets/'.length));
-        if (!file.startsWith(assets) || !existsSync(file)) { res.writeHead(404).end(); return; }
-        return send(res, file);
-      }
-      if (path === '/sheets/') {
-        const packed = existsSync(P.sheets) ? readdirSync(P.sheets).filter((f) => f.endsWith('.json')).map((f) => f.slice(0, -5)) : [];
-        res.writeHead(200, { 'content-type': types['.json'], 'cache-control': 'no-store' }).end(JSON.stringify(packed));
-        return;
-      }
-      if (path === '/rehearsal/main.js') {
-        const { build } = await import('esbuild');
-        const result = await build({ entryPoints: [join(rehearsal, 'main.ts')], bundle: true, format: 'esm', write: false, sourcemap: 'inline', target: 'es2022' });
-        res.writeHead(200, { 'content-type': types['.js'], 'cache-control': 'no-store' });
-        res.end(result.outputFiles[0].text);
-        return;
-      }
-      const [base, rest] = path.startsWith('/sheets/') ? [P.sheets, path.slice('/sheets/'.length)] : [P.work, path === '/preview/' ? 'preview/index.html' : `.${path}`];
-      const file = resolve(base, rest);
-      if (!file.startsWith(base) || !existsSync(file)) { res.writeHead(404).end(); return; }
-      send(res, file);
-    } catch (error) {
-      if (res.headersSent) res.destroy();
-      else res.writeHead(500, { 'content-type': 'text/plain' }).end(String(error?.stack ?? error));
-    }
-  }).listen(port, () => console.log(`Yoru studio on http://localhost:${port}/ · rehearsal at /rehearsal/`));
+  const server = await serveStudio({ root, paths: P, port: Number(flags.port ?? 4390),
+    preview: async () => writePreview(P, await standingCell()), tempoBoard });
+  console.log('Yoru studio on http://127.0.0.1:' + server.address().port + '/ · rehearsal at /rehearsal/');
 }
 
 // ---------- tempo board ----------
-
-/** Families the site plays; v1 (the May frames) and the Codex pet keep their own timing. */
-const TEMPO_FAMILIES = ['presence', 'everyday', 'sleep', 'curious', 'reactions', 'guest', 'ladder', 'nook'];
 
 /** Every animated, packed clip with its authored timing and current tempo, for the board at /tempo/. */
 function tempoBoard() {
@@ -671,17 +616,6 @@ function tempoBoard() {
       })),
     };
   });
-}
-
-/** Writes one clip's tempo (and a walk's or run's stride) into its family spec; `pack` carries it to the site. */
-function saveTempo({ family: familyId, clip: clipId, tempo, stride }) {
-  if (!TEMPO_FAMILIES.includes(familyId)) throw new Error(`not on the tempo board: ${familyId}`);
-  const family = loadFamily(P, familyId);
-  const clip = findClip(family, clipId);
-  if (!(tempo >= 0.25 && tempo <= 3)) throw new Error(`tempo out of range: ${tempo}`);
-  if (Math.abs(tempo - 1) < 0.001) delete clip.tempo; else clip.tempo = Math.round(tempo * 100) / 100;
-  if (stride !== undefined) clip.stride = Math.round(stride);
-  saveFamily(family);
 }
 
 function findClip(family, clipId) {

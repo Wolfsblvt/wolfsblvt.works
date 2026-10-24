@@ -116,7 +116,7 @@ function card(family, clip, size) {
     clearTimeout(saving);
     saving = setTimeout(async () => {
       const body = { family: family.family, clip: clip.id, tempo: Number(tempoInput.value), ...(strideInput && { stride: Number(strideInput.value) }) };
-      const response = await fetch('/tempo/save', { method: 'POST', body: JSON.stringify(body) });
+      const response = await fetch('/tempo/save', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       status.textContent = response.ok ? `saved ${family.family}/${clip.id} ×${body.tempo}` : `could not save ${clip.id}: ${await response.text()}`;
     }, 300);
   };
