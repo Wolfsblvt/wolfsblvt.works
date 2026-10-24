@@ -163,12 +163,11 @@ Remove it once the pinned miniflare itself requires `sharp` ≥ 0.35.5 and `undi
 ### Change a hosting fact on the Privacy page
 
 The hosting facts live in `legal.privacy` in `site.config.mjs`. Each entry stays `pending: true`, rendered as a marked
-fixture, until confirmed against provider evidence. The six publication facts were confirmed by Wolf Ops on 2026-10-24;
-live readback remains a separate publication step. Current request-log and contact-event retention is up to 7 days in
-Workers Logs.
-Twelve months remains selected, active only after the private R2 route, 365-day lifecycle and a retained event are read
-back. R2 is not a publication gate; update the privacy fact and [Logging](LOGGING.md#retention-and-deletion) together
-when that route is proved.
+fixture, until confirmed against provider evidence. The publication facts were confirmed by Wolf Ops on 2026-10-24;
+live readback remains a separate publication step. Ordinary request logs remain available for up to 7 days in Workers
+Logs. Structured `contact.submission` events are retained for up to 12 months through the private Logpush/Pipelines/R2
+route, whose 365-day lifecycle and first retained contact-class event were read back. Keep the two facts distinct and
+update this guide, [Logging](LOGGING.md#retention-and-deletion) and `site.config.mjs` together when either changes.
 
 ## Publication
 
@@ -184,8 +183,8 @@ contact provisioning ahead of the full public build; this guide describes the pr
   1), with its contacts provisioned and its additional direct contact (the live form) `provisioned`. The public
   fixture and anything containing its values are refused.
 - Every `legal.privacy` fact in `site.config.mjs` is confirmed against provider evidence and set `pending: false`.
-  Publication states the current 7-day retention from [Logging](LOGGING.md#retention-and-deletion); the selected
-  12-month retained route is separate, non-blocking Work.
+  Publication distinguishes the current seven-day request-log window from the twelve-month private retention of
+  structured `contact.submission` events in [Logging](LOGGING.md#retention-and-deletion).
 - `wrangler.jsonc` carries the production Turnstile site key (it does, since 2026-10-23: the public key of the widget
   Wolf Ops created for `contact.wolfsblvt.works`).
 - Every dependency resolves from the npm registry, never a local path or tarball.
@@ -219,8 +218,9 @@ contact provisioning ahead of the full public build; this guide describes the pr
   sending domain for the visitor copy (done 2026-10-22; the first real submission proves signing and delivery).
 - Errors: the Worker serves `503.html` itself for failures it can catch. The zone is on the free plan, which cannot
   show a custom page for provider-level errors; that remains a priced choice for Wolf, not a step here.
-- Workers Logs on (current retention up to 7 days). The private retained route from [Logging](LOGGING.md) is not a
-  publication gate; 12 months must not be claimed until its route, 365-day lifecycle and retained event are read back.
+- Workers Logs on (ordinary request-log retention up to 7 days), with source-owned `logpush: true`. The private
+  retained route from [Logging](LOGGING.md) carries structured contact events for up to 12 months through the proved
+  Logpush/Pipelines/R2 path and its 365-day lifecycle.
 - After deployment: read back both hosts, the redirect from `wolfsblvt.works/contact/`, the headers on a static page and
   on the home page, a direct `#pile-<id>` link, a real contact submission end to end, and the privacy facts.
 
