@@ -1,0 +1,79 @@
+{
+  "family": "sleep",
+  "title": "Actually asleep",
+  "sheet": "sleep.webp",
+  "cell": {
+    "width": 320,
+    "height": 208
+  },
+  "pivot": {
+    "x": 160,
+    "y": 203
+  },
+  "displayScale": 0.5,
+  "clips": {
+    "settle": {
+      "row": 0,
+      "frames": 15,
+      "durations": [
+        160,
+        160,
+        130,
+        130,
+        130,
+        130,
+        170,
+        170,
+        140,
+        140,
+        150,
+        150,
+        190,
+        190,
+        600
+      ],
+      "loop": false,
+      "to": "sleep"
+    },
+    "sleep": {
+      "row": 1,
+      "frames": 8,
+      "durations": [
+        550,
+        550,
+        400,
+        400,
+        550,
+        550,
+        450,
+        450
+      ],
+      "loop": true,
+      "from": "settle",
+      "to": "wake"
+    },
+    "wake": {
+      "row": 2,
+      "frames": 15,
+      "durations": [
+        350,
+        350,
+        210,
+        210,
+        180,
+        180,
+        220,
+        220,
+        160,
+        160,
+        170,
+        170,
+        260,
+        260,
+        420
+      ],
+      "loop": false,
+      "from": "sleep"
+    }
+  }
+}

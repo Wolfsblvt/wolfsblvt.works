@@ -155,9 +155,19 @@ async function processRun(family, clip, dir) {
   if (frames.some((f) => !f)) return writeReport(dir, { scale: 0, warnings, frames: [] });
 
   const scale = resolveScale(family, clip, frames, warnings);
-  const placed = placeFrames(frames.map((f) => ({ bounds: f.bounds, slotCenterX: f.slotCenterX })), {
-    scale, cell: family.cell, pivot: family.pivot, ground: clip.ground ?? 'frame', anchor: clip.anchor ?? 'slot',
-  });
+  // A second anchor at the clip's end corrects a generator that drew Yoru slowly growing or shrinking across the
+  // sheet: the scale moves evenly from the first anchor's value to the one that makes the last frame its known height.
+  const endScale = clip.scale?.endHeight ? (STANDING_HEIGHT * clip.scale.endHeight) / frames.at(-1).bounds.height : scale;
+  const scaleAt = (i) => scale + ((endScale - scale) * i) / Math.max(1, frames.length - 1);
+  const placed = frames.map((f, i) => placeFrames([{ bounds: f.bounds, slotCenterX: f.slotCenterX }], {
+    scale: scaleAt(i), cell: family.cell, pivot: family.pivot, ground: 'frame', anchor: clip.anchor ?? 'slot',
+  })[0]);
+  if ((clip.ground ?? 'frame') === 'clip') {
+    // Airborne poses keep their height above the clip's lowest foot instead of each landing on the floor.
+    const floor = Math.max(...frames.map((f) => f.bounds.top + f.bounds.height));
+    placed.forEach((p, i) => { p.top -= Math.round((floor - (frames[i].bounds.top + frames[i].bounds.height)) * scaleAt(i)); });
+    placed.forEach((p) => { p.clipped = p.left < 0 || p.top < 0 || p.left + p.width > family.cell.width || p.top + p.height > family.cell.height; });
+  }
 
   const out = join(dir, 'frames');
   mkdirSync(out, { recursive: true });
@@ -177,7 +187,7 @@ async function processRun(family, clip, dir) {
   const residue = keyResidue(rgba, width, height, key);
   if (residue > 50) warnings.push(`${residue} edge pixels still lean magenta`);
   await writeContact(dir, family.cell, family.pivot, await standingCell());
-  return writeReport(dir, { scale, heights, warnings, edgePixels: matte.edgePixels, residue, placed });
+  return writeReport(dir, { scale, endScale, heights, warnings, edgePixels: matte.edgePixels, residue, placed });
 }
 
 /** Standing Yoru from the v1 master's first idle cell, the scale reference. */

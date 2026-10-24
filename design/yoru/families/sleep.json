@@ -41,12 +41,12 @@
         "frame": 0,
         "height": 1
       },
-      "action": "Yoru picks a spot and curls up to sleep. He starts upright as in the identity reference and ends exactly in the attached curled sleeping pose. Each frame moves the pose on by one clear step; his body visibly lowers before it rounds. Seen slightly from the side, ending facing left like the curled reference.",
+      "action": "Yoru picks a spot and curls up to sleep. He starts upright as in the identity reference and ends exactly in the attached curled sleeping pose. Each frame moves the pose on by one clear step; his body visibly lowers before it rounds. From frame 3 on he faces the left edge of the image the whole time: his head is on the left of his body and his back and tail on the right, the same way round as the curled reference. He never turns to face right.",
       "beats": [
         "Standing upright as in the identity reference, ears up, glancing down at the ground in front of him.",
-        "Turning his body towards the left, one small step, tail swinging round behind him.",
+        "Turning his body so he faces the left edge of the image, one small step, tail swinging round behind him to the right.",
         "Starting to sit: hind legs bending, body lowering, tail sweeping forward.",
-        "Sitting upright in profile facing left, capelet settling over his back, ears beginning to relax.",
+        "Sitting in profile facing the left edge of the image, capelet settling over his back, ears beginning to relax.",
         "Leaning forward, front paws reaching down to the ground in front, back starting to round.",
         "Lying down on his belly, head still raised, eyes half closed, tail beginning to wrap round the front.",
         "Head lowering onto his tucked front paws, back rounding into a curl, eyes closing, capelet draping over his back.",
@@ -57,7 +57,8 @@
           "image": "reference/key-curled.png",
           "role": "Key pose: the curled sleeping pose the last frame must match exactly."
         }
-      ]
+      ],
+      "selected": "20261024T012540-6663ec05"
     },
     {
       "id": "sleep",
@@ -93,7 +94,8 @@
           "image": "reference/key-curled.png",
           "role": "Key pose: every frame is this exact curled sleeping pose."
         }
-      ]
+      ],
+      "selected": "20261024T012230-26984542"
     },
     {
       "id": "wake",
@@ -117,7 +119,8 @@
       "scale": {
         "frame": 0,
         "match": "sleep#0",
-        "height": 0.62
+        "height": 0.62,
+        "endHeight": 1
       },
       "action": "Yoru wakes up. One ear notices something before the rest of him does; he lifts his head, uncurls, has one long stretch and ends upright as in the identity reference, unimpressed and awake. He starts exactly in the attached curled pose, seen from the side facing left.",
       "beats": [
@@ -135,7 +138,8 @@
           "image": "reference/key-curled.png",
           "role": "Key pose: the curled sleeping pose the first frame must match exactly."
         }
-      ]
+      ],
+      "selected": "20261024T012337-6ef98828"
     }
   ]
 }
