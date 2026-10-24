@@ -449,8 +449,10 @@ async function cmdServe() {
   const port = Number(flags.port ?? 4390);
   const rehearsal = join(root, 'tools', 'yoru-studio', 'rehearsal');
   const send = (res, file) => {
+    // Read first: a sheet being repacked can fail mid-request, and that must become a 500, not a half-sent response.
+    const body = readFileSync(file);
     res.writeHead(200, { 'content-type': types[file.slice(file.lastIndexOf('.'))] ?? 'application/octet-stream', 'cache-control': 'no-store' });
-    res.end(readFileSync(file));
+    res.end(body);
   };
   createServer(async (req, res) => {
     try {
@@ -475,7 +477,8 @@ async function cmdServe() {
       if (!file.startsWith(base) || !existsSync(file)) { res.writeHead(404).end(); return; }
       send(res, file);
     } catch (error) {
-      res.writeHead(500, { 'content-type': 'text/plain' }).end(String(error?.stack ?? error));
+      if (res.headersSent) res.destroy();
+      else res.writeHead(500, { 'content-type': 'text/plain' }).end(String(error?.stack ?? error));
     }
   }).listen(port, () => console.log(`Yoru studio on http://localhost:${port}/ · rehearsal at /rehearsal/`));
 }

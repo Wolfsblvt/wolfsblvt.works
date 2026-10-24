@@ -42,6 +42,9 @@ const ROLE = {
 } as const;
 type Role = keyof typeof ROLE;
 
+/** The shortest beat of his life, in milliseconds; see the loop. */
+const MIN_BEAT = 400;
+
 /** Display pixels per millisecond. */
 const WALK_SPEED = 0.05;
 const RUN_SPEED = 0.2;
@@ -158,6 +161,9 @@ export class Resident {
         this.#hard.signal.removeEventListener('abort', stop);
       }
       this.#lastRun.set(next.name, this.#clock.now());
+      // A beat that took no time (a wander to where he already stands) must not let the loop spin: hold the pose
+      // for a moment, as anyone would before deciding again.
+      if (this.#clock.now() - started < MIN_BEAT) await this.#clock.wait(MIN_BEAT, this.#hard.signal);
       this.#age(this.#clock.now() - started, next.name);
     }
   }
@@ -189,6 +195,11 @@ export class Resident {
     return Math.min(1, 0.15 + since / 40000);
   }
 
+  /** How settled he feels: someone who just poked him does not get to watch him curl up. */
+  #calm(): number {
+    return Math.max(0, 1 - this.#wariness * 1.6);
+  }
+
   // ---------- behaviours ----------
 
   #behaviours(): Behaviour[] {
@@ -196,7 +207,7 @@ export class Resident {
     const list: Behaviour[] = [this.#idleBehaviour()];
     list.push({
       name: 'sit a while',
-      weight: () => (this.#has('sitDown', 'sit', 'standUp') ? 0.7 + this.#rest * 0.6 : 0),
+      weight: () => (this.#has('sitDown', 'sit', 'standUp') ? (0.7 + this.#rest * 0.6) * this.#calm() : 0),
       run: async (signal) => {
         await this.#toPosture('sit');
         await this.#loop('sit', signal, 2 + Math.floor(this.#random() * 3));
@@ -207,7 +218,7 @@ export class Resident {
     });
     list.push({
       name: 'nap',
-      weight: () => (here.restful && this.#rest > 0.45 && this.#has('settle', 'sleep', 'wake') ? this.#rest * 3 : 0),
+      weight: () => (here.restful && this.#rest > 0.45 && this.#has('settle', 'sleep', 'wake') ? this.#rest * 3 * this.#calm() ** 2 : 0),
       run: async (signal) => {
         await this.#toPosture('curl');
         await this.#loop('sleep', signal, 6 + Math.floor(this.#random() * 6));
