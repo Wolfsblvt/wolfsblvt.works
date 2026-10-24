@@ -29,6 +29,8 @@ export interface SheetManifest {
     to?: string;
     prop?: string;
     props?: Array<PropPlacement | null>;
+    /** Where the scenery channel (a ledge, the ground) was painted in each frame. */
+    scenery?: Array<PropPlacement | null>;
     feet?: number[];
   }>;
 }
@@ -36,6 +38,8 @@ export interface SheetManifest {
 export interface Clip {
   id: string;
   sheetUrl: string;
+  /** The same sheet at twice the resolution, for high-density screens. */
+  sheetUrl2x?: string;
   /** Cell and pivot in master pixels; multiply by displayScale for CSS pixels. */
   cell: { width: number; height: number };
   pivot: { x: number; y: number };
@@ -54,15 +58,16 @@ export interface Clip {
 export class ClipLibrary {
   readonly #clips = new Map<string, Clip>();
 
-  /** @param families each manifest with the URL its sheet is served from */
-  constructor(families: ReadonlyArray<{ manifest: SheetManifest; sheetUrl: string }>) {
-    for (const { manifest, sheetUrl } of families) {
+  /** @param families each manifest with the URL its sheet is served from, and optionally a 2x sheet */
+  constructor(families: ReadonlyArray<{ manifest: SheetManifest; sheetUrl: string; sheetUrl2x?: string }>) {
+    for (const { manifest, sheetUrl, sheetUrl2x } of families) {
       const entries = Object.entries(manifest.clips);
       const sheetColumns = Math.max(...entries.map(([, c]) => c.frames));
       for (const [name, c] of entries) {
         this.#clips.set(`${manifest.family}/${name}`, {
           id: `${manifest.family}/${name}`,
           sheetUrl,
+          ...(sheetUrl2x && { sheetUrl2x }),
           cell: manifest.cell,
           pivot: manifest.pivot,
           displayScale: manifest.displayScale,

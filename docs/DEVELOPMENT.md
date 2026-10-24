@@ -107,6 +107,8 @@ Produced by the build, ignored by Git, never edited by hand:
 | `public/favicon.svg`, `public/favicon-192.png`, `public/apple-touch-icon.png` | `scripts/generate-identity-assets.mjs`, from the marks |
 | `public/brand/works/` | The same script, byte-for-byte mirror of the committed canonical bundle |
 | `public/yoru/sheet-1x.webp`, `sheet-2x.webp`, `src/generated/yoru-doze.ts` | the same script, from Yoru's frames in `design/the-walk/assets/` |
+| `public/yoru/resident/<family>-1x.webp`, `-2x.webp`, `src/generated/yoru-families.ts` | the same script, from the resident's packed sheets in `design/yoru/sheets/`; a sheet is re-encoded only when its master changed |
+| `artifacts/yoru-studio/` | `npm run yoru`: raw generations, cut frames, contact sheets and the studio pages |
 | `artifacts/test-results/`, `artifacts/review/` | Playwright, and one-off review captures |
 
 **Committed on purpose:** `public/social/home.png` and `public/social/contact.png`. They are rendered by
@@ -116,6 +118,13 @@ people credited in the Pile (`src/features/pile/entries/mpreg/nek0tera.jpg`): `n
 their own public pages; commit the result.
 
 ## Common paths
+
+### Make or change Yoru's animation
+
+`npm run yoru -- generate <family> <clip>` draws candidates through `codex exec` (Codex's built-in image tool on the
+ChatGPT plan signed in on this machine; no API key), `npm run yoru -- serve` shows them at
+http://localhost:4390/preview/ and the resident rehearsal at /rehearsal/, `select` picks one and `pack` writes the
+sheet the site builds from. [design/yoru/README.md](../design/yoru/README.md) is the authoring guide.
 
 ### Add a Pile piece
 

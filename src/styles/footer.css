@@ -26,4 +26,3 @@
 .icon-a:hover { background: rgb(243 232 220 / 7%); color: var(--cyan); }
 .icon-a.off { color: #6a5c63; cursor: default; }
 .icon-a.off:hover { background: none; color: #6a5c63; }
-.foot-nap { position: absolute; right: 8%; top: -101px; }

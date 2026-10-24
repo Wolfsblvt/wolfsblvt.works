@@ -21,7 +21,6 @@ const aria = (key: typeof current) => (current === key ? 'page' : undefined);
 
 <footer class="site-foot lift" data-footer>
   <div class="frame foot-frame">
-    {home && <div class="foot-nap" data-yoru-nap hidden><div class="sprite s-doze" role="img" aria-label="Yoru, asleep on the footer"></div></div>}
     <div class="foot">
       <div class="foot-col" style="min-width:0">
         <a href={home ? '#hi' : `${linkOrigin}/`} class="brand-foot" aria-label="Wolfsblvt Works, back to the start" data-nav-link={home ? 'hi' : undefined} set:html={footerLockup()} />

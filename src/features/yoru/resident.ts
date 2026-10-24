@@ -9,7 +9,7 @@
  */
 import { mulberry32 } from '../../lib/shape';
 import type { Clip, ClipLibrary } from './clips';
-import { realClock, SpritePlayer, type Clock } from './player';
+import { realClock, SpritePlayer, type Clock, type SpriteElement } from './player';
 import { spendTime, type Acquaintance } from './memory';
 import { departure, place, route, type Link, type World } from './world';
 
@@ -70,6 +70,15 @@ const MIN_BEAT = 400;
 /** Display pixels per millisecond. */
 const WALK_SPEED = 0.05;
 const RUN_SPEED = 0.2;
+/**
+ * How far he can hop, in display pixels: up about half his height (the hop clip's own rise), down a little further,
+ * across a modest gap. A link whose places are further apart right now is not open, however it was authored: a page
+ * that reflows or scrolls must not turn a hop into a flight.
+ */
+const HOP = { up: 60, down: 180, across: 280 };
+
+/** How far past the end of a place he runs to be out of view, in display pixels. */
+const OFFSCREEN = 160;
 
 export interface ResidentOptions {
   player: SpritePlayer;
@@ -83,6 +92,8 @@ export interface ResidentOptions {
   trace?: (line: string) => void;
   /** What he remembers of this visitor, only when they turned remembering on; see memory.ts. */
   acquaintance?: Acquaintance | null;
+  /** Called whenever he arrives somewhere, for the host's own touches (the perch caption leaving with him). */
+  onPlace?: (placeId: string) => void;
 }
 
 interface Behaviour {
@@ -117,6 +128,7 @@ export class Resident {
   #curiosity = 0.4;
   #wariness = 0;
   #pokes: number[] = [];
+  readonly #onPlace: (placeId: string) => void;
   /** When he arrived at his current place; a guest stays a while, then leaves. */
   #arrivedAt = 0;
   #acquaintance: Acquaintance | null;
@@ -134,6 +146,7 @@ export class Resident {
     this.#reduced = o.reducedMotion ?? false;
     this.#trace = o.trace ?? (() => {});
     this.#acquaintance = o.acquaintance ?? null;
+    this.#onPlace = o.onPlace ?? (() => {});
     this.#wariness = this.#acquaintance?.wariness ?? 0;
     this.#place = o.start.place;
     this.#at = o.start.at;
@@ -168,7 +181,9 @@ export class Resident {
     if (this.#alive) return;
     this.#alive = true;
     this.#hard = new AbortController();
-    this.#show(this.#clip('idle'), 0);
+    // Resuming after a pause, he is shown in the posture he was in, not snapped back to standing.
+    const resting: Record<Posture, Role> = { stand: 'idle', 'face-left': 'walkLeft', 'face-right': 'walkRight', sit: 'sit', curl: 'sleep', watch: 'watch' };
+    this.#show(this.#clip(this.#has(resting[this.#posture]) ? resting[this.#posture] : 'idle'), 0);
     void this.#live();
   }
 
@@ -439,7 +454,8 @@ export class Resident {
 
   #canTake(link: Link): boolean {
     if (link.way === 'walk') return this.#has('walkLeft', 'walkRight');
-    if (link.way === 'hop') return this.#hopsLeft(link) ? this.#has('hop', 'turnLeft') : this.#has('hopRight', 'turnRight');
+    if (link.way === 'hop') return this.#withinHop(link) && (this.#hopsLeft(link) ? this.#has('hop', 'turnLeft') : this.#has('hopRight', 'turnRight'));
+    if (link.way === 'offscreen') return this.#has('runLeft', 'runRight', 'turnLeft', 'turnRight');
     // The ladder clips are drawn with the drop to his left.
     return this.#hopsLeft(link) && this.#has('produce', 'mount', 'climb', 'dismount', 'stow', 'ladder', 'turnLeft');
   }
@@ -461,6 +477,8 @@ export class Resident {
         await this.#hop(link);
       } else if (link.way === 'ladder-down') {
         await this.#climbDown(link);
+      } else if (link.way === 'offscreen') {
+        await this.#goOffscreen(link);
       }
     }
   }
@@ -580,6 +598,47 @@ export class Resident {
     this.#arrivedAt = this.#clock.now();
     this.#posture = 'stand';
     this.#follow();
+    this.#onPlace(link.to);
+  }
+
+  /**
+   * Runs out past the end of this place, and back in from the side of the next one. Committed, like a hop: by the time
+   * anyone could poke him he is out of reach. Reduced motion: he is simply there.
+   */
+  async #goOffscreen(link: Link): Promise<void> {
+    const from = place(this.#world, this.#place).surface()!;
+    const to = place(this.#world, link.to).surface()!;
+    const hard = this.#hard.signal;
+    if (!this.#reduced) {
+      const leftwards = link.at === 'left';
+      await this.#toPosture(leftwards ? 'face-left' : 'face-right');
+      const start = this.#player.position.x;
+      await this.#run(start, leftwards ? from.left - OFFSCREEN : from.right + OFFSCREEN, from.y, hard);
+      const fromLeft = link.enter === 'left';
+      const arriveX = to.left + link.arrive * (to.right - to.left);
+      this.#posture = fromLeft ? 'face-right' : 'face-left';
+      this.#player.setLayer(place(this.#world, link.to).layer?.() ?? null);
+      await this.#run(fromLeft ? to.left - OFFSCREEN : to.right + OFFSCREEN, arriveX, to.y, hard);
+    }
+    this.#arrive(link);
+  }
+
+  /** Runs in a straight line from one x to another along y, one frame's distance at a time. */
+  async #run(fromX: number, toX: number, y: number, signal: AbortSignal): Promise<void> {
+    const leftwards = toX < fromX;
+    const clip = this.#clip(leftwards ? 'runLeft' : 'runRight');
+    let x = fromX;
+    this.#player.moveTo(x, y);
+    while (!signal.aborted && Math.abs(toX - x) > 1) {
+      await this.#player.play(clip, {
+        signal,
+        onFrame: (frame) => {
+          const step = RUN_SPEED * clip.durations[frame]! * this.#player.tempo;
+          x = leftwards ? Math.max(toX, x - step) : Math.min(toX, x + step);
+          this.#player.moveTo(x, y);
+        },
+      });
+    }
   }
 
   /** The ladder's own element beside his, created on first use; scenery, not a second Yoru. */
@@ -588,10 +647,20 @@ export class Resident {
     if (this.#ladder) return this.#ladder;
     const el = this.#player.element.ownerDocument.createElement('div');
     el.dataset['yoruLadder'] = '';
-    this.#player.element.before(el);
+    (this.#player.element.before as (node: SpriteElement) => void).call(this.#player.element, el);
     this.#ladder = new SpritePlayer(el, this.#clock);
     el.style.pointerEvents = 'none';
     return this.#ladder;
+  }
+
+  /** Whether the two ends of a hop are close enough, right now, for him to make it. */
+  #withinHop(link: Link): boolean {
+    const from = place(this.#world, link.from).surface();
+    const to = place(this.#world, link.to).surface();
+    if (!from || !to) return false;
+    const dx = Math.abs(to.left + link.arrive * (to.right - to.left) - (from.left + departure(link) * (from.right - from.left)));
+    const dy = to.y - from.y;
+    return dx <= HOP.across && dy >= -HOP.up && dy <= HOP.down;
   }
 
   /** Whether a hop goes towards the left, from where it sets off to where it lands. */
@@ -614,6 +683,7 @@ export class Resident {
       this.#trace(`discovered ${link.to}`);
     }
     this.#follow();
+    this.#onPlace(link.to);
   }
 
   /** His place disappeared: the nearest present place takes him, and he is simply there. */
@@ -623,6 +693,7 @@ export class Resident {
     this.#place = (present.find((p) => p.kind === 'ground') ?? present[0]!).id;
     this.#at = 0.5;
     this.#follow();
+    this.#onPlace(this.#place);
     this.#trace(`moved to ${this.#place}`);
   }
 

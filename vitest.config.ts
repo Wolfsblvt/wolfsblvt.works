@@ -13,7 +13,7 @@ const testSecrets = {
 export default defineConfig({
   test: {
     projects: [
-      { test: { name: 'unit', environment: 'node', include: ['tests/unit/**/*.test.ts'] } },
+      { test: { name: 'unit', environment: 'node', include: ['tests/unit/**/*.test.ts', 'tests/unit/**/*.test.mjs'] } },
       {
         plugins: [cloudflareTest({ wrangler: { configPath: './tests/fixtures/wrangler.test.jsonc' }, miniflare: { bindings: testSecrets } })],
         test: { name: 'contact-worker', include: ['tests/worker/contact.test.ts'] },

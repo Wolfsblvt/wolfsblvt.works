@@ -3,10 +3,10 @@ import { keyResidue, matteKey, unmix } from '../../tools/yoru-studio/lib/matte.m
 import { findCuts, placeFrames, splitFrames } from '../../tools/yoru-studio/lib/register.mjs';
 import { clipDurations, frameCount, frameScript } from '../../tools/yoru-studio/lib/spec.mjs';
 
-const KEY: [number, number, number] = [255, 0, 255];
+const KEY = [255, 0, 255];
 
 /** An image filled with the key colour, with rectangles painted on it. */
-function canvas(width: number, height: number, rects: Array<[number, number, number, number, [number, number, number]]>) {
+function canvas(width, height, rects) {
   const data = new Uint8Array(width * height * 4);
   for (let i = 0; i < width * height; i++) data.set([...KEY, 255], i * 4);
   for (const [x0, y0, w, h, colour] of rects) {
@@ -17,11 +17,11 @@ function canvas(width: number, height: number, rects: Array<[number, number, num
 
 describe('chroma matte', () => {
   it('un-mixes an edge pixel into partial alpha and its foreground colour', () => {
-    const fg: [number, number, number] = [20, 20, 24];
-    const half = fg.map((v, c) => (v + KEY[c]!) / 2) as [number, number, number];
+    const fg = [20, 20, 24];
+    const half = fg.map((v, c) => (v + KEY[c]) / 2);
     const [alpha, colour] = unmix(half, fg, KEY);
     expect(alpha).toBeCloseTo(0.5, 2);
-    colour.forEach((v: number, c: number) => expect(Math.abs(v - fg[c]!)).toBeLessThanOrEqual(1));
+    colour.forEach((v, c) => expect(Math.abs(v - fg[c])).toBeLessThanOrEqual(1));
   });
 
   it('clears the background, keeps the body opaque and leaves no magenta fringe', () => {
@@ -32,14 +32,14 @@ describe('chroma matte', () => {
     const { data: out } = matteKey(data, width, height, KEY);
     expect(out[(0 * width + 0) * 4 + 3]).toBe(0);
     expect(out[(10 * width + 20) * 4 + 3]).toBe(255);
-    const edgeAlpha = out[(10 * width + 9) * 4 + 3]!;
+    const edgeAlpha = out[(10 * width + 9) * 4 + 3];
     expect(edgeAlpha).toBeGreaterThan(80);
     expect(edgeAlpha).toBeLessThan(180);
     expect(keyResidue(out, width, height, KEY)).toBe(0);
   });
 
   it('keeps plum interior colours that sit closer to the key than black does', () => {
-    const plum: [number, number, number] = [92, 44, 110];
+    const plum = [92, 44, 110];
     const data = canvas(30, 30, [[5, 5, 20, 20, plum]]);
     const { data: out } = matteKey(data, 30, 30, KEY);
     expect([...out.subarray((15 * 30 + 15) * 4, (15 * 30 + 15) * 4 + 4)]).toEqual([...plum, 255]);
@@ -60,9 +60,9 @@ describe('frame cutting', () => {
     const { data } = matteKey(solid, width, height, KEY);
     const frames = splitFrames(data, width, height, { cols: 2 });
     expect(frames).toHaveLength(2);
-    expect(frames[0]!.region.left).toBeLessThanOrEqual(5);
-    expect(frames[0]!.region.left + frames[0]!.region.width).toBeGreaterThanOrEqual(60);
-    expect(frames[1]!.region.left).toBeLessThanOrEqual(45);
+    expect(frames[0].region.left).toBeLessThanOrEqual(5);
+    expect(frames[0].region.left + frames[0].region.width).toBeGreaterThanOrEqual(60);
+    expect(frames[1].region.left).toBeLessThanOrEqual(45);
   });
 });
 
@@ -86,7 +86,7 @@ describe('key poses and in-betweens', () => {
 
   it('expands key poses with in-betweens between them', () => {
     expect(frameCount(clip)).toBe(5);
-    expect(frameScript(clip).map((f: { key?: number }) => f.key ?? '·')).toEqual([0, '·', 1, '·', 2]);
+    expect(frameScript(clip).map((f) => f.key ?? '·')).toEqual([0, '·', 1, '·', 2]);
     expect(frameCount({ ...clip, loop: true, frames: 6 })).toBe(6);
   });
 

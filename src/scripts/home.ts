@@ -1,12 +1,13 @@
 /**
  * The home page walk: where-am-I (current word and the slowly filling path), the What arrow, eased travel along the
- * nav, Yoru's day (hero, following along, napping on the footer), the chat, the sponsor section's one play, and the
+ * nav, Yoru the resident (src/features/yoru), the chat, the sponsor section's one play, and the
  * Discord buttons.
  */
 import { clamp, round1 } from '../lib/shape';
 import { documentTop, headerOffset, isPlainClick, reducedMotion, showToast, travelTo, whenInView } from './runtime';
 import type { BootState } from '../features/pile/client/controller';
 import { header } from './site';
+import { mountResident } from '../features/yoru/client/site';
 
 const SECTIONS = ['hi', 'what', 'why', 'what2', 'who', 'help', 'whoa', 'hello'] as const;
 const WORDS = ['hi', 'what', 'why', 'who', 'help', 'whoa', 'hello'] as const;
@@ -157,97 +158,6 @@ function mountNavTravel(): void {
   });
 }
 
-/**
- * Yoru: on the hero until it scrolls away, then he follows along at the edge, sits, dozes, runs off when clicked and
- * comes back, and naps on the footer. He is in one place at a time: once he has left the perch, the perch stays an
- * empty line and the caption is gone; scrolling back up does not teleport him home.
- */
-function mountYoru(): void {
-  const heroSpot = document.querySelector<HTMLElement>('[data-yoru-hero]');
-  const heroSprite = document.querySelector<HTMLElement>('[data-yoru-hero-sprite]');
-  const cap = document.querySelector<HTMLElement>('[data-yoru-cap]');
-  const follower = document.querySelector<HTMLElement>('[data-yoru-follower]');
-  const followerButton = follower?.querySelector<HTMLButtonElement>('button');
-  const followerSprite = follower?.querySelector<HTMLElement>('.sprite');
-  const nap = document.querySelector<HTMLElement>('[data-yoru-nap]');
-  const hero = document.querySelector<HTMLElement>('[data-hero]');
-  const footer = document.querySelector<HTMLElement>('[data-footer]');
-  if (!heroSpot || !heroSprite || !follower || !followerButton || !followerSprite || !nap || !hero || !footer) return;
-  const reduce = reducedMotion();
-
-  type State = 'hero' | 'pre' | 'in' | 'sit' | 'doze' | 'flee' | 'away' | 'leave' | 'nap';
-  let state: State = 'hero';
-  let timer = 0;
-  let footerVisible = false;
-  const ANIM: Partial<Record<State, string>> = { pre: 's-runL', in: 's-runL', sit: 's-sit', doze: 's-doze', flee: 's-runR', leave: 's-runR' };
-
-  const render = () => {
-    heroSpot.style.visibility = state === 'hero' ? '' : 'hidden';
-    const following = ['pre', 'in', 'sit', 'doze', 'flee', 'leave'].includes(state);
-    follower.hidden = !following;
-    follower.classList.toggle('out', state === 'pre' || state === 'flee' || state === 'leave');
-    followerSprite.className = `sprite ${ANIM[state] ?? 's-idle'}`;
-    nap.hidden = state !== 'nap';
-  };
-  const set = (next: State) => { state = next; render(); };
-
-  const enter = () => {
-    clearTimeout(timer);
-    if (reduce) { set('sit'); return; }
-    set('pre');
-    timer = window.setTimeout(() => {
-      set('in');
-      timer = window.setTimeout(() => {
-        set('sit');
-        timer = window.setTimeout(() => { if (state === 'sit') set('doze'); }, 14000);
-      }, 1650);
-    }, 40);
-  };
-
-  new IntersectionObserver((entries) => {
-    const visible = entries[0]!.isIntersecting;
-    // The first report can arrive before a real scroll; only a real scroll away counts.
-    if (!visible && scrollY < 80) return;
-    if (!visible && state === 'hero') {
-      if (cap) {
-        cap.classList.add('wiping');
-        setTimeout(() => { cap.hidden = true; }, 700);
-      }
-      enter();
-    }
-  }, { threshold: 0.05 }).observe(hero);
-
-  new IntersectionObserver((entries) => {
-    footerVisible = entries[0]!.isIntersecting;
-    if (footerVisible && ['sit', 'doze', 'in'].includes(state)) {
-      clearTimeout(timer);
-      set('leave');
-      timer = window.setTimeout(() => set('nap'), reduce ? 0 : 1600);
-    }
-    if (!footerVisible && state === 'nap') enter();
-  }, { threshold: 0.2 }).observe(footer);
-
-  followerButton.addEventListener('click', () => {
-    if (state !== 'sit' && state !== 'doze') return;
-    clearTimeout(timer);
-    set('flee');
-    timer = window.setTimeout(() => {
-      set('away');
-      timer = window.setTimeout(() => { if (!footerVisible && state === 'away') enter(); }, 9000);
-    }, 1650);
-  });
-
-  // Now and then he looks around.
-  if (!reduce) {
-    setInterval(() => {
-      if (state !== 'hero') return;
-      heroSprite.className = 'sprite s-look';
-      setTimeout(() => { heroSprite.className = 'sprite s-idle'; }, 1700);
-    }, 9000);
-  }
-  render();
-}
-
 /** The chat plays at a sped-up, uneven pace once the section is properly in view. */
 function mountChat(): void {
   const body = document.querySelector<HTMLElement>('[data-chat]');
@@ -336,6 +246,6 @@ mountWalkSpy();
 mountNavTravel();
 mountAnchors();
 mountArrival();
-mountYoru();
+mountResident();
 mountChat();
 mountDiscord();

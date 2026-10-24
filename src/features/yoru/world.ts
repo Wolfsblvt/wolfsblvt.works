@@ -1,3 +1,5 @@
+import type { SpriteParent } from './player';
+
 /**
  * Where Yoru can be: a few authored places with stable ids and their connections, not a collision mesh inferred
  * from every rectangle on the page. A host (the real site, or the rehearsal) supplies them; their geometry is read
@@ -26,11 +28,15 @@ export interface Place {
    * For a place inside something (a project window): the element he moves into while there, so its frame clips
    * and covers him, and that element's position in stage coordinates.
    */
-  layer?(): { element: HTMLElement; origin: { x: number; y: number } } | null;
+  layer?(): { element: SpriteParent; origin: { x: number; y: number } } | null;
 }
 
-/** walk along; hop up, down or across (into or out of a window included); climb down by ladder. */
-export type Way = 'walk' | 'hop' | 'ladder-down';
+/**
+ * walk along; hop up, down or across (into or out of a window included); climb down by ladder; or offscreen: run out
+ * of view past the `at` end and come back in from the `enter` side of the next place, where the two are too far
+ * apart to be joined in view (the hero perch and the reader's margin).
+ */
+export type Way = 'walk' | 'hop' | 'ladder-down' | 'offscreen';
 
 /** A connection: from the `at` end of one place to another. */
 export interface Link {
@@ -42,6 +48,8 @@ export interface Link {
   arrive: number;
   /** Where along `from` he sets off, when it is not the `at` end: a window above the middle of a floor. */
   leave?: number;
+  /** For an offscreen way: the side of `to` he runs in from. */
+  enter?: 'left' | 'right';
 }
 
 export interface World {

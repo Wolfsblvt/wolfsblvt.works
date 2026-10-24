@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { ClipLibrary, type SheetManifest } from '../../src/features/yoru/clips';
-import { SpritePlayer, type Clock } from '../../src/features/yoru/player';
+import { SpritePlayer, type Clock, type SpriteElement, type SpriteParent } from '../../src/features/yoru/player';
 import { Resident } from '../../src/features/yoru/resident';
 import type { Surface, World } from '../../src/features/yoru/world';
 import { newAcquaintance, type Acquaintance } from '../../src/features/yoru/memory';
@@ -46,7 +46,7 @@ function virtualClock(): Clock & { advance(ms: number): void } {
 }
 
 /** Enough of an element for the player: it only writes styles and data attributes. */
-const fakeElement = () => ({ style: {} as Record<string, string>, dataset: {} as Record<string, string> }) as unknown as HTMLElement;
+const fakeElement = () => ({ style: {} as Record<string, string>, dataset: {} as Record<string, string> }) as unknown as SpriteElement;
 
 function setup(seed = 7, surfaces: Record<string, Surface | null> = {}, acquaintance: Acquaintance | null = null) {
   const geometry: Record<string, Surface | null> = {
@@ -158,8 +158,8 @@ describe('the resident', { timeout: 20000 }, () => {
     // Stand-ins that move the element between parents the way the DOM does.
     const appended: string[] = [];
     let parent: unknown = null;
-    const layerElement = { append: () => { parent = layerElement; appended.push('into window'); } } as unknown as HTMLElement;
-    const stageElement = { append: () => { parent = stageElement; appended.push('back home'); } } as unknown as HTMLElement;
+    const layerElement = { append: () => { parent = layerElement; appended.push('into window'); } } as SpriteParent;
+    const stageElement = { append: () => { parent = stageElement; appended.push('back home'); } } as SpriteParent;
     parent = stageElement;
     const world: World = {
       places: [
@@ -176,7 +176,7 @@ describe('the resident', { timeout: 20000 }, () => {
       ],
     };
     const clock = virtualClock();
-    const element = { style: {}, dataset: {}, get parentElement() { return parent; } } as unknown as HTMLElement;
+    const element = { style: {}, dataset: {}, get parentElement() { return parent; } } as unknown as SpriteElement;
     const trace: string[] = [];
     const resident = new Resident({ player: new SpritePlayer(element, clock), clips: library(), world, start: { place: 'floor', at: 0.5 }, seed: 5, clock, trace: (l) => trace.push(l) });
     resident.start();
@@ -197,7 +197,7 @@ describe('the resident', { timeout: 20000 }, () => {
   it('climbs down by ladder in whole rungs, lands on the lower place and puts the ladder away', async () => {
     const created: Array<{ style: Record<string, string>; dataset: Record<string, string> }> = [];
     const doc = { createElement: () => { const el = { style: {} as Record<string, string>, dataset: {} as Record<string, string> }; created.push(el); return el; } };
-    const element = { style: {}, dataset: {}, parentElement: null, ownerDocument: doc, before: () => {} } as unknown as HTMLElement;
+    const element = { style: {}, dataset: {}, parentElement: null, ownerDocument: doc, before: () => {} } as unknown as SpriteElement;
     const world: World = {
       places: [
         { id: 'ledge', kind: 'perch', surface: () => ({ left: 300, right: 500, y: 300 }) },
@@ -214,5 +214,25 @@ describe('the resident', { timeout: 20000 }, () => {
     expect(resident.state.place).toBe('floor');
     expect(created).toHaveLength(1); // one ladder, never a second Yoru
     expect(created[0]!.style['visibility']).toBe('hidden');
+  });
+
+  it('does not take a hop that has become a flight because the page moved', async () => {
+    let gap = 40;
+    const world: World = {
+      places: [
+        { id: 'floor', kind: 'ground', surface: () => ({ left: 100, right: 700, y: 400 }) },
+        { id: 'shelf', kind: 'perch', surface: () => ({ left: 40, right: 160, y: 400 - gap }) },
+      ],
+      links: [{ from: 'floor', to: 'shelf', way: 'hop', at: 'left', arrive: 0.5 }],
+    };
+    const clock = virtualClock();
+    const element = { style: {}, dataset: {}, parentElement: null } as unknown as SpriteElement;
+    const resident = new Resident({ player: new SpritePlayer(element, clock), clips: library(), world, start: { place: 'floor', at: 0.5 }, seed: 3, clock });
+    gap = 900; // the shelf scrolled far above him
+    resident.invite('shelf');
+    resident.start();
+    while (clock.now() < 20000) await new Promise((r) => setTimeout(r, 0));
+    resident.stop();
+    expect(resident.state.place).toBe('floor');
   });
 });

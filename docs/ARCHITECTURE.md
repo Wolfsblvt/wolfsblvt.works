@@ -47,6 +47,15 @@ Adoption on Cloudflare is Wolf Ops work; see [Development](DEVELOPMENT.md#public
 
 Without JavaScript the same page is complete: the pile renders as an ordinary list and Endless as a section.
 
+6. Yoru, the resident (`src/features/yoru/client/site.ts`), starts on the hero's perch. He is one element in one of
+   two clipped, click-through layers: a page stage the size of the document (the perch, the footer nook, inside
+   Borrowed Coast's window) and a fixed lane over the viewport's right margin, where he rides along with the reader.
+   The resident (`resident.ts`) chooses what to do from a few needs, recent repetition and a seeded generator, and
+   moves between authored places by walking, hopping, a ladder or running out of view and back in; the page's events
+   are invitations (the hero scrolling away, the footer coming into view, a mode switch in Borrowed Coast), never
+   commands. He is in one place at a time and does not return to the perch. Sheets load per family, as 1x and 2x WebP,
+   from `public/yoru/resident/`. Without JavaScript the hero shows his still frame.
+
 ### A contact message
 
 1. A browser asks `https://contact.wolfsblvt.works/?product=diffdevil`. The Worker serves the static `contact/` page
@@ -100,11 +109,14 @@ and the home a visitor arriving from that product can return to.
 ## Data and storage
 
 Nothing is persisted. There is no database, no message store, no cookie set by this site and nothing written to browser
-storage. A contact message exists only as two emails. The contact service's log event and Cloudflare's own request logs
+storage. Yoru's remembered acquaintance (`src/features/yoru/memory.ts`) is built as an opt-in that would write one small
+record to local storage, but the site does not offer it: that needs the storage account here and on the Privacy page to
+change first. A contact message exists only as two emails. The contact service's log event and Cloudflare's own request logs
 are the only records; [Logging](LOGGING.md) describes them.
 
 Build-time data comes from the repository: `site.config.mjs` (identity, links, legal facts), the Pile collection in
-`src/content/pile/`, the approved marks in `brand/bundle/works/`, and Yoru's frames in `design/the-walk/assets/`. The legal operator's
+`src/content/pile/`, the approved marks in `brand/bundle/works/`, Yoru's v1 frames in `design/the-walk/assets/` (the legal pages, 404 and
+503) and the resident's packed sheets in `design/yoru/sheets/`. The legal operator's
 name and address reach the build only as the private `WOLFSBLVT_LEGAL_OPERATOR_B64` projection; the public source
 carries an obvious fixture in `src/data/legal-operator.example.json`.
 

@@ -34,20 +34,46 @@ export const realClock: Clock = {
     }),
 };
 
+type StyleProperty = 'position' | 'backgroundRepeat' | 'pointerEvents' | 'width' | 'height' | 'backgroundImage'
+  | 'backgroundSize' | 'backgroundPosition' | 'left' | 'top' | 'visibility' | 'transformOrigin' | 'transform';
+
+/**
+ * The little of an element the engine uses. An HTMLElement satisfies it; naming only this keeps the engine core free
+ * of the DOM library, so it is typed and tested like any other module.
+ */
+export interface SpriteElement {
+  readonly style: Record<StyleProperty, string>;
+  readonly dataset: Record<string, string | undefined>;
+  readonly parentElement: object | null;
+  readonly ownerDocument: { createElement(tag: 'div'): SpriteElement };
+  /** DOM's before(...nodes); called with a sprite element only. */
+  before(...nodes: never[]): void;
+}
+
+/** Something a sprite element can live in: the page stage, a fixed lane, a project window. */
+export interface SpriteParent {
+  /** DOM's append(...nodes); called with a sprite element only. */
+  append(...nodes: never[]): void;
+}
+
+/** Moves a sprite element into a parent through the DOM's own append. */
+export const appendSprite = (parent: SpriteParent, element: SpriteElement): void =>
+  (parent.append as (node: SpriteElement) => void).call(parent, element);
+
 export class SpritePlayer {
-  readonly element: HTMLElement;
+  readonly element: SpriteElement;
   #clip: Clip | null = null;
   #x = 0;
   #y = 0;
   /** The element his sprite currently lives in, and where that element sits in stage coordinates. */
-  #home: HTMLElement | null = null;
-  #layer: { element: HTMLElement; origin: { x: number; y: number } } | null = null;
+  #home: SpriteParent | null = null;
+  #layer: { element: SpriteParent; origin: { x: number; y: number } } | null = null;
   /** Playback speed multiplier for rehearsal; the site always plays at 1. */
   tempo = 1;
 
-  constructor(element: HTMLElement, private readonly clock: Clock = realClock) {
+  constructor(element: SpriteElement, private readonly clock: Clock = realClock) {
     this.element = element;
-    this.#home = element.parentElement;
+    this.#home = element.parentElement as SpriteParent | null;
     element.style.position = 'absolute';
     element.style.backgroundRepeat = 'no-repeat';
     element.style.pointerEvents = 'auto';
@@ -68,10 +94,10 @@ export class SpritePlayer {
    * Moves his one element into another layer (a project window, behind its frame), or back home with null. Stage
    * coordinates stay the same; only what clips and covers him changes. There is never a second element.
    */
-  setLayer(layer: { element: HTMLElement; origin: { x: number; y: number } } | null): void {
+  setLayer(layer: { element: SpriteParent; origin: { x: number; y: number } } | null): void {
     this.#layer = layer;
     const parent = layer?.element ?? this.#home;
-    if (parent && this.element.parentElement !== parent) parent.append(this.element);
+    if (parent && this.element.parentElement !== parent) appendSprite(parent, this.element);
     this.#position();
   }
 
@@ -106,7 +132,9 @@ export class SpritePlayer {
     const style = this.element.style;
     style.width = `${clip.cell.width * s}px`;
     style.height = `${clip.cell.height * s}px`;
-    style.backgroundImage = `url(${clip.sheetUrl})`;
+    style.backgroundImage = clip.sheetUrl2x
+      ? `image-set(url(${clip.sheetUrl}) 1x, url(${clip.sheetUrl2x}) 2x)`
+      : `url(${clip.sheetUrl})`;
     style.backgroundSize = `${clip.sheetColumns * clip.cell.width * s}px ${clip.sheetRows * clip.cell.height * s}px`;
     this.#position();
   }

@@ -15,9 +15,12 @@ together.
 | `src/pages/` | One file per address: home, contact, privacy, impressum, 404, the 503 and `robots.txt` | Astro routes by file; the page list is the site's whole address space |
 | `src/sections/` | The home walk's sections in order: hero, why, who, help, hello; `projects/` holds the five project windows, each component with its own stylesheet | The walk is one page; each section is still its own piece of copy and layout, and each window its own world |
 | `src/features/pile/` | The Pile: its rendering, client controller, deal and packer, the entry scenes and interactions under `entries/<id>/`, styles | A self-contained feature with its own content model, client code and tests |
+| `src/features/yoru/` | Yoru, the resident: his clips, the sprite player, the world of places, the resident who chooses what to do, opt-in memory, and `client/site.ts`, the home page's host | One character with his own engine; the core is DOM-free so it is tested like any module |
+| `design/yoru/` | The resident's character sheet, his animation families as specs, reference images and the packed sheets | The source of his animation; the build reads the sheets from here |
+| `tools/yoru-studio/` | The sprite studio: generation through Codex, matting, cutting, registration, packing, the candidate page and the resident rehearsal | Authoring tooling, never part of the site build |
 | `src/features/contact/` | The contact page's browser script, product presentation and styles | The page around the contact service, kept apart from the service itself |
 | `src/content/pile/` | One Markdown file per Pile piece | Content that grows by ordinary additions, validated by `src/content.config.ts` |
-| `src/components/`, `src/layouts/` | Header, footer, Walk, icon renderer, Yoru's nap; the shared document | Used by every page |
+| `src/components/`, `src/layouts/` | Header, footer, Walk, icon renderer, Yoru's nap on the legal pages; the shared document | Used by every page |
 | `src/scripts/` | Site-wide browser behaviour: Walk, header, reveals and travel, home and room pages | Plain modules loaded by the layout and pages, no framework |
 | `src/lib/` | Build-time helpers: the Walk generator, lockup ease, marks, nav, legal-operator loader | Shared by pages, scripts and tests |
 | `src/styles/` | Tokens, base, header, footer, home and room styles | One stylesheet per surface; feature styles live with their feature |
