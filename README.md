@@ -11,11 +11,6 @@
 
 **Oddly useful ~~software.~~ things. also games. also questions.**
 
-<picture>
-  <source media="(prefers-reduced-motion: reduce)" srcset="docs/assets/readme/yoru-still.png">
-  <img align="right" src="docs/assets/readme/yoru-hello.gif" alt="Yoru, a charcoal-furred resident with a red-and-blue forelock and a constellation cape, gives a small wave." width="160" height="120">
-</picture>
-
 The home of Wolf's software, experiments, and ideas: what he's making, what drew him in, and what might be worth
 following next. One long walk past projects, the reasons behind them and the people making them—with a pile of
 everything else near the bottom. Come with something in mind, or see what catches your eye.
@@ -23,9 +18,6 @@ everything else near the bottom. Come with something in mind, or see what catche
 **[Visit wolfsblvt.works](https://wolfsblvt.works/)** · [Explore the Pile](https://wolfsblvt.works/#whoa) ·
 [Say hello](https://contact.wolfsblvt.works/) · [Documentation](docs/README.md)
 
-<br clear="right">
-
-[![The Works home page: “Oddly useful software.” corrected in rose handwriting to “things. also games. also questions.”, with Yoru on his perch and an invitation from Wolf.](docs/assets/readme/walk-hero.webp)](https://wolfsblvt.works/)
 
 ## Take the Walk
 
@@ -44,8 +36,7 @@ The [visitor guide](docs/exploring-works.md) has the landmarks and a little more
 ## Oh, and Yoru lives here
 
 He has places to be, naps to take, and opinions about being poked. On the site, he keeps you company as you wander.
-Here, he gets a small hello at the top. The wave plays once, then rests; reduced-motion readers get
-[his still portrait](docs/assets/readme/yoru-still.png) from the start.
+His [resident-life artwork](https://github.com/Wolfsblvt/wolfsblvt.works/tree/feat/yoru-resident-life/design/yoru) includes a wave. The [README media source](docs/assets/readme/README.md) records a short GIF and static fallback for the launch edition; they are not embedded until the actual media is committed.
 
 ## Write to Wolf
 
