@@ -140,6 +140,14 @@ All icons come from `@wolfsblvt/icons`; this repository has no local SVG icons. 
 to [wolfsblvt-icons](https://github.com/Wolfsblvt/wolfsblvt-icons) and released there, then picked up here with
 `npm install @wolfsblvt/icons@<version>`.
 
+### The miniflare override
+
+`package.json` overrides `sharp` and `undici` beneath `miniflare` only. The miniflare that
+`@cloudflare/vitest-pool-workers` pins (an alpha, as of 0.23.0) pins both exactly, at versions with published
+advisories; the override lifts them to the patched releases for the workerd tests. It affects nothing the site ships.
+Remove it once the pinned miniflare itself requires `sharp` ≥ 0.35.5 and `undici` ≥ 7.30.1 (check with
+`npm explain sharp undici`), or whenever it holds those packages below what miniflare asks for.
+
 ### Change a hosting fact on the Privacy page
 
 The hosting facts live in `legal.privacy` in `site.config.mjs`. Each entry stays `pending: true`, rendered as a marked
