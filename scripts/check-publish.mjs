@@ -65,7 +65,7 @@ if (!existsSync(join(out, 'index.html'))) {
 const manual = [
   `GitHub Sponsors is live at ${site.sponsors.github} (the Help section links it).`,
   site.links.bluesky ? null : 'Bluesky: set site.links.bluesky when the profile exists, or keep the slot visibly unavailable.',
-  'Wolf Ops: the contact-first launch, then routes for wolfsblvt.works and contact.wolfsblvt.works, secrets, the sending domain and Workers Logs; see docs/DEVELOPMENT.md, "Publication". The selected 12-month retained route is separate and is not a publication gate.',
+  'Wolf Ops: the contact-first launch, then routes for wolfsblvt.works and contact.wolfsblvt.works, secrets, the sending domain and Workers Logs; see docs/DEVELOPMENT.md, "Publication". Preserve logpush: true on upload and read it back; Privacy distinguishes ordinary request logs (up to 7 days) from retained structured contact events (up to 12 months).',
 ].filter(Boolean);
 
 if (refusals.length) {

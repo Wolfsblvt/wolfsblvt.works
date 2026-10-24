@@ -112,6 +112,17 @@ for (const path of pages.filter((p) => !(p in EXPECTED))) {
   fail(`${path} is a page this check does not know; add its expected identity to scripts/check-output.mjs.`);
 }
 
+// Keep each retention window in its own public disclosure; checking config alone would miss a swapped page binding.
+const privacy = read('privacy/index.html');
+const hostingDisclosure = privacy.split('<h2 id="hosting">')[1]?.split('<h2 ')[0] ?? '';
+const contactDisclosure = privacy.split('<h2 id="contact">')[1]?.split('<h2 ')[0] ?? '';
+if (!/up to 7 days\b/.test(hostingDisclosure) || /12 months\b/.test(hostingDisclosure)) {
+  fail('Privacy hosting disclosure must keep ordinary request-log retention at up to 7 days.');
+}
+if (!/up to 12 months\b/.test(contactDisclosure) || /up to 7 days\b/.test(contactDisclosure)) {
+  fail('Privacy contact disclosure must state structured contact-event retention of up to 12 months.');
+}
+
 // The production sponsor section must have real markup and configured destinations.
 const home = read('index.html');
 if (!home.includes('data-sponsor') || !home.includes('class="works-sponsor host-works"')) fail('Home is missing its production sponsor component.');
