@@ -1,0 +1,61 @@
+{
+  "family": "curious",
+  "title": "Play and curiosity",
+  "sheet": "curious.webp",
+  "cell": {
+    "width": 288,
+    "height": 208
+  },
+  "pivot": {
+    "x": 176,
+    "y": 203
+  },
+  "displayScale": 0.5,
+  "clips": {
+    "inspect": {
+      "row": 0,
+      "frames": 8,
+      "durations": [
+        300,
+        240,
+        400,
+        180,
+        220,
+        360,
+        200,
+        420
+      ],
+      "loop": false
+    },
+    "nudge": {
+      "row": 1,
+      "frames": 8,
+      "durations": [
+        500,
+        300,
+        300,
+        300,
+        260,
+        200,
+        400,
+        600
+      ],
+      "loop": false
+    },
+    "bat": {
+      "row": 2,
+      "frames": 8,
+      "durations": [
+        400,
+        220,
+        160,
+        260,
+        300,
+        260,
+        180,
+        500
+      ],
+      "loop": false
+    }
+  }
+}

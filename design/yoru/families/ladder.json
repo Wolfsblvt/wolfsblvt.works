@@ -2,46 +2,22 @@
   "family": "ladder",
   "title": "A sensible way down",
   "description": "Yoru produces a small folding wooden ladder from under his capelet, hooks it over a ledge, climbs down and puts it away: a slightly unnecessary effort, which is the point. Wolf chose the folding wooden ladder on 2026-10-24. In these clips the ladder is painted in the prop key colour, so Yoru comes out alone and the studio records where the ladder is in every frame; the wooden ladder itself is drawn as separate prop sprites the resident places there. The ledge is the site's own edge and is never drawn.",
-  "cell": {
-    "width": 320,
-    "height": 480
-  },
-  "pivot": {
-    "x": 176,
-    "y": 220
-  },
+  "cell": { "width": 320, "height": 480 },
+  "pivot": { "x": 176, "y": 220 },
   "sequences": [
-    [
-      "produce",
-      "mount",
-      "climb*3",
-      "dismount",
-      "stow"
-    ]
+    ["produce", "mount", "climb*3", "dismount", "stow"]
   ],
   "clips": [
     {
       "id": "produce",
       "frames": 8,
       "ground": "first",
-      "durations": [
-        400,
-        260,
-        260,
-        300,
-        240,
-        240,
-        300,
-        400
-      ],
+      "durations": [400, 260, 260, 300, 240, 240, 300, 400],
       "prop": {
         "name": "ladder",
         "description": "A small folding wooden ladder: when folded it is a compact bundle about the size of his forearm; unfolded it is a straight ladder about twice his height with evenly spaced rungs."
       },
-      "scale": {
-        "frame": 0,
-        "height": 1
-      },
+      "scale": { "frame": 0, "height": 1 },
       "action": "Yoru stands at the very edge of a ledge, the edge just in front of his toes towards the left edge of the image; the ledge is not drawn, and below his feet there is only background. He looks down over the edge, reaches under his capelet, pulls out the folded ladder, unfolds it, and hooks its top over the edge so the ladder hangs straight down below the level of his feet, slightly towards the left. A deliberate, faintly smug bit of unnecessary effort.",
       "beats": [
         "Standing at the edge in three-quarter view facing the left edge of the image, looking down over it.",
@@ -58,23 +34,12 @@
       "id": "mount",
       "frames": 6,
       "ground": "first",
-      "durations": [
-        260,
-        220,
-        220,
-        240,
-        220,
-        260
-      ],
+      "durations": [260, 220, 220, 240, 220, 260],
       "prop": {
         "name": "ladder",
         "description": "The small wooden ladder, hooked over the edge in front of his toes and hanging straight down below it."
       },
-      "scale": {
-        "frame": 0,
-        "match": "produce#-1",
-        "height": 1
-      },
+      "scale": { "frame": 0, "match": "produce#-1", "height": 1 },
       "action": "Yoru gets onto the hooked ladder: he turns round with his back to the drop, steps backwards over the edge, finds the top rungs with his hind feet and grips the ladder's top with his front paws. Careful and precise. The ledge is not drawn.",
       "beats": [
         "Standing beside the hooked ladder at the edge, looking down at it.",
@@ -96,11 +61,7 @@
         "name": "ladder",
         "description": "A straight section of the wooden ladder, vertical, with evenly spaced rungs, passing behind Yoru from the top of the frame to the bottom."
       },
-      "scale": {
-        "frame": 0,
-        "match": "mount#-1",
-        "height": 1
-      },
+      "scale": { "frame": 0, "match": "mount#-1", "height": 1 },
       "action": "Yoru climbs down the ladder, seen from the side, his back to the open side. A repeating cycle that moves him down by exactly one rung: one paw and the opposite foot reach down to the next rung while the others hold, then they swap. His body stays the same size; the rungs stay evenly spaced and do not stretch.",
       "beats": [
         "Holding on with all four paws on four rungs.",
@@ -113,22 +74,12 @@
       "id": "dismount",
       "frames": 5,
       "ground": "last",
-      "durations": [
-        220,
-        220,
-        200,
-        240,
-        360
-      ],
+      "durations": [220, 220, 200, 240, 360],
       "prop": {
         "name": "ladder",
         "description": "The bottom section of the wooden ladder, standing on the ground."
       },
-      "scale": {
-        "frame": 0,
-        "match": "climb#0",
-        "height": 1
-      },
+      "scale": { "frame": 0, "match": "climb#0", "height": 1 },
       "action": "Yoru reaches the bottom of the ladder: last rungs, one foot down to the ground, the other, lets go, turns round and stands upright on the ground beside the ladder. A small settle on landing.",
       "beats": [
         "On the lowest rungs, holding on, looking down at the ground.",
@@ -141,23 +92,12 @@
     {
       "id": "stow",
       "frames": 6,
-      "durations": [
-        300,
-        240,
-        240,
-        240,
-        260,
-        400
-      ],
+      "durations": [300, 240, 240, 240, 260, 400],
       "prop": {
         "name": "ladder",
         "description": "The small folding wooden ladder: standing beside him at first, then folded into a compact bundle he holds, then tucked away under his capelet where it can no longer be seen."
       },
-      "scale": {
-        "frame": 0,
-        "match": "dismount#-1",
-        "height": 1
-      },
+      "scale": { "frame": 0, "match": "dismount#-1", "height": 1 },
       "action": "Yoru puts the ladder away: he unhooks it and lifts it down, folds it into a compact bundle, and tucks it under his capelet, then smooths the capelet as if there had never been a ladder. In the last frame no ladder is visible at all.",
       "beats": [
         "Standing beside the ladder, reaching up to it.",

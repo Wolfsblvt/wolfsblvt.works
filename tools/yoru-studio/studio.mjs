@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Yoru's sprite studio. See design/yoru/README.md for the authoring guide.
 //
-//   node tools/yoru-studio/studio.mjs generate <family> <clip> [--count N]   draw candidates with Codex
+//   node tools/yoru-studio/studio.mjs generate <family> <clip> [--count=N] [--retry=N]   draw candidates with Codex
 //   node tools/yoru-studio/studio.mjs process  <family> [clip]               matte, cut and register every run
 //   node tools/yoru-studio/studio.mjs select   <family> <clip> <run>         choose the run that becomes the clip
 //   node tools/yoru-studio/studio.mjs pack     <family>                      write design/yoru/sheets/<family>.*
@@ -43,6 +43,11 @@ async function cmdGenerate(familyId, clipId) {
   const guide = await makeGuide(clip, family.cell, join(P.guides, `${familyId}-${clipId}.png`));
   const attachments = [
     { path: join(P.reference, 'canonical-base.png'), role: 'Canonical identity reference: this is exactly what Yoru looks like.' },
+    // The canonical base fixes who he is; the style anchor fixes how he is drawn now. Without it roughly a third of
+    // generations drifted to a more ornate, pink-eared cat.
+    ...(existsSync(join(P.reference, 'style-standing.png'))
+      ? [{ path: join(P.reference, 'style-standing.png'), role: 'Style reference: Yoru as he is drawn now. Match this exact rendering style, line work, proportions, ear shape, colours and level of detail in every frame.' }]
+      : []),
     { path: guide, role: 'Layout guide, for slot count, spacing and the shared floor line only. Do not draw any of its lines, boxes or colours.' },
     ...(await Promise.all((clip.references ?? []).map(resolveReference))),
   ];
@@ -54,6 +59,19 @@ async function cmdGenerate(familyId, clipId) {
   for (const r of results) {
     if (r.status === 'fulfilled') console.log(`run ${r.value} (${familyId}/${clipId})`);
     else console.error(`failed: ${r.reason.message}`);
+  }
+  // --retry=N: if every candidate drifted off-model, draw more, up to N extra, until one is clean.
+  const clean = (run) => !JSON.parse(readFileSync(join(P.runs, familyId, clipId, run, 'registration.json'), 'utf8')).warnings.some((w) => w.startsWith('colours drift'));
+  let retries = Number(flags.retry ?? 0);
+  let ok = results.some((r) => r.status === 'fulfilled' && clean(r.value));
+  while (!ok && retries-- > 0) {
+    try {
+      const run = await runOne(familyId, clip, prompt, attachments);
+      ok = clean(run);
+      console.log(`run ${run} (${familyId}/${clipId}) retry${ok ? '' : ', drifted'}`);
+    } catch (error) {
+      console.error(`failed: ${error.message}`);
+    }
   }
 }
 
@@ -420,20 +438,46 @@ async function cmdMontage(familyId, clipId) {
   console.log(`${out} (${files.length} runs)`);
 }
 
-/** Serves the studio page (rewritten on every load, so new runs appear on refresh) on http://localhost:4390. */
+/**
+ * Serves the studio on http://localhost:4390: the candidate page at /preview/ (rewritten on every load, so new runs
+ * appear on refresh), the packed sheets at /sheets/, and the resident rehearsal at /rehearsal/, whose script is the
+ * real engine in src/features/yoru bundled on each request. None of this is part of the site build.
+ */
 async function cmdServe() {
   const { createServer } = await import('node:http');
-  const types = { '.html': 'text/html; charset=utf-8', '.png': 'image/png', '.webp': 'image/webp', '.json': 'application/json' };
+  const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.png': 'image/png', '.webp': 'image/webp', '.json': 'application/json' };
   const port = Number(flags.port ?? 4390);
-  createServer(async (req, res) => {
-    const path = decodeURIComponent(new URL(req.url, 'http://x').pathname);
-    if (path === '/') { res.writeHead(302, { location: '/preview/' }).end(); return; }
-    if (path === '/preview/') await writePreview(P, await standingCell());
-    const file = resolve(P.work, path === '/preview/' ? 'preview/index.html' : `.${path}`);
-    if (!file.startsWith(P.work) || !existsSync(file)) { res.writeHead(404).end(); return; }
+  const rehearsal = join(root, 'tools', 'yoru-studio', 'rehearsal');
+  const send = (res, file) => {
     res.writeHead(200, { 'content-type': types[file.slice(file.lastIndexOf('.'))] ?? 'application/octet-stream', 'cache-control': 'no-store' });
     res.end(readFileSync(file));
-  }).listen(port, () => console.log(`Yoru studio on http://localhost:${port}/`));
+  };
+  createServer(async (req, res) => {
+    try {
+      const path = decodeURIComponent(new URL(req.url, 'http://x').pathname);
+      if (path === '/') { res.writeHead(302, { location: '/preview/' }).end(); return; }
+      if (path === '/preview/') await writePreview(P, await standingCell());
+      if (path === '/rehearsal/') return send(res, join(rehearsal, 'index.html'));
+      if (path === '/sheets/') {
+        const packed = existsSync(P.sheets) ? readdirSync(P.sheets).filter((f) => f.endsWith('.json')).map((f) => f.slice(0, -5)) : [];
+        res.writeHead(200, { 'content-type': types['.json'], 'cache-control': 'no-store' }).end(JSON.stringify(packed));
+        return;
+      }
+      if (path === '/rehearsal/main.js') {
+        const { build } = await import('esbuild');
+        const result = await build({ entryPoints: [join(rehearsal, 'main.ts')], bundle: true, format: 'esm', write: false, sourcemap: 'inline', target: 'es2022' });
+        res.writeHead(200, { 'content-type': types['.js'], 'cache-control': 'no-store' });
+        res.end(result.outputFiles[0].text);
+        return;
+      }
+      const [base, rest] = path.startsWith('/sheets/') ? [P.sheets, path.slice('/sheets/'.length)] : [P.work, path === '/preview/' ? 'preview/index.html' : `.${path}`];
+      const file = resolve(base, rest);
+      if (!file.startsWith(base) || !existsSync(file)) { res.writeHead(404).end(); return; }
+      send(res, file);
+    } catch (error) {
+      res.writeHead(500, { 'content-type': 'text/plain' }).end(String(error?.stack ?? error));
+    }
+  }).listen(port, () => console.log(`Yoru studio on http://localhost:${port}/ · rehearsal at /rehearsal/`));
 }
 
 function findClip(family, clipId) {

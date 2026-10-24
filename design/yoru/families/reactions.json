@@ -4,7 +4,11 @@
   "description": "What poking and hovering does to him. Wolf, 2026-10-24: the unimpressed stare, a startle hop, and retreating to peek back from behind an edge. The edge is the site's own element, which hides the part of him behind it; the sprite only draws the lean.",
   "cell": { "width": 256, "height": 240 },
   "pivot": { "x": 128, "y": 235 },
-  "sequences": [["stare"], ["startle"], ["peek"]],
+  "sequences": [
+    ["stare"],
+    ["startle"],
+    ["peek"]
+  ],
   "clips": [
     {
       "id": "stare",
@@ -19,7 +23,8 @@
         "Flat, unimpressed, half-lidded stare straight at the viewer.",
         "One slow blink, eyes closed.",
         "Looking away again, composed, faintly smug."
-      ]
+      ],
+      "selected": "20261024T022634-645fe2b3"
     },
     {
       "id": "startle",
@@ -36,7 +41,8 @@
         "Fur settling, eyes narrowing, a quick look to each side.",
         "Smoothing the capelet down with one paw.",
         "Composed again, half-lidded, as if nothing happened."
-      ]
+      ],
+      "selected": "20261024T022746-98899b0d"
     },
     {
       "id": "peek",
@@ -52,7 +58,8 @@
         "Holding the peek, ears flicking.",
         "Ducking back, upper body straightening.",
         "Standing upright again, hidden, tail twitching."
-      ]
+      ],
+      "selected": "20261024T022847-e7765788"
     }
   ]
 }

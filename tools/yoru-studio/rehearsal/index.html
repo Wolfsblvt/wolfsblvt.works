@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yoru rehearsal</title>
+<style>
+  :root { --canvas: #100b11; --panel: #211720; --text: #f3e8dc; --quiet: #9c8c93; --orange: #eca557; --line: #2a1f29; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #0b080c; color: var(--text); font: 14px/1.45 system-ui, sans-serif; }
+  header { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; padding: 10px 16px; border-bottom: 1px solid var(--line); }
+  header h1 { font-size: 16px; margin: 0 8px 0 0; }
+  header label { display: flex; gap: 6px; align-items: center; color: var(--quiet); }
+  header input[type=number] { width: 70px; }
+  button.ctl { background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 5px 10px; cursor: pointer; }
+  .stage { position: relative; height: 520px; margin: 16px; background: var(--canvas); border-radius: 10px; overflow: hidden; }
+  .floor { position: absolute; left: 32%; right: 22%; top: 420px; height: 100px; border-top: 1px solid #3a2a38; }
+  .nook { position: absolute; right: 2%; width: 20%; top: 420px; height: 100px; border-top: 1px solid #3a2a38; background: linear-gradient(#2a1a26, transparent 70%); }
+  .nook::after { content: 'nook'; position: absolute; right: 10px; bottom: 10px; color: var(--quiet); font-size: 12px; }
+  .ledge { position: absolute; left: 4%; width: 28%; top: 372px; height: 148px; background: #1d151c; border-top: 1px solid #4a3546; }
+  .ledge::after { content: 'ledge'; position: absolute; left: 10px; bottom: 10px; color: var(--quiet); font-size: 12px; }
+  .pebble { position: absolute; left: 50%; top: 410px; width: 14px; height: 10px; border-radius: 50% 50% 40% 40%; background: #8a7f86; }
+  .yoru { appearance: none; border: 0; padding: 0; background-color: transparent; cursor: pointer; z-index: 2; }
+  .state { margin: 0 16px; color: var(--quiet); font: 12px ui-monospace, monospace; }
+  .log { margin: 8px 16px 32px; height: 220px; overflow: auto; background: #140f15; border-radius: 8px; padding: 8px 10px; font: 12px/1.5 ui-monospace, monospace; color: #d1c0b8; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Yoru rehearsal</h1>
+  <label>Seed <input type="number" data-seed value="1"></label>
+  <label>Tempo <input type="range" data-tempo min="0.5" max="8" step="0.5" value="1"> <output data-tempo-out>1.0×</output></label>
+  <label><input type="checkbox" data-reduced> Reduced motion</label>
+  <button class="ctl" type="button" data-toggle-ledge>Remove / restore ledge</button>
+  <button class="ctl" type="button" data-restart>Restart</button>
+</header>
+<div class="stage" data-stage>
+  <div class="ledge" data-ledge></div>
+  <div class="floor" data-floor></div>
+  <div class="nook" data-nook></div>
+  <div class="pebble" data-pebble></div>
+</div>
+<p class="state" data-state></p>
+<div class="log" data-log></div>
+<script type="module" src="./main.js"></script>
+</body>
+</html>

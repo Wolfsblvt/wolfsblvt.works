@@ -2,31 +2,12 @@
   "family": "everyday",
   "title": "Everyday acting",
   "description": "The glue between everything else: walking at his own pace, sitting down and getting up, turning, and the small things he does when nothing is happening. Front-facing clips start and end in the canonical standing pose so they can follow each other.",
-  "cell": {
-    "width": 288,
-    "height": 216
-  },
-  "pivot": {
-    "x": 144,
-    "y": 211
-  },
+  "cell": { "width": 288, "height": 216 },
+  "pivot": { "x": 144, "y": 211 },
   "sequences": [
-    [
-      "sit-down",
-      "sit*3",
-      "groom",
-      "sit*2",
-      "stand-up",
-      "yawn"
-    ],
-    [
-      "turn-left",
-      "walk-left*4"
-    ],
-    [
-      "turn-right",
-      "walk-right*4"
-    ]
+    ["sit-down", "sit*3", "groom", "sit*2", "stand-up", "yawn"],
+    ["turn-left", "walk-left*4"],
+    ["turn-right", "walk-right*4"]
   ],
   "clips": [
     {
@@ -34,10 +15,7 @@
       "frames": 8,
       "loop": true,
       "durations": 150,
-      "scale": {
-        "frame": 0,
-        "height": 1
-      },
+      "scale": { "frame": 0, "height": 1 },
       "action": "Yoru walks to the left upright on his hind legs at an unhurried, self-possessed pace: not running, not bouncing. Seen exactly from the side, facing left. A full walk cycle that loops: each foot plants and pushes off, the capelet and tail sway a beat behind the body. His head stays level and his expression is calm and slightly unimpressed.",
       "beats": [
         "Left foot forward and planted, right foot pushing off behind.",
@@ -56,10 +34,7 @@
       "frames": 8,
       "loop": true,
       "durations": 150,
-      "scale": {
-        "frame": 0,
-        "height": 1
-      },
+      "scale": { "frame": 0, "height": 1 },
       "action": "Yoru walks to the right upright on his hind legs at an unhurried, self-possessed pace: not running, not bouncing. Seen exactly from the side, facing right. Draw him facing right; do not simply mirror a left-facing drawing, his forelock stays on the same side of his own face. A full walk cycle that loops: each foot plants and pushes off, the capelet and tail sway a beat behind the body. His head stays level and his expression is calm and slightly unimpressed.",
       "beats": [
         "Right foot forward and planted, left foot pushing off behind.",
@@ -76,18 +51,9 @@
     {
       "id": "turn-left",
       "frames": 5,
-      "durations": [
-        200,
-        140,
-        140,
-        140,
-        220
-      ],
+      "durations": [200, 140, 140, 140, 220],
       "to": "walk-left",
-      "scale": {
-        "frame": 0,
-        "height": 1
-      },
+      "scale": { "frame": 0, "height": 1 },
       "action": "Yoru turns from facing the viewer, as in the identity reference, until he faces the left edge of the image in profile, ready to walk left. Head first, then shoulders, then body and feet; tail and capelet follow last. He turns towards the left edge of the image, never towards the right.",
       "beats": [
         "Standing facing the viewer exactly as in the identity reference.",
@@ -101,18 +67,9 @@
     {
       "id": "turn-right",
       "frames": 5,
-      "durations": [
-        200,
-        140,
-        140,
-        140,
-        220
-      ],
+      "durations": [200, 140, 140, 140, 220],
       "to": "walk-right",
-      "scale": {
-        "frame": 0,
-        "height": 1
-      },
+      "scale": { "frame": 0, "height": 1 },
       "action": "Yoru turns from facing the viewer, as in the identity reference, until he faces the right edge of the image in profile, ready to walk right. Head first, then shoulders, then body and feet; tail and capelet follow last. He turns towards the right edge of the image, never towards the left.",
       "beats": [
         "Standing facing the viewer exactly as in the identity reference.",
@@ -126,19 +83,9 @@
     {
       "id": "sit-down",
       "frames": 6,
-      "durations": [
-        200,
-        160,
-        160,
-        180,
-        200,
-        300
-      ],
+      "durations": [200, 160, 160, 180, 200, 300],
       "to": "sit",
-      "scale": {
-        "frame": 0,
-        "height": 1
-      },
+      "scale": { "frame": 0, "height": 1 },
       "action": "Yoru sits down facing the viewer, deliberately and without hurry. His body lowers onto his haunches, front paws come to rest in front of him, the tail curls round his feet and the capelet settles.",
       "beats": [
         "Standing facing the viewer exactly as in the identity reference.",
@@ -154,19 +101,8 @@
       "id": "sit",
       "frames": 6,
       "loop": true,
-      "durations": [
-        500,
-        160,
-        160,
-        400,
-        300,
-        600
-      ],
-      "scale": {
-        "frame": 0,
-        "match": "sit-down#-1",
-        "height": 0.78
-      },
+      "durations": [500, 160, 160, 400, 300, 600],
+      "scale": { "frame": 0, "match": "sit-down#-1", "height": 0.78 },
       "action": "Yoru sitting on his haunches facing the viewer, exactly the seated pose in the attached reference: his bottom on the ground, hind legs folded, front paws on the ground in front of him, tail curled round his feet. He does not stand. A quiet loop: slow breathing, one slow blink, one small flick of the tail tip. Same seated pose and size in every frame.",
       "beats": [
         "Seated, eyes half-lidded.",
@@ -187,19 +123,9 @@
     {
       "id": "stand-up",
       "frames": 6,
-      "durations": [
-        220,
-        160,
-        160,
-        160,
-        180,
-        300
-      ],
+      "durations": [220, 160, 160, 160, 180, 300],
       "from": "sit",
-      "scale": {
-        "frame": -1,
-        "height": 1
-      },
+      "scale": { "frame": -1, "height": 1 },
       "action": "Yoru gets up from sitting facing the viewer and ends standing exactly as in the identity reference. Not the sit-down played backwards: he leans forward first, pushes up with his legs, and the capelet falls back into place last.",
       "beats": [
         "Seated facing the viewer, half-lidded.",
@@ -214,18 +140,8 @@
     {
       "id": "yawn",
       "frames": 6,
-      "durations": [
-        200,
-        200,
-        260,
-        500,
-        220,
-        300
-      ],
-      "scale": {
-        "frame": 0,
-        "height": 1
-      },
+      "durations": [200, 200, 260, 500, 220, 300],
+      "scale": { "frame": 0, "height": 1 },
       "action": "Yoru, standing facing the viewer, yawns: a real, wide, slightly undignified yawn with his eyes squeezed shut and ears flattening back, then recovers his composure as if nothing happened.",
       "beats": [
         "Standing facing the viewer exactly as in the identity reference.",
@@ -240,23 +156,10 @@
     {
       "id": "groom",
       "frames": 8,
-      "durations": [
-        260,
-        200,
-        200,
-        200,
-        200,
-        200,
-        240,
-        360
-      ],
+      "durations": [260, 200, 200, 200, 200, 200, 240, 360],
       "from": "sit",
       "to": "sit",
-      "scale": {
-        "frame": 0,
-        "match": "sit#0",
-        "height": 0.78
-      },
+      "scale": { "frame": 0, "match": "sit#0", "height": 0.78 },
       "action": "Yoru, sitting facing the viewer, grooms himself: he licks one front paw and wipes it over his face and ear, once, then puts the paw down and returns to sitting as if he had not been doing anything at all.",
       "beats": [
         "Seated facing the viewer, half-lidded.",

@@ -94,7 +94,15 @@ export function clipDurations(clip) {
 
 export function saveFamily(family) {
   const { file, ...data } = family;
-  writeFileSync(file, `${JSON.stringify(data, null, 2)}\n`);
+  writeFileSync(file, `${formatJson(data)}\n`);
+}
+
+/** JSON as people write it: two-space indent, but short arrays and small objects of plain values on one line. */
+export function formatJson(value) {
+  return JSON.stringify(value, null, 2).replace(/([[{])\n\s*([^[\]{}]*?)\n\s*([\]}])/g, (match, open, body, close) => {
+    const inline = `${open}${open === '{' ? ' ' : ''}${body.split(/,\n\s*/).join(', ')}${close === '}' ? ' ' : ''}${close}`;
+    return inline.length <= 100 ? inline : match;
+  });
 }
 
 export const clipLayout = (clip) => ({ rows: 1, ...(clip.layout ?? { cols: clip.frames }) });

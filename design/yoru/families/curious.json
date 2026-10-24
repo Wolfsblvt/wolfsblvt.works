@@ -4,7 +4,11 @@
   "description": "Yoru touching things himself. The things are the site's own (a Pile piece, a ledge, something hanging in a project window), so they are never drawn: he aims at a fixed spot in front of him and the resident places the real object there. Wolf, 2026-10-24: inspect and poke, nudge off a ledge, bat at dangling things.",
   "cell": { "width": 288, "height": 208 },
   "pivot": { "x": 176, "y": 203 },
-  "sequences": [["inspect"], ["nudge"], ["bat"]],
+  "sequences": [
+    ["inspect"],
+    ["nudge"],
+    ["bat"]
+  ],
   "clips": [
     {
       "id": "inspect",
@@ -21,7 +25,8 @@
         "Head tilted, studying the spot, a sceptical look.",
         "Poking the spot a second time, more confidently.",
         "Straightening up, unimpressed and satisfied, as if he knew all along."
-      ]
+      ],
+      "selected": "20261024T022301-729aef26"
     },
     {
       "id": "nudge",
@@ -38,7 +43,8 @@
         "Paw sweeping past the edge; nothing is drawn there.",
         "Glancing down over the edge after whatever fell.",
         "Looking back at the viewer, half-lidded and smug, paw back down."
-      ]
+      ],
+      "selected": "20261024T022416-442595ed"
     },
     {
       "id": "bat",
@@ -55,7 +61,8 @@
         "Paw lifting again, eyes narrowed.",
         "Batting a second time, a little harder.",
         "Paw down, looking away, lost interest, unimpressed."
-      ]
+      ],
+      "selected": "20261024T022531-a2c8842d"
     }
   ]
 }

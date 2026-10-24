@@ -2,45 +2,20 @@
   "family": "sleep",
   "title": "Actually asleep",
   "description": "Choosing a spot, curling up, sleeping and waking. The curl is a real change of silhouette, not the seated pose rotated. Waking is its own movement, not settling played backwards.",
-  "cell": {
-    "width": 320,
-    "height": 208
-  },
-  "pivot": {
-    "x": 160,
-    "y": 203
-  },
+  "cell": { "width": 320, "height": 208 },
+  "pivot": { "x": 160, "y": 203 },
   "sequences": [
-    [
-      "settle",
-      "sleep*4",
-      "wake"
-    ]
+    ["settle", "sleep*4", "wake"]
   ],
   "clips": [
     {
       "id": "settle",
       "frames": 15,
-      "layout": {
-        "cols": 5,
-        "rows": 3
-      },
+      "layout": { "cols": 5, "rows": 3 },
       "inbetweens": 1,
-      "durations": [
-        320,
-        260,
-        260,
-        340,
-        280,
-        300,
-        380,
-        600
-      ],
+      "durations": [320, 260, 260, 340, 280, 300, 380, 600],
       "to": "sleep",
-      "scale": {
-        "frame": 0,
-        "height": 1
-      },
+      "scale": { "frame": 0, "height": 1 },
       "action": "Yoru picks a spot and curls up to sleep. He starts upright as in the identity reference and ends exactly in the attached curled sleeping pose. Each frame moves the pose on by one clear step; his body visibly lowers before it rounds. From frame 3 on he faces the left edge of the image the whole time: his head is on the left of his body and his back and tail on the right, the same way round as the curled reference. He never turns to face right.",
       "beats": [
         "Standing upright as in the identity reference, ears up, glancing down at the ground in front of him.",
@@ -63,25 +38,13 @@
     {
       "id": "sleep",
       "frames": 8,
-      "layout": {
-        "cols": 4,
-        "rows": 2
-      },
+      "layout": { "cols": 4, "rows": 2 },
       "inbetweens": 1,
       "loop": true,
-      "durations": [
-        1100,
-        800,
-        1100,
-        900
-      ],
+      "durations": [1100, 800, 1100, 900],
       "from": "settle",
       "to": "wake",
-      "scale": {
-        "frame": 0,
-        "match": "settle#-1",
-        "height": 0.62
-      },
+      "scale": { "frame": 0, "match": "settle#-1", "height": 0.62 },
       "action": "Yoru asleep, curled exactly as in the attached curled pose, breathing slowly. The only movement is a very small rise and fall of his back and capelet; head, paws, tail and ears stay where they are. All four frames are the same pose and the same size.",
       "beats": [
         "Curled asleep, breathing out: back at its lowest.",
@@ -100,28 +63,11 @@
     {
       "id": "wake",
       "frames": 15,
-      "layout": {
-        "cols": 5,
-        "rows": 3
-      },
+      "layout": { "cols": 5, "rows": 3 },
       "inbetweens": 1,
-      "durations": [
-        700,
-        420,
-        360,
-        440,
-        320,
-        340,
-        520,
-        420
-      ],
+      "durations": [700, 420, 360, 440, 320, 340, 520, 420],
       "from": "sleep",
-      "scale": {
-        "frame": 0,
-        "match": "sleep#0",
-        "height": 0.62,
-        "endHeight": 1
-      },
+      "scale": { "frame": 0, "match": "sleep#0", "height": 0.62, "endHeight": 1 },
       "action": "Yoru wakes up. One ear notices something before the rest of him does; he lifts his head, uncurls, has one long stretch and ends upright as in the identity reference, unimpressed and awake. He starts exactly in the attached curled pose, seen from the side facing left.",
       "beats": [
         "Curled asleep, exactly the attached curled pose.",

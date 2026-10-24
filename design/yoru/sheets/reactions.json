@@ -1,0 +1,56 @@
+{
+  "family": "reactions",
+  "title": "Reactions to the visitor",
+  "sheet": "reactions.webp",
+  "cell": {
+    "width": 256,
+    "height": 240
+  },
+  "pivot": {
+    "x": 128,
+    "y": 235
+  },
+  "displayScale": 0.5,
+  "clips": {
+    "stare": {
+      "row": 0,
+      "frames": 6,
+      "durations": [
+        200,
+        260,
+        300,
+        700,
+        220,
+        400
+      ],
+      "loop": false
+    },
+    "startle": {
+      "row": 1,
+      "frames": 7,
+      "durations": [
+        120,
+        100,
+        120,
+        160,
+        200,
+        260,
+        400
+      ],
+      "loop": false
+    },
+    "peek": {
+      "row": 2,
+      "frames": 6,
+      "durations": [
+        600,
+        200,
+        900,
+        300,
+        200,
+        700
+      ],
+      "loop": true
+    }
+  }
+}

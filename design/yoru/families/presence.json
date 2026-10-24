@@ -1,10 +1,12 @@
 {
   "family": "presence",
   "title": "Being there",
-  "description": "The new-look replacements for the May rows that still matter on the site: standing idle, looking around, running, a greeting, a small hop and a thinking pose. Codex-only states (waiting for approval, reviewing code) are not carried over.",
+  "description": "The new-look replacements for the May rows that still matter on the site: standing idle, looking around, running, a greeting, a small hop and a thinking pose. Codex-only states (waiting for approval, reviewing code) are not carried over. The hop is registered in place: the resident supplies the real rise to whatever ledge he hops onto.",
   "cell": { "width": 320, "height": 240 },
   "pivot": { "x": 160, "y": 235 },
-  "sequences": [["idle*2", "look*1", "idle*2", "wave", "idle", "think"]],
+  "sequences": [
+    ["idle*2", "look*1", "idle*2", "wave", "idle", "think"]
+  ],
   "clips": [
     {
       "id": "idle",
@@ -23,7 +25,8 @@
         "Tail tip curling a little.",
         "Breathing out, tail tip uncurling.",
         "Standing exactly as in the first frame."
-      ]
+      ],
+      "selected": "20261024T023504-acc70ecf"
     },
     {
       "id": "look",
@@ -40,7 +43,8 @@
         "Looking towards the right edge, holding.",
         "Head coming back towards the viewer.",
         "Standing exactly as in the identity reference."
-      ]
+      ],
+      "selected": "20261024T021614-d067933f"
     },
     {
       "id": "run-left",
@@ -59,7 +63,8 @@
         "Hind legs pushing off, front paws reaching.",
         "Body stretching again, capelet streaming.",
         "Front paws reaching forward as in the first frame."
-      ]
+      ],
+      "selected": "20261024T021718-98bdbfc1"
     },
     {
       "id": "run-right",
@@ -78,7 +83,8 @@
         "Hind legs pushing off, front paws reaching.",
         "Body stretching again, capelet streaming.",
         "Front paws reaching forward as in the first frame."
-      ]
+      ],
+      "selected": "20261024T021820-b87c36a2"
     },
     {
       "id": "wave",
@@ -93,14 +99,14 @@
         "Paw tipping to one side in a small lazy wave.",
         "Paw coming down.",
         "Standing exactly as in the identity reference."
-      ]
+      ],
+      "selected": "20261024T021927-b820cb8e"
     },
     {
       "id": "hop",
       "frames": 7,
-      "ground": "clip",
       "durations": [180, 120, 100, 120, 100, 140, 260],
-      "scale": { "frame": 0, "height": 1 },
+      "scale": { "frame": 0, "match": "everyday/turn-left#-1", "height": 1 },
       "action": "Yoru hops up onto something about half his height, seen from the side facing the left edge of the image: crouch, spring, tuck, land, settle. Light and precise, like a cat. The hop goes up and slightly to the left.",
       "beats": [
         "Standing in profile facing the left edge of the image, looking up at where he is going.",
@@ -110,7 +116,9 @@
         "Front paws landing higher up, hind legs following.",
         "All four paws landed, body compressed.",
         "Standing upright again, composed, as if it was nothing."
-      ]
+      ],
+      "stabilize": "chain",
+      "selected": "20261024T023619-34193642"
     },
     {
       "id": "think",
@@ -126,7 +134,8 @@
         "Tail tip tapping again.",
         "A slow blink.",
         "Back to the first pose, paw at his chin."
-      ]
+      ],
+      "selected": "20261024T022141-323e6d98"
     }
   ]
 }
