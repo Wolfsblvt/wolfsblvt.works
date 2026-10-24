@@ -236,6 +236,26 @@ describe('the resident', { timeout: 20000 }, () => {
     expect(resident.state.place).toBe('floor');
   });
 
+  it('does not climb down a ladder that would not reach the floor', async () => {
+    let drop = 120;
+    const world: World = {
+      places: [
+        { id: 'ledge', kind: 'perch', surface: () => ({ left: 300, right: 500, y: 300 }) },
+        { id: 'floor', kind: 'ground', surface: () => ({ left: 100, right: 700, y: 300 + drop }) },
+      ],
+      links: [{ from: 'ledge', to: 'floor', way: 'ladder-down', at: 'left', arrive: 0 }],
+    };
+    const clock = virtualClock();
+    const element = { style: {}, dataset: {}, parentElement: null } as unknown as SpriteElement;
+    const resident = new Resident({ player: new SpritePlayer(element, clock), clips: library(), world, start: { place: 'ledge', at: 0.5 }, seed: 3, clock });
+    drop = 1600; // the next section is a whole screen below
+    resident.invite('floor');
+    resident.start();
+    while (clock.now() < 20000) await new Promise((r) => setTimeout(r, 0));
+    resident.stop();
+    expect(resident.state.place).toBe('ledge');
+  });
+
   it('runs out of view only when the page asks, and only looks about while peeking', async () => {
     const world: World = {
       places: [

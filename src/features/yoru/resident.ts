@@ -63,6 +63,8 @@ type Role = keyof typeof ROLE;
  * apart in ladder-prop/open, whose hooks sit `hooksAbovePivot` above its pivot.
  */
 const LADDER = { rung: 33.5, spriteScale: 33.5 / 42.5, hooksAbovePivot: 420 };
+/** How far below the ladder's foot he will still step off its last rung, in CSS pixels. */
+const LADDER_STEP_OFF = 40;
 
 /** The shortest beat of his life, in milliseconds; see the loop. */
 const MIN_BEAT = 400;
@@ -479,7 +481,7 @@ export class Resident {
     if (link.way === 'hop') return this.#withinHop(link) && (this.#hopsLeft(link) ? this.#has('hop', 'turnLeft') : this.#has('hopRight', 'turnRight'));
     if (link.way === 'offscreen') return this.#has('runLeft', 'runRight', 'turnLeft', 'turnRight');
     // The ladder clips are drawn with the drop to his left.
-    return this.#hopsLeft(link) && this.#has('produce', 'mount', 'climb', 'dismount', 'stow', 'ladder', 'turnLeft');
+    return this.#hopsLeft(link) && this.#withinLadder(link) && this.#has('produce', 'mount', 'climb', 'dismount', 'stow', 'ladder', 'turnLeft');
   }
 
   async #travel(links: Link[], signal: AbortSignal): Promise<void> {
@@ -687,6 +689,17 @@ export class Resident {
   }
 
   /** Whether a hop goes towards the left, from where it sets off to where it lands. */
+  /** A ladder only goes down, as far as it reaches, onto somewhere below where it hangs. */
+  #withinLadder(link: Link): boolean {
+    const from = place(this.#world, link.from).surface();
+    const to = place(this.#world, link.to).surface();
+    if (!from || !to || !this.#has('ladder')) return false;
+    const drop = to.y - from.y;
+    const reach = LADDER.hooksAbovePivot * LADDER.spriteScale * this.#clip('ladder').displayScale + LADDER_STEP_OFF;
+    const x = from.left + departure(link) * (from.right - from.left);
+    return drop > 0 && drop <= reach && x >= to.left && x <= to.right;
+  }
+
   #hopsLeft(link: Link): boolean {
     const from = place(this.#world, link.from).surface();
     const to = place(this.#world, link.to).surface();

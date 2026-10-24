@@ -89,19 +89,32 @@ export function mountResident(): void {
   };
   const fixedLayer = () => ({ element: lane, origin: { x: scrollX, y: scrollY } });
 
+  // The porch: the top edge of whatever comes right below the hero, a ladder's length under the perch. The first
+  // scroll asks him down, by his ladder, where the reader can still see him go.
+  const firstContent = (section: Element): Element => [...section.children].find((child) => child.getBoundingClientRect().height > 0) ?? section;
+  const belowHero = hero.nextElementSibling;
+
   // One band per section: the empty space at its top, where he stands on the top edge of its first content (a
   // project's window, or the heading block) at the right, above whatever is drawn in the corner below.
   const bands = frames
     .filter((frame) => frame !== hero)
     .map((frame) => ({
       id: `band-${frame.id || frames.indexOf(frame)}`,
-      start: () => [...frame.children].find((child) => child.getBoundingClientRect().height > 0) ?? frame,
+      start: () => firstContent(frame),
     }));
 
   const places: Place[] = [
     {
       id: 'perch', kind: 'perch',
       surface: (): Surface => { const r = docRect(perchLine); return { left: r.left + 30, right: r.right - 30, y: r.top }; },
+    },
+    {
+      id: 'porch', kind: 'ground',
+      surface: (): Surface | null => {
+        if (!belowHero) return null;
+        const r = docRect(firstContent(belowHero));
+        return { left: r.left, right: r.right, y: r.top };
+      },
     },
     {
       id: 'lane', kind: 'ground',
@@ -140,10 +153,14 @@ export function mountResident(): void {
   const offscreen = (from: string, to: string, arrive = 0.5): Link => ({ from, to, way: 'offscreen', at: 'right', enter: 'right', arrive });
   const bandIds = bands.map((b) => b.id);
   const links: Link[] = [
+    { from: 'perch', to: 'porch', way: 'ladder-down', at: 'left', arrive: 0 },
     offscreen('perch', 'lane'),
+    offscreen('porch', 'lane'),
+    offscreen('porch', 'peek'),
+    offscreen('porch', 'nook'),
     offscreen('lane', 'nook'),
     offscreen('nook', 'lane'),
-    ...['perch', 'peek', 'nook', ...bandIds].flatMap((from) => bandIds.filter((to) => to !== from).map((to) => offscreen(from, to, 0.6))),
+    ...['perch', 'porch', 'peek', 'nook', ...bandIds].flatMap((from) => bandIds.filter((to) => to !== from).map((to) => offscreen(from, to, 0.6))),
     ...bandIds.flatMap((id) => [offscreen(id, 'peek'), offscreen(id, 'nook')]),
     offscreen('peek', 'nook'),
   ];
@@ -225,6 +242,7 @@ export function mountResident(): void {
   const stretchHere = (): number | null => {
     const here = resident.state.place;
     if (here === 'perch') return heroGone ? -1 : null;
+    if (here === 'porch') return -1;
     if (here === 'peek') return peekStretch;
     if (here === 'coast') return coastStretch;
     if (here === 'nook') return footerVisible ? null : bands.length - 1;
@@ -257,11 +275,18 @@ export function mountResident(): void {
     }
   }
 
+  /** The reader's first real scroll, while the porch is in view: he climbs down to it. */
+  function descend(): void {
+    if (resident.state.place !== 'perch' || scrollY <= 80 || !belowHero) return;
+    const y = firstContent(belowHero).getBoundingClientRect().top;
+    if (y > 0 && y < innerHeight) ask('porch');
+  }
+
   // ---------- what the page tells him ----------
   new IntersectionObserver(([entry]) => {
     // The first report can arrive before a real scroll; only a real scroll away counts.
     heroGone = !entry!.isIntersecting && scrollY > 80;
-    if (!heroGone || resident.state.place !== 'perch') return;
+    if (!heroGone || !['perch', 'porch'].includes(resident.state.place)) return;
     if (mode === 'lane') ask('lane'); else follow();
   }, { threshold: 0.05 }).observe(hero);
   new IntersectionObserver(([entry]) => {
@@ -276,7 +301,7 @@ export function mountResident(): void {
   addEventListener('scroll', () => {
     if (scheduled) return;
     scheduled = true;
-    requestAnimationFrame(() => { scheduled = false; follow(); });
+    requestAnimationFrame(() => { scheduled = false; descend(); follow(); });
   }, { passive: true });
 
   if (coast) {
