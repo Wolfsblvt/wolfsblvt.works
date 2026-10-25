@@ -236,9 +236,14 @@ omitting routes/custom domains preserves their provider-owned connections. No cr
 argument. [Wrangler's command contract](https://developers.cloudflare.com/workers/wrangler/commands/workers/) describes
 these flags; changes to bindings, routes or secret custody require their own current Work.
 
-The readback makes four bounded credential-free GETs: the exact asset marker and useful HTML/HSTS response on both
-custom hosts. It follows no redirects, prints no response body and stops on failure without retrying or redeploying.
-Each request has a ten-second deadline. This proves the observed asset revision and basic host response, not the
+The readback uses one **120-second deadline for both hosts together**, including waits, requests and body reads.
+Tonight's first automatic upload was observed serving its new marker about 75 seconds later, so an immediate stale
+marker is readiness evidence rather than a failed deploy. Poll only a **200 response containing a different valid SHA**,
+at five-second intervals within that shared deadline. A transport failure, non-200 status or malformed marker stops
+immediately. Once a host's marker matches, check its HTML/HSTS once; the already-ready path still makes four GETs.
+Each request is capped at ten seconds or the remaining overall budget, whichever is shorter. No redirects are followed,
+no bodies or observed SHA values are printed, and failures report a fixed observation category. The script never
+redeploys. This proves the observed asset revision and basic host response, not the
 Worker's runtime variable, real mail delivery, legal correctness or every rendered journey. A readback failure after
 upload is a **possibly successful deployment**: reconcile the provider version and hosts before retrying the effect.
 

@@ -2,35 +2,60 @@
 // BUILD_VERSION and the provider deployment remain separate operator evidence.
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { setTimeout } from 'node:timers/promises';
 
 const HOSTS = ['https://wolfsblvt.works', 'https://contact.wolfsblvt.works'];
+// The first upload was visible about 75 seconds later. Allow 120 seconds for the
+// whole readback, polling only a served stale SHA; each individual request also has a cap.
+const READINESS_MS = 120_000;
+const POLL_MS = 5_000;
+const REQUEST_MS = 10_000;
 
-/** Verify the exact asset build and a useful HTML response on both custom hosts, once each. */
-export async function checkDeployment(sourceSha, { fetchImpl = fetch } = {}) {
+/** Wait for the asset build within one budget, then check each host's HTML/HSTS once. */
+export async function checkDeployment(sourceSha, {
+  fetchImpl = fetch, now = () => performance.now(), wait = setTimeout,
+} = {}) {
   if (!/^[a-f0-9]{40}$/.test(sourceSha)) throw new Error('Readback needs the resolved 40-character source SHA.');
+  const deadline = now() + READINESS_MS;
+  let lastObservation = 'no response';
+  const remaining = () => {
+    const ms = deadline - now();
+    if (ms <= 0) throw new Error(`Publication readback: readiness deadline exceeded; last observation: ${lastObservation}.`);
+    return ms;
+  };
   let requests = 0;
   for (const host of HOSTS) {
-    async function get(path) {
+    async function get(path, readMarker = false) {
+      const timeout = Math.max(1, Math.ceil(Math.min(REQUEST_MS, remaining())));
       requests++;
       try {
-        return await fetchImpl(`${host}${path}`, {
-          redirect: 'manual', cache: 'no-store', signal: AbortSignal.timeout(10_000),
+        const response = await fetchImpl(`${host}${path}`, {
+          redirect: 'manual', cache: 'no-store', signal: AbortSignal.timeout(timeout),
         });
+        const body = readMarker && response.status === 200 ? await response.text() : null;
+        if (body === null) await response.body?.cancel();
+        return { response, body };
       } catch {
         // Provider/transport exceptions can carry URLs, headers or response payloads.
-        throw new Error(`Publication readback: ${host} did not answer. No retry or redeploy was attempted.`);
+        throw new Error(`Publication readback: ${host} transport failure; last observation: ${lastObservation}. Stopped without retrying.`);
       }
     }
-    const marker = await get(`/build-version.txt?source=${sourceSha}`);
-    if (marker.status !== 200 || (await marker.text()).trim() !== sourceSha) {
-      throw new Error(`Publication readback: ${host} does not serve the expected asset build.`);
+    while (true) {
+      const { response, body } = await get(`/build-version.txt?source=${sourceSha}`, true);
+      if (response.status !== 200) throw new Error(`Publication readback: ${host} marker status ${response.status}; stopped without retrying.`);
+      const value = body.trim();
+      if (!/^[a-f0-9]{40}$/.test(value)) throw new Error(`Publication readback: ${host} marker is not a SHA; stopped without retrying.`);
+      lastObservation = `${host} ${value === sourceSha ? 'marker matched' : 'stale SHA'}`;
+      remaining();
+      if (value === sourceSha) break;
+      await wait(Math.min(POLL_MS, remaining()));
     }
-    const page = await get('/');
+    const { response: page } = await get('/');
+    remaining();
     if (page.status !== 200 || !page.headers.get('content-type')?.includes('text/html') ||
         !page.headers.get('strict-transport-security')) {
       throw new Error(`Publication readback: ${host} is missing its HTML success response or HSTS.`);
     }
-    await page.body?.cancel();
   }
   return { hosts: HOSTS.length, requests, sourceSha };
 }
