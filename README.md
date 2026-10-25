@@ -61,7 +61,7 @@ explains hosting, security checks and what happens when you write. Dark only, on
 
 ## Run it locally
 
-This repository contains the Astro site and its Cloudflare Worker. You need **Node.js 22.12 or later** (24 recommended),
+This repository contains the Astro site and its Cloudflare Worker. You need **Node.js 22.23.4 or later** (24 recommended),
 npm and Git.
 
 ```sh

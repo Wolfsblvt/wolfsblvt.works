@@ -24,7 +24,7 @@ speaks, follow it; inside a project's window, the project's own voice and facts 
 ## Commands
 
 ```sh
-npm install                 # Node 22.12+ (24 recommended)
+npm install                 # Node 22.23.4+ (24 recommended)
 npm run dev                 # static site, http://localhost:4321
 npm run dev:worker          # built site behind the Worker, http://localhost:8787 (needs .dev.vars from .dev.vars.example)
 npm run check               # the canonical verification: types, unit and workerd tests, build, output check
