@@ -709,16 +709,23 @@ sponsors, before we actually publish the website."
 Plain HTTP to `wolfsblvt.works` or `contact.wolfsblvt.works` is redirected to the same HTTPS address with a 308 by the
 zone (Wolf Ops) and, on the Worker's own routes, by the Worker before it serves or handles anything. The Worker decides
 by host, not by environment flag, and production's submission handler accepts only the `https://contact.wolfsblvt.works`
-origin. `npm run check:live-https` reads the result back from outside after a deployment or route change.
+origin. Every publication's readback, and `npm run check:live-https` on its own, read the result back from outside on
+the Worker's routes and on real static files. Static files stay served without the Worker, so the zone rule is their
+only protection and the readback has to reach them.
 
 **Why.** The 2026-10-24 security review found the form served and accepting submissions over plain HTTP
 ([record](contact-security-review-2026-10-24.md#1-the-contact-form-was-reachable-over-plain-http)). Wolf's direction is
 that everything hosted is HTTPS-only, and that it must not quietly come back. A zone rule alone can be lost in a provider
 change without any source change noticing; the Worker's own redirect and the handler's origin check travel with every
-deployment. 308 keeps a stray `POST` a `POST` instead of turning it into a `GET`.
+deployment. 308 keeps a stray `POST` a `POST` instead of turning it into a `GET`. The 2026-10-25 cold review showed a
+readback of the root and a missing path could stay green with the zone rule gone, because both reach the Worker
+([record](contact-security-review-2026-10-24.md#cold-review-corrections-2026-10-25)); only an existing static file shows
+the zone's part, so the readback probes one and joins the normal publication readback.
 
-**Rejected.** Relying on the zone rule alone; deciding by `ENVIRONMENT_NAME` (a misconfigured variable would reopen it);
-redirecting local development hosts too (it would break `npm run dev:worker`).
+**Rejected.** Running the Worker first for every asset (the legal pages and assets would stop working when the Worker
+fails, which their static serving deliberately avoids); relying on the zone rule alone; deciding by `ENVIRONMENT_NAME`
+(a misconfigured variable would reopen it); redirecting local development hosts too (it would break
+`npm run dev:worker`).
 
 ### Shared contact allowances are spent only after the bot check
 
@@ -750,8 +757,16 @@ the refusal reassured them it wouldn't
 page reuses the one place tokens are issued, so verification, lifetime and the minimum interaction time stay as they
 were.
 
-**Rejected.** A separate token endpoint (a second issuing surface for the same thing); sending automatically after
-renewal (the visitor decides when a message goes); keeping a draft in browser storage (Contact stores nothing);
+Sending and any refresh it triggers are one pending interaction: Send stays disabled, a Turnstile answer is only
+recorded, and a second submission cannot start until the outcome is shown, so no slower answer can replace a later
+outcome or invite a duplicate message. The refresh has a 15-second bound so the interaction always ends. A fresh token
+is younger than the 4-second minimum interaction time, so after a refresh Send waits out that minimum rather than
+letting the service refuse the visitor for being quick.
+
+**Rejected.** A request-generation counter beside that lock (once one submission owns the form, nothing can overlap or
+arrive out of order); lowering or skipping the minimum interaction time for refreshed tokens (it is a server rule the
+page must not weaken); a separate token endpoint (a second issuing surface for the same thing); sending automatically
+after renewal (the visitor decides when a message goes); keeping a draft in browser storage (Contact stores nothing);
 lengthening the token lifetime (moves the cliff instead of giving a way down).
 
 ## Legal and error pages

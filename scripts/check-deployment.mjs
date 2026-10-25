@@ -1,8 +1,10 @@
 // Credential-free publication readback. The marker identifies the uploaded asset tree;
-// BUILD_VERSION and the provider deployment remain separate operator evidence.
+// BUILD_VERSION and the provider deployment remain separate operator evidence. Every publication also reads back that
+// plain HTTP stays closed on the Worker's routes and on static files (check-live-https.mjs).
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { setTimeout } from 'node:timers/promises';
+import { checkLiveHttps } from './check-live-https.mjs';
 
 const HOSTS = ['https://wolfsblvt.works', 'https://contact.wolfsblvt.works'];
 // The first upload was visible about 75 seconds later. Allow 120 seconds for the
@@ -11,7 +13,10 @@ const READINESS_MS = 120_000;
 const POLL_MS = 5_000;
 const REQUEST_MS = 10_000;
 
-/** Wait for the asset build within one budget, then check each host's HTML/HSTS once. */
+/**
+ * Wait for the asset build within one budget, then check each host's HTML/HSTS once, then that both stay HTTPS-only.
+ * The HTTPS readback runs after readiness, outside its budget; each of its requests has its own deadline.
+ */
 export async function checkDeployment(sourceSha, {
   fetchImpl = fetch, now = () => performance.now(), wait = setTimeout,
 } = {}) {
@@ -56,6 +61,11 @@ export async function checkDeployment(sourceSha, {
         !page.headers.get('strict-transport-security')) {
       throw new Error(`Publication readback: ${host} is missing its HTML success response or HSTS.`);
     }
+  }
+  const https = await checkLiveHttps({ fetchImpl });
+  requests += https.results.length;
+  if (https.failures.length > 0) {
+    throw new Error(`Publication readback: plain HTTP is not fully closed.\n- ${https.failures.join('\n- ')}`);
   }
   return { hosts: HOSTS.length, requests, sourceSha };
 }

@@ -141,7 +141,7 @@ export async function handleContactSubmission(request: Request, services: Contac
     // An expired form, or one signed before the form secret changed, is renewable: nothing was sent, and the page can
     // fetch a freshly issued token without losing what the visitor typed.
     if (token.reason === 'expired' || token.reason === 'bad-signature') {
-      return refuse('form-token', 400, 'rejected', 'This form was open too long to send, so nothing was sent. Get a fresh form and send again.', { renewForm: true });
+      return refuse('form-token', 400, 'rejected', 'This form needs refreshing before it can send, so nothing was sent. Get a fresh form and send again.', { renewForm: true });
     }
     return refuse('form-token', 400, 'rejected', 'This form could not be verified, so nothing was sent. Reload the contact page and send again.');
   }

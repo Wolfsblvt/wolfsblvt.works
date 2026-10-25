@@ -2,8 +2,9 @@
 
 ## Meaning
 
-The dated record of the first security review of the published Works site and its contact form: who looked, how, what
-was found, what each finding rests on, and what was done about it. It preserves the review's evidence boundaries, so a
+The dated record of the first security review of the published Works site and its contact form, and of the corrections
+its independent cold review asked for: who looked, how, what was found, what each finding rests on, and what was done
+about it. It preserves the review's evidence boundaries, so a
 later reader can tell a confirmed live fact from a source inference. Current behaviour lives in
 [Architecture](ARCHITECTURE.md) and the choices in [Decisions](DECISIONS.md); this page is history, not the contract.
 
@@ -88,3 +89,30 @@ was serving the published source with sending enabled.
 that routes and domains are Wolf Ops' provider state. Moving the durable branch to `PR preferred`, which the
 instructions tie to publication, is left to the site's custodian. Currentizing the private room belongs to its
 custodian and is returned there.
+
+## Cold review corrections (2026-10-25)
+
+Nyxara's independent [cold review](https://github.com/Wolfsblvt/emergency-meeting/issues/927#issuecomment-6391511186) of
+the repair at `a8aa066` found two Works defects, both accepted
+([disposition](https://github.com/Wolfsblvt/emergency-meeting/issues/927#issuecomment-6391536902)) and corrected here.
+
+**F1: a late refresh could replace a successful send with "not sent".** The submission released its lock and reset
+Turnstile before awaiting the refresh, so the widget's next answer re-enabled Send on the visible form. A second send
+could start a second refresh that overtook the first; the first then replaced the visitor's success with "Your message
+was not sent." and a Try again inviting a duplicate. The review reproduced this by running the source with controlled
+substitutes. **Correction:** sending and its refresh are now one pending interaction: Send stays disabled, a widget
+answer is only recorded, and no second submission can start until the outcome is shown. The refresh is bounded at 15
+seconds. Because the refreshed token is younger than the 4-second minimum, Send waits that out instead of being refused.
+The browser suite now holds a refresh open while the widget answers, tries to submit again, and checks the later result
+stays; a second spec refreshes against the real local Worker and passes its real minimum-age check. "Write another"
+had the same stuck-button cause as Try again and now uses the same readiness rule.
+
+**F2: the publication readback could pass with static pages open over HTTP.** The Worker runs first only on `/` and the
+contact paths; existing static files are served without it. The readback probed the root and a missing path, both of
+which reach the Worker's own redirect, so it stayed green if the zone rule were lost. **Correction:** it also probes
+`/privacy/` and `/robots.txt` over plain HTTP (GET, empty POST, path and query), first confirming over HTTPS that both
+exist, accepts only real upgrade statuses, and runs inside every `Website` publication readback. A test proves it fails
+when roots upgrade but a static page answers plaintext. Static serving of the legal pages and assets stays as designed.
+
+The renewal copy now covers expiry and a changed secret alike ("This form needed refreshing before it could send"). It
+remains provisional until Wolf or Nyxara confirms it.

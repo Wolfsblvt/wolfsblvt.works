@@ -33,6 +33,7 @@ declare global {
 const TURNSTILE_SCRIPT = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileLoaded';
 const CONTACT_FORM = '[data-contact-form]';
 const numberFormat = new Intl.NumberFormat('en');
+const RENEWAL_TIMEOUT_MS = 15_000;
 
 const form = document.querySelector<HTMLFormElement>(CONTACT_FORM);
 if (form) setupContactForm(form);
@@ -70,7 +71,13 @@ function setupContactForm(form: HTMLFormElement): void {
 
   let turnstileToken = '';
   let turnstileWidgetId: string | null = null;
-  let submitting = false;
+  // One submission is one pending interaction: the POST and any form refresh it triggers. While it is pending nothing
+  // else may start a submission or re-enable Send, so no older answer can arrive after, and replace, a newer outcome.
+  let pending = false;
+  // A refreshed form's token is brand new and the Worker refuses one younger than its minimum interaction time, so
+  // Send waits until then rather than asking the visitor to be slower (performance.now() time; 0 means no wait).
+  let freshTokenReadyAt = 0;
+  let readyTimer: ReturnType<typeof setTimeout> | undefined;
 
   submissionInput.value = crypto.randomUUID();
   const counters = setupCounters(form);
@@ -96,9 +103,9 @@ function setupContactForm(form: HTMLFormElement): void {
       action: TURNSTILE_ACTION,
       theme: 'dark',
       appearance: 'interaction-only',
-      callback: (token: string) => { turnstileToken = token; enableSubmit(); },
-      'expired-callback': () => { turnstileToken = ''; disableSubmit('The bot check expired; it’s refreshing.'); },
-      'error-callback': () => { turnstileToken = ''; disableSubmit('The bot check couldn’t run. Reload the page or email me directly.'); },
+      callback: (token: string) => { turnstileToken = token; updateSubmit(); },
+      'expired-callback': () => { turnstileToken = ''; updateSubmit('The bot check expired; it’s refreshing.'); },
+      'error-callback': () => { turnstileToken = ''; updateSubmit('The bot check couldn’t run. Reload the page or email me directly.'); },
     });
   };
   // Turnstile loads only on the prepared contact page: the one third-party script on the site.
@@ -120,10 +127,22 @@ function setupContactForm(form: HTMLFormElement): void {
     submitButton.disabled = true;
     submitNote.textContent = reason;
   }
-  /** Back at the form: the widget may already have answered since its reset, so only wait when it hasn't. */
-  function readyForBotCheck(): void {
-    if (turnstileToken) enableSubmit();
-    else disableSubmit('Waiting for the bot check to finish…');
+  /**
+   * Sets Send from the current state. A pending submission owns the button until its outcome is shown, so a widget
+   * answering meanwhile only records its token. Otherwise Send waits for the bot check and for a refreshed form token
+   * to be old enough; `reason` explains a missing bot check.
+   */
+  function updateSubmit(reason = 'Waiting for the bot check to finish…'): void {
+    if (pending) return;
+    clearTimeout(readyTimer);
+    if (!turnstileToken) { disableSubmit(reason); return; }
+    const wait = freshTokenReadyAt - performance.now();
+    if (wait > 0) {
+      disableSubmit('Getting the fresh form ready…');
+      readyTimer = setTimeout(() => updateSubmit(), wait);
+      return;
+    }
+    enableSubmit();
   }
 
   /**
@@ -132,11 +151,14 @@ function setupContactForm(form: HTMLFormElement): void {
    */
   async function renewFormToken(): Promise<boolean> {
     try {
-      const page = await fetch(window.location.href, { headers: { Accept: 'text/html' }, credentials: 'omit', cache: 'no-store' });
+      // Bounded, so a stalled request ends the pending submission with its honest "couldn't be fetched" outcome.
+      const page = await fetch(window.location.href, { headers: { Accept: 'text/html' }, credentials: 'omit', cache: 'no-store', signal: AbortSignal.timeout(RENEWAL_TIMEOUT_MS) });
       if (!page.ok) return false;
       const fresh = new DOMParser().parseFromString(await page.text(), 'text/html').querySelector<HTMLFormElement>(CONTACT_FORM)?.dataset.formToken;
       if (!fresh) return false;
       tokenInput.value = fresh;
+      // The token was issued before it arrived here, so waiting the minimum from now always satisfies the Worker.
+      freshTokenReadyAt = performance.now() + LIMITS.minimumInteractionMs;
       return true;
     } catch {
       return false;
@@ -145,13 +167,15 @@ function setupContactForm(form: HTMLFormElement): void {
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
-    if (submitting) return;
+    // Send is disabled whenever this is true; the guard also covers Enter and programmatic submission.
+    if (pending || submitButton.disabled) return;
     const localErrors = validateLocally(form);
     if (localErrors.length > 0) { presentErrors(localErrors); return; }
-    if (!turnstileToken) { disableSubmit('Waiting for the bot check to finish…'); return; }
+    if (!turnstileToken) { updateSubmit(); return; }
 
     clearErrors();
-    submitting = true;
+    pending = true;
+    clearTimeout(readyTimer);
     submitButton.disabled = true;
     submitLabel.textContent = 'Sending…';
     submitNote.textContent = 'Sending…';
@@ -165,20 +189,27 @@ function setupContactForm(form: HTMLFormElement): void {
       response = (await raw.json()) as SubmitResponse;
     } catch {
       response = { ok: false, outcome: OUTCOMES.failed, message: 'The message could not be sent because the contact service did not answer. Your text is kept in the form.', retryable: true };
-    } finally {
-      submitting = false;
-      submitLabel.textContent = 'Send it';
-      submitNote.textContent = '';
-      // Tokens are single-use; whatever happened, the next attempt needs a fresh one.
-      turnstileToken = '';
-      if (window.turnstile && turnstileWidgetId !== null) window.turnstile.reset(turnstileWidgetId);
     }
+    // Tokens are single-use; whatever happened, the next attempt needs a fresh one. The widget may answer while this
+    // submission is still pending; updateSubmit() keeps that answer until the outcome is shown.
+    turnstileToken = '';
+    if (window.turnstile && turnstileWidgetId !== null) window.turnstile.reset(turnstileWidgetId);
     if (response.renewForm) {
-      showRenewal(await renewFormToken());
+      submitNote.textContent = 'Refreshing the form…';
+      const renewed = await renewFormToken();
+      endPending();
+      showRenewal(renewed);
       return;
     }
+    endPending();
     handleResponse(response);
   });
+
+  function endPending(): void {
+    pending = false;
+    submitLabel.textContent = 'Send it';
+    submitNote.textContent = '';
+  }
 
   outcome.querySelector<HTMLButtonElement>('[data-retry]')?.addEventListener('click', () => {
     outcome.hidden = true;
@@ -186,7 +217,7 @@ function setupContactForm(form: HTMLFormElement): void {
     const context = document.querySelector<HTMLElement>('[data-product-context]');
     if (context?.dataset.wasShown === 'true') context.hidden = false;
     yoruSits();
-    readyForBotCheck();
+    updateSubmit();
     form.querySelector<HTMLElement>('#message')?.focus();
   });
   outcome.querySelector<HTMLButtonElement>('[data-another]')?.addEventListener('click', () => {
@@ -198,14 +229,15 @@ function setupContactForm(form: HTMLFormElement): void {
     outcome.hidden = true;
     form.hidden = false;
     yoruSits();
-    disableSubmit('Waiting for the bot check to finish…');
+    // The widget has usually answered again since the last send's reset; waiting for another answer would never end.
+    updateSubmit();
     form.querySelector<HTMLInputElement>('#category')?.focus();
   });
 
   function handleResponse(response: SubmitResponse): void {
     if (response.errors && response.errors.length > 0) {
       presentErrors(response.errors);
-      readyForBotCheck();
+      updateSubmit();
       return;
     }
     switch (response.outcome) {
@@ -226,13 +258,14 @@ function setupContactForm(form: HTMLFormElement): void {
     }
   }
 
-  // The token outlived its 12 hours (or the service's signing secret changed). Nothing was sent; the text stays put.
-  // If the fresh form couldn't be fetched, sending again asks for one again, so "Try again" stays honest either way.
+  // The token outlived its 12 hours, or the service's signing secret changed: the copy covers both without guessing
+  // which. Nothing was sent; the text stays put. If the fresh form couldn't be fetched, sending again asks for one
+  // again, so "Try again" stays honest either way.
   function showRenewal(renewed: boolean): void {
     form.hidden = true;
     const text = renewed
-      ? 'The form was open too long to send. It’s fresh again and your text is still in it, so send it once more.'
-      : 'The form was open too long to send, and a fresh one couldn’t be fetched just now. Your text is still in the form: try again, or copy it somewhere safe before you reload the page.';
+      ? 'This form needed refreshing before it could send. It’s fresh now and your text is still in it, so send it once more.'
+      : 'This form needed refreshing before it could send, and a fresh one couldn’t be fetched just now. Your text is still in the form: try again, or copy it somewhere safe before you reload the page.';
     showOutcome({ kicker: 'Not sent', bad: true, title: 'Your message was not sent.', text, retry: true, fallback: true });
   }
 

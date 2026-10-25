@@ -102,6 +102,10 @@ Without JavaScript the same page is complete: the pile renders as an ordinary li
 5. A form open longer than its token's 12 hours (or signed before the form secret changed) is refused with
    `renewForm: true` and nothing sent. The page fetches itself again for a fresh token, puts it into the form without
    touching what was typed, and asks the visitor to send again. It never resends on its own and stores nothing.
+   The submission and its refresh are one pending interaction: Send stays disabled and a Turnstile answer is only
+   recorded until the outcome is shown, so no slower, older answer can replace a newer outcome or invite a duplicate
+   send. A refresh that does not answer within 15 seconds ends as "couldn't be fetched". Because a fresh token is
+   younger than the Worker's 4-second minimum, Send waits out that minimum after the refresh instead of being refused.
 
 ## The contact service
 
@@ -177,8 +181,9 @@ carries an obvious fixture in `src/data/legal-operator.example.json`.
   same assets. Canonical URLs point each page at its own host.
 - **HTTPS only.** The zone redirects plain HTTP on both hosts to HTTPS (Wolf Ops' rule). The Worker does the same on
   its own routes, by host rather than by environment, so the contact page and its submissions never depend on the zone
-  rule alone; the static assets do. Local hosts keep plain HTTP for development. `npm run check:live-https` reads the
-  combined result back from outside.
+  rule alone; the static assets do. Local hosts keep plain HTTP for development. The readback after every publication
+  (and `npm run check:live-https` on its own) therefore probes a real static page and asset, which never reach the Worker,
+  as well as the Worker's routes: green roots alone would not show that the zone rule still covers the static files.
 - **The 503.** `503.html` is self-contained (inline CSS, system fonts, no scripts, absolute links) so Cloudflare can
   show it as a custom error page while the site itself is down.
 - **Third parties.** Cloudflare (hosting, Email Service, rate limiting, Turnstile). Turnstile's script loads on the

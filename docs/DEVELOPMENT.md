@@ -45,7 +45,7 @@ random string for `CONTACT_FORM_SECRET`. It is ignored by Git; real values never
 | Re-render the social cards | `npm run cards` |
 | Refresh the committed profile pictures of people credited in the Pile | `npm run credits` |
 | Publication gate on its own | `npm run check:publish` |
-| Live HTTPS readback of both public hosts (after a deployment or route change) | `npm run check:live-https` |
+| Live HTTPS readback of both public hosts (part of every `Website` readback; on its own after a manual deployment or route/zone change) | `npm run check:live-https` |
 | Publication build | `npm run build:production` |
 | Contact-first launch build (the contact page, its assets, the 404 and the 503; nothing else) | `npm run build:contact-only` |
 
@@ -62,7 +62,10 @@ first; rerun it after changing the site.
   pages in `tests/fixtures/`.
 - **Playwright** (`tests/e2e/`): real-browser journeys against the built site and the real Worker. The Pile's deal,
   scatter, Endless, addresses and history; the contact form's validation, picker and outcomes, with the submission
-  answered by a route mock so no mail is sent; the rooms; and a phone layout pass.
+  answered by a route mock so no mail is sent; the rooms; and a phone layout pass. The local Worker runs as the `test`
+  environment with sending on, so its own form-token and validation refusals are real: the expired-form specs refresh
+  against it and wait out its real minimum interaction time. No spec lets a submission past those stages reach it, so
+  no Turnstile check or send runs.
 
 ## Local services
 
@@ -244,8 +247,11 @@ at five-second intervals within that shared deadline. A transport failure, non-2
 immediately. Once a host's marker matches, check its HTML/HSTS once; the already-ready path still makes four GETs.
 Each request is capped at ten seconds or the remaining overall budget, whichever is shorter. No redirects are followed,
 no bodies or observed SHA values are printed, and failures report a fixed observation category. The script never
-redeploys. This proves the observed asset revision and basic host response, not the
-Worker's runtime variable, real mail delivery, legal correctness or every rendered journey. A readback failure after
+redeploys. Once both hosts are ready, it runs the live HTTPS readback below on both hosts: 18 more requests, outside the
+readiness deadline and each with its own deadline (HTTPS with HSTS on the home page and two static files, then plain
+HTTP GET, empty POST and path-with-query probes on the Worker's routes and on those static files). This proves the
+observed asset revision, basic host response and HTTPS-only ingress for the probed routes, not the Worker's runtime
+variable, real mail delivery, legal correctness or every rendered journey. A readback failure after
 upload is a **possibly successful deployment**: reconcile the provider version and hosts before retrying the effect.
 
 ### Activation evidence and recovery (Wolf Ops)
@@ -349,8 +355,13 @@ required to be real, runs the output check, then the publication gate.
 
 Routine releases use `Website` above. The first-admission steps are not repeated for every merge.
 
-After every production deployment, and after any route, domain or zone change, run `npm run check:live-https` from
-outside. It asks both hosts over plain HTTP (a page load, an empty `POST` and a path with a query) without following
-redirects and expects each to be redirected to the same HTTPS address, then expects HTTPS to answer with HSTS. It sends
-no form fields or credentials and keeps no response bodies. The Worker's own redirect is pinned by the Worker tests;
-from outside the zone's redirect and the Worker's look the same.
+Every `Website` publication runs the live HTTPS readback as part of its readback. After a manual deployment, and
+after any route, domain or zone change, run it on its own from outside with `npm run check:live-https`. It asks both
+hosts over plain HTTP without following redirects (a page load, an empty `POST` and a path with a query on the
+Worker's routes; the same on `/privacy/` and a GET of `/robots.txt`) and expects each to be redirected (301, 302,
+303, 307 or 308) to exactly the same HTTPS address, then expects HTTPS to answer 200 with HSTS. It sends no form fields
+or credentials and keeps no response bodies. On the Worker's routes the zone's redirect and the Worker's look the same
+from outside, and the Worker's is pinned by its tests. Static files never reach the Worker, so only the zone's rule
+keeps them HTTPS-only: the readback first confirms over HTTPS that each static route really exists (a missing path
+would fall through to the Worker and prove nothing), and fails if roots upgrade while a static file answers plaintext.
+Keeping the legal pages and assets independent of the Worker is deliberate (see Architecture).
