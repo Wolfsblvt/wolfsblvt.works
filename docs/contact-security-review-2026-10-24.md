@@ -114,5 +114,5 @@ which reach the Worker's own redirect, so it stayed green if the zone rule were 
 exist, accepts only real upgrade statuses, and runs inside every `Website` publication readback. A test proves it fails
 when roots upgrade but a static page answers plaintext. Static serving of the legal pages and assets stays as designed.
 
-The renewal copy now covers expiry and a changed secret alike ("This form needed refreshing before it could send"). It
-remains provisional until Wolf or Nyxara confirms it.
+The renewal copy covers expiry and a changed secret alike. Wolf approved the success sentence: "Form refreshed. Your text is still
+here. Please send again." The failure wording (a fresh form couldn’t be fetched) is unchanged.

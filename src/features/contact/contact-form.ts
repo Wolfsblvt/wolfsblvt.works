@@ -264,7 +264,7 @@ function setupContactForm(form: HTMLFormElement): void {
   function showRenewal(renewed: boolean): void {
     form.hidden = true;
     const text = renewed
-      ? 'This form needed refreshing before it could send. It’s fresh now and your text is still in it, so send it once more.'
+      ? 'Form refreshed. Your text is still here. Please send again.'
       : 'This form needed refreshing before it could send, and a fresh one couldn’t be fetched just now. Your text is still in the form: try again, or copy it somewhere safe before you reload the page.';
     showOutcome({ kicker: 'Not sent', bad: true, title: 'Your message was not sent.', text, retry: true, fallback: true });
   }

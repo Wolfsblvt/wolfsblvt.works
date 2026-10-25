@@ -169,7 +169,7 @@ test('expired form: renews its token in place, keeps the draft and sends with th
   await fill(page);
   await page.locator('[data-submit]').click();
   const outcome = page.locator('[data-outcome]');
-  await expect(outcome).toContainText('It’s fresh now and your text is still in it');
+  await expect(outcome).toContainText('Form refreshed. Your text is still here. Please send again.');
   await outcome.locator('[data-retry]').click();
   await expect(page.locator('#message')).toHaveValue('Hi Wolf, is that on purpose?');
   await expect(page.getByLabel('Subject')).toHaveValue('diffdevil counted my rename');
@@ -238,7 +238,7 @@ test('expired form: a slow refresh keeps the whole submission pending, so nothin
 
   releaseRefresh();
   const outcome = page.locator('[data-outcome]');
-  await expect(outcome).toContainText('It’s fresh now and your text is still in it');
+  await expect(outcome).toContainText('Form refreshed. Your text is still here. Please send again.');
   await outcome.locator('[data-retry]').click();
   await send.click();
   await expect(outcome).toContainText('Thanks. Your message is on its way.');
@@ -292,7 +292,7 @@ test('expired form against the real Worker: the refreshed token waits out the mi
   await page.locator('input[data-form-token]').evaluate((input: HTMLInputElement) => { input.value = input.value.replace(/\.[0-9a-f]{64}$/, `.${'0'.repeat(64)}`); });
   await page.locator('[data-submit]').click();
   const outcome = page.locator('[data-outcome]');
-  await expect(outcome).toContainText('It’s fresh now and your text is still in it');
+  await expect(outcome).toContainText('Form refreshed. Your text is still here. Please send again.');
   expect(answers[0]).toMatchObject({ status: 400, body: { renewForm: true } });
 
   const refreshedAt = Date.now();
