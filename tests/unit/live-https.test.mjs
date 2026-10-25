@@ -97,13 +97,67 @@ describe('live HTTPS readback', () => {
     expect((await checkLiveHttps(e)).failures).toHaveLength(2);
   });
 
-  it('reports a transport failure without the exception text and keeps checking', async () => {
+  it('stops at the first transport failure without the exception text and sends nothing more', async () => {
     const e = edge();
     const failing = async (url, options) => {
       if (url === 'http://contact.wolfsblvt.works/') throw new Error('secret-bearing transport failure');
       return e.fetchImpl(url, options);
     };
-    const { failures } = await checkLiveHttps({ fetchImpl: failing });
-    expect(failures).toEqual(['GET http://contact.wolfsblvt.works/ did not answer.', 'POST http://contact.wolfsblvt.works/ did not answer.']);
+    const { failures, results } = await checkLiveHttps({ fetchImpl: failing });
+    expect(failures).toEqual(['GET http://contact.wolfsblvt.works/ did not answer. Stopped without retrying or sending the remaining probes.']);
+    expect(JSON.stringify([failures, results])).not.toContain('secret-bearing');
+    // wolfsblvt.works completed (3 HTTPS + 6 plain), then contact's 3 HTTPS probes and the failing one; nothing after.
+    expect(e.calls).toHaveLength(9 + 3);
+    expect(results.filter((r) => r.ok)).toHaveLength(9 + 3);
+    expect(results.at(-1)).toEqual({ check: 'GET http://contact.wolfsblvt.works/', ok: false });
+  });
+
+  it('keeps the observations it made before a failure', async () => {
+    const e = edge();
+    const failing = async (url, options) => {
+      if (url.startsWith('http://wolfsblvt.works/privacy/')) throw new Error('boom');
+      return e.fetchImpl(url, options);
+    };
+    const { results } = await checkLiveHttps({ fetchImpl: failing });
+    expect(results.filter((r) => r.ok).length).toBeGreaterThan(3);
+    expect(results.at(-1).ok).toBe(false);
+  });
+
+  it('gives a hanging target one capped request, then stops instead of waiting out 18 timeouts', async () => {
+    const started = performance.now();
+    let requests = 0;
+    const hanging = (url, options) => new Promise((_, reject) => {
+      requests++;
+      options.signal.addEventListener('abort', () => reject(options.signal.reason));
+    });
+    const { failures } = await checkLiveHttps({ fetchImpl: hanging, requestMs: 40, budgetMs: 1_000 });
+    expect(requests).toBe(1);
+    expect(failures).toEqual(['GET https://wolfsblvt.works/ did not answer. Stopped without retrying or sending the remaining probes.']);
+    expect(performance.now() - started).toBeLessThan(500);
+  });
+
+  it('spends one finite budget across slow-but-answering requests and then stops', async () => {
+    const e = edge();
+    const slow = async (url, options) => {
+      await new Promise((r) => setTimeout(r, 30));
+      return e.fetchImpl(url, options);
+    };
+    const started = performance.now();
+    const { failures } = await checkLiveHttps({ fetchImpl: slow, budgetMs: 100, requestMs: 1_000 });
+    expect(e.calls.length).toBeGreaterThan(1);
+    expect(e.calls.length).toBeLessThan(18);
+    expect(failures).toHaveLength(1);
+    expect(failures[0]).toMatch(/^The 0\.1-second readback budget ran out after \d+ requests, before (GET|POST) \S+\. Stopped without retrying/);
+    expect(performance.now() - started).toBeLessThan(1_000);
+  });
+
+  it('cuts a hanging request at the remaining budget when that is shorter than the request cap', async () => {
+    const hanging = (url, options) => new Promise((_, reject) => {
+      options.signal.addEventListener('abort', () => reject(options.signal.reason));
+    });
+    const started = performance.now();
+    const { failures } = await checkLiveHttps({ fetchImpl: hanging, budgetMs: 60, requestMs: 5_000 });
+    expect(failures).toHaveLength(1);
+    expect(performance.now() - started).toBeLessThan(1_000);
   });
 });

@@ -247,9 +247,12 @@ at five-second intervals within that shared deadline. A transport failure, non-2
 immediately. Once a host's marker matches, check its HTML/HSTS once; the already-ready path still makes four GETs.
 Each request is capped at ten seconds or the remaining overall budget, whichever is shorter. No redirects are followed,
 no bodies or observed SHA values are printed, and failures report a fixed observation category. The script never
-redeploys. Once both hosts are ready, it runs the live HTTPS readback below on both hosts: 18 more requests, outside the
-readiness deadline and each with its own deadline (HTTPS with HSTS on the home page and two static files, then plain
-HTTP GET, empty POST and path-with-query probes on the Worker's routes and on those static files). This proves the
+redeploys. Once both hosts are ready, it runs the live HTTPS readback below on both hosts: 18 more requests (HTTPS with
+HSTS on the home page and two static files, then plain HTTP GET, empty POST and path-with-query probes on the Worker's
+routes and on those static files). They run after readiness, under their own **60-second budget for the whole phase**,
+each request capped at ten seconds or what is left of it, so the readback takes at most about three minutes. The
+first transport failure, or the budget running out, ends it with that failure and sends nothing more; nothing is
+retried. This proves the
 observed asset revision, basic host response and HTTPS-only ingress for the probed routes, not the Worker's runtime
 variable, real mail delivery, legal correctness or every rendered journey. A readback failure after
 upload is a **possibly successful deployment**: reconcile the provider version and hosts before retrying the effect.
@@ -360,7 +363,8 @@ after any route, domain or zone change, run it on its own from outside with `npm
 hosts over plain HTTP without following redirects (a page load, an empty `POST` and a path with a query on the
 Worker's routes; the same on `/privacy/` and a GET of `/robots.txt`) and expects each to be redirected (301, 302,
 303, 307 or 308) to exactly the same HTTPS address, then expects HTTPS to answer 200 with HSTS. It sends no form fields
-or credentials and keeps no response bodies. On the Worker's routes the zone's redirect and the Worker's look the same
+or credentials and keeps no response bodies. It runs in one 60-second budget (ten seconds per request at most) and
+stops at the first transport failure. On the Worker's routes the zone's redirect and the Worker's look the same
 from outside, and the Worker's is pinned by its tests. Static files never reach the Worker, so only the zone's rule
 keeps them HTTPS-only: the readback first confirms over HTTPS that each static route really exists (a missing path
 would fall through to the Worker and prove nothing), and fails if roots upgrade while a static file answers plaintext.

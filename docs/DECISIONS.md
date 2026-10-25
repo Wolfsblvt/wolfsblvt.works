@@ -720,7 +720,9 @@ change without any source change noticing; the Worker's own redirect and the han
 deployment. 308 keeps a stray `POST` a `POST` instead of turning it into a `GET`. The 2026-10-25 cold review showed a
 readback of the root and a missing path could stay green with the zone rule gone, because both reach the Worker
 ([record](contact-security-review-2026-10-24.md#cold-review-corrections-2026-10-25)); only an existing static file shows
-the zone's part, so the readback probes one and joins the normal publication readback.
+the zone's part, so the readback probes one and joins the normal publication readback. Its 18 requests share one
+60-second budget (each capped at ten seconds) and stop at the first transport failure, so an unreachable target costs
+one timeout, not eighteen.
 
 **Rejected.** Running the Worker first for every asset (the legal pages and assets would stop working when the Worker
 fails, which their static serving deliberately avoids); relying on the zone rule alone; deciding by `ENVIRONMENT_NAME`

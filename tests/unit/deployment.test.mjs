@@ -138,6 +138,19 @@ describe('publication readback', () => {
     expect(calls).toBe(1);
   });
 
+  it('stops the plain HTTP readback at a transport failure instead of sending the remaining probes', async () => {
+    const f = fixture();
+    const fetchFixture = f.fetchImpl;
+    f.fetchImpl = async (url, options) => {
+      if (url === 'http://wolfsblvt.works/') throw new Error('private transport specimen');
+      return fetchFixture(url, options);
+    };
+    await expect(checkDeployment(SHA, f)).rejects.toThrow(
+      'plain HTTP is not fully closed.\n- GET http://wolfsblvt.works/ did not answer. Stopped without retrying or sending the remaining probes.');
+    // 2 hosts × (marker + page) and wolfsblvt.works' 3 HTTPS probes recorded; the next request fails and nothing follows.
+    expect(f.calls).toHaveLength(4 + 3);
+  });
+
   it('rejects an unresolved source before any network request', async () => {
     const f = fixture();
     await expect(checkDeployment('main', f)).rejects.toThrow('resolved 40-character source SHA');

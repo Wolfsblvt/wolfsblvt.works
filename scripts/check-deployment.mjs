@@ -15,7 +15,8 @@ const REQUEST_MS = 10_000;
 
 /**
  * Wait for the asset build within one budget, then check each host's HTML/HSTS once, then that both stay HTTPS-only.
- * The HTTPS readback runs after readiness, outside its budget; each of its requests has its own deadline.
+ * The HTTPS readback runs after readiness, outside its budget, under its own single finite budget (check-live-https.mjs),
+ * and sends nothing more after a transport failure.
  */
 export async function checkDeployment(sourceSha, {
   fetchImpl = fetch, now = () => performance.now(), wait = setTimeout,
