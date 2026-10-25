@@ -3,9 +3,9 @@
   // the edge must act (home pile seed, contact page and submissions, the /contact/ redirect). Everything else is
   // served straight from the assets, so the legal pages and assets keep working even if the Worker fails.
   //
-  // Deliberately dormant: no account, no routes, no custom domains. Wolf Ops owns adoption (routes for
-  // wolfsblvt.works and contact.wolfsblvt.works, secrets, Turnstile widget, Email Service senders) as its own Work;
-  // see docs/DEVELOPMENT.md, "Publication".
+  // Production is already admitted. The Website workflow selects the account externally and deploys --env production.
+  // Routes/custom domains stay provider-owned: omitting them preserves the existing Works and Contact connections.
+  // Wolf Ops owns their setup, HTTPS rules, secrets, Turnstile and mail; see docs/DEVELOPMENT.md, "Publication".
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "wolfsblvt-works",
   "main": "./worker/index.ts",
