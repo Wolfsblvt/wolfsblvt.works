@@ -39,18 +39,18 @@ npm run build:contact-only  # the first launch step: the contact page and its as
 
 ```text
 main:
-  maintainer integration: direct allowed
+  maintainer integration: PR preferred
   external contributions: PR required
   required pre-integration evidence: none
   required approval/review: none
   resolved conversations: no
-  automatic CI: Verify on main push and pull request
-  automatic retained branch effects: none
+  automatic CI: Verify on main push and pull request; Website validates consumed main inputs before production publication
+  automatic retained branch effects: Website publishes consumed main changes to the existing production Worker; workflow_dispatch recovers current main
   other pre-update evidence: npm run check green locally
 ```
 
-The site is unpublished and founder-controlled. This moves to `PR preferred` once the site is public and people rely
-on it.
+The site is public and founder-controlled. Material changes normally use a PR. The publication controller and its
+credential prerequisites are described in [Development](docs/DEVELOPMENT.md#automatic-publication).
 
 ## Boundaries
 
@@ -68,8 +68,11 @@ on it.
 - **Icons.** Every icon comes from `@wolfsblvt/icons`. Add missing glyphs to the wolfsblvt-icons repository; never add a
   local SVG icon here.
 - **Secrets.** `.dev.vars` is local and ignored. Real secrets are set by Wolf Ops with `wrangler secret put`.
-- **Deployment.** `wrangler.jsonc` is deliberately dormant (no account, routes or domains). Deploying, adding routes,
-  changing DNS or Cloudflare settings is Wolf Ops work, not part of changes here.
+- **Deployment.** GitHub Actions `Website` is the sole automatic production controller. `wrangler.jsonc` owns the
+  Worker, bindings and Logpush setting; Ops owns the account, existing custom domains, secrets and native HTTPS/redirect
+  rules. Keep routes/domains out of this configuration so routine uploads preserve those connections. A consumed
+  `main` update has a production effect; draft source preparation does not. Provider setup, DNS and manual recovery
+  remain Wolf Ops work, with exact current authority.
 - **Showcase, not audit.** A composed scene, an authored number, a mock interaction or an imagined moment is finished
   public content: no "illustrative", "fixture" or "not built" captions, no `illustrative: true`, one short standing
   line per project at most. `illustrative: true` and `data-placeholder` mean unreplaced design-time scaffolding only,

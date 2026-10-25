@@ -778,6 +778,27 @@ the PNGs are committed. The build doesn't render them.
 **Why.** A browser in every build for two images that change only with the hero or the lockup costs more than it
 saves. Rendering from HTML with the site's real fonts keeps the cards faithful to the page.
 
+### Accepted main publishes through one validated production controller
+
+**Date:** 2026-10-25 · **Status:** Selected source; activation and live qualification owned by Wolf Ops
+
+GitHub Actions `Website` is the sole automatic production controller. Native consumed-input filters keep unrelated
+documentation edits from starting publication. A serialized, non-cancelling production job resolves current `main`,
+validates and builds it, then deploys that resolved SHA through local pinned Wrangler. The private legal projection
+reaches only the production build; the deploy token reaches only the upload. Recovery dispatch also resolves current
+main. Cloudflare native Builds remains disabled. [Development](DEVELOPMENT.md#automatic-publication) owns the exact
+inputs, credential prerequisites, readback and rollback route.
+
+**Why.** Wolf asked why a website was deployed without a validate-and-deploy workflow. A manual upload had restored
+older source while a merged phone repair was already available. Juno selected this source Work following
+[Nyxara's diagnosis](https://github.com/Wolfsblvt/emergency-meeting/issues/916#issuecomment-6390904304): ordinary accepted
+changes must publish themselves rather than rely on someone remembering the right export. The asset SHA readback
+detects stale serving without publishing any legal data to GitHub logs.
+
+**Superseded.** Manual upload as the routine release path. The separate production gate below remains; it now runs
+inside the controller. First-admission and urgent rollback operations remain bounded Ops work, not a second automatic
+controller. Source acceptance does not prove configured credentials, provider deployment or live behavior.
+
 ### Publication is a separate, gated build
 
 **Date:** 2026-10-14 · **Status:** Current

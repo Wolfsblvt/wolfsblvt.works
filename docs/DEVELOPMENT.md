@@ -4,9 +4,9 @@
 
 How to build, run, test and prepare the Wolfsblvt Works website for publication on a fresh clone: the toolchain, the
 static dev server and the local Worker, the three test layers, what the build generates, how to reset, the everyday
-changes (Pile pieces, contact products, icons, social cards), and the publication checks. It owns the local bootstrap,
-run and test boundary. Hosting adoption itself is Wolf Ops work;
-this guide lists what that work has to provide.
+changes (Pile pieces, contact products, icons, social cards), and validated automatic publication. It owns the local
+bootstrap, run/test and publication-source boundary. Wolf Ops supplies provider setup, credentials, activation and live
+qualification; workflow source alone does not establish those effects.
 
 ## Prerequisites
 
@@ -103,6 +103,7 @@ Produced by the build, ignored by Git, never edited by hand:
 | Path | Made by |
 | --- | --- |
 | `artifacts/site/` | `astro build`, then `scripts/write-headers.mjs` for `_headers` |
+| `artifacts/site/build-version.txt` | `Website` stamps the resolved source SHA after the production build; it contains no operator data |
 | `public/fonts/`, `src/styles/fonts.generated.css` | `scripts/prepare-fonts.mjs`, from the Fontsource packages (Latin and Latin Extended) |
 | `public/favicon.svg`, `public/favicon-192.png`, `public/apple-touch-icon.png` | `scripts/generate-identity-assets.mjs`, from the marks |
 | `public/brand/works/` | The same script, byte-for-byte mirror of the committed canonical bundle |
@@ -171,8 +172,100 @@ update this guide, [Logging](LOGGING.md#retention-and-deletion) and `site.config
 
 ## Publication
 
-Before a production deployment, all of the applicable checks below must hold. The first-launch sequence also keeps
-contact provisioning ahead of the full public build; this guide describes the procedure, not a deployment receipt.
+The site is public. Routine publication uses the controller below; the first-admission sequence is preserved afterward
+as history and recovery context. This guide describes source and operating prerequisites, not a deployment receipt.
+
+### Automatic publication
+
+`.github/workflows/website.yml` is the sole automatic production controller. It runs on `main` only, using native
+`push.paths` filters before a runner starts; `workflow_dispatch` on `main` recovers the current accepted source. A dispatch
+on another ref skips the production job. Cloudflare native Builds/triggers/hooks must remain disabled for this Worker.
+`Verify` stays credential-free on PRs and supplies the Node 22/24 compatibility witness; publication validates again
+inside its own serialized job, so another workflow going green independently cannot authorize an unchecked upload.
+
+The native filter lists site/public/Worker/shared source, the consumed Works bundle, project artwork, Yoru packed
+sheets, build/check scripts, locked packages, toolchain/configuration, ordinary validation tests (including the studio
+libraries they exercise) and the publication
+workflow itself. `shared/contact-contract.ts`, for example, is consumed by both site and Worker and must trigger a
+publication. Internal `docs/`, README, `AGENTS.md`, design canvases, brand masters and non-consumed authoring tools do
+not trigger one; their exported consumer files do. Test/config changes that the mandatory check consumes do trigger.
+Keep the list beside the workflow; do not replace it with an in-job diff that starts a runner for every docs edit.
+GitHub's changed-file comparison has a finite path-list limit; an omitted relevant event can be recovered by dispatch.
+This optional publication workflow must not become a required merge check whose path skip leaves a PR pending.
+
+Production concurrency is `works-website-production`, with `cancel-in-progress: false`. Checkout resolves **current
+`main` after the job acquires the slot**. The recorded SHA is what the job builds and puts in `BUILD_VERSION`, even if
+the queued triggering event was older. GitHub may replace a pending job; the surviving job still resolves current main.
+A later relevant change arriving during a build supplies the next publication. An unrelated docs push cannot cancel it.
+
+Before checkout or install, the workflow checks presence flags for all required configuration. Missing names produce
+a fixed error and stop the job before build/deployment; values are never printed. Ops must supply these **before
+merging/activating the workflow**:
+
+| Repository configuration | Kind | Consumer |
+| --- | --- | --- |
+| `CLOUDFLARE_ACCOUNT_ID` | Actions variable | Deploy step only; presence flag at preflight |
+| `CLOUDFLARE_API_TOKEN` | Actions secret | Deploy step only; presence flag at preflight |
+| `WOLFSBLVT_LEGAL_OPERATOR_B64` | Actions secret | `npm run build:production` only; presence flag at preflight |
+
+No `WEBSITE_TARGET` variable is needed: this site already has one Worker target. The workflow uses read-only
+`GITHUB_TOKEN`, pinned checkout/setup-node, `npm ci` and the repository-local pinned Wrangler. Dependency install and
+`npm run check` receive neither production secret. Production build output is discarded, including failure output,
+because diagnostics could contain the private legal projection; ordinary fixture checks retain full diagnostics.
+No production build/log artifact is uploaded to GitHub. The legal pages remain public at their admitted hosts,
+excluded from source, indexing, sitemap and social output.
+
+Ops creates a deployment credential limited to the existing Worker in its account: **Workers Editor** (the legacy
+permission is Account / Workers Scripts / Edit). Existing bindings need no separate resource-data access. Account ID
+is supplied explicitly, so account discovery is unnecessary. No DNS, Zone/Workers Routes write, Logpush/Pipelines/R2
+administration, mail, Turnstile or token-management permission is selected by this upload. Ops must qualify the exact
+provider-issued scope against this deploy route before activation; source cannot prove permission sufficiency.
+See [Cloudflare's deployment/route permission distinction](https://developers.cloudflare.com/workers/authorization/workers/).
+
+After validation, `build:production` enforces the real-operator and publication gates. The workflow stamps only the
+resolved SHA into `build-version.txt`, then runs:
+
+```sh
+node_modules/.bin/wrangler deploy --config wrangler.jsonc --env production --keep-vars --var "BUILD_VERSION:$SOURCE_SHA"
+node scripts/check-deployment.mjs "$SOURCE_SHA"
+```
+
+The declared production bindings and `logpush: true` remain source-owned and unchanged. `--keep-vars` retains extra
+provider variables while the explicit SHA replaces `BUILD_VERSION`. Wrangler preserves existing secrets on deploy;
+omitting routes/custom domains preserves their provider-owned connections. No credential or legal value becomes a CLI
+argument. [Wrangler's command contract](https://developers.cloudflare.com/workers/wrangler/commands/workers/) describes
+these flags; changes to bindings, routes or secret custody require their own current Work.
+
+The readback makes four bounded credential-free GETs: the exact asset marker and useful HTML/HSTS response on both
+custom hosts. It follows no redirects, prints no response body and stops on failure without retrying or redeploying.
+Each request has a ten-second deadline. This proves the observed asset revision and basic host response, not the
+Worker's runtime variable, real mail delivery, legal correctness or every rendered journey. A readback failure after
+upload is a **possibly successful deployment**: reconcile the provider version and hosts before retrying the effect.
+
+### Activation evidence and recovery (Wolf Ops)
+
+The draft source is not activation. Juno owns credential installation, review/landing disposition and the live cut:
+
+1. Confirm the token/account/legal projection and one-controller provider state, then accept and land the workflow.
+2. Consume the first relevant-main run: record its resolved SHA, validation, upload receipt, actual provider
+   `BUILD_VERSION`, unchanged bindings/secrets/domains/Logpush and the two-host asset/HTML readback.
+3. Carry one ordinary docs-only update: no `Website` run/runner may start (ordinary Verify is a separate witness).
+4. Carry a useful consumed shared-input update: `Website` must start and publish its then-current main SHA. If another
+   relevant update is pending, its final surviving job must not roll production back to its older triggering SHA.
+5. Read the meaningful site/contact/legal/375px journeys at the new revision, plus the native HTTPS/canonical redirects,
+   without sending mail merely to prove an unchanged deployment. Run the full live legal verifier with protected error
+   output contained. Keep the ordinary provider URLs disabled.
+
+For ordinary recovery, repair or revert the faulty consumed change on `main`; its relevant push publishes accepted
+current source. Dispatch `Website` on `main` if an event was missed. Dispatch deliberately does not accept an arbitrary
+historical SHA or turn a feature branch into a production source.
+
+For urgent rollback, Ops first reconciles/coordinates active and pending publication so a queued current-main job cannot
+immediately overwrite the recovery. Under its exact recovery grant, use the provider's prior version with local pinned
+Wrangler (`wrangler rollback <version-id> --env production`), then read back deployment, runtime version and hosts. Revert
+or repair `main` before resuming automatic publication. A rollback's older asset marker is expected; do not compare it
+to the bad head. Preserve current secrets, connections, bindings and retained logging. Rollback practicality and actual
+provider behavior remain live qualification, not a claim made by this source contribution.
 
 **Content and copy** (refused by `npm run check:publish` until done):
 
@@ -195,7 +288,7 @@ contact provisioning ahead of the full public build; this guide describes the pr
 - Bluesky: `links.bluesky` in `site.config.mjs` is set when the profile exists. Until then the slot shows as visibly
   unavailable, which is fine to publish.
 
-**The first launch, in order (Wolf Ops, #916):**
+**The first admission (completed 2026-10-24, historical sequence in #916):**
 
 1. **Contact first.** `npm run build:contact-only`, deployed with `--env production` and only
    `contact.wolfsblvt.works` routed. The build holds the contact page, its assets, the 404 and the 503; no home, no
@@ -227,4 +320,4 @@ contact provisioning ahead of the full public build; this guide describes the pr
 `npm run build:production` with the operator projection in the environment builds the site with the legal pages
 required to be real, runs the output check, then the publication gate.
 
-There is no deployment workflow in this repository yet. `.github/workflows/verify.yml` only verifies.
+Routine releases use `Website` above. The first-admission steps are not repeated for every merge.

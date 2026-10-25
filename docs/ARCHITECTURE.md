@@ -10,8 +10,11 @@ boundaries between the static site, the Worker and the contact service, and the 
 and honest. Exact field rules, event schemas and copy live in source and tests; the reasons behind the choices live in
 [Decisions](DECISIONS.md).
 
-The deployment configuration in `wrangler.jsonc` is complete but dormant: it names no account, routes or domains.
-Adoption on Cloudflare is Wolf Ops work; see [Development](DEVELOPMENT.md#publication).
+Production is served by the existing `wolfsblvt-works-production` Worker. GitHub Actions `Website` is the sole automatic
+publication controller: it serializes relevant `main` builds, validates before uploading and reads back both public
+hosts. `wrangler.jsonc` owns bindings, variables and `logpush: true`; Ops supplies the account and credentials and keeps
+custom domains, HTTPS/redirect rules and secrets at the provider. No Cloudflare native Builds controller runs alongside
+Actions. Source does not prove activation or live publication; see [Development](DEVELOPMENT.md#automatic-publication).
 
 ## Components
 

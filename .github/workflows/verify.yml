@@ -29,6 +29,6 @@ jobs:
       - name: Install locked packages
         run: npm ci --no-audit --no-fund
       # Types, unit and workerd tests, the build with fixture legal data, and the output check. The browser suite
-      # (npm run qa) and the publication gate run locally; neither belongs on every push of an unpublished site.
+      # (npm run qa) stays separate. Website runs the private production build/gate only on accepted main.
       - name: Verify
         run: npm run check
