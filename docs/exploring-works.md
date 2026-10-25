@@ -88,7 +88,7 @@ services still handle the requests needed to deliver and protect the site. The
 
 ## Running your own local preview
 
-The repository contains the Astro site and its Cloudflare Worker. With Git, Node.js 22.12 or later (24 recommended)
+The repository contains the Astro site and its Cloudflare Worker. With Git, Node.js 22.23.4 or later (24 recommended)
 and npm, clone the repository, install its dependencies and start the static preview:
 
 ```sh

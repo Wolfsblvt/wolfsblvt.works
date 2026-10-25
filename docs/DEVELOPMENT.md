@@ -10,7 +10,8 @@ qualification; workflow source alone does not establish those effects.
 
 ## Prerequisites
 
-- **Node.js 22.12 or later**, 24 recommended (`.node-version`). Astro 7 needs 22.12.
+- **Node.js 22.23.4 or later**, 24 recommended (`.node-version`). Astro 7.4.2 needs 22.23.4;
+  Verify exercises that exact floor alongside Node 24.
 - **npm.** With npm 12, install scripts only run for packages listed in `allowScripts` in `package.json` (esbuild and
   workerd). Older npm runs them anyway.
 - **Chromium for Playwright**, only for the browser QA suite: `npx playwright install chromium`. Firefox and WebKit are
