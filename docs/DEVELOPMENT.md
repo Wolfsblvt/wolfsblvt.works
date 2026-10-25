@@ -249,7 +249,7 @@ upload is a **possibly successful deployment**: reconcile the provider version a
 
 ### Activation evidence and recovery (Wolf Ops)
 
-The draft source is not activation. Juno owns credential installation, review/landing disposition and the live cut:
+Juno owns credential installation, review/landing disposition and continuing provider qualification:
 
 1. Confirm the token/account/legal projection and one-controller provider state, then accept and land the workflow.
 2. Consume the first relevant-main run: record its resolved SHA, validation, upload receipt, actual provider
@@ -260,6 +260,27 @@ The draft source is not activation. Juno owns credential installation, review/la
 5. Read the meaningful site/contact/legal/375px journeys at the new revision, plus the native HTTPS/canonical redirects,
    without sending mail merely to prove an unchanged deployment. Run the full live legal verifier with protected error
    output contained. Keep the ordinary provider URLs disabled.
+
+#### Activation record — 2026-10-25
+
+Automatic relevant-main publication is operating. The first controller upload at `efb834a` succeeded, but its immediate
+one-shot marker check failed before the new asset build was observed serving. The corrected readiness check landed as
+**`a7eeefeadb169d34a2dfe0702efa9b0ab865d440`** through PR #19. Its consumed-input push started
+[Website run 40148610731](https://github.com/Wolfsblvt/wolfsblvt.works/actions/runs/40148610731): preflight, exact-main
+checkout, locked install, canonical check, production build, upload and public readback all completed successfully.
+The log records that exact checked-out SHA, provider version `9ab6c314-e57a-4730-8e4c-c2d3f0677393`, and a passing
+two-host/four-request asset readback. [Post-landing Verify](https://github.com/Wolfsblvt/wolfsblvt.works/actions/runs/40148610824)
+also passed Node 22/24. The readiness tests additionally exercise delayed serving, the single deadline across hosts
+and request time, immediate transport/status failure, and a failing witness with the SHA-match guard removed.
+
+A separate credential-free read at **00:57:23 UTC** observed the exact asset marker on Works and Contact, both roots
+as 200 HTML with HSTS, and Privacy/Impressum on both hosts as 200 with HTML-meta and header `noindex, nosnippet`.
+No form submission or operator-value capture was needed. This records the automatic relevant-change and served-asset
+result, not a fresh credentialed runtime/binding/logging readback or full legal certification. Juno retains that Ops
+boundary. The next natural shared-input specimen is Contact PR #17 when accepted and landed; no extra source change
+is manufactured for it. Pending-run freshness and actual rollback remain unobserved until their natural occasions.
+This record changes only internal documentation, so its own main push is the separate native docs-only skip specimen;
+the provider observation for that commit belongs to the owning Work Return.
 
 For ordinary recovery, repair or revert the faulty consumed change on `main`; its relevant push publishes accepted
 current source. Dispatch `Website` on `main` if an event was missed. Dispatch deliberately does not accept an arbitrary
