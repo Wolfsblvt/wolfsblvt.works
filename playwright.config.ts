@@ -1,8 +1,10 @@
 import { defineConfig, devices } from '@playwright/test';
 
 // Real-browser journeys against the built site served by the real Worker (wrangler dev, local only). Build first:
-// `npm run qa` does both. Contact submissions are answered by route mocks in the specs, so no mail is sent and no
-// provider is contacted; the submission pipeline itself is proven by the Vitest workerd projects.
+// `npm run qa` does both. The Worker runs as the `test` environment with sending on, so the contact pipeline's own
+// token and validation refusals are real (development pauses the form before them). Specs answer every submission
+// that could pass those stages with a route mock, so no Turnstile check runs, no mail is sent and no provider is
+// contacted; the rest of the pipeline is proven by the Vitest workerd projects.
 const PORT = 8788;
 
 export default defineConfig({
@@ -15,7 +17,7 @@ export default defineConfig({
   reporter: [['list']],
   use: { baseURL: `http://127.0.0.1:${PORT}`, trace: 'retain-on-failure' },
   webServer: {
-    command: `npx wrangler dev --port ${PORT} --ip 127.0.0.1 --var CONTACT_FORM_SECRET:e2e-form-secret-not-real --var TURNSTILE_SECRET_KEY:1x0000000000000000000000000000000AA`,
+    command: `npx wrangler dev --port ${PORT} --ip 127.0.0.1 --var ENVIRONMENT_NAME:test --var CONTACT_SENDING_ENABLED:true --var CONTACT_FORM_SECRET:e2e-form-secret-not-real --var TURNSTILE_SECRET_KEY:1x0000000000000000000000000000000AA`,
     url: `http://127.0.0.1:${PORT}/`,
     reuseExistingServer: false,
     timeout: 120_000,

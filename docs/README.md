@@ -29,3 +29,4 @@ Start with the question you brought; the root [README](../README.md) is the shor
 | [Sponsor component](works-sponsor.md) · [brand qualification](brand-qualification.md) | Shared identity integration and its source evidence |
 | [README media](assets/readme/README.md) | Screenshot and Yoru sources, reproduction and rights |
 | [Security](../SECURITY.md) | Reporting a vulnerability privately |
+| [Contact security review, 2026-10-24](contact-security-review-2026-10-24.md) | The first review of the live form: findings, evidence and repairs |

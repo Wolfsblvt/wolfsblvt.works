@@ -19,6 +19,7 @@ on:
       - 'scripts/check-output.mjs'
       - 'scripts/check-publish.mjs'
       - 'scripts/check-deployment.mjs'
+      - 'scripts/check-live-https.mjs'
       - 'scripts/prepare-fonts.mjs'
       - 'scripts/generate-identity-assets.mjs'
       - 'scripts/write-headers.mjs'

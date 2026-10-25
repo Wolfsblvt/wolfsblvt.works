@@ -9,8 +9,12 @@
  *
  * Outside production (wrangler dev, previews) the contact page also answers at /contact/ on the same host, so the
  * whole journey can be exercised locally. An unexpected failure answers with the site's own 503 page.
+ *
+ * Plain HTTP to either public host is redirected to HTTPS before anything else, by host rather than by environment,
+ * so the contact page is never served, and a submission never handled, over plaintext even if the zone's own
+ * redirect is missing. Local development on other hosts keeps plain HTTP.
  */
-import { CONTACT_HOST } from '../shared/contact-contract';
+import { CONTACT_HOST, WORKS_HOST } from '../shared/contact-contract';
 import type { ContactEnv } from './contact/env';
 import { contentSecurityPolicy, scriptHashes } from '../shared/csp';
 import { prepareContactPage } from './contact/form-page';
@@ -24,6 +28,7 @@ export interface Env extends ContactEnv {
 }
 
 const SITE_URL = 'https://wolfsblvt.works/';
+const PUBLIC_HOSTS = new Set([WORKS_HOST, CONTACT_HOST]);
 
 const SECURITY_HEADERS: Record<string, string> = {
   'X-Content-Type-Options': 'nosniff',
@@ -45,6 +50,11 @@ export default {
 
 async function route(request: Request, env: Env): Promise<Response> {
   const url = new URL(request.url);
+  if (url.protocol === 'http:' && PUBLIC_HOSTS.has(url.hostname)) {
+    // 308 keeps the method, so a stray POST is not silently turned into a GET.
+    url.protocol = 'https:';
+    return Response.redirect(url.href, 308);
+  }
   const production = env.ENVIRONMENT_NAME === 'production';
   const contactHost = url.hostname === CONTACT_HOST;
   const contactPath = url.pathname === '/contact' || url.pathname === '/contact/';

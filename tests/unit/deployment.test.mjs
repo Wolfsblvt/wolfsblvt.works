@@ -4,13 +4,20 @@ import { checkDeployment } from '../../scripts/check-deployment.mjs';
 const SHA = '1234567890abcdef1234567890abcdef12345678';
 const OLD_SHA = 'a'.repeat(40);
 
+// Both hosts serve the marker and pages over HTTPS; the edge upgrades plain HTTP to the same HTTPS address.
 function fixture(change = () => {}) {
   const calls = [];
   const waits = [];
   let elapsed = 0;
   const fetchImpl = async (url, options) => {
     calls.push({ url, options });
-    const marker = new URL(url).pathname === '/build-version.txt';
+    const parsed = new URL(url);
+    if (parsed.protocol === 'http:') {
+      const upgrade = { body: null, status: 301, headers: { Location: `https://${parsed.host}${parsed.pathname}${parsed.search}` } };
+      change(upgrade, url);
+      return new Response(upgrade.body, upgrade);
+    }
+    const marker = parsed.pathname === '/build-version.txt';
     const response = { body: marker ? SHA : '<html>Works</html>', status: 200,
       headers: { 'content-type': marker ? 'text/plain' : 'text/html', 'strict-transport-security': 'max-age=31536000' } };
     change(response, url, calls.length);
@@ -21,18 +28,28 @@ function fixture(change = () => {}) {
 }
 
 describe('publication readback', () => {
-  it('checks the current asset marker and useful page on both hosts, without credentials or redirects', async () => {
+  it('checks the current asset marker and useful page on both hosts, then plain HTTP, without credentials or redirects', async () => {
     const f = fixture();
-    expect(await checkDeployment(SHA, f)).toEqual({ hosts: 2, requests: 4, sourceSha: SHA });
-    expect(f.calls.map(c => new URL(c.url).hostname)).toEqual([
+    // 2 hosts × (marker + page) first, then 2 hosts × (3 HTTPS + 6 plain HTTP probes) from the live HTTPS readback.
+    expect(await checkDeployment(SHA, f)).toEqual({ hosts: 2, requests: 22, sourceSha: SHA });
+    expect(f.calls.slice(0, 4).map(c => new URL(c.url).hostname)).toEqual([
       'wolfsblvt.works', 'wolfsblvt.works', 'contact.wolfsblvt.works', 'contact.wolfsblvt.works',
     ]);
+    expect(f.calls.filter(c => c.url.startsWith('http://'))).toHaveLength(12);
     for (const { options } of f.calls) {
       expect(options.redirect).toBe('manual');
       expect(options.cache).toBe('no-store');
       expect(options.headers).toBeUndefined();
       expect(options.signal).toBeInstanceOf(AbortSignal);
     }
+  });
+
+  it('fails the publication when a static page answers plain HTTP although the roots upgrade', async () => {
+    const f = fixture((r, url) => {
+      if (url === 'http://wolfsblvt.works/privacy/?https-readback=1') { r.status = 200; r.headers = { 'content-type': 'text/html' }; r.body = '<html>Privacy</html>'; }
+    });
+    await expect(checkDeployment(SHA, f)).rejects.toThrow(
+      'plain HTTP is not fully closed.\n- GET http://wolfsblvt.works/privacy/?https-readback=1 answered 200; expected a redirect to https://wolfsblvt.works/privacy/?https-readback=1.');
   });
 
   it('refuses a malformed marker without printing the received body or polling it', async () => {
@@ -50,7 +67,8 @@ describe('publication readback', () => {
     await expect(checkDeployment(SHA, f)).resolves.toMatchObject({ hosts: 2, sourceSha: SHA });
     expect(f.now()).toBe(75_000);
     expect(f.waits).toEqual(Array(15).fill(5_000));
-    expect(f.calls.filter(c => new URL(c.url).pathname === '/')).toHaveLength(2);
+    // The readback's own page check sends no method; the later HTTPS readback probes `/` too, with explicit methods.
+    expect(f.calls.filter(c => new URL(c.url).pathname === '/' && c.options.method === undefined)).toHaveLength(2);
   });
 
   it('refuses a stale build at the overall deadline with a value-free last observation', async () => {
@@ -118,6 +136,19 @@ describe('publication readback', () => {
     await expect(checkDeployment(SHA, { fetchImpl: async () => { calls++; throw new Error('secret-bearing transport failure'); } }))
       .rejects.toThrow('https://wolfsblvt.works transport failure; last observation: no response');
     expect(calls).toBe(1);
+  });
+
+  it('stops the plain HTTP readback at a transport failure instead of sending the remaining probes', async () => {
+    const f = fixture();
+    const fetchFixture = f.fetchImpl;
+    f.fetchImpl = async (url, options) => {
+      if (url === 'http://wolfsblvt.works/') throw new Error('private transport specimen');
+      return fetchFixture(url, options);
+    };
+    await expect(checkDeployment(SHA, f)).rejects.toThrow(
+      'plain HTTP is not fully closed.\n- GET http://wolfsblvt.works/ did not answer. Stopped without retrying or sending the remaining probes.');
+    // 2 hosts × (marker + page) and wolfsblvt.works' 3 HTTPS probes recorded; the next request fails and nothing follows.
+    expect(f.calls).toHaveLength(4 + 3);
   });
 
   it('rejects an unresolved source before any network request', async () => {

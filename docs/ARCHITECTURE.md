@@ -73,7 +73,8 @@ Without JavaScript the same page is complete: the pile renders as an ordinary li
 
 ### A contact message
 
-1. A browser asks `https://contact.wolfsblvt.works/?product=diffdevil`. The Worker serves the static `contact/` page
+1. A browser asks `https://contact.wolfsblvt.works/?product=diffdevil`. Plain HTTP on either public host gets a 308 to
+   the same HTTPS address before anything else happens. The Worker serves the static `contact/` page
    through `prepareContactPage`, which sets the Turnstile site key and a freshly signed `<issuedAt>.<hmac>` form
    token on the form and marks the response `no-store`. On `wolfsblvt.works`, `/contact/` redirects there permanently
    (outside production it answers on the same host so the journey runs locally).
@@ -81,20 +82,30 @@ Without JavaScript the same page is complete: the pile renders as an ordinary li
    visitor came from with a link back, validates as the visitor types, and loads Turnstile only once the page is
    prepared.
 3. The form posts `multipart/form-data` to the same origin. `handleContactSubmission` runs, in order:
-   1. circuit breaker, canonical-host admission in production, exact `Origin`, content type, declared length and a
-      streamed body ceiling, then form parsing;
+   1. circuit breaker, canonical HTTPS origin admission in production (`https://contact.wolfsblvt.works` only), exact
+      `Origin`, content type, declared length and a streamed body ceiling, then form parsing;
    2. honeypot, and the signed form token with its minimum interaction time and maximum age;
-   3. per-IP and per-Cloudflare-location rate limits;
+   3. the per-IP rate limit;
    4. field validation against `shared/contact-contract.ts`: category, an optional registered product, an optional
       single-line name, a plausible email, a subject up to 120 characters, a plain-text message; control characters
       and header-injection material are refused;
-   5. a per-recipient rate limit keyed by a hash of the email;
-   6. Turnstile siteverify with the request IP, expected action and, in production, the expected hostname;
+   5. Turnstile siteverify with the request IP, expected action and, in production, the expected hostname;
+   6. the shared per-Cloudflare-location limit, then a per-recipient limit keyed by a hash of the email;
    7. the internal notification through `CONTACT_INTERNAL` (fixed destination, the visitor as `Reply-To`);
    8. the visitor's copy through `CONTACT_VISITOR_COPY` (fixed Works sender, fixed subject with the reference).
+
+   Only the per-IP limit comes before the bot check, so an attempt that fails validation or Turnstile spends nobody's
+   allowance but its own IP's; the shared location and recipient allowances are spent only by attempts about to send.
 4. Every exit writes exactly one `contact.submission` event and returns one JSON body with a truthful outcome: `sent`,
    `sent-copy-failed` or `failed`, or an `invalid`, `rejected`, `rate-limited` or `disabled` refusal. The page shows the
    service's exact wording; no browser claim outruns what the service observed.
+5. A form open longer than its token's 12 hours (or signed before the form secret changed) is refused with
+   `renewForm: true` and nothing sent. The page fetches itself again for a fresh token, puts it into the form without
+   touching what was typed, and asks the visitor to send again. It never resends on its own and stores nothing.
+   The submission and its refresh are one pending interaction: Send stays disabled and a Turnstile answer is only
+   recorded until the outcome is shown, so no slower, older answer can replace a newer outcome or invite a duplicate
+   send. A refresh that does not answer within 15 seconds ends as "couldn't be fetched". Because a fresh token is
+   younger than the Worker's 4-second minimum, Send waits out that minimum after the refresh instead of being refused.
 
 ## The contact service
 
@@ -168,6 +179,11 @@ carries an obvious fixture in `src/data/legal-operator.example.json`.
   Turnstile origin.
 - **Hosts.** `wolfsblvt.works` serves the site; `contact.wolfsblvt.works` serves the contact page at `/` and shares the
   same assets. Canonical URLs point each page at its own host.
+- **HTTPS only.** The zone redirects plain HTTP on both hosts to HTTPS (Wolf Ops' rule). The Worker does the same on
+  its own routes, by host rather than by environment, so the contact page and its submissions never depend on the zone
+  rule alone; the static assets do. Local hosts keep plain HTTP for development. The readback after every publication
+  (and `npm run check:live-https` on its own) therefore probes a real static page and asset, which never reach the Worker,
+  as well as the Worker's routes: green roots alone would not show that the zone rule still covers the static files.
 - **The 503.** `503.html` is self-contained (inline CSS, system fonts, no scripts, absolute links) so Cloudflare can
   show it as a custom error page while the site itself is down.
 - **Third parties.** Cloudflare (hosting, Email Service, rate limiting, Turnstile). Turnstile's script loads on the
@@ -179,6 +195,7 @@ carries an obvious fixture in `src/data/legal-operator.example.json`.
 
 - No visitor content in logs: the `contact.submission` event can't carry the visitor's name, email, subject, message
   or Turnstile token. `log.ts` refuses those keys structurally and the tests pin it.
+- The contact page is never served, and a submission never handled, over plain HTTP on a public host.
 - Mail headers never take visitor input except as `Reply-To` on the internal notification; `From`, the envelope and
   every other header are fixed.
 - The visitor's copy is sent unconditionally after the internal notification succeeds, and the page reports exactly
