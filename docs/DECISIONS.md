@@ -372,7 +372,7 @@ the co-design's filing system. The visitor should meet variety.
 **Date:** 2026-10-24 · **Status:** Current
 
 The `.mpreg` thought is the 29th entry (`mpreg`): a tiny torn scrap with the extension and an editorial question
-mark on the desk, and in Endless the whole line in her words, "Can someone not make a file extension like .mpreg?",
+mark on the desk, and in Endless the whole line in her words, "Can someone make a file extension like .mpreg?",
 credited to nek0tera with her Twitch profile picture and links to her Twitch and X. Wolf asked her and wants the
 credit to promote her, on the compact object as well as the expansion. The picture is fetched by hand from her
 channel page's own `og:image` (`npm run credits`) and committed; the build fetches nothing.
@@ -380,6 +380,9 @@ channel page's own `og:image` (`npm run credits`) and committed; the build fetch
 **Why.** Wolf, 24 October 2026: "Tera's fragment we'll add as defined. I asked her for permission. We'll also use this
 note to shill her Twitch and Twitter." A committed picture keeps the build reproducible and offline; refreshing it is
 an ordinary content update.
+
+**Owner-and-Tera correction, 2026-10-25.** Wolf confirmed with Tera that she wanted the extension to exist. At his
+direction, the quote removes "not" so it carries the intended meaning.
 
 **Rejected.** Fetching the avatar at build or deploy time (a third-party dependency in every build, and Twitch's
 API needs credentials); a "permission pending" card.
