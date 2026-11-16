@@ -13,7 +13,7 @@ together.
 | Path | Holds | Why it is separate |
 | --- | --- | --- |
 | `src/pages/` | One file per address: home, contact, privacy, impressum, 404, the 503 and `robots.txt` | Astro routes by file; the page list is the site's whole address space |
-| `src/sections/` | The home walk's sections in order: hero, why, who, help, hello; `projects/` holds the five project windows, each component with its own stylesheet | The walk is one page; each section is still its own piece of copy and layout, and each window its own world |
+| `src/sections/` | The home walk's sections in order: hero, why, who, the compact paid-commission invitation, help, hello; `projects/` holds the five project windows, each component with its own stylesheet | The walk is one page; each section is still its own piece of copy and layout, and each window its own world |
 | `src/features/pile/` | The Pile: its rendering, client controller, deal and packer, the entry scenes and interactions under `entries/<id>/`, styles | A self-contained feature with its own content model, client code and tests |
 | `src/features/yoru/` | Yoru, the resident: his clips, the sprite player, the world of places, the resident who chooses what to do, opt-in memory, `client/site.ts`, the home page's host, and `client/spot.ts`, the smaller rooms' host (404, legal pages, Contact) | One character with his own engine; the core is DOM-free so it is tested like any module |
 | `design/yoru/` | The resident's character sheet, his animation families as specs, reference images and the packed sheets | The source of his animation; the build reads the sheets from here |

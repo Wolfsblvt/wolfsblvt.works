@@ -72,6 +72,20 @@ async function submit(h: Harness, fields: Record<string, string> = {}, options?:
 }
 
 describe('happy path', () => {
+  it('carries a paid consulting enquiry through validation, both emails, and the redacted event', async () => {
+    const h = harness();
+    const { status, body, event } = await submit(h, { [FIELDS.category]: 'consulting', [FIELDS.product]: 'wolfsblvt-com' });
+    expect(status).toBe(200);
+    expect(body.outcome).toBe('sent');
+    expect(h.internal).toHaveLength(1);
+    expect(h.copies).toHaveLength(1);
+    expect(h.internal[0]!.subject).toBe('[Contact] Consulting & contracts: Hello');
+    expect(h.internal[0]!.text).toContain('Consulting & contracts');
+    expect(h.copies[0]!.text).toContain('Consulting & contracts');
+    expect(event).toMatchObject({ category: 'consulting', product: 'wolfsblvt-com', visitorCopy: 'accepted' });
+    expect(JSON.stringify(event)).not.toContain('ada@example.org');
+  });
+
   it('sends the internal notification then the visitor copy and reports both', async () => {
     const h = harness();
     const { status, body, event } = await submit(h, { [FIELDS.name]: 'Ada', [FIELDS.product]: 'agents' });

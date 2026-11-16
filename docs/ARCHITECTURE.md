@@ -79,8 +79,10 @@ Without JavaScript the same page is complete: the pile renders as an ordinary li
    token on the form and marks the response `no-store`. On `wolfsblvt.works`, `/contact/` redirects there permanently
    (outside production it answers on the same host so the journey runs locally).
 2. The page script (`src/features/contact/contact-form.ts`) preselects the product from `?product=`, shows where the
-   visitor came from with a link back, validates as the visitor types, and loads Turnstile only once the page is
-   prepared.
+   visitor came from with a link back, and optionally selects a registered topic from `?category=`. Unknown values
+   are ignored; category and product are independent, editable choices. The native topic dropdown adds a short briefing
+   prompt only for consulting. A new message resets the selection. The page validates as the visitor types and loads
+   Turnstile only once the page is prepared.
 3. The form posts `multipart/form-data` to the same origin. `handleContactSubmission` runs, in order:
    1. circuit breaker, canonical HTTPS origin admission in production (`https://contact.wolfsblvt.works` only), exact
       `Origin`, content type, declared length and a streamed body ceiling, then form parsing;

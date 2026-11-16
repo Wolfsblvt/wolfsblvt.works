@@ -1,11 +1,11 @@
 /**
  * The contact page's behaviour: counters, the searchable project picker kept in sync with the contract's native
- * select (including `?product=` preselection), Turnstile, accessible validation feedback and the three truthful
+ * select, registered `?product=` and `?category=` defaults, Turnstile, accessible validation feedback and the three truthful
  * outcomes in Works words. The Worker owns every decision; this script only presents what it returned.
  *
  * Adapted from the moved service's src/scripts/contact-form.ts (Wolfsblvt/wolfsblvt.com 98a85f8).
  */
-import { FIELDS, LIMITS, OUTCOMES, TURNSTILE_ACTION } from '../../../shared/contact-contract';
+import { FIELDS, LIMITS, OUTCOMES, TURNSTILE_ACTION, findCategory } from '../../../shared/contact-contract';
 import { mountSpot } from '../yoru/client/spot';
 
 type FieldError = { field: string; message: string };
@@ -82,6 +82,7 @@ function setupContactForm(form: HTMLFormElement): void {
   submissionInput.value = crypto.randomUUID();
   const counters = setupCounters(form);
   const picker = setupPicker(form);
+  setupCategory(form);
   setupArrival(products, picker);
   setupLiveErrorClearing(form);
 
@@ -231,7 +232,7 @@ function setupContactForm(form: HTMLFormElement): void {
     yoruSits();
     // The widget has usually answered again since the last send's reset; waiting for another answer would never end.
     updateSubmit();
-    form.querySelector<HTMLInputElement>('#category')?.focus();
+    form.querySelector<HTMLSelectElement>('#category')?.focus();
   });
 
   function handleResponse(response: SubmitResponse): void {
@@ -305,8 +306,7 @@ function setupContactForm(form: HTMLFormElement): void {
     clearErrors();
     summaryTitle.textContent = errors.length === 1 ? 'Please check one field.' : `Please check ${errors.length} fields.`;
     for (const error of errors) {
-      // Category is a radio group; the first radio carries id="category" so the summary can focus it.
-      const control = error.field === FIELDS.category ? form.querySelector<HTMLElement>('#category') : form.querySelector<HTMLElement>(`[name="${error.field}"]`);
+      const control = form.querySelector<HTMLElement>(`[name="${error.field}"]`);
       const focusTarget = error.field === FIELDS.product ? form.querySelector<HTMLElement>('#product-search') : control;
       const item = document.createElement('li');
       if (control && focusTarget) {
@@ -502,6 +502,21 @@ function setupArrival(products: Record<string, { label: string; home: string }>,
     if (slot && icon) slot.replaceWith(icon.cloneNode(true));
     back.hidden = false;
   }
+}
+
+/** Only a registered topic may become a URL default. Visitor text never belongs in a contact URL. */
+function setupCategory(form: HTMLFormElement): void {
+  const select = must(form.querySelector<HTMLSelectElement>('#category'));
+  const hint = must(form.querySelector<HTMLElement>('[data-consulting-hint]'));
+  const requested = findCategory(new URLSearchParams(window.location.search).get('category'));
+  if (requested) select.value = requested.value;
+  const update = () => {
+    hint.hidden = select.value !== 'consulting';
+    select.setAttribute('aria-describedby', hint.hidden ? 'category-hint' : 'category-hint consulting-hint');
+  };
+  select.addEventListener('change', update);
+  form.addEventListener('reset', () => setTimeout(update, 0));
+  update();
 }
 
 function validateLocally(form: HTMLFormElement): FieldError[] {
