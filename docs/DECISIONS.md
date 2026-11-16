@@ -23,12 +23,15 @@ second opinions, agent and autonomous-team help, workflow diagnosis and focused 
 catalogue at `https://wolfsblvt.com/consulting/` and directly to the existing contact form. It does not turn the Works
 home into a consulting sales page or mix paid commissions with the support/sponsorship invitation.
 
+Wolf's candidate review strengthens the emphasis on startups and companies, actively desired longer-term contracts,
+and realistic time for a deep investigation. The compact section and form prompt carry that meaning.
+
 The contact topic is now a native dropdown. **Consulting & contracts** (`consulting`) is a real registered category
 shared by page, validation, mail and redacted logs. `?category=consulting` selects it; no category remains selected on
 an ordinary arrival. Only recognized values are accepted as URL defaults. Product context is independent and editable,
 and unknown values are never reflected. No visitor content is accepted as a URL prefill. The consulting prompt asks
-for the desired result, any deadline and any human-only analysis/writing preference; scope and fee remain individually
-agreed. The form makes no response-time promise. A successful message followed by “Write another” resets the topic.
+for the desired result, business impact, any deadline/budget range, one-off or ongoing work, and any human-only
+analysis/writing preference; scope and fee remain individually agreed. The form makes no response-time promise. A successful message followed by “Write another” resets the topic.
 
 This supersedes the 14 October pill-topic presentation. All delivery, fixed-sender, privacy and storage guarantees are
 unchanged. The full offer is owned by the personal site; Works carries only the short invitation. Coordinate landing
