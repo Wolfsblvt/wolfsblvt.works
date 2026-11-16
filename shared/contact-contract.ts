@@ -3,7 +3,8 @@
  *
  * One source keeps the Works contact page, server validation and mail formatting in agreement.
  * Values here are product meaning ratified in emergency-meeting#500 (smolpng and TunnelTend added by Wolf in #916,
- * 2026-10-24); change them there first.
+ * 2026-10-24), with consulting and contracts added by Wolf's website brief on 2026-11-16. Further changes need
+ * a corresponding owner decision; these values are shared by the page, validation, email, and logs.
  * Moved here from Wolfsblvt/wolfsblvt.com (accepted foundation 98a85f8) when the service joined the Works site.
  */
 
@@ -14,6 +15,7 @@ export const WORKS_NAME = 'Wolfsblvt Works';
 
 /** Stable submission categories. The value is what mail and logs carry; the label is what people read. */
 export const CATEGORIES = [
+  { value: 'consulting', label: 'Consulting & contracts' },
   { value: 'project', label: 'A project' },
   { value: 'collaboration', label: 'Working together' },
   { value: 'privacy', label: 'Privacy' },

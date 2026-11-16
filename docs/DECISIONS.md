@@ -14,6 +14,33 @@ Entries are grouped by subject. The design source referred to below is the canva
 
 ## The site
 
+### A small invitation to commission Wolf, with one contact route
+
+**Date:** 2026-11-16 · **Status:** Current · **Selected by:** Wolf in the website rework brief and follow-up answers.
+
+Works keeps its walk, project worlds and personal voice. A compact invitation after Who offers paid audits, technical
+second opinions, agent and autonomous-team help, workflow diagnosis and focused rescues. It points to the full
+catalogue at `https://wolfsblvt.com/consulting/` and directly to the existing contact form. It does not turn the Works
+home into a consulting sales page or mix paid commissions with the support/sponsorship invitation.
+
+Wolf's candidate review strengthens the emphasis on startups and companies, actively desired longer-term contracts,
+and realistic time for a deep investigation. The compact section and form prompt carry that meaning.
+
+The contact topic is now a native dropdown. **Consulting & contracts** (`consulting`) is a real registered category
+shared by page, validation, mail and redacted logs. `?category=consulting` selects it; no category remains selected on
+an ordinary arrival. Only recognized values are accepted as URL defaults. Product context is independent and editable,
+and unknown values are never reflected. No visitor content is accepted as a URL prefill. The consulting prompt asks
+for the desired result, business impact, any deadline/budget range, one-off or ongoing work, and any human-only
+analysis/writing preference; scope and fee remain individually agreed. The form makes no response-time promise. A successful message followed by “Write another” resets the topic.
+
+This supersedes the 14 October pill-topic presentation. All delivery, fixed-sender, privacy and storage guarantees are
+unchanged. The full offer is owned by the personal site; Works carries only the short invitation. Coordinate landing
+with its companion PR: deploy the category support before the personal site's paid links, then the full catalogue.
+
+Wolf's later language decision adds German to the personal site only. Works and its shared form stay English; the
+invitation and consulting hint explicitly welcome English and German messages. The compact section names autonomous
+teams intended to work around the clock, without suggesting that Wolf provides around-the-clock availability.
+
 ### One long walk, not a set of pages
 
 **Date:** 2026-10-14 · **Status:** Current
@@ -615,7 +642,7 @@ and one form means one inbox, one privacy text and one set of protections.
 **Date:** 2026-10-14 · **Status:** Current
 
 On desktop, the heading, a plain "when you send it" list and the direct routes sit on the left, and the form sits on the
-right. On phones the order is heading, form, then the notes. Topics are pill choices with "Something else" always fine.
+right. On phones the order is heading, form, then the notes. Topics originally used pill choices with "Something else" always fine; the 16 November consulting decision replaces those pills with a native dropdown.
 The project picker is a searchable list in front of the native select, hand-ordered: the Works website, then the
 projects in walk order, then the named pile pieces, then other sites. Each entry shows a type (Website, Tool,
 Project…) and its icon from `@wolfsblvt/icons`, or a dashed placeholder with its initial until it has one. The subject

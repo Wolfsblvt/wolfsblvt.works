@@ -29,6 +29,7 @@
 .lbl { display: flex; align-items: baseline; gap: 8px; margin: 0 0 8px; padding: 0; font: 600 15px var(--sans); color: var(--text); }
 .opt { font: 500 12px var(--sans); color: var(--text-faint); letter-spacing: .02em; }
 .hint { margin: -2px 0 10px; font: 13.5px/1.45 var(--sans); color: var(--text-faint); }
+.consulting-hint { margin: 12px 0 0; color: var(--text-soft); }
 .lbl-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
 .count { font: 12.5px var(--sans); color: var(--text-faint); font-variant-numeric: tabular-nums; }
 .count.over { color: var(--rose); }
@@ -41,14 +42,6 @@ textarea.inp { min-height: 190px; resize: vertical; font: 17px/1.6 var(--serif);
 .field-error { margin: 8px 0 0; display: flex; gap: 7px; align-items: baseline; font: 600 13.5px/1.4 var(--sans); color: var(--rose); }
 .field-error::before { content: ''; flex: none; width: 6px; height: 6px; border-radius: 50%; background: var(--rose); transform: translateY(-1px); }
 .foot-row { display: flex; justify-content: space-between; gap: 12px; margin-top: 7px; font: 12.5px var(--sans); color: var(--text-faint); }
-.pills { display: flex; flex-wrap: wrap; gap: 8px; }
-.pill { position: relative; cursor: pointer; }
-.pill input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
-.pill-t { display: inline-flex; align-items: center; min-height: 38px; padding: 0 15px; border-radius: 999px; border: 1px solid rgb(243 232 220 / 18%); font: 14.5px var(--sans); color: var(--text-soft); transition: border-color .2s, background .2s, color .2s; }
-.pill:hover .pill-t { border-color: rgb(243 232 220 / 34%); color: var(--text); }
-.pill input:checked + .pill-t { background: var(--text); border-color: var(--text); color: var(--canvas); font-weight: 600; }
-.pill input:focus-visible + .pill-t { outline: 2px solid var(--cyan); outline-offset: 3px; }
-.field-invalid .pill-t { border-color: rgb(239 142 161 / 55%); }
 .combo { position: relative; display: flex; align-items: center; border-radius: 11px; border: 1px solid rgb(243 232 220 / 16%); background: #120c13; transition: border-color .2s, box-shadow .2s; }
 .combo:hover { border-color: rgb(243 232 220 / 26%); }
 .combo:focus-within { border-color: var(--cyan); box-shadow: 0 0 0 3px rgb(115 202 227 / 18%); }

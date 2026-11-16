@@ -53,9 +53,10 @@ Never logged: the visitor's name, email address, subject, message and Turnstile 
 `worker/contact/log.ts` refuses an event object that grows any of those keys, and the tests pin the event shape. Form
 secrets and the Turnstile secret never appear in events or errors.
 
-Cloudflare's invocation logs record the request method and URL. No URL on this site carries content: the contact page's
-only query parameter is `?product=<slug>`, a public product name, and submissions travel in the POST body, which is not
-logged. Enabling `redact_query_string` is still harmless and may be chosen at adoption.
+Cloudflare's invocation logs record the request method and URL. Links authored by the site carry only public
+`product` and `category` slugs (for example, `?product=wolfsblvt-com&category=consulting`). They never prefill a name,
+email, subject or message. Unknown slugs are ignored by the page; that does not erase arbitrary caller-supplied query
+strings from provider request logs. Submissions travel in the POST body, which is not logged. Enabling `redact_query_string` is still harmless and may be chosen at adoption.
 
 There is no elevated debug mode. If one is ever needed for a specific incident, it is a deliberate, time-boxed change
 with its own record here, and it still never captures message content.

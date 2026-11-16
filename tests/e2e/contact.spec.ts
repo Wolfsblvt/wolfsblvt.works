@@ -15,7 +15,7 @@ async function stubTurnstile(page: Page) {
 }
 
 async function fill(page: Page) {
-  await page.getByRole('radio', { name: 'A project' }).check();
+  await page.getByLabel('Roughly what’s it about?').selectOption('project');
   await page.getByLabel('Your email').fill('ada@example.org');
   await page.getByLabel('Subject').fill('diffdevil counted my rename');
   await page.getByLabel('Your message').fill('Hi Wolf, is that on purpose?');
@@ -34,6 +34,51 @@ test('the Worker prepares the form and the button waits for the bot check', asyn
   await page.goto('/contact/');
   await expect(page.locator('[data-contact-form]')).toHaveAttribute('data-form-token', /^\d+\.[0-9a-f]{64}$/);
   await expect(page.locator('[data-submit]')).toBeEnabled();
+  await expect(page.locator('#category')).toHaveValue('');
+  await expect(page.locator('[data-consulting-hint]')).toBeHidden();
+});
+
+test('a consulting arrival selects the topic independently of product, and the visitor can change it', async ({ page }) => {
+  await page.goto('/contact/?category=consulting&product=wolfsblvt-com');
+  const category = page.getByLabel('Roughly what’s it about?');
+  await expect(category).toHaveValue('consulting');
+  await expect(page.locator('#product')).toHaveValue('wolfsblvt-com');
+  await expect(page.locator('[data-consulting-hint]')).toBeVisible();
+  await expect(category).toHaveAttribute('aria-describedby', 'category-hint consulting-hint');
+  await category.selectOption('other');
+  await expect(page.locator('[data-consulting-hint]')).toBeHidden();
+  await expect(category).toHaveAttribute('aria-describedby', 'category-hint');
+  await expect(page.locator('#product')).toHaveValue('wolfsblvt-com');
+});
+
+test('an unknown topic is ignored without affecting a recognized product', async ({ page }) => {
+  await page.goto('/contact/?category=%3Cb%3Eunexpected-topic%3C%2Fb%3E&product=diffdevil');
+  await expect(page.locator('#category')).toHaveValue('');
+  await expect(page.locator('#product')).toHaveValue('diffdevil');
+  await expect(page.locator('[data-consulting-hint]')).toBeHidden();
+  await expect(page.locator('body')).not.toContainText('unexpected-topic');
+});
+
+test('a paid enquiry sends the selected topic and a new message clears its context', async ({ page }) => {
+  let submitted = '';
+  await page.route('**/contact/**', async route => {
+    if (route.request().method() !== 'POST') return route.continue();
+    submitted = route.request().postData() ?? '';
+    await route.fulfill({ json: { ok: true, outcome: 'sent', reference: 'WW-20261116-ABCDE', retryable: false } });
+  });
+  await page.goto('/contact/?category=consulting');
+  await expect(page.locator('#category')).toHaveValue('consulting');
+  await expect(page.locator('#product')).toHaveValue('');
+  await page.getByLabel('Your email').fill('ada@example.org');
+  await page.getByLabel('Subject').fill('An audit of our autonomous agents');
+  await page.getByLabel('Your message').fill('I would like a human-only assessment and written recommendations.');
+  await page.locator('[data-submit]').click();
+  await expect(page.locator('[data-outcome]')).toContainText('Thanks.');
+  expect(submitted).toContain('name="category"\r\n\r\nconsulting');
+  await page.locator('[data-another]').click();
+  await expect(page.locator('#category')).toBeFocused();
+  await expect(page.locator('#category')).toHaveValue('');
+  await expect(page.locator('[data-consulting-hint]')).toBeHidden();
 });
 
 test('missing fields are summarised, linked and focused', async ({ page }) => {
@@ -301,7 +346,7 @@ test('expired form against the real Worker: the refreshed token waits out the mi
   await expect(send).toBeDisabled();
   await expect(page.locator('[data-submit-note]')).toHaveText('Getting the fresh form ready…');
   // Stop the real submission at validation: after the token stage, before the Turnstile check and any send.
-  await page.locator('input[name="category"]:checked').evaluate((radio: HTMLInputElement) => { radio.value = 'not-a-category'; });
+  await page.locator('#category').evaluate((select: HTMLSelectElement) => { select.options[select.selectedIndex]!.value = 'not-a-category'; });
   await expect(send).toBeEnabled({ timeout: 6000 });
   expect(Date.now() - refreshedAt).toBeGreaterThan(3000);
   await send.click();

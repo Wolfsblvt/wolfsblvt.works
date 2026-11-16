@@ -19,6 +19,7 @@ export default {
     security: 'https://github.com/Wolfsblvt/wolfsblvt.works/security/policy',
     github: 'https://github.com/Wolfsblvt',
     maker: 'https://wolfsblvt.com',
+    consulting: 'https://wolfsblvt.com/consulting/',
     discordCommunity: 'https://wolfsblvt.com/discord',
     // Shown as a visibly unavailable slot until the profile exists; set the URL and it becomes a link.
     bluesky: null,

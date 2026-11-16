@@ -70,15 +70,20 @@ const productsJson = JSON.stringify(Object.fromEntries(CONTACT_PRODUCTS.map((p) 
               <ul data-error-summary-list></ul>
             </div>
 
-            <fieldset class="field" aria-describedby="category-hint">
-              <legend class="lbl">Roughly what’s it about?</legend>
+            <div class="field">
+              <label class="lbl" for="category">Roughly what’s it about?</label>
               <p class="hint" id="category-hint">So it lands on the right pile. “Something else” is always fine.</p>
-              <div class="pills" role="radiogroup">
-                {CATEGORIES.map((c, i) => (
-                  <label class="pill"><input type="radio" name={FIELDS.category} value={c.value} id={i === 0 ? 'category' : `category-${c.value}`} /><span class="pill-t">{c.label}</span></label>
-                ))}
-              </div>
-            </fieldset>
+              <select class="inp" id="category" name={FIELDS.category} aria-describedby="category-hint">
+                <option value="">Choose a topic…</option>
+                {CATEGORIES.map((c) => <option value={c.value}>{c.label}</option>)}
+              </select>
+              <p class="hint consulting-hint" id="consulting-hint" data-consulting-hint hidden>
+                Describe the problem, its impact on your business, and the result you need. Mention any deadline, budget range,
+                whether you’re looking for a single piece of work or an ongoing contract, and any preference for human-only analysis and writing.
+                We’ll agree the scope and fee before work starts.
+                English and German messages are welcome.
+              </p>
+            </div>
 
             <div class="field" data-combo>
               <label class="lbl" for="product-search">About one of the projects? <span class="opt">optional</span></label>

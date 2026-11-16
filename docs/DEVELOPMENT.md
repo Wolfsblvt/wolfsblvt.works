@@ -146,6 +146,16 @@ A piece whose form can't carry its material gets its own scene: `Compact.astro` 
 `src/features/pile/entries/<id>/`, and `interaction.ts` beside them when it has behaviour. They are found by file;
 nothing else needs editing. The existing entries are the examples.
 
+### Link to paid work
+
+Use `https://contact.wolfsblvt.works/?category=consulting` for a paid-work enquiry. A product can also pass its registered
+slug, for example `?product=wolfsblvt-com&category=consulting`. The two choices are independent; use only the public
+slugs and never put a name, address, subject or message into the link. The browser tests cover recognized defaults,
+unknown values, manual override, submitted category and reset; the handler test carries the category through both emails.
+The form stays English, including when the personal site links from its German pages. The consulting hint welcomes
+English and German messages. `tests/e2e/commission.spec.ts` checks the homepage invitation and real preselected contact
+link at 1440px, 390px and 320px, using the local fixture Worker and mocked Turnstile without sending a message.
+
 ### Add a product to the contact picker
 
 Register the slug, label and order in `PRODUCTS` in `shared/contact-contract.ts`, then its type, icon and home in
