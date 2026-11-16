@@ -34,6 +34,10 @@ This supersedes the 14 October pill-topic presentation. All delivery, fixed-send
 unchanged. The full offer is owned by the personal site; Works carries only the short invitation. Coordinate landing
 with its companion PR: deploy the category support before the personal site's paid links, then the full catalogue.
 
+Wolf's later language decision adds German to the personal site only. Works and its shared form stay English; the
+invitation and consulting hint explicitly welcome English and German messages. The compact section names autonomous
+teams intended to work around the clock, without suggesting that Wolf provides around-the-clock availability.
+
 ### One long walk, not a set of pages
 
 **Date:** 2026-10-14 · **Status:** Current
