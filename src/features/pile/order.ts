@@ -22,6 +22,7 @@ export const ENDLESS_ORDER = [
   'presencecue',
   'no-reply-yet',
   'g-keys',
+  'irrwisch',
   'simklbridge',
   'realmseed',
   'shared-tools',
